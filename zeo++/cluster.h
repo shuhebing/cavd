@@ -55,7 +55,7 @@ void prune_high_accuracy_voronoi_network(VORONOI_NETWORK* ha_vor, ATOM_NETWORK* 
  *      ha_vornet: Pointer to high accuracy voronoi network
  *      vornet: Pointer to original voronoi network
  *      atm_net: Pointer to atom network
- *      cutoff: Radius of cutoff sphere from each voronoi ode
+ *      cutoff: Radius of cutoff sphere from each voronoi node
  *  Output:
  *      red_vornet: Pointer to reduced voronoi network
  */
