@@ -596,13 +596,13 @@ def get_ionic_radii(filename):
 #    label_cn_radii_list = list(zip(labels2, el2, cn2, radii2))  
 #    return radii_list, cn_list, radii_cn_list,label_cn_radii_list
 
-#if __name__ == "__main__":
-#    radii_list, cn_list, radii_cn_list, label_cn_radii_list = get_ionic_radii("icsd_16713.cif")
-#    #输出的信息格式为：_atom_site_label, species, coordination number, ion radius
-#    print(label_cn_radii_list)
-#     print(radii_list)
-#     print(cn_list)
-#     print(radii_cn_list)
+# if __name__ == "__main__":
+    # radii_list, cn_list, radii_cn_list, label_cn_radii_list = get_ionic_radii("icsd_16713.cif")
+    # #输出的信息格式为：_atom_site_label, species, coordination number, ion radius
+    # print(label_cn_radii_list)
+    # print(radii_list)
+    # print(cn_list)
+    # print(radii_cn_list)
 
-#     radii = get_ionic_radii("icsd_16713.cif")
-#     print(radii)
+    # radii = get_ionic_radii("icsd_16713.cif")
+    # print(radii)
