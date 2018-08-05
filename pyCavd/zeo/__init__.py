@@ -9,6 +9,48 @@ from zeo.ionic_radii import get_ionic_radii
 from pymatgen.core.structure import Structure
 from pymatgen.analysis.local_env import ValenceIonicRadiusEvaluator
 
+#计算某个结构的瓶颈、间隙和连通性
+def Computation_new(filename, probe_rad, num_sample, migrant=None, rad_flag=True, pymatgen_rad=False, rad_file=None, rad_store_in_vasp=True, minRad=0.0, maxRad=0.0):
+    Ri="None"
+    Rf="None"
+    Rif="None"
+    sucess=False
+	
+    #use pymatgen compute ionic radii or find in the cif file
+    try:
+        radii = {}
+        if rad_flag and pymatgen_rad:
+#            stru = Structure.from_file(filename)
+#            val_eval = ValenceIonicRadiusEvaluator(stru)
+#            radii = val_eval.radii
+            radii = get_ionic_radii(filename)
+            #为防止cif文件中不含价态信息，额外存入不含价态信息的半径
+            radii_keys = list(radii.keys())
+            for key in radii_keys:
+                radii[re.sub('[^a-zA-Z]','',key)] = radii[key]
+            print(radii)
+        if migrant:
+            remove_filename = getRemoveMigrantFilename(filename,migrant)
+        else:
+            remove_filename = filename
+        atmnet = AtomNetwork.read_from_CIF(remove_filename, radii, rad_flag, rad_file)
+        sucess,vornet,edge_centers,fcs = atmnet.perform_voronoi_decomposition(False)
+        #delete temp file
+        os.remove(remove_filename)
+		#如果进行Voronoi分解成功，则将结果保存到相应文件中。
+        if sucess:
+            prefixname = filename.replace(".cif","")
+            writeBIFile(prefixname+"_orgin.bi",atmnet,vornet)
+            writeVaspFile(prefixname+"_orgin.vasp",atmnet,vornet,rad_store_in_vasp)
+            writeVaspFile(prefixname+"_selected.vasp",atmnet,vornet,rad_store_in_vasp,minRad,maxRad)
+            Ri,Rf,Rif = atmnet.through_VorNet(prefixname+".res",0)
+            atmnet.calculate_free_sphere_parameters(prefixname+".resex")
+            writeZVisFile("test.zvis", False, atmnet, vornet)
+            Channel.findChannelsInVornet(vornet, probe_rad,"test.zchan")
+            asa_new("test.zsa", False, atmnet, probe_rad, probe_rad,1000)
+    except IOError:
+        print("cant compute present file. error file is ",filename)
+
 #计算通道和ASA
 def com(filename,probe_rad,num_sample):
     radii = get_ionic_radii(filename)
