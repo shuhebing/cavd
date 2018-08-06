@@ -45,9 +45,6 @@ def Computation_new(filename, probe_rad, num_sample, migrant=None, rad_flag=True
             writeVaspFile(prefixname+"_selected.vasp",atmnet,vornet,rad_store_in_vasp,minRad,maxRad)
             Ri,Rf,Rif = atmnet.through_VorNet(prefixname+".res",0)
             atmnet.calculate_free_sphere_parameters(prefixname+".resex")
-            writeZVisFile("test.zvis", False, atmnet, vornet)
-            Channel.findChannelsInVornet(vornet, probe_rad,"test.zchan")
-            asa_new("test.zsa", False, atmnet, probe_rad, probe_rad,1000)
     except IOError:
         print("cant compute present file. error file is ",filename)
 

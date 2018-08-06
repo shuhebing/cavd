@@ -47,7 +47,8 @@ from collections import OrderedDict
 from pymatgen.core.periodic_table import Element, Specie, get_el_sp, DummySpecie
 
 
-file_dir = os.path.dirname(__file__)
+#file_dir = os.path.dirname(__file__)
+file_dir = os.path.abspath("/home/yeanjiang/yaj/CAVD/pyCavd/zeo/")
 rad_file = os.path.join(file_dir, 'ionic_radii.json')
 with open(rad_file, 'r') as fp:
     _ion_radii = json.load(fp)
