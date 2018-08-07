@@ -23,6 +23,12 @@ from libcpp.string cimport string
 
 #STUFF='Hi'
 
+#Added at 20180807
+#Customize an exception class
+class PerformVDError(Exception):
+    print("Perform Voronoi Decompition failured!")
+    pass
+
 cdef class Atom:
     """
     Class to store the information about atom (or ion) in a structure.
@@ -425,10 +431,10 @@ cdef class AtomNetwork:
                 vornet.thisptr, &vcells, saveVorCells, &bvcells):
             #edited at 20180604
             #Add a compute flag
-            success = False
-            #raise ValueError # Change it to appropriate error
+            #success = False
+            raise PerformVDError
         else:
-            success = True
+            #success = True
         cdef int N
 
         # Get the edge centers
@@ -497,8 +503,7 @@ cdef class AtomNetwork:
             #basicvcell = BasicVCell()
             #basicvcell.thisptr = &(bvcells[i])
             #bvcelllist.append(bvcells[i])
-        return success, vornet, edge_centers, fcs
-        #return vornet, edge_centers, fcs
+        return vornet, edge_centers, fcs
 
 cdef class VoronoiNode:
     """

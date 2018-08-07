@@ -111,7 +111,6 @@ cdef extern from '../../zeo++/networkio.h':
 cdef extern from "../../zeo++/network.h":
     cdef bint performVoronoiDecomp(bint, ATOM_NETWORK*, VORONOI_NETWORK*, 
             vector[VOR_CELL]*, bint, vector[BASIC_VCELL]*)
-
     cdef void calculateFreeSphereParameters(VORONOI_NETWORK*, char*, bint)
     
     #added at 20180418

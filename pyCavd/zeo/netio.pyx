@@ -147,7 +147,8 @@ def getRemoveMigrantFilename(filename,migrant):
     cdef const char* c_migrant = migrant
     pretreatedFilename = pretreatCifFilename(c_filename,c_migrant)
     if pretreatedFilename == "":
-        raise ValueError
+        #raise IOError("Can't Open ", filename, " or Can't Write to outputfile.")
+        raise IOError
     else:
         return pretreatedFilename
 

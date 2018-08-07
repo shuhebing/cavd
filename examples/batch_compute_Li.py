@@ -19,6 +19,15 @@ for i in os.listdir("/home/yeanjiang/yaj/bi/Li_Na_Mg_Al_cifs/Li"):
 output_path = path+"results/"
 for filename in filenames:
     filename = path+filename
-    Computation_new(filename, probe_rad, num_sample, migrant=None, rad_flag=True, pymatgen_rad=False, rad_file=None, rad_store_in_vasp=True, minRad=0.0, maxRad=0.0)
-    print(filename+" compute complete1!")
+    try:
+        Computation_new(filename, probe_rad, num_sample, migrant=None, rad_flag=True, pymatgen_rad=False, rad_file=None, rad_store_in_vasp=True, minRad=0.0, maxRad=0.0)
+        print(filename+" compute complete1!")
+    except AttributeError:
+        print("This cif file: ",filename,"have PARTITIAL occ or MIXED occ!")
+    except IOError:
+        print("Can't Open ", filename, " or Can't Write to outputfile.")
+    except PerformVDError:
+        print("Can't Perform Voronoi Decompition for ", filename)
+    continue
+    
 print("batch compute complete!")

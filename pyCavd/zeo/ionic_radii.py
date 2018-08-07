@@ -13,7 +13,7 @@
     格式一：自定义数据结构Radius组成的列表。Radius包含 label、species、配位数、半径等信息。
     模式二：列表。列表中的每个元素按照（ label、species、配位数、半径等信息）排列。
 环境要求：
-    需安装pymatgen包、
+    需安装pymatgen包
     需将ionic_radii.json文件放置到同与该文件（ionic_radii.py）同一文件目录下。
 使用方法：
     更改“if __name__ == "__main__":”模块中调用的“get_ionic_radii()”中的参数为需要计算的cif文件。
