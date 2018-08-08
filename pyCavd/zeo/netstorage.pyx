@@ -685,5 +685,33 @@ def substitute_atoms(atmnet, substituteSeed, radialFlag):
     subNo = substitutionNo[0]
     return atmnet_copy, subNo
 
+def connection_values(self, filename, vornet):
+    """
+	Computes the Radius of the largest included sphere, free sphere 
+	and included sphere along free sphere path. 
+	Arguments:
+	filename:
+		Name of file where the diameters are stored.
+    """
+	
+    if isinstance(filename, unicode):
+        filename = (<unicode>filename).encode('utf8')
 
+    vornet_ptr = (<VoronoiNetwork?>vornet).thisptr
+    cdef char* c_fname = filename
+    cdef double c_Ri,c_Rf,c_Rif
+    throughVorNet(vornet_ptr, c_fname, &c_Ri, &c_Rf, &c_Rif):
+    return c_Ri,c_Rf,c_Rif	
+
+def connection_values_list(self, filename, vornet):
+    conn_values = []
+    if isinstance(filename, unicode):
+        filename = (<unicode>filename).encode('utf8')
+    vornet_ptr = (<VoronoiNetwork?>vornet).thisptr
+    cdef char* c_fname = filename
+	cdef vector[double] values 
+	calculateConnParameters(vornet_ptr, c_fname, &values)
+	for i in range(values.size()):
+        conn_values[i] = values[i]
+    return conn_values
 

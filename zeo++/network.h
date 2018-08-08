@@ -93,6 +93,7 @@ void calculateFreeSphereParameters(VORONOI_NETWORK *vornet, char *filename, bool
 
 void NEWcalculateFreeSphereParameters(MATERIAL *Mat);
 void NEWcalculateFreeSphereParametersPrint(MATERIAL *Mat, char *filename, bool);
+void calculateConnParameters(VORONOI_NETWORK *vornet, char *filename, vector<double> *values);
 
 void viewVoronoiDecomp(ATOM_NETWORK *atmnet, double r_probe, std::string filename);
 
@@ -114,5 +115,6 @@ void getOMSInformation(char *filename, char *filenameExtendedOutput, ATOM_NETWOR
 //void throughVorNet(VORONOI_NETWORK *vornet, char *filename, double migrantRad);
 //bool throughVorNet(VORONOI_NETWORK *vornet, char *filename, double migrantRad);
 bool throughVorNet(VORONOI_NETWORK *vornet, char *filename, double *Ri, double *Rf, double *Rif, double migrantRad);
+bool throughVorNet(VORONOI_NETWORK *vornet, char *filename, double *Ri, double *Rf, double *Rif);
 
 #endif

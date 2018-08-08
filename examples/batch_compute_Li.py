@@ -20,7 +20,7 @@ output_path = path+"results/"
 for filename in filenames:
     filename = path+filename
     try:
-        Computation_new(filename, probe_rad, num_sample, migrant=None, rad_flag=True, pymatgen_rad=False, rad_file=None, rad_store_in_vasp=True, minRad=0.0, maxRad=0.0)
+        conn,oneD,twoD,threeD = AllCom(filename, probe_rad, num_sample, migrant=None, rad_flag=True, effective_rad=False, rad_file=None, rad_store_in_vasp=True, minRad=0.0, maxRad=0.0)
         print(filename+" compute complete1!")
     except AttributeError:
         print("This cif file: ",filename,"have PARTITIAL occ or MIXED occ!")
@@ -30,4 +30,16 @@ for filename in filenames:
         print("Can't Perform Voronoi Decompition for ", filename)
     continue
     
-print("batch compute complete!")
+    if not os.path.exists(path+"results"):
+        os.mkdir(path+"results")
+        print("create results directory successful !")
+    else:
+        print(path+"results already exit!")
+    output_path = path+"results/"
+    result_file = open(output_path+"computation_result.txt","w")
+    result_file.write(filename)
+    for i in conn:
+       result_file.write("    "+i)
+    result_file.write("\n")
+    print(filename+" compute completed!")
+print("All File compute completed!")

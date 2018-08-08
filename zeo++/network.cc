@@ -521,6 +521,76 @@ void calculateFreeSphereParameters(VORONOI_NETWORK *vornet, char *filename, bool
   output << "\n";
 }
 
+void calculateConnParameters(VORONOI_NETWORK *vornet, char *filename, vector<double> *values){
+  vector<double> freeRadResults;
+  vector<double> incRadResults;
+  vector<bool> NtoN;
+
+  DELTA_POS directions [3] = {DELTA_POS(1,0,0), DELTA_POS(0,1,0), DELTA_POS(0,0,1)};
+  for(unsigned int i = 0; i < 3; i++){
+    VORONOI_NETWORK newNet;
+    set<int> sourceNodes;
+    map<int,int> idAliases;
+    extendVorNet(vornet, &newNet, directions[i], &idAliases, &sourceNodes);
+   
+    DIJKSTRA_NETWORK dnet;
+    DIJKSTRA_NETWORK::buildDijkstraNetwork(&newNet,&dnet);
+
+    TRAVERSAL_NETWORK analyzeNet = TRAVERSAL_NETWORK(directions[i].x,directions[i].y,directions[i].z, &dnet);    
+    pair<bool,PATH> results = analyzeNet.findMaxFreeSphere(&idAliases, &sourceNodes);
+    
+    //freeRadResults.push_back(2*results.second.max_radius);
+    //incRadResults.push_back(2*results.second.max_inc_radius);
+	freeRadResults.push_back(results.second.max_radius);
+    incRadResults.push_back(results.second.max_inc_radius);
+    NtoN.push_back(results.first);
+  }
+
+  fstream output;
+  output.setf(ios::fixed,ios::floatfield);  
+  output.precision(5);
+  output.width(12);
+  output.open(filename, fstream::out);
+  //output << filename << "    " << 2 * findMaxIncludedSphere(vornet) << " ";
+  output << filename << "    " <<findMaxIncludedSphere(vornet) << " ";
+
+  double maxd=0.0; int maxdir=0;
+  for(unsigned int i = 0; i < freeRadResults.size(); i++)
+     {
+     if(i==0) {maxd=freeRadResults[i]; maxdir=i;}
+       else
+       {
+       if(maxd<freeRadResults[i])
+         {
+         maxd=freeRadResults[i]; 
+         maxdir=i;
+         }
+       else if(maxd==freeRadResults[i])
+         {
+         if(incRadResults[maxdir]<incRadResults[i]) maxdir=i;
+         };
+       };
+     };
+
+  output << freeRadResults[maxdir] << "  " << incRadResults[maxdir];
+
+  output << "  ";
+  for(unsigned int i = 0; i < freeRadResults.size(); i++){
+    values->push_back(freeRadResults[i]);
+	output << freeRadResults[i] << "  ";
+  }
+
+  for(unsigned int i = 0; i < incRadResults.size(); i++)
+    output << incRadResults[i] << "  ";
+
+
+ /* 
+  for(unsigned int i = 0; i < NtoN.size(); i++)
+    output << (NtoN[i] ? "t" : "f") << "  ";
+ */
+  output << "\n";
+}
+
 
 
 
@@ -1198,7 +1268,8 @@ void getOMSInformation(char *filename, char *filenameExtendedOutput, ATOM_NETWOR
  * 1 is can through, 0 is can not through.
  */
 //int throughVorNet(VORONOI_NETWORK *vornet, char* filename, double migrantRad){
-bool throughVorNet(VORONOI_NETWORK *vornet, char* filename,  double *Ri, double *Rf, double *Rif, double migrantRad){
+//bool throughVorNet(VORONOI_NETWORK *vornet, char* filename,  double *Ri, double *Rf, double *Rif, double migrantRad){
+bool throughVorNet(VORONOI_NETWORK *vornet, char* filename,  double *Ri, double *Rf, double *Rif){
 	  vector<double> freeRadResults;
 	  vector<double> incRadResults;
 	  vector<bool> NtoN;
@@ -1259,11 +1330,11 @@ bool throughVorNet(VORONOI_NETWORK *vornet, char* filename,  double *Ri, double 
 
 	  cout << filename << "	" << "Di = " << Di << " " << "Df = " << Df << "	" << "Dif = " << Dif << endl;
 	  // compare the migrantRad and Df
-	  if(migrantRad > Df){
-		  cout << "migrant = " << migrantRad << "  Df = " << Df << endl;
-		  return false;
-	  }
-	  else
-		  return true;
+	  // if(migrantRad > Df){
+		  // cout << "migrant = " << migrantRad << "  Df = " << Df << endl;
+		  // return false;
+	  // }
+	  // else
+		  // return true;
 }
 
