@@ -397,7 +397,7 @@ cdef class AtomNetwork:
         if isinstance(migrantRad, unicode):
             migrantRad = (<unicode>migrantRad).encode('utf8')
     
-        sucess, vornet, edge_centers, face_centers = self.perform_voronoi_decomposition(False)
+        vornet, edge_centers, face_centers = self.perform_voronoi_decomposition(False)
         cdef char* c_fname = filename
         cdef double c_migrantRad = migrantRad
         #Added at 20180530

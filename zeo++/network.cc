@@ -19,9 +19,34 @@
 #include "v_network.h"
 #include "material.h"
 #include "OMS.h"
+#include <exception>
 
 using namespace std;
 using namespace voro;
+
+/* 自定义异常 */
+struct InvalidParticlesNumException : public exception{
+	const char * what () const throw (){
+		return "Exception: Invalid number of particles provided for Voronoi decomposition.";
+	}
+};
+struct InvalidBoxDimException : public exception{
+	const char * what () const throw (){
+		return "Exception: valid box dimensions calculated for Voronoi decomposition.";
+	}
+};
+struct HugeGridException : public exception{
+	const char * what () const throw (){
+		return "Exception: voro++: Number of computational blocks exceeds the maximum.";
+	}
+};
+struct AttemptException : public exception{
+	const char * what () const throw (){
+		return "Exception: Attempt numbers larger than excepted.";
+	}
+};
+
+
 
 /* IMPORTANT - overwriting standard exit function - notifies user that exit was called before exiting */
 void exit(int status) {
@@ -68,11 +93,13 @@ void* performVoronoiDecomp(bool radial, ATOM_NETWORK *cell, VORONOI_NETWORK *vor
     char* sentence = new char[300];
     sprintf(sentence, "Error: Invalid number of particles provided for Voronoi decomposition (%d particles were read from file, which is <1)\nExiting ...\n", n);
     fputs(sentence, stderr);
+	throw InvalidParticlesNumException();
     //exit(1);
   }
   if(bx<tolerance||by<tolerance||bz<tolerance){
     fputs("Error: Invalid box dimensions calculated for Voronoi decomposition."
 	  " Please check unit cell parameters.\nExiting ...\n",stderr);
+	throw InvalidBoxDimException();
     //exit(1);
   }
   
@@ -89,7 +116,8 @@ void* performVoronoiDecomp(bool radial, ATOM_NETWORK *cell, VORONOI_NETWORK *vor
   if (nxf*nyf*nzf>max_regions) {
     fprintf(stderr,"voro++: Number of computational blocks exceeds the maximum allowed of %d\n"
 		   "Either increase the particle length scale, or recompile with an increased\nmaximum.",max_regions);
-    //exit(1);
+    throw HugeGridException();
+	//exit(1);
   }
   
   // Now that we are confident that the number of regions is reasonable,
@@ -131,6 +159,7 @@ void* performVoronoiDecomp(bool radial, ATOM_NETWORK *cell, VORONOI_NETWORK *vor
         return rad_con;
       } else if(attempt==numAttemptsPermitted-1) {
         printf("Exiting...\n");
+		throw AttemptException();
        // exit(1);
       } else {
         cell->randomlyAdjustCoordsAndCell();
@@ -162,6 +191,7 @@ void* performVoronoiDecomp(bool radial, ATOM_NETWORK *cell, VORONOI_NETWORK *vor
         return no_rad_con;
       } else if(attempt==numAttemptsPermitted-1) {
         printf("Exiting...\n");
+		throw AttemptException();
         //exit(1);
       } else {
         cell->randomlyAdjustCoordsAndCell();
