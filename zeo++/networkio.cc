@@ -336,7 +336,11 @@ printf("\n#####\n##### WARNING: parsed a loop in cif file, but data was not pres
       //tempatom.radius = lookupRadius(tempatom.type, radial);
 	  //edited at 20180606
 	  //tempatom.radius = lookupGoldschmidtIonRadius(tempatom.type, radial);
-	  tempatom.radius = lookupIonRadius(tempatom.type, radial);
+	  if(lookupIonRadius(tempatom.type, radial) == -1)
+		  return false;
+	  else
+		  tempatom.radius = lookupIonRadius(tempatom.type, radial);
+	  
       if(CIF_CHARGES) {
         tempatom.charge = atom_charge[i];
       } else tempatom.charge = 0;

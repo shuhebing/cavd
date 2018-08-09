@@ -93,14 +93,12 @@ void calculateFreeSphereParameters(VORONOI_NETWORK *vornet, char *filename, bool
 
 void NEWcalculateFreeSphereParameters(MATERIAL *Mat);
 void NEWcalculateFreeSphereParametersPrint(MATERIAL *Mat, char *filename, bool);
-void calculateConnParameters(VORONOI_NETWORK *vornet, char *filename, vector<double> *values);
 
 void viewVoronoiDecomp(ATOM_NETWORK *atmnet, double r_probe, std::string filename);
 
 void loadRadii(ATOM_NETWORK *atmnet);
 
 void loadMass(bool useMassFlag, ATOM_NETWORK *atmnet);
-
 
 /* Print information about topology of the structure */
 void getStructureInformation(char *filename, char *filenameExtendedOutput, ATOM_NETWORK *atmnet, bool extendedOutput);
@@ -116,5 +114,5 @@ void getOMSInformation(char *filename, char *filenameExtendedOutput, ATOM_NETWOR
 //bool throughVorNet(VORONOI_NETWORK *vornet, char *filename, double migrantRad);
 bool throughVorNet(VORONOI_NETWORK *vornet, char *filename, double *Ri, double *Rf, double *Rif, double migrantRad);
 bool throughVorNet(VORONOI_NETWORK *vornet, char *filename, double *Ri, double *Rf, double *Rif);
-
+void calculateConnParameters(VORONOI_NETWORK *vornet, char *filename, vector<double> *values);
 #endif

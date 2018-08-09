@@ -7,7 +7,7 @@ from zeo.area_volume import asa_new
 from zeo.netio import *
 from zeo.ionic_radii import get_ionic_radii
 from pymatgen.core.structure import Structure
-from pymatgen.analysis.local_env import ValenceIonicRadiusEvaluator
+#from pymatgen.analysis.local_env import ValenceIonicRadiusEvaluator
 
 #获取输入结构中的离子半径
 def EffectiveRadCom(filename):
@@ -16,8 +16,13 @@ def EffectiveRadCom(filename):
     # radii = val_eval.radii
     radii = get_ionic_radii(filename)
 	radii_keys = list(radii.keys())
+    
+    #为了防止保存的半径信息无法匹配此处对半径信息做特殊处理，如Ag+的半径会保存为Ag、Ag+、Ag1+ 1
     for key in radii_keys:
 		radii[re.sub('[^a-zA-Z]','',key)] = radii[key]
+        if re.search('[A-Z][a-z]*\+|[A-Z][a-z]*\-', key) != None:
+            s1 = re.sub('\+','1+',key)
+            radii[re.sub('\-','1-',s1)] = radii[key]
     print(radii)
     return radii
 
@@ -41,7 +46,6 @@ def AllCom(filename, probe_rad, num_sample, migrant=None, rad_flag=True, effecti
 	
 	conn = connection_values_list(prefixname+".resex", vornet)
     oneD,twoD,threeD = ConnValue(probe_rad, conn)
-    
     return conn,oneD,twoD,threeD
 
 #计算某个结构的瓶颈和间隙

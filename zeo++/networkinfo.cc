@@ -1130,6 +1130,7 @@ double lookupIonRadius(string atomType, bool radial){
     cerr << "Unable to find radius for " << atomType << " in table. Please provide it " << "\n"
 	 << "in a reference file or check you input file." << "\n"
 	 << "Exiting ..." << "\n";
+	 return -1;
     //exit(1);
   }
   else

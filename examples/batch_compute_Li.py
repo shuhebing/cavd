@@ -28,6 +28,8 @@ for filename in filenames:
         print("Can't Open ", filename, " or Can't Write to outputfile.")
     except PerformVDError:
         print("Can't Perform Voronoi Decompition for ", filename)
+    except ValueError:
+        print("Can't Read structure information from cif file: ", filename)
     continue
     
     if not os.path.exists(path+"results"):
