@@ -42,7 +42,7 @@ def AllCom(filename, probe_rad, num_sample, migrant=None, rad_flag=True, effecti
 	writeVaspFile(prefixname+"_selected.vasp",atmnet,vornet,rad_store_in_vasp,minRad,maxRad)
 	writeZVisFile(prefixname+".zvis", rad_flag, atmnet, vornet)
     Channel.findChannelsInVornet(vornet,probe_rad,prefixname+".zchan")
-    asa_new(prefixname+".zsa",rad_flag,atmnet,probe_rad,probe_rad,num_sample)
+    asa_new(prefixname+".zsa",False,atmnet,probe_rad,probe_rad,num_sample)
 	
 	conn = connection_values_list(prefixname+".resex", vornet)
     oneD,twoD,threeD = ConnValue(probe_rad, conn)

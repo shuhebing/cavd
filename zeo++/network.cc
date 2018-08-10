@@ -45,8 +45,16 @@ struct AttemptException : public exception{
 		return "Exception: Attempt numbers larger than excepted.";
 	}
 };
-
-
+struct VoronoiDecompException : public exception{
+	const char * what () const throw (){
+		return "Exception: Unable to begin Voronoi decomposition.";
+	}
+};
+struct CoordNumException : public exception{
+	const char * what () const throw (){
+		return "Exception: Improper number of node coordinates in Voronoi decomposition.";
+	}
+};
 
 /* IMPORTANT - overwriting standard exit function - notifies user that exit was called before exiting */
 void exit(int status) {
@@ -209,14 +217,39 @@ bool performVoronoiDecomp(bool radial, ATOM_NETWORK *atmnet, VORONOI_NETWORK *vo
 
     container_periodic_poly *rad_con = NULL;
     container_periodic *no_rad_con = NULL;
-    if (radial)
-        rad_con = (container_periodic_poly *)performVoronoiDecomp(radial, atmnet, vornet, *cells, saveVorCells, *bvcells);
-     else 
-          no_rad_con = (container_periodic *)performVoronoiDecomp (radial, atmnet, vornet, *cells, saveVorCells, *bvcells); 
-
-     delete rad_con;
-     delete no_rad_con;
-     return true;
+    try{
+		if (radial)
+			rad_con = (container_periodic_poly *)performVoronoiDecomp(radial, atmnet, vornet, *cells, saveVorCells, *bvcells);
+		else 
+			no_rad_con = (container_periodic *)performVoronoiDecomp (radial, atmnet, vornet, *cells, saveVorCells, *bvcells); 
+	}
+	catch (InvalidParticlesNumException& e1){
+		cout << e1.what() << endl;
+		return false;
+	}
+	catch (InvalidBoxDimException& e2){
+		cout << e2.what() << endl;
+		return false;
+	}
+	catch (HugeGridException& e3){
+		cout << e3.what() << endl;
+		return false;
+	}
+	catch (AttemptException& e4){
+		cout << e4.what() << endl;
+		return false;
+	}
+	catch (VoronoiDecompException& e5){
+		cout << e5.what() << endl;
+		return false;
+	}
+	catch (CoordNumException& e6){
+		cout << e6.what() << endl;
+		return false;
+	}
+    delete rad_con;
+    delete no_rad_con;
+    return true;
 }
 
 
@@ -303,6 +336,7 @@ bool storeVoronoiNetwork(c_option &con, ATOM_NETWORK *atmnet, VORONOI_NETWORK *v
     }
     else {
       fputs("Error: Unable to begin Voronoi decomposition.\nExiting...\n",stderr);
+	  throw VoronoiDecompException();
      // exit(1);
     }
 
@@ -337,6 +371,7 @@ bool storeVoronoiNetwork(c_option &con, ATOM_NETWORK *atmnet, VORONOI_NETWORK *v
 	cerr << "Error: Improper number of node coordinates in Voronoi decomposition" << "\n"
 	     << "Found " << vertices[i].size() << " but expected " << 3*numNodes[i] << "\n"
 	     << "Exiting..." << "\n";
+		 throw CoordNumException();
 	//exit(1);
       }
 

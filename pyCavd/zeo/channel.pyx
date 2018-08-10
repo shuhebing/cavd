@@ -6,6 +6,11 @@ from zeo.netstorage cimport VORONOI_NETWORK
 from channel cimport CHANNEL
 from libcpp.vector cimport vector
 
+#Added at 20180808
+#Customize an exception class
+class FindChannelError(Exception):
+    print("Find Channel in Voronoi Network Failed!")
+    pass
 
 cdef class Channel:
     """
@@ -22,9 +27,10 @@ cdef class Channel:
             filename = (<unicode>filename).encode('utf8')
         cdef char* c_filename = filename
         cdef vector[CHANNEL] channels
-        findChannels_new(c_vornet_ptr, probe_rad, &channels)
-        c_writeToVMD(channels, c_filename)
-
+        if findChannels_new(c_vornet_ptr, probe_rad, &channels):
+            c_writeToVMD(channels, c_filename)
+		else:
+            raise FindChannelError
 
 #def fincChannelsinDijkstraNett(i
 

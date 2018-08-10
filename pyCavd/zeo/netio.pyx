@@ -184,7 +184,7 @@ def writeZVisFile(filename, rad_flag, atmnet, vornet):
     cdef vector[VOR_CELL] vcells
     cdef vector[BASIC_VCELL] bvcells
     if not performVoronoiDecomp(rad_flag, c_atmnet, c_vornet_ptr, &vcells, True, &bvcells):
-        raise ValueError # Change it to appropriate error
+        raise PerformVDError
     writeZeoVisFile(c_filename, &vcells, c_atmnet, c_vornet_ptr)
         
   

@@ -433,7 +433,7 @@ cdef class AtomNetwork:
             #Add a compute flag
             #success = False
             raise PerformVDError
-        else:
+        #else:
             #success = True
         cdef int N
 

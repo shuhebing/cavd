@@ -4,6 +4,24 @@
 
 using namespace std;
 
+/* 自定义异常 */
+struct ZeoVectorException : public exception{
+	const char * what () const throw (){
+		return "Exception: Pore basis vector is zero vector.";
+	}
+};
+struct IllogicalResultException : public exception{
+	const char * what () const throw (){
+		return "Exception: Illogical result  when attempting to identify channels/pockets.";
+	}
+};
+struct AccessibilityException : public exception{
+	const char * what () const throw (){
+		return "Exception: Accessibility of node was determined more than once.";
+	}
+};
+
+
 /* Create a PORE that does not contain any nodes or connections
  * and spans 0 unit cells.*/
 PORE::PORE(){
@@ -182,7 +200,8 @@ void PORE::findChannelsAndPockets(DIJKSTRA_NETWORK *dnet, vector<bool> *infoStor
                                 else if (basis[2][0] != 0) v = 1.0*direction.z/basis[2][0];
                                 else {
                                     cerr << "Error: Pore basis vector is zero vector. Exiting..." << "\n";
-                                    exit(1);
+                                    //exit(1);
+									throw ZeoVectorException();
                                 }
                                 
                                 if(!(basis[0][0]*v == direction.x && basis[1][0]*v == direction.y &&
@@ -219,7 +238,8 @@ void PORE::findChannelsAndPockets(DIJKSTRA_NETWORK *dnet, vector<bool> *infoStor
                     cerr << "Error: Illogical result  when attempting to identify channels/pockets." << "\n";
                     cerr << "Please contact the source code provider with your program input. " << "\n";
                     cerr << "Exiting ..." << "\n";
-                    exit(1);
+                    throw IllogicalResultException();
+					//exit(1);
                 }
                 connIter++;
             }
@@ -241,7 +261,8 @@ void PORE::findChannelsAndPockets(DIJKSTRA_NETWORK *dnet, vector<bool> *infoStor
                 cerr << "Error: Accessibility of node was determined more than once." << "\n";
                 cerr << "Please contact the source code provider with your program input. " << "\n";
                 cerr << "Exiting ..." << "\n";
-                exit(1);
+                //exit(1);
+				throw AccessibilityException();
             }
             else{
                 // Store node's status
@@ -1013,10 +1034,25 @@ void CHANNEL::findChannels(VORONOI_NETWORK *vornet, double minRadius,
 }
 
 //Added 20180705
-void CHANNEL::findChannels_new(VORONOI_NETWORK *vornet, double minRadius, vector<CHANNEL> *channels)
+bool CHANNEL::findChannels_new(VORONOI_NETWORK *vornet, double minRadius, vector<CHANNEL> *channels)
 {
-	vector<bool> infoStorage; 
-	findChannels(vornet,minRadius,&infoStorage,channels);
+	vector<bool> infoStorage;
+	try{
+		findChannels(vornet,minRadius,&infoStorage,channels);
+	}
+	catch (ZeoVectorException& e1){
+		cout << e1.what() << endl;
+		return false;
+	}
+	catch (IllogicalResultException& e2){
+		cout << e2.what() << endl;
+		return false;
+	}
+	catch (AccessibilityException& e3){
+		cout << e3.what() << endl;
+		return false;
+	}
+	return true;
 }
 
 

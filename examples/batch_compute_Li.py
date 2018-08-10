@@ -30,6 +30,8 @@ for filename in filenames:
         print("Can't Perform Voronoi Decompition for ", filename)
     except ValueError:
         print("Can't Read structure information from cif file: ", filename)
+    except FindChannelError:
+        print("Find Channel in Voronoi Network for cif file: ", filename)
     continue
     
     if not os.path.exists(path+"results"):
