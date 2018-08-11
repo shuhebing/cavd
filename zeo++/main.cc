@@ -168,7 +168,7 @@ int main(int argc, char * argv[]){
 			}else
 				if(!readCIFFile(filename, &atmnet, radial)) error=true;
 			//atmnet.print();
-			cout << "end readcif! " << endl;
+			cout << "end read cif! " << endl;
       }
       else if(strcmp(extension, "car") == 0){
         if(!readCARFile(filename, &atmnet, radial)) error=true;
@@ -534,10 +534,10 @@ int main(int argc, char * argv[]){
             //CHANNEL::findChannels(&vornet, probe_radius, &accessInfo, &channels);
 			
 			//Test code
-			CHANNEL::findChannels_new(&vornet, probe_radius, &channels);
-			string filename2 =  processFilename(command, name, ".zchan2", 1, 2);
-			writeToVMD_new(channels, (char *)filename2.data());
-			
+			if (CHANNEL::findChannels_new(&vornet, probe_radius, &channels)){
+				string filename2 =  processFilename(command, name, ".zchan2", 1, 2);
+				writeToVMD_new(channels, (char *)filename2.data());
+			}
 			
             for(unsigned int i = 0; i < channels.size(); i++){
 	      channels.at(i).writeToVMD(i, output);

@@ -14,7 +14,6 @@
  *  in clockwise or counter-clockwise fashion and keeps track of the edges
  *  that outline it.
  */
-
 #ifndef VORONOICELL_H
 #define VORONOICELL_H
 
@@ -154,7 +153,7 @@ void writeVMDEnvVars(std::fstream &output,  ATOM_NETWORK *atmnet, VORONOI_NETWOR
  *  voronoi cells (outlined and filled) and environment variables.
  */
 void writeZeoVisFile(char *filename, std::vector<VOR_CELL> *cells, ATOM_NETWORK *atmnet, VORONOI_NETWORK *vornet);
-
+bool writeZVis(char *filename, std::vector<VOR_CELL> *cells, ATOM_NETWORK *atmnet, VORONOI_NETWORK *vornet);
 void writeSpecialZeoVisFile(char *filename, std::vector<VOR_CELL> *cells, ATOM_NETWORK *atmnet, VORONOI_NETWORK *vornet, std::vector<BASIC_VCELL> &vcells);
 
 #endif

@@ -578,8 +578,8 @@ def get_ionic_radii(filename):
         cn2.append(coord_no)
         el2.append(site.species_string)
 
-        radii_dict = dict(zip(el2,radii2))
-        return radii_dict
+    radii_dict = dict(zip(el2,radii2))
+    return radii_dict
     #以自定的数据结构Radius列表形式返回    
 #     return Radius.get_radii_list(labels2, el2, cn2, radii2)
 

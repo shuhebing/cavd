@@ -160,7 +160,7 @@ public:
     static void findChannels(VORONOI_NETWORK *, double, std::vector<bool> *, std::vector<CHANNEL> *);
 	
 	//Added at 20180705
-	bool findChannels_new(VORONOI_NETWORK *vornet, double minRadius, std::vector<CHANNEL> *channels);
+	static bool findChannels_new(VORONOI_NETWORK *vornet, double minRadius, std::vector<CHANNEL> *channels);
   
     /* Stores the ids of all atoms that bound this channel using the provided vector reference. An atom is considered
     *  to bound a channel if a node in the channel is a member of the atom's Voronoi cell. */

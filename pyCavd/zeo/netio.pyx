@@ -8,13 +8,17 @@ from netstorage cimport ATOM_NETWORK, VORONOI_NETWORK
 #Added at 20180704
 from libcpp.vector cimport vector
 from zeo.voronoicell cimport VOR_CELL, BASIC_VCELL
-
+from zeo.netstorage import PerformVDError
 # Define the python definitions for the zeo++ functions
 
 # Easier to implement in python
 #def void parseFilename(const char* filename, char* name, char* extension):
 
 #def bint checkInputFile(char* filename)
+
+#class PerformVDError(Exception):
+#    #print("Perform Voronoi Decompition failured!")
+#    pass
 
 def readCiffile(filename, radialflag):
     atmnet = AtomNetwork()
@@ -185,6 +189,6 @@ def writeZVisFile(filename, rad_flag, atmnet, vornet):
     cdef vector[BASIC_VCELL] bvcells
     if not performVoronoiDecomp(rad_flag, c_atmnet, c_vornet_ptr, &vcells, True, &bvcells):
         raise PerformVDError
-    writeZeoVisFile(c_filename, &vcells, c_atmnet, c_vornet_ptr)
-        
+    if not writeZVis(c_filename, &vcells, c_atmnet, c_vornet_ptr):
+        raise IOError
   

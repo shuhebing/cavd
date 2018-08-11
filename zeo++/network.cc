@@ -24,37 +24,37 @@
 using namespace std;
 using namespace voro;
 
-/* 自定义异常 */
-struct InvalidParticlesNumException : public exception{
-	const char * what () const throw (){
-		return "Exception: Invalid number of particles provided for Voronoi decomposition.";
-	}
-};
-struct InvalidBoxDimException : public exception{
-	const char * what () const throw (){
-		return "Exception: valid box dimensions calculated for Voronoi decomposition.";
-	}
-};
-struct HugeGridException : public exception{
-	const char * what () const throw (){
-		return "Exception: voro++: Number of computational blocks exceeds the maximum.";
-	}
-};
-struct AttemptException : public exception{
-	const char * what () const throw (){
-		return "Exception: Attempt numbers larger than excepted.";
-	}
-};
-struct VoronoiDecompException : public exception{
-	const char * what () const throw (){
-		return "Exception: Unable to begin Voronoi decomposition.";
-	}
-};
-struct CoordNumException : public exception{
-	const char * what () const throw (){
-		return "Exception: Improper number of node coordinates in Voronoi decomposition.";
-	}
-};
+// /* 自定义异常 */
+// struct InvalidParticlesNumException : public exception{
+	// const char * what () const throw (){
+		// return "Exception: Invalid number of particles provided for Voronoi decomposition.";
+	// }
+// };
+// struct InvalidBoxDimException : public exception{
+	// const char * what () const throw (){
+		// return "Exception: valid box dimensions calculated for Voronoi decomposition.";
+	// }
+// };
+// struct HugeGridException : public exception{
+	// const char * what () const throw (){
+		// return "Exception: voro++: Number of computational blocks exceeds the maximum.";
+	// }
+// };
+// struct AttemptException : public exception{
+	// const char * what () const throw (){
+		// return "Exception: Attempt numbers larger than excepted.";
+	// }
+// };
+// struct VoronoiDecompException : public exception{
+	// const char * what () const throw (){
+		// return "Exception: Unable to begin Voronoi decomposition.";
+	// }
+// };
+// struct CoordNumException : public exception{
+	// const char * what () const throw (){
+		// return "Exception: Improper number of node coordinates in Voronoi decomposition.";
+	// }
+// };
 
 /* IMPORTANT - overwriting standard exit function - notifies user that exit was called before exiting */
 void exit(int status) {
@@ -222,11 +222,11 @@ bool performVoronoiDecomp(bool radial, ATOM_NETWORK *atmnet, VORONOI_NETWORK *vo
 			rad_con = (container_periodic_poly *)performVoronoiDecomp(radial, atmnet, vornet, *cells, saveVorCells, *bvcells);
 		else 
 			no_rad_con = (container_periodic *)performVoronoiDecomp (radial, atmnet, vornet, *cells, saveVorCells, *bvcells); 
+		delete rad_con;
+		delete no_rad_con;
+		return true;
 	}
-	catch (InvalidParticlesNumException& e1){
-		cout << e1.what() << endl;
-		return false;
-	}
+	
 	catch (InvalidBoxDimException& e2){
 		cout << e2.what() << endl;
 		return false;
@@ -247,9 +247,7 @@ bool performVoronoiDecomp(bool radial, ATOM_NETWORK *atmnet, VORONOI_NETWORK *vo
 		cout << e6.what() << endl;
 		return false;
 	}
-    delete rad_con;
-    delete no_rad_con;
-    return true;
+    
 }
 
 

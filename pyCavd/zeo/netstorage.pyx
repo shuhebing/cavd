@@ -26,7 +26,7 @@ from libcpp.string cimport string
 #Added at 20180807
 #Customize an exception class
 class PerformVDError(Exception):
-    print("Perform Voronoi Decompition failured!")
+    #print("Perform Voronoi Decompition failured!")
     pass
 
 cdef class Atom:
@@ -384,7 +384,7 @@ cdef class AtomNetwork:
 		#:q:q(vornet_ptr, c_fname, False)
       
       #Added at 20180420  
-    def through_VorNet(self, filename, migrantRad):
+    def through_VorNet(self, filename):
         """
         Computes the diameters of the largest included sphere, free sphere 
         and included sphere along free sphere path. 
@@ -394,19 +394,19 @@ cdef class AtomNetwork:
         """
         if isinstance(filename, unicode):
             filename = (<unicode>filename).encode('utf8')
-        if isinstance(migrantRad, unicode):
-            migrantRad = (<unicode>migrantRad).encode('utf8')
+        #if isinstance(migrantRad, unicode):
+        #    migrantRad = (<unicode>migrantRad).encode('utf8')
     
         vornet, edge_centers, face_centers = self.perform_voronoi_decomposition(False)
         cdef char* c_fname = filename
-        cdef double c_migrantRad = migrantRad
+        #cdef double c_migrantRad = migrantRad
         #Added at 20180530
         cdef double* c_Ri_ptr
         cdef double* c_Rf_ptr
         cdef double* c_Rif_ptr
         cdef double c_Ri,c_Rf,c_Rif
         vornet_ptr = (<VoronoiNetwork?>vornet).thisptr
-        if throughVorNet(vornet_ptr, c_fname, &c_Ri, &c_Rf, &c_Rif, c_migrantRad):
+        if throughVorNet(vornet_ptr, c_fname, &c_Ri, &c_Rf, &c_Rif):
             #return True
             #edited at 20180530
             return c_Ri,c_Rf,c_Rif
@@ -685,7 +685,7 @@ def substitute_atoms(atmnet, substituteSeed, radialFlag):
     subNo = substitutionNo[0]
     return atmnet_copy, subNo
 
-def connection_values(self, filename, vornet):
+def connection_values(filename, vornet):
     """
 	Computes the Radius of the largest included sphere, free sphere 
 	and included sphere along free sphere path. 
@@ -700,18 +700,19 @@ def connection_values(self, filename, vornet):
     vornet_ptr = (<VoronoiNetwork?>vornet).thisptr
     cdef char* c_fname = filename
     cdef double c_Ri,c_Rf,c_Rif
-    throughVorNet(vornet_ptr, c_fname, &c_Ri, &c_Rf, &c_Rif):
+    throughVorNet(vornet_ptr, c_fname, &c_Ri, &c_Rf, &c_Rif)
     return c_Ri,c_Rf,c_Rif	
 
-def connection_values_list(self, filename, vornet):
+def connection_values_list(filename, vornet):
     conn_values = []
     if isinstance(filename, unicode):
         filename = (<unicode>filename).encode('utf8')
     vornet_ptr = (<VoronoiNetwork?>vornet).thisptr
     cdef char* c_fname = filename
-	cdef vector[double] values 
-	calculateConnParameters(vornet_ptr, c_fname, &values)
-	for i in range(values.size()):
-        conn_values[i] = values[i]
+    cdef vector[double] values 
+    calculateConnParameters(vornet_ptr, c_fname, &values)
+    conn_values = []
+    for i in range(values.size()):
+        conn_values.append(values[i])
     return conn_values
 

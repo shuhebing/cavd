@@ -4,6 +4,7 @@
 
 #include "voronoicell.h"
 #include "graphstorage.h"
+#include "network.h"
 
 using namespace std;
 
@@ -17,7 +18,11 @@ using namespace std;
  * and VORONOI_NETWORK using the ZeoVis tool.
  */
 
-
+struct writeZeoVisException : public exception{
+	const char * what () const throw (){
+		return "Exception: write vornet file failed!.";
+	}
+};
 
 /* Store the provided vertices and their ids.   */
 VOR_FACE::VOR_FACE(vector<Point> vertices, ATOM_NETWORK *atmnet, VORONOI_NETWORK *vornet){
@@ -118,6 +123,7 @@ void VOR_CELL::addEdge(Point from, Point to){
 	 << "Point 1: (" << from[0] <<  ", " << from[1] << ", " << from[2] << ")" << "\n"
 	 << "Point 2: (" << to[0]   <<  ", " << to[1]   << ", " << to[2]   << ")" << "\n"
 	 << "Exiting..." << "\n";
+	 throw VoronoiDecompException();
     //exit(1);
   }
   
@@ -155,6 +161,7 @@ vector<Point> VOR_CELL::getNodeCoords(int nodeID){
     }
     cerr << "\n";
     cerr << "Exiting..." << "\n";
+	throw VoronoiDecompException();
     //exit(1);
   }
   vector<int> vertexIDs = iter->second;
@@ -413,6 +420,17 @@ void writeVMDEnvVars(fstream &output,  ATOM_NETWORK *atmnet, VORONOI_NETWORK *vo
  * includes atoms, nodes, the unitcell, the voronoi network, 
  * voronoi cells (outlined and filled) and environment variables.
  */
+ 
+ bool writeZVis(char *filename, std::vector<VOR_CELL> *cells, ATOM_NETWORK *atmnet, VORONOI_NETWORK *vornet){
+	try{
+		writeZeoVisFile(filename, cells, atmnet,vornet);
+		return true;
+	}
+	catch (writeZeoVisException& e1){
+		cout << e1.what() << endl;
+		return false;
+	}
+ }
 void writeZeoVisFile(char *filename, vector<VOR_CELL> *cells,
   ATOM_NETWORK *atmnet, VORONOI_NETWORK *vornet)
 {
@@ -421,7 +439,8 @@ void writeZeoVisFile(char *filename, vector<VOR_CELL> *cells,
   if(!output.is_open()){
     cout << "Error: Failed to open output file for ZeoVis settings" << filename;
     cout << "Exiting ..." << "\n";
-    //exit(1);
+    throw writeZeoVisException();
+	//exit(1);
   }
   else{
     cout << "Writing ZeoVis information to " << filename << "\n";

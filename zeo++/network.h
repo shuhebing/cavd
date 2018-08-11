@@ -115,4 +115,37 @@ void getOMSInformation(char *filename, char *filenameExtendedOutput, ATOM_NETWOR
 bool throughVorNet(VORONOI_NETWORK *vornet, char *filename, double *Ri, double *Rf, double *Rif, double migrantRad);
 bool throughVorNet(VORONOI_NETWORK *vornet, char *filename, double *Ri, double *Rf, double *Rif);
 void calculateConnParameters(VORONOI_NETWORK *vornet, char *filename, vector<double> *values);
+
+/* 自定义异常 */
+struct InvalidParticlesNumException : public exception{
+	const char * what () const throw (){
+		return "Exception: Invalid number of particles provided for Voronoi decomposition.";
+	}
+};
+struct InvalidBoxDimException : public exception{
+	const char * what () const throw (){
+		return "Exception: valid box dimensions calculated for Voronoi decomposition.";
+	}
+};
+struct HugeGridException : public exception{
+	const char * what () const throw (){
+		return "Exception: voro++: Number of computational blocks exceeds the maximum.";
+	}
+};
+struct AttemptException : public exception{
+	const char * what () const throw (){
+		return "Exception: Attempt numbers larger than excepted.";
+	}
+};
+struct VoronoiDecompException : public exception{
+	const char * what () const throw (){
+		return "Exception: Unable to begin Voronoi decomposition.";
+	}
+};
+struct CoordNumException : public exception{
+	const char * what () const throw (){
+		return "Exception: Improper number of node coordinates in Voronoi decomposition.";
+	}
+};
+
 #endif

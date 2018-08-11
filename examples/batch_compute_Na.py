@@ -4,7 +4,7 @@ from zeo.netstorage import PerformVDError
 from zeo.channel import FindChannelError
 
 filenames=[]
-path = "/home/yeanjiang/yaj/bi/Li_Na_Mg_Al_cifs/Li/"
+path = "/home/yeanjiang/yaj/bi/Li_Na_Mg_Al_cifs/Na/"
 if not os.path.exists(path+"results"):
     os.mkdir(path+"results")
     print("create results directory successful !")
@@ -21,7 +21,7 @@ output_path = path+"results/"
 for filename in filenames:
     filename = path+filename
     try:
-        conn,oneD,twoD,threeD = AllCom(filename, 0.5, 1000, migrant="Li", rad_flag=True, effective_rad=True, rad_file=None, rad_store_in_vasp=True, minRad=0.584, maxRad=0.876)
+        conn,oneD,twoD,threeD = AllCom(filename, 0.5, 1000, migrant="Li", rad_flag=True, effective_rad=True, rad_file=None, rad_store_in_vasp=True, minRad=0.904, maxRad=1.356)
         result_file.write(filename)
         for i in conn:
             result_file.write("    "+str(i))

@@ -117,7 +117,7 @@ cdef extern from "../../zeo++/network.h":
     
     #added at 20180418
 	#Edited at 20180530
-    cdef bint throughVorNet(VORONOI_NETWORK*, char*, double*, double*, double*, double)
+    cdef bint throughVorNet(VORONOI_NETWORK*, char*, double*, double*, double*)
 
     cdef void viewVoronoiDecomp(ATOM_NETWORK*, double, string)
 

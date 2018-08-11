@@ -9,7 +9,7 @@ from libcpp.vector cimport vector
 #Added at 20180808
 #Customize an exception class
 class FindChannelError(Exception):
-    print("Find Channel in Voronoi Network Failed!")
+    #print("Find Channel in Voronoi Network Failed!")
     pass
 
 cdef class Channel:
@@ -29,7 +29,7 @@ cdef class Channel:
         cdef vector[CHANNEL] channels
         if findChannels_new(c_vornet_ptr, probe_rad, &channels):
             c_writeToVMD(channels, c_filename)
-		else:
+        else:
             raise FindChannelError
 
 #def fincChannelsinDijkstraNett(i

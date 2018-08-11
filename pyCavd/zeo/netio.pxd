@@ -55,7 +55,7 @@ cdef extern from '../../zeo++/networkio.h':
 
 # Added at 20180704
 cdef extern from '../../zeo++/voronoicell.h':
-    cdef void writeZeoVisFile(char *filename, vector[VOR_CELL] *cells, ATOM_NETWORK *atmnet, VORONOI_NETWORK *vornet)
+    cdef bint writeZVis(char *filename, vector[VOR_CELL] *cells, ATOM_NETWORK *atmnet, VORONOI_NETWORK *vornet)
 
 # At present  the return value of performVoronoiDecomp is void*
 # Compile it after void* is changed to bool in the original source file
