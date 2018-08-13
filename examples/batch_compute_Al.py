@@ -11,44 +11,69 @@ if not os.path.exists(path+"results"):
 else:
     print(path+"results already exit!")
 output_path = path+"results/"
-result_file = open(output_path+"computation_result.txt","w")
-result_file.write("filename    a_Rf    b_Rf    c_Rf\n")
+result_file = open(output_path+"com_result_Al.txt","w")
+result_file.write('filename\tProblem\tLocation\n')
+Rf_file = open(output_path+"Rf_Al.txt","w")
+Rf_file.write('filename\ta_Rf\tb_Rf\tc_Rf\ta_Conn\tb_Conn\tc_Conn\n')
 for i in os.listdir(path):
     if ".cif" in i:
-        #filenames.append(i.replace(filetype,''))
         filenames.append(i)
-output_path = path+"results/"
+
 for filename in filenames:
     filename = path+filename
     try:
-        conn,oneD,twoD,threeD = AllCom(filename, 0.5, 1000, migrant="Li", rad_flag=True, effective_rad=True, rad_file=None, rad_store_in_vasp=True, minRad=0.424, maxRad=0.636)
-        result_file.write(filename)
+        conn,oneD,twoD,threeD = AllCom(filename, 0.424, 1000, migrant="Li", rad_flag=True, effective_rad=True, rad_file=None, rad_store_in_vasp=True, minRad=0.424, maxRad=0.636)
+        Rf_file.write(filename)
         for i in conn:
-            result_file.write("    "+str(i))
-        result_file.write("\n")
-        print(filename+" compute complete1!")
+            Rf_file.write("    "+str(i))
+        Rf_file.write('\t'+str(oneD)+'\t'+str(twoD)+'\t'+str(threeD))
+        Rf_file.write("\n")
+        print(filename+" compute complete!")
+        out = filename+'\t'+'compute complete!'+'\n'
+        result_file.write(out)
     except AttributeError:
-        print("This cif file: ",filename,"have PARTITIAL occ or MIXED occ!")
+        print(filename," Have PARTITIAL occ or MIXED occ!")
+        out = filename+'\t'+"Have PARTITIAL occ or MIXED occ!"+'\n'
+        result_file.write(out)
         continue
     except IOError:
-        print("Can't Open ", filename, " or Can't Write to outputfile.")
+        print(filename, " Can't Open or Can't Write to outputfile.")
+        out = filename+'\t'+"Can't Open or Can't Write to outputfile."+'\n'
+        result_file.write(out)
         continue
     except PerformVDError:
-        print("Can't Perform Voronoi Decompition for ", filename)
+        print(filename, " Can't Perform Voronoi Decompition.")
+        out = filename+'\t'+"Can't Perform Voronoi Decompition."+'\n'
+        result_file.write(out)
         continue
     except ValueError:
-        print("Can't Read structure information from cif file: ", filename)
+        print(filename, " Can't Read structure information from cif file.")
+        out = filename+'\t'+"Can't Read structure information from cif file."+'\n'
+        result_file.write(out)
         continue
     except FindChannelError:
-        print("Find Channel in Voronoi Network for cif file: ", filename)
+        print(filename, " Can't Find Channel in Voronoi Network.")
+        out = filename+'\t'+"Can't Find Channel in Voronoi Network."+'\n'
+        result_file.write(out)
         continue
     except KeyError:
-        print("Compute radius failed when search radius information from table. problem file: ", filename)
+        print(filename, " Compute radius failed when search radius information from table.")
+        out = filename+'\t'+"Compute radius failed when search radius information from table."+'\n'
+        result_file.write(out)
         continue
     except AssertionError:
-        print("Compute radius failed when pymatgen try to read information from: ", filename)
+        print(filename, " Compute radius failed when pymatgen try to read information.")
+        out = filename+'\t'+"Compute radius failed when pymatgen try to read information."+'\n'
+        result_file.write(out)
         continue
     except UnboundLocalError:
-        print("Compute radius failed when pymatgen try to compute coordnum from: ", filename)
+        print(filename, " Compute radius failed when pymatgen try to compute coordnum.")
+        out = filename+'\t'+"Compute radius failed when pymatgen try to compute coordnum."+'\n'
+        result_file.write(out)
+        continue
+    except ZeroDivisionError:
+        print(filename, " Integer division or modulo by zero.")
+        out = filename+'\t'+"Integer division or modulo by zero."+'\n'
+        result_file.write(out)
         continue
 print("All File compute completed!")

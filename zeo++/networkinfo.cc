@@ -889,225 +889,226 @@ std::string stripAtomName(std::string extAtom) {
         }
 }
 
-//Added at 20180420
-/** Fills the radius table with Goldschmidt radius. */
-void initializeGoldschmidtIonRadTable(){
-	//goldschmidtIonRadTable.insert(pair <string,double> ("Symbol",  vdW_Radius));
-	goldschmidtIonRadTable.insert(pair <string,double> ("H1+",  1.03));
-	goldschmidtIonRadTable.insert(pair <string,double> ("H1-",  1.09));
-	goldschmidtIonRadTable.insert(pair <string,double> ("He",  1.22));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Li1+",  0.78));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Be2+",  0.34));
-	goldschmidtIonRadTable.insert(pair <string,double> ("B3+",  0.2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("C4+",  0.18));
-	goldschmidtIonRadTable.insert(pair <string,double> ("N5+",  0.15));
-	goldschmidtIonRadTable.insert(pair <string,double> ("O2-",  1.32));
-	goldschmidtIonRadTable.insert(pair <string,double> ("F1-",  1.33));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Ne",  1.52));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Na1+",  0.98));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Mg2+",  0.78));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Al3+",  0.57));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Si4+",  0.39));
-	goldschmidtIonRadTable.insert(pair <string,double> ("P5+",  0.35));
-	goldschmidtIonRadTable.insert(pair <string,double> ("S2-",  1.74));
-	goldschmidtIonRadTable.insert(pair <string,double> ("S6+",  0.34));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Cl1-",  1.81));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Ar",  1.92));
-	goldschmidtIonRadTable.insert(pair <string,double> ("K1+",  1.33));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Ca2+",  1.06));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Sc3+",  0.83));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Ti4+",  0.64));
-	goldschmidtIonRadTable.insert(pair <string,double> ("V5+",  0.4));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Cr6+",  0.35));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Mn4+",  0.52));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Mn2+",  0.91));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Fe2+",  0.83));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Fe3+",  0.67));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Co2+",  0.82));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Ni2+",  0.78));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Cu1+",  0.96));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Zn2+",  0.83));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Ga3+",  0.62));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Ge4+",  0.44));
-	goldschmidtIonRadTable.insert(pair <string,double> ("As",  1.85));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Se2-",  1.91));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Se6+",  0.35));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Br1-",  1.96));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Kr",  2.04));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Rb1+",  1.49));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Sr2+",  1.27));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Y2+",  1.06));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Zr4+",  0.87));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Nb5+",  0.69));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Mo6+",  0.68));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Tc",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Ru6+",  0.65));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Rh3+",  0.68));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Pd",  1.63));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Ag1+",  1.13));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Cd2+",  1.03));
-	goldschmidtIonRadTable.insert(pair <string,double> ("In2+",  0.92));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Sn4+",  0.74));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Sb",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Te2-",  2.11));
-	goldschmidtIonRadTable.insert(pair <string,double> ("I1-",  2.20));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Xe",  2.18));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Cs1+",  1.65));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Ba2+",  1.43));
-	goldschmidtIonRadTable.insert(pair <string,double> ("La3+",  1.22));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Ce3+",  1.22));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Pr3+",  1.22));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Nd3+",  1.22));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Pm3+",  1.22));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Sm3+",  1.22));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Eu3+",  1.22));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Gd3+",  1.22));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Tb3+",  1.22));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Dy3+",  1.22));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Ho3+",  1.22));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Er3+",  1.22));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Tm3+",  1.22));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Yb3+",  1.22));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Lu3+",  1.22));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Hf4+",  0.86));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Ta5+",  0.69));
-	goldschmidtIonRadTable.insert(pair <string,double> ("W4+",  0.68));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Re4+",  0.68));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Os4+",  0.67));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Ir4+",  0.66));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Pt",  1.72));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Au1+",  1.37));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Hg2+",  1.12));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Tl1+",  1.49));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Tl2+",  1.05));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Pb2+",  1.32));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Pb4+",  0.84));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Bi",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Po",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("At",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Rn",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Fr",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Ra",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Ac",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Th4+",  1.10));
-	goldschmidtIonRadTable.insert(pair <string,double> ("U4+",  1.05));
+// //Added at 20180420
+// Notice: This Table has been abandon! DO NOT USE THIS TABLE! 20180813
+// /** Fills the radius table with Goldschmidt radius. */
+// void initializeGoldschmidtIonRadTable(){
+	// //goldschmidtIonRadTable.insert(pair <string,double> ("Symbol",  vdW_Radius));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("H1+",  1.03));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("H1-",  1.09));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("He",  1.22));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Li1+",  0.78));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Be2+",  0.34));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("B3+",  0.2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("C4+",  0.18));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("N5+",  0.15));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("O2-",  1.32));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("F1-",  1.33));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Ne",  1.52));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Na1+",  0.98));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Mg2+",  0.78));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Al3+",  0.57));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Si4+",  0.39));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("P5+",  0.35));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("S2-",  1.74));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("S6+",  0.34));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Cl1-",  1.81));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Ar",  1.92));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("K1+",  1.33));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Ca2+",  1.06));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Sc3+",  0.83));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Ti4+",  0.64));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("V5+",  0.4));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Cr6+",  0.35));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Mn4+",  0.52));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Mn2+",  0.91));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Fe2+",  0.83));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Fe3+",  0.67));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Co2+",  0.82));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Ni2+",  0.78));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Cu1+",  0.96));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Zn2+",  0.83));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Ga3+",  0.62));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Ge4+",  0.44));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("As",  1.85));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Se2-",  1.91));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Se6+",  0.35));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Br1-",  1.96));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Kr",  2.04));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Rb1+",  1.49));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Sr2+",  1.27));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Y2+",  1.06));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Zr4+",  0.87));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Nb5+",  0.69));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Mo6+",  0.68));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Tc",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Ru6+",  0.65));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Rh3+",  0.68));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Pd",  1.63));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Ag1+",  1.13));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Cd2+",  1.03));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("In2+",  0.92));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Sn4+",  0.74));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Sb",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Te2-",  2.11));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("I1-",  2.20));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Xe",  2.18));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Cs1+",  1.65));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Ba2+",  1.43));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("La3+",  1.22));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Ce3+",  1.22));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Pr3+",  1.22));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Nd3+",  1.22));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Pm3+",  1.22));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Sm3+",  1.22));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Eu3+",  1.22));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Gd3+",  1.22));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Tb3+",  1.22));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Dy3+",  1.22));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Ho3+",  1.22));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Er3+",  1.22));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Tm3+",  1.22));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Yb3+",  1.22));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Lu3+",  1.22));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Hf4+",  0.86));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Ta5+",  0.69));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("W4+",  0.68));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Re4+",  0.68));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Os4+",  0.67));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Ir4+",  0.66));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Pt",  1.72));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Au1+",  1.37));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Hg2+",  1.12));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Tl1+",  1.49));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Tl2+",  1.05));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Pb2+",  1.32));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Pb4+",  0.84));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Bi",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Po",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("At",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Rn",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Fr",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Ra",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Ac",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Th4+",  1.10));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("U4+",  1.05));
 
-	//Copy from radTable
-	goldschmidtIonRadTable.insert(pair <string,double> ("H",  1.09));
-	goldschmidtIonRadTable.insert(pair <string,double> ("D",  1.09));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Li",  1.82));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Be",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("B",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("C",  1.7));
-	goldschmidtIonRadTable.insert(pair <string,double> ("N",  1.55));
-	goldschmidtIonRadTable.insert(pair <string,double> ("O",  1.52));
-	goldschmidtIonRadTable.insert(pair <string,double> ("F",  1.47));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Na",  2.27));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Mg",  1.73));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Al",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Si",  2.1));
-	goldschmidtIonRadTable.insert(pair <string,double> ("P",  1.8));
-	goldschmidtIonRadTable.insert(pair <string,double> ("S",  1.8));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Cl",  1.75));
-	goldschmidtIonRadTable.insert(pair <string,double> ("K",  2.75));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Ca",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Sc",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Ti",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("V",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Cr",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Mn",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Fe",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Co",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Ni",  1.63));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Cu",  1.4));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Zn",  1.39));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Ga",  1.87));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Ge",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Se",  1.9));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Br",  1.85));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Rb",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Sr",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Y",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Zr",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Nb",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Mo",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Ru",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Rh",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Ag",  1.72));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Cd",  1.58));
-	goldschmidtIonRadTable.insert(pair <string,double> ("In",  1.93));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Sn",  2.17));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Te",  2.06));
-	goldschmidtIonRadTable.insert(pair <string,double> ("I",  1.98));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Cs",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Ba",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("La",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Ce",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Pr",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Nd",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Pm",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Sm",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Eu",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Gd",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Tb",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Dy",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Ho",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Er",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Tm",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Yb",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Lu",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Hf",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Ta",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("W",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Re",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Os",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Ir",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Au",  1.66));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Hg",  1.55));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Tl",  1.96));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Pb",  2.02));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Th",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Pa",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("U",  1.86));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Np",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Pu",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Am",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Cm",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Bk",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Cf",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Es",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Fm",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Md",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("No",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Lr",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Rf",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Db",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Sg",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Bh",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Hs",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Mt",  2));
-	goldschmidtIonRadTable.insert(pair <string,double> ("Ds",  2));
-}
+	// //Copy from radTable
+	// goldschmidtIonRadTable.insert(pair <string,double> ("H",  1.09));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("D",  1.09));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Li",  1.82));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Be",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("B",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("C",  1.7));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("N",  1.55));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("O",  1.52));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("F",  1.47));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Na",  2.27));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Mg",  1.73));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Al",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Si",  2.1));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("P",  1.8));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("S",  1.8));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Cl",  1.75));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("K",  2.75));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Ca",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Sc",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Ti",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("V",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Cr",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Mn",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Fe",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Co",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Ni",  1.63));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Cu",  1.4));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Zn",  1.39));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Ga",  1.87));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Ge",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Se",  1.9));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Br",  1.85));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Rb",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Sr",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Y",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Zr",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Nb",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Mo",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Ru",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Rh",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Ag",  1.72));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Cd",  1.58));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("In",  1.93));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Sn",  2.17));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Te",  2.06));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("I",  1.98));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Cs",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Ba",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("La",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Ce",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Pr",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Nd",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Pm",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Sm",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Eu",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Gd",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Tb",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Dy",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Ho",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Er",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Tm",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Yb",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Lu",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Hf",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Ta",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("W",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Re",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Os",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Ir",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Au",  1.66));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Hg",  1.55));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Tl",  1.96));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Pb",  2.02));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Th",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Pa",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("U",  1.86));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Np",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Pu",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Am",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Cm",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Bk",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Cf",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Es",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Fm",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Md",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("No",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Lr",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Rf",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Db",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Sg",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Bh",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Hs",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Mt",  2));
+	// goldschmidtIonRadTable.insert(pair <string,double> ("Ds",  2));
+// }
 
-// Added at 20180420
-/** Return the radius for the corresponding atom name. If the -nor
-    option was specified, returns 0. */
-double lookupGoldschmidtIonRadius(string atomType, bool radial){
+// // Added at 20180420
+// /** Return the radius for the corresponding atom name. If the -nor
+    // option was specified, returns 0. */
+// double lookupGoldschmidtIonRadius(string atomType, bool radial){
 
-  if(stripAtomNameInternalFlag == true) atomType = stripAtomName(atomType);
+  // if(stripAtomNameInternalFlag == true) atomType = stripAtomName(atomType);
 
-  if(!radial)
-    return 0.0;
-  map <string,double>::iterator  info = goldschmidtIonRadTable.find(atomType);
-  if(info == goldschmidtIonRadTable.end()){
-    cerr << "Unable to find radius for " << atomType << " in table. Please provide it " << "\n"
-	 << "in a reference file or check you input file." << "\n"
-	 << "Exiting ..." << "\n";
-    exit(1);
-  }
-  else
-    return info->second;
-}
+  // if(!radial)
+    // return 0.0;
+  // map <string,double>::iterator  info = goldschmidtIonRadTable.find(atomType);
+  // if(info == goldschmidtIonRadTable.end()){
+    // cerr << "Unable to find radius for " << atomType << " in table. Please provide it " << "\n"
+	 // << "in a reference file or check you input file." << "\n"
+	 // << "Exiting ..." << "\n";
+    // exit(1);
+  // }
+  // else
+    // return info->second;
+// }
 
 
 //Added at 20180606
