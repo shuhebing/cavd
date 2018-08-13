@@ -35,18 +35,18 @@ def AllCom(filename, probe_rad, num_sample, migrant=None, rad_flag=True, effecti
     else:
         remove_filename = filename
     atmnet = AtomNetwork.read_from_CIF(remove_filename, radii, rad_flag, rad_file)
-    vornet,edge_centers,fcs = atmnet.perform_voronoi_decomposition(False)
     os.remove(remove_filename)
+    vornet,edge_centers,fcs = atmnet.perform_voronoi_decomposition(False)
+    
     prefixname = filename.replace(".cif","")
     writeBIFile(prefixname+"_orgin.bi",atmnet,vornet)
     writeVaspFile(prefixname+"_orgin.vasp",atmnet,vornet,rad_store_in_vasp)
     writeVaspFile(prefixname+"_selected.vasp",atmnet,vornet,rad_store_in_vasp,minRad,maxRad)
-    writeZVisFile(prefixname+".zvis", rad_flag, atmnet, vornet)
-    Channel.findChannelsInVornet(vornet,probe_rad,prefixname+".zchan")
-    asa_new(prefixname+".zsa",False,atmnet,probe_rad,probe_rad,num_sample)
-
     conn = connection_values_list(prefixname+".resex", vornet)
     oneD,twoD,threeD = ConnStatus(probe_rad, conn)
+    Channel.findChannelsInVornet(vornet,probe_rad,prefixname+".zchan")
+    asa_new(prefixname+".zsa",False,atmnet,probe_rad,probe_rad,num_sample)
+    writeZVisFile(prefixname+".zvis", rad_flag, atmnet, vornet)
     return conn,oneD,twoD,threeD
 
 #计算某个结构的瓶颈和间隙
@@ -128,9 +128,9 @@ def ConnStatusCom(filename, radius, migrant=None, rad_flag=True, effective_rad=T
     
     if aconn and bconn and cconn:
         threeD = True
-    if (not aconn and bconn and cconn) or (aconn and not bconn and cconn) or (aconn and bconn and not cconn):
+    if (aconn and bconn) or (aconn and cconn) or (bconn and cconn):
         twoD = True
-    if (aconn and not bconn and not cconn) or (not aconn and bconn and not cconn) or (not aconn and not bconn and not cconn):
+    if aconn or bconn or cconn:
         oneD = True
     return oneD,twoD,threeD
 
@@ -161,9 +161,9 @@ def ConnStatus(radius,connlist):
     
     if aconn and bconn and cconn:
         threeD = True
-    if (not aconn and bconn and cconn) or (aconn and not bconn and cconn) or (aconn and bconn and not cconn):
+    if (aconn and bconn) or (aconn and cconn) or (bconn and cconn):
         twoD = True
-    if (aconn and not bconn and not cconn) or (not aconn and bconn and not cconn) or (not aconn and not bconn and not cconn):
+    if aconn or bconn or cconn:
         oneD = True
     return oneD,twoD,threeD
     
