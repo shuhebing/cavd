@@ -25,7 +25,7 @@ for filename in filenames:
         conn,oneD,twoD,threeD = AllCom(filename, 0.424, 1000, migrant="Li", rad_flag=True, effective_rad=True, rad_file=None, rad_store_in_vasp=True, minRad=0.424, maxRad=0.636)
         Rf_file.write(filename)
         for i in conn:
-            Rf_file.write("    "+str(i))
+            Rf_file.write('\t'+str(i))
         Rf_file.write('\t'+str(oneD)+'\t'+str(twoD)+'\t'+str(threeD))
         Rf_file.write("\n")
         print(filename+" compute complete!")
@@ -37,8 +37,8 @@ for filename in filenames:
         result_file.write(out)
         continue
     except IOError:
-        print(filename, " Can't Open or Can't Write to outputfile.")
-        out = filename+'\t'+"Can't Open or Can't Write to outputfile."+'\n'
+        print(filename, " Can't Open inputfile or Can't Write to outputfile.")
+        out = filename+'\t'+"Can't Open inputfile or Can't Write to outputfile."+'\n'
         result_file.write(out)
         continue
     except PerformVDError:
@@ -47,8 +47,8 @@ for filename in filenames:
         result_file.write(out)
         continue
     except ValueError:
-        print(filename, " Can't Read structure information from cif file.")
-        out = filename+'\t'+"Can't Read structure information from cif file."+'\n'
+        print(filename, " Have MIXED occ!")
+        out = filename+'\t'+" Have MIXED occ!"+'\n'
         result_file.write(out)
         continue
     except FindChannelError:
@@ -57,8 +57,8 @@ for filename in filenames:
         result_file.write(out)
         continue
     except KeyError:
-        print(filename, " Compute radius failed when search radius information from table.")
-        out = filename+'\t'+"Compute radius failed when search radius information from table."+'\n'
+        print(filename, " Compute radius failed when search radius information from  Shannon effective ionic radius table.")
+        out = filename+'\t'+"Compute radius failed when search radius information from  Shannon effective ionic radius table."+'\n'
         result_file.write(out)
         continue
     except AssertionError:

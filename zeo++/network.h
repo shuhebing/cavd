@@ -139,7 +139,7 @@ struct AttemptException : public exception{
 };
 struct VoronoiDecompException : public exception{
 	const char * what () const throw (){
-		return "Exception: Unable to begin Voronoi decomposition.";
+		return "Exception: Unable to make Voronoi decomposition.";
 	}
 };
 struct CoordNumException : public exception{

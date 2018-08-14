@@ -37,8 +37,8 @@ for filename in filenames:
         result_file.write(out)
         continue
     except IOError:
-        print(filename, " Can't Open or Can't Write to outputfile.")
-        out = filename+'\t'+"Can't Open or Can't Write to outputfile."+'\n'
+        print(filename, " Can't Open inputfile or Can't Write to outputfile.")
+        out = filename+'\t'+"Can't Open inputfile or Can't Write to outputfile."+'\n'
         result_file.write(out)
         continue
     except PerformVDError:
@@ -47,8 +47,8 @@ for filename in filenames:
         result_file.write(out)
         continue
     except ValueError:
-        print(filename, " Can't Read structure information from cif file.")
-        out = filename+'\t'+"Can't Read structure information from cif file."+'\n'
+        print(filename, " Have MIXED occ!")
+        out = filename+'\t'+" Have MIXED occ!"+'\n'
         result_file.write(out)
         continue
     except FindChannelError:
@@ -57,8 +57,8 @@ for filename in filenames:
         result_file.write(out)
         continue
     except KeyError:
-        print(filename, " Compute radius failed when search radius information from table.")
-        out = filename+'\t'+"Compute radius failed when search radius information from table."+'\n'
+        print(filename, " Compute radius failed when search radius information from  Shannon effective ionic radius table.")
+        out = filename+'\t'+"Compute radius failed when search radius information from  Shannon effective ionic radius table."+'\n'
         result_file.write(out)
         continue
     except AssertionError:
