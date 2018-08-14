@@ -12,9 +12,9 @@ else:
     print(path+"results already exit!")
 output_path = path+"results/"
 result_file = open(output_path+"com_result_Mg.txt","w")
-result_file.write('filename\tProblem\tLocation\n')
+result_file.write('filename\tProblem\n')
 Rf_file = open(output_path+"Rf_Mg.txt","w")
-Rf_file.write('filename\ta_Rf\tb_Rf\tc_Rf\ta_Conn\tb_Conn\tc_Conn\n')
+Rf_file.write('filename\ta_Rf\tb_Rf\tc_Rf\toneD_Conn\ttwoD_Conn\tthreeD_Conn\n')
 for i in os.listdir(path):
     if ".cif" in i:
         filenames.append(i)
