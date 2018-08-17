@@ -24,6 +24,7 @@ def EffectiveRadCom(filename):
         if re.search('[A-Z][a-z]*\+|[A-Z][a-z]*\-', key) != None:
             s1 = re.sub('\+','1+',key)
             radii[re.sub('\-','1-',s1)] = radii[key]
+    print(radii)
     return radii
 
 def AllCom(filename, probe_rad, num_sample, migrant=None, rad_flag=True, effective_rad=True, rad_file=None, rad_store_in_vasp=True, minRad=0.0, maxRad=0.0):
@@ -35,7 +36,8 @@ def AllCom(filename, probe_rad, num_sample, migrant=None, rad_flag=True, effecti
     else:
         remove_filename = filename
     atmnet = AtomNetwork.read_from_CIF(remove_filename, radii, rad_flag, rad_file)
-    os.remove(remove_filename)
+    if migrant:
+        os.remove(remove_filename)
     vornet,edge_centers,fcs = atmnet.perform_voronoi_decomposition(False)
     
     prefixname = filename.replace(".cif","")
@@ -61,7 +63,8 @@ def BIComputation(filename, migrant=None, rad_flag=True, effective_rad=True, rad
     atmnet = AtomNetwork.read_from_CIF(remove_filename, radii, rad_flag, rad_file)
     vornet,edge_centers,fcs = atmnet.perform_voronoi_decomposition(False)
     #delete temp file
-    os.remove(remove_filename)
+    if migrant:
+        os.remove(remove_filename)
     prefixname = filename.replace(".cif","")
     writeBIFile(prefixname+"_orgin.bi",atmnet,vornet)
     writeVaspFile(prefixname+"_orgin.vasp",atmnet,vornet,rad_store_in_vasp)
@@ -77,7 +80,8 @@ def ConnValCom(filename, migrant=None, rad_flag=True, effective_rad=True, rad_fi
     else:
         remove_filename = filename
     atmnet = AtomNetwork.read_from_CIF(remove_filename, radii, rad_flag, rad_file)
-    os.remove(remove_filename)
+    if migrant:
+        os.remove(remove_filename)
     prefixname = filename.replace(".cif","")
     Ri,Rf,Rif = atmnet.through_VorNet(prefixname+".res")
     return Ri,Rf,Rif
@@ -93,7 +97,8 @@ def ConnValListCom(filename, migrant=None, rad_flag=True, effective_rad=True, ra
         remove_filename = filename
     atmnet = AtomNetwork.read_from_CIF(remove_filename, radii, rad_flag, rad_file)
     vornet,edge_centers,fcs = atmnet.perform_voronoi_decomposition(False)
-    os.remove(remove_filename)
+    if migrant:
+        os.remove(remove_filename)
     prefixname = filename.replace(".cif","")
     #连通性状态列表，存放1D，2D，3D连通信息元素，这些元素为一个字典，字典的键为Rf、Ri、Rif，值为对应的数值
     #需重写该函数，需返回该列表
@@ -178,7 +183,8 @@ def ChannelCom(filename, probe_rad, migrant=None, rad_flag=True, effective_rad=T
         remove_filename = filename
     atmnet = AtomNetwork.read_from_CIF(remove_filename, radii, rad_flag, rad_file)
     vornet,edge_centers,fcs = atmnet.perform_voronoi_decomposition(False)
-    os.remove(remove_filename)
+    if migrant:
+        os.remove(remove_filename)
     prefixname = filename.replace(".cif","")
     Channel.findChannelsInVornet(vornet,probe_rad,prefixname+".zchan")
 
@@ -192,7 +198,8 @@ def ASACom(filename, probe_rad, num_sample, migrant=None, rad_flag=True, effecti
     else:
         remove_filename = filename
     atmnet = AtomNetwork.read_from_CIF(remove_filename, radii, rad_flag, rad_file)
-    os.remove(remove_filename)
+    if migrant:
+        os.remove(remove_filename)
     prefixname = filename.replace(".cif","")
     asa_new(prefixname+".zsa",False,atmnet,probe_rad,probe_rad,num_sample)
 
@@ -207,6 +214,7 @@ def VoidNetCom(filename, migrant=None, rad_flag=True, effective_rad=True, rad_fi
         remove_filename = filename
     atmnet = AtomNetwork.read_from_CIF(remove_filename, radii, rad_flag, rad_file)
     vornet,edge_centers,fcs = atmnet.perform_voronoi_decomposition(False)
-    os.remove(remove_filename)
+    if migrant:
+        os.remove(remove_filename)
     prefixname = filename.replace(".cif","")
     writeZVisFile(prefixname+".zvis", False, atmnet, vornet)
