@@ -86,7 +86,7 @@ def ConnValCom(filename, migrant=None, rad_flag=True, effective_rad=True, rad_fi
     Ri,Rf,Rif = atmnet.through_VorNet(prefixname+".res")
     return Ri,Rf,Rif
     
-#计算某个结构的连通性状态列表，存放1D，2D，3D连通信息元素，这些元素为一个字典，字典的键为Rf、Ri、Rif，值为对应的数值
+#计算某个结构的连通性状态列表，存放1D，2D，3D连通半径，这些元素组成一个列表
 def ConnValListCom(filename, migrant=None, rad_flag=True, effective_rad=True, rad_file=None):
     radii = {}
     if rad_flag and effective_rad:
