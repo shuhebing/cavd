@@ -226,6 +226,10 @@ bool performVoronoiDecomp(bool radial, ATOM_NETWORK *atmnet, VORONOI_NETWORK *vo
 		delete no_rad_con;
 		return true;
 	}
+	catch (InvalidParticlesNumException& e1){
+		cout << e1.what() << endl;
+		return false;
+	}
 	
 	catch (InvalidBoxDimException& e2){
 		cout << e2.what() << endl;

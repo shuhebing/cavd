@@ -711,7 +711,8 @@ void CHANNEL::writeToVMD(int n, fstream &output){
     if(!output.is_open()){
         cerr << "Error: File stream needed to print channel information was not open." << "\n"
         << "Exiting ..." << "\n";
-        exit(1);
+        //exit(1);
+		throw WritingCHANNELException();
     }
     else{
         output << "set channels(" << n << ") {" << "\n"
@@ -1758,14 +1759,95 @@ void PORE::getRestrictingDiameters(int nSegments, vector<int> vorNetID, vector< 
 // Added at 20180704
 /** Write the commands necessary to draw the CHANNEL in ZeoVis
  *  to the provided output stream. */
-void writeToVMD_new(vector<CHANNEL> channels, char *filename){
+bool writeToVMD_new(vector<CHANNEL> channels, char *filename){
 	fstream output;
-	output.open(filename, fstream::out);
-	for(unsigned int i = 0; i < channels.size(); i++){
-		channels.at(i).writeToVMD(i, output);
-    }
-	cout << "Writing ZeoVis information to .zchan file sucessful!" << endl;
+	try{
+		output.open(filename, fstream::out);
+		for(unsigned int i = 0; i < channels.size(); i++){
+			channels.at(i).writeToVMD(i, output);
+		}
+		cout << "Writing ZeoVis information to .zchan file sucessful!" << endl;
+		return true;
+	}
+	catch (WritingCHANNELException& e1){
+		cout << e1.what() << endl;
+		return false;
+	}
 }
 
+// Added at 20180823
+bool writeToNET_new(vector<CHANNEL> channels, char *filename){
+	fstream output;
+	try{
+		output.open(filename, fstream::out);
+		for(unsigned int i = 0; i < channels.size(); i++){
+			channels.at(i).writeToNET(i, output);
+		}
+		cout << "Writing CHANNEL information to .net file sucessful!" << endl;
+		return true;
+	}
+	catch (WritingCHANNELException& e1){
+		cout << e1.what() << endl;
+		return false;
+	}
+}
+
+/** Write the CHANNEL to network file
+*/
+void CHANNEL::writeToNET(int n, fstream &output){
+    if(!output.is_open()){
+        cerr << "Error: File stream needed to print channel information was not open." << "\n"
+        << "Exiting ..." << "\n";
+		throw WritingCHANNELException();
+    }
+    else{
+        output << "channeId " << n << "\n";
+		output << dimensionality << "\n";
+		output << v_a << "\n";
+		output << v_b << "\n";
+		output << v_c << "\n";
+		
+		output << "Interstitial table:" << "\n";
+        
+        // Draw the components located in each unit cell
+        for(unsigned int i = 0; i < unitCells.size(); i++){
+            vector<int> nodeIDs = ucNodes.at(i);
+            DELTA_POS disp = unitCells.at(i);
+            
+            // Iterate over all nodes in the unit cell
+            for(unsigned int j = 0; j < nodeIDs.size(); j++){
+                DIJKSTRA_NODE curNode = nodes.at(nodeIDs.at(j));
+				//output << j << "\t";
+				output << curNode.id << "\t";
+				output << curNode.x << "\t" << curNode.y << "\t" << curNode.z << "\t";
+                
+                // // 直角坐标
+                // double xCoord = curNode.x + v_a.x*disp.x + v_b.x*disp.y + v_c.x*disp.z;
+                // double yCoord = curNode.y + v_a.y*disp.x + v_b.y*disp.y + v_c.y*disp.z;
+                // double zCoord = curNode.z + v_a.z*disp.x + v_b.z*disp.y + v_c.z*disp.z;
+                // output << xCoord <<  "\t" << yCoord << "\t" << zCoord;
+                
+				output << curNode.max_radius << endl;
+				
+            }
+        }
+		for(unsigned int i = 0; i < unitCells.size(); i++){
+            vector<int> nodeIDs = ucNodes.at(i);
+            DELTA_POS disp = unitCells.at(i);
+            
+            // Iterate over all nodes in the unit cell
+            for(unsigned int j = 0; j < nodeIDs.size(); j++){
+                DIJKSTRA_NODE curNode = nodes.at(nodeIDs.at(j));
+				
+				// Iterate over all connections stemming from the current node
+                for(unsigned int k = 0; k < curNode.connections.size(); k++){
+                    CONN curConn = curNode.connections.at(k);
+                    DIJKSTRA_NODE otherNode = nodes.at(curConn.to);
+					output << curNode.id << "\t" << otherNode.id << "\t" << curConn.max_radius << endl;
+                }
+			}
+		}
+    }
+}
 
 
