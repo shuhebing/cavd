@@ -550,7 +550,7 @@ void CHANNEL::print(ostream &out, bool dispNodeInfo){
     if(dispNodeInfo){
         out << "     Original Node IDs: ";
         for(unsigned int i = 0; i < nodes.size(); i++){
-            out << reverseIDMappings.find(i)->second << " ";
+            out << "(" << reverseIDMappings.find(i)->first << "," << reverseIDMappings.find(i)->second << ") ";
         }
         out << "\n";
         
@@ -1803,9 +1803,9 @@ void CHANNEL::writeToNET(int n, fstream &output){
     else{
         output << "channeId " << n << "\n";
 		output << dimensionality << "\n";
-		output << v_a << "\n";
-		output << v_b << "\n";
-		output << v_c << "\n";
+		output << "(" << v_a.x << v_a.y << v_a.z << ")\n";
+		output << "(" << v_b.x << v_b.y << v_b.z << ")\n";
+		output << "(" << v_c.x << v_c.y << v_c.z << ")\n";
 		
 		output << "Interstitial table:" << "\n";
         

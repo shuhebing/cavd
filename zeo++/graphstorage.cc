@@ -107,7 +107,7 @@ DIJKSTRA_NODE::DIJKSTRA_NODE(int myID, double myX, double myY, double myZ, doubl
 /** Output information about the node to the provided output stream. */
 void DIJKSTRA_NODE::print(ostream &out) const {
     out << " Node info:" << "\n"
-    << "    #: " << id << "    X: " << x << "    Y: " << y << "    Z:" << z << "\n"
+    << "    #: " << id << "    X: " << x << "    Y: " << y << "    Z:" << z << "    R:" << max_radius << "\n"
     << "   Connections:" << "\n";
     for(unsigned int i = 0; i<connections.size(); i++){
         out << "     ";

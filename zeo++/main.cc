@@ -538,9 +538,13 @@ int main(int argc, char * argv[]){
 				string filename2 =  processFilename(command, name, ".zchan2", 1, 2);
 				writeToVMD_new(channels, (char *)filename2.data());
 			}
-			
+			string filename3 =  processFilename(command, name, ".nt2", 1, 2);
+            if(filename3.empty()) {error=true; break;}
+            if(!writeToNt2((char *)filename3.data(), &vornet)) {error=true; break;}
+			std::ostream& out = std::cout;
             for(unsigned int i = 0; i < channels.size(); i++){
 	      channels.at(i).writeToVMD(i, output);
+		  channels.at(i).print(out,true);
             }
             output << "set num_channels " << channels.size() << "\n";
             output.close();

@@ -19,8 +19,6 @@ cdef extern from "../../zeo++/geometry.h":
         CPoint operator+(CPoint)
         CPoint operator*(CPoint)
 
-
-
 cdef class Xyz:
     """
     Cython wrapper declaration for Zeo++ XYZ class defined in geometry.h

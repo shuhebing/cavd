@@ -1,10 +1,24 @@
 from libcpp.vector cimport vector
+from libcpp.map cimport map
 from netstorage cimport VORONOI_NETWORK
+from graphstorage cimport DELTA_POS
+from graphstorage cimport CONN
+from graphstorage cimport DIJKSTRA_NODE
 from graphstorage cimport DIJKSTRA_NETWORK
-
+from geometry cimport XYZ
 
 cdef extern from "../../zeo++/channel.h":
     cdef cppclass CHANNEL:
+        map[int,int] idMappings
+        map[int,int] reverseIDMappings
+        vector[DIJKSTRA_NODE] nodes
+        vector[CONN] connections
+        
+        vector[DELTA_POS] unitCells
+        vector[vector[int]] ucNodes
+        XYZ v_a, v_b, v_c
+        int dimensionality
+
         CHANNEL() except +
 
 cdef extern from "../../zeo++/channel.h" namespace "CHANNEL":
