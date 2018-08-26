@@ -7,6 +7,7 @@ from libcpp.string cimport string
 #Added at 20180704
 from libcpp.vector cimport vector
 from zeo.voronoicell cimport VOR_CELL, BASIC_VCELL
+from zeo.channel cimport CHANNEL
 
 cdef extern from '../../zeo++/networkio.h':
     cdef void parseFilename(const char* filename, char* name, char* extension)
@@ -62,3 +63,8 @@ cdef extern from '../../zeo++/voronoicell.h':
 cdef extern from "../../zeo++/network.h":
     cdef bint performVoronoiDecomp(bint, ATOM_NETWORK*, VORONOI_NETWORK*, 
             vector[VOR_CELL]*, bint, vector[BASIC_VCELL]*)
+
+# Add at 20180826
+cdef extern from "../../zeo++/channel.h":
+    cdef bint c_writeToVMD "writeToVMD_new"(vector[CHANNEL] channels, char *filename)
+    cdef bint c_writeToNET "writeToNET_new"(vector[CHANNEL] channels, char *filename)

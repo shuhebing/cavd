@@ -79,6 +79,16 @@ CONN::CONN(int myFrom, int myTo, double len, double maxR, DELTA_POS deltaP){
     deltaPos   = deltaP;
 }
 
+//Add at 20180826
+CONN::CONN(){}
+CONN::CONN(int myFrom, int myTo, double len, double maxR, int myX, int myY, int myZ){
+	from       = myFrom;
+    to         = myTo;
+    length     = len;
+    max_radius = maxR;
+	deltaPos = DELTA_POS(myX, myY, myZ);
+}
+
 /* Output information about the connection to the provided output stream*/
 void CONN::print(ostream &out) const{
     out << from << "->" << to << "   Length:" << length

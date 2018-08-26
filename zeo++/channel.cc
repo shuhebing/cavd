@@ -1776,21 +1776,6 @@ bool writeToVMD_new(vector<CHANNEL> channels, char *filename){
 }
 
 // Added at 20180823
-bool writeToNET_new(vector<CHANNEL> channels, char *filename){
-	fstream output;
-	try{
-		output.open(filename, fstream::out);
-		for(unsigned int i = 0; i < channels.size(); i++){
-			channels.at(i).writeToNET(i, output);
-		}
-		cout << "Writing CHANNEL information to .net file sucessful!" << endl;
-		return true;
-	}
-	catch (WritingCHANNELException& e1){
-		cout << e1.what() << endl;
-		return false;
-	}
-}
 
 /** Write the CHANNEL to network file
 */
@@ -1803,9 +1788,9 @@ void CHANNEL::writeToNET(int n, fstream &output){
     else{
         output << "channeId " << n << "\n";
 		output << dimensionality << "\n";
-		output << "(" << v_a.x << v_a.y << v_a.z << ")\n";
-		output << "(" << v_b.x << v_b.y << v_b.z << ")\n";
-		output << "(" << v_c.x << v_c.y << v_c.z << ")\n";
+		// output << "(" << v_a.x << "," << v_a.y << "," << v_a.z << ")\n";
+		// output << "(" << v_b.x << "," << v_b.y << "," << v_b.z << ")\n";
+		// output << "(" << v_c.x << "," << v_c.y << "," << v_c.z << ")\n";
 		
 		output << "Interstitial table:" << "\n";
         
@@ -1819,18 +1804,19 @@ void CHANNEL::writeToNET(int n, fstream &output){
                 DIJKSTRA_NODE curNode = nodes.at(nodeIDs.at(j));
 				//output << j << "\t";
 				output << curNode.id << "\t";
-				output << curNode.x << "\t" << curNode.y << "\t" << curNode.z << "\t";
+				//output << curNode.x << "\t" << curNode.y << "\t" << curNode.z << "\t";
                 
-                // // 直角坐标
-                // double xCoord = curNode.x + v_a.x*disp.x + v_b.x*disp.y + v_c.x*disp.z;
-                // double yCoord = curNode.y + v_a.y*disp.x + v_b.y*disp.y + v_c.y*disp.z;
-                // double zCoord = curNode.z + v_a.z*disp.x + v_b.z*disp.y + v_c.z*disp.z;
-                // output << xCoord <<  "\t" << yCoord << "\t" << zCoord;
-                
+                //直角坐标
+                double xCoord = curNode.x + v_a.x*disp.x + v_b.x*disp.y + v_c.x*disp.z;
+                double yCoord = curNode.y + v_a.y*disp.x + v_b.y*disp.y + v_c.y*disp.z;
+                double zCoord = curNode.z + v_a.z*disp.x + v_b.z*disp.y + v_c.z*disp.z;
+                output << xCoord <<  "\t" << yCoord << "\t" << zCoord << "\t" << disp.x << "\t" << disp.y << "\t" << disp.z << "\t";
 				output << curNode.max_radius << endl;
 				
             }
         }
+		
+		output << "\n" << "Connection table:" << "\n";
 		for(unsigned int i = 0; i < unitCells.size(); i++){
             vector<int> nodeIDs = ucNodes.at(i);
             DELTA_POS disp = unitCells.at(i);
@@ -1848,6 +1834,22 @@ void CHANNEL::writeToNET(int n, fstream &output){
 			}
 		}
     }
+}
+
+bool writeToNET_new(vector<CHANNEL> channels, char *filename){
+	fstream output;
+	try{
+		output.open(filename, fstream::out);
+		for(unsigned int i = 0; i < channels.size(); i++){
+			channels.at(i).writeToNET(i, output);
+		}
+		cout << "Writing CHANNEL information to .net file sucessful!" << endl;
+		return true;
+	}
+	catch (WritingCHANNELException& e1){
+		cout << e1.what() << endl;
+		return false;
+	}
 }
 
 

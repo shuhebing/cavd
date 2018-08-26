@@ -42,7 +42,9 @@ public:
     
     /* Create a CONN using the provided parameters */
     CONN(int myFrom, int myTo, double len, double maxR, DELTA_POS deltaP);
-    
+	//Add a new construct function for Cython wrapper
+	CONN();
+    CONN(int myFrom, int myTo, double len, double maxR, int myX = 0, int myY = 0, int myZ = 0);
     /* Output information about the connection to the provided output stream*/
     void print(std::ostream& out = std::cout) const;
     //void print();

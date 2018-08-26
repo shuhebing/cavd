@@ -8,7 +8,9 @@ from netstorage cimport ATOM_NETWORK, VORONOI_NETWORK
 #Added at 20180704
 from libcpp.vector cimport vector
 from zeo.voronoicell cimport VOR_CELL, BASIC_VCELL
+from zeo.channel cimport CHANNEL
 from zeo.netstorage import PerformVDError
+from zeo.channel import Channel
 # Define the python definitions for the zeo++ functions
 
 # Easier to implement in python
@@ -191,4 +193,24 @@ def writeZVisFile(filename, rad_flag, atmnet, vornet):
         raise PerformVDError
     if not writeZVis(c_filename, &vcells, c_atmnet, c_vornet_ptr):
         raise IOError
+  
+#def writeVMDFile(filename, channels):
+#    if isinstance(filename, unicode):
+#         filename = (<unicode>filename).encode('utf8')
+#    cdef char* c_filename = filename
+#    cdef CHANNEL* c_channel
+#    cdef vector[CHANNEL] c_channels
+#    for i in channels:
+#        c_channel = i.thisptr
+#        c_channels.push_back(c_channel)
+#    if not c_writeToVMD(c_channels, c_filename):
+#        raise IOError
+
+#def writeNETFile(filename, channels):
+#    if isinstance(filename, unicode):
+#         filename = (<unicode>filename).encode('utf8')
+#    cdef char* c_filename = filename
+#    cdef vector[CHANNEL] c_channels = <vector[CHANNEL]>channels
+#    if not c_writeToVMD(c_channels, c_filename):
+#        raise IOError
   

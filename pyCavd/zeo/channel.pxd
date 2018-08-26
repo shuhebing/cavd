@@ -27,7 +27,7 @@ cdef extern from "../../zeo++/channel.h" namespace "CHANNEL":
 
 cdef extern from "../../zeo++/channel.h":
     cdef bint c_writeToVMD "writeToVMD_new"(vector[CHANNEL] channels, char *filename)
-	cdef bint c_writeToNET "writeToNET_new"(vector[CHANNEL] channels, char *filename)
-	
+    cdef bint c_writeToNET "writeToNET_new"(vector[CHANNEL] channels, char *filename)
+
 cdef class Channel:
     cdef CHANNEL* thisptr

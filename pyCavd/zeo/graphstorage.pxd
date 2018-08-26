@@ -27,7 +27,7 @@ cdef extern from "../../zeo++/graphstorage.h":
         double max_radius
         DELTA_POS deltaPos
         CONN() except +
-        CONN(int, int, double, double, DELTA_POS )
+        CONN(int, int, double, double, int, int, int)
     
     cdef cppclass DIJKSTRA_NODE:
         int id
