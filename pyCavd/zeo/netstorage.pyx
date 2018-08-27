@@ -42,9 +42,9 @@ cdef class Atom:
     def __dealloc__(self):
         del self.thisptr
 
-    property coords:
+    property cart_coords:
         def __get__(self):
-            coords = list(self.thisptr.x, self.thisptr.y, self.thisptr.z)
+            coords = [self.thisptr.x, self.thisptr.y, self.thisptr.z]
             return coords
         def __set__(self, coords):      # Don't set this
             """
@@ -55,12 +55,54 @@ cdef class Atom:
             self.thisptr.y = coords[1]
             self.thisptr.z = coords[2]
 
+    property frac_coords:
+        def __get__(self):
+            coords = [self.thisptr.a_coord, self.thisptr.b_coord, self.thisptr.c_coord]
+            return coords
+        def __set__(self, coords):      # Don't set this
+            """
+            This variable is not supposed to be modified manually
+            """
+            print ("This value is not supposed to be modified")
+            self.thisptr.a_coord = coords[0]
+            self.thisptr.b_coord = coords[1]
+            self.thisptr.c_coord = coords[2]
+
     property radius:
         def __get__(self): return self.thisptr.radius
         def __set__(self, radius): 
             print ("This value is not supposed to be modified")
             self.thisptr.radius = radius
 
+    property atom_type:
+        def __get__(self): return self.thisptr.atom_type.decode('utf-8')
+        def __set__(self, atom_type): 
+            print ("This value is not supposed to be modified")
+            self.thisptr.atom_type = atom_type
+
+    property label:
+        def __get__(self): return self.thisptr.label.decode('utf-8')
+        def __set__(self, label): 
+            print ("This value is not supposed to be modified")
+            self.thisptr.label = label
+
+    property specialID:
+        def __get__(self): return self.thisptr.specialID
+        def __set__(self, specialID): 
+            print ("This value is not supposed to be modified")
+            self.thisptr.specialID = specialID
+
+    property mass:
+        def __get__(self): return self.thisptr.mass
+        def __set__(self, mass): 
+            print ("This value is not supposed to be modified")
+            self.thisptr.mass = mass
+
+    property charge:
+        def __get__(self): return self.thisptr.charge
+        def __set__(self, charge): 
+            print ("This value is not supposed to be modified")
+            self.thisptr.charge = charge
 
 cdef class AtomNetwork:
     """
@@ -77,6 +119,38 @@ cdef class AtomNetwork:
 
     def __dealloc__(self):
         del self.thisptr
+    
+    property lattice_para:
+        def __get__(self):
+            return [self.thisptr.a, self.thisptr.b, self.thisptr.c]
+
+    property lattice_angle:
+        def __get__(self):
+            return [self.thisptr.alpha, self.thisptr.beta, self.thisptr.gamma]
+    
+    property lattice:
+        def __get__(self):
+            la = [self.thisptr.v_a.x, self.thisptr.v_a.y, self.thisptr.v_a.z]
+            lb = [self.thisptr.v_b.x, self.thisptr.v_b.y, self.thisptr.v_b.z]
+            lc = [self.thisptr.v_c.x, self.thisptr.v_c.y, self.thisptr.v_c.z]
+            lattice = [la, lb, lc]
+            return lattice
+
+    property atoms_num:
+        def __get__(self): return self.thisptr.no_atoms
+        def __set__(self, atoms_num): 
+            print ("This value is not supposed to be modified")
+            self.thisptr.no_atoms = atoms_num
+
+    property atoms:
+        def __get__(self):
+            atoms = []
+            cdef vector[ATOM] c_atoms = self.thisptr.atoms
+            for i in range(c_atoms.size()):
+                atom_type = c_atoms[i].atom_type.decode('utf-8')
+                atom_coords = [c_atoms[i].a_coord,c_atoms[i].b_coord,c_atoms[i].c_coord]
+                atoms.append([atom_type, atom_coords])
+            return atoms
 
     def copy(self):
         """
@@ -366,6 +440,15 @@ cdef class AtomNetwork:
         if not writeToMOPAC(c_filename, self.thisptr, supercell_flag):
              raise IOError
 
+# write to atomnetwork to .vasp file. Added at 20180827
+    def writeAtomNetVaspFile(self, filename, storeRadius = False):
+        if isinstance(filename, unicode):
+            filename = (<unicode>filename).encode('utf8')
+        cdef char* c_filename = filename
+        if not writeAtmntToVasp(c_filename, self.thisptr, storeRadius):
+            raise IOError
+      
+
     def calculate_free_sphere_parameters(self, filename):
         """
         Computes the diameters of the largest included sphere, free sphere 
@@ -520,7 +603,7 @@ cdef class VoronoiNode:
 
     property coords:
         def __get__(self):
-            coords = list(self.thisptr.x, self.thisptr.y, self.thisptr.z)
+            coords = [self.thisptr.x, self.thisptr.y, self.thisptr.z]
             return coords
         def __set__(self, coords):      # Don't set this
             """
@@ -536,6 +619,69 @@ cdef class VoronoiNode:
         def __set__(self, rad): 
             print ("This value is not supposed to be modified")
             self.thisptr.rad_stat_sphere = rad
+
+cdef class VoronoiEdge:
+    """
+    Class to store the voronoi edges with some atrribute
+    """
+    def __cinit__(self):
+        self.thisptr = new VOR_EDGE()
+
+    def __init__(self):
+        pass
+
+    def __dealloc__(self):
+        del self.thisptr
+    
+    property origin:
+        def __get__(self): return self.thisptr.origin
+        def __set__(self, origin): 
+            print ("This value is not supposed to be modified")
+            self.thisptr.origin = origin
+
+    property ending:
+        def __get__(self): return self.thisptr.ending
+        def __set__(self, ending): 
+            print ("This value is not supposed to be modified")
+            self.thisptr.ending = ending
+
+    property radius:
+        def __get__(self): return self.thisptr.rad_moving_sphere
+        def __set__(self, rad): 
+            print ("This value is not supposed to be modified")
+            self.thisptr.rad_moving_sphere = rad
+
+    property leng:
+        def __get__(self): return self.thisptr.length
+        def __set__(self, length): 
+            print ("This value is not supposed to be modified")
+            self.thisptr.length = length
+
+    property delta_uc:
+        def __get__(self):
+            delta_uc = [self.thisptr.delta_uc_x, self.thisptr.delta_uc_y, self.thisptr.delta_uc_z]
+            return delta_uc
+        def __set__(self, delta_uc):      # Don't set this
+            """
+            This variable is not supposed to be modified manually
+            """
+            print ("This value is not supposed to be modified")
+            self.thisptr.delta_uc_x = delta_uc[0]
+            self.thisptr.delta_uc_y = delta_uc[1]
+            self.thisptr.delta_uc_z = delta_uc[2]
+
+    property bot_coords:
+        def __get__(self):
+            bot_coords = [self.thisptr.bottleneck_x, self.thisptr.bottleneck_y, self.thisptr.bottleneck_z]
+            return bot_coords
+        def __set__(self, coords):      # Don't set this
+            """
+            This variable is not supposed to be modified manually
+            """
+            print ("This value is not supposed to be modified")
+            self.thisptr.bottleneck_x = coords[0]
+            self.thisptr.bottleneck_y = coords[1]
+            self.thisptr.bottleneck_z = coords[2]
 
 cdef class VoronoiNetwork:
     """
@@ -556,6 +702,29 @@ cdef class VoronoiNetwork:
 
     def size(self):
         return self.thisptr.nodes.size()
+
+    property nodes:
+        def __get__(self):
+            nodes = []
+            cdef vector[VOR_NODE] c_nodes = self.thisptr.nodes
+            for i in range(c_nodes.size()):
+                node_coords = [c_nodes[i].x,c_nodes[i].y,c_nodes[i].z]
+                node_radius = c_nodes[i].rad_stat_sphere
+                nodes.append([node_coords, node_radius])
+            return nodes
+
+    property edges:
+        def __get__(self):
+            edges = []
+            cdef vector[VOR_EDGE] c_edges = self.thisptr.edges
+            for i in range(c_edges.size()):
+                edge_origin = c_edges[i].origin
+                edge_ending = c_edges[i].ending
+                edge_radius = c_edges[i].rad_moving_sphere
+                edge_length = c_edges[i].length
+                edge_boltpos = [c_edges[i].bottleneck_x,c_edges[i].bottleneck_y,c_edges[i].bottleneck_z]
+                edges.append([edge_origin, edge_ending, edge_radius, edge_length, edge_boltpos])
+            return edges
 
     def prune(self, radius):
         """

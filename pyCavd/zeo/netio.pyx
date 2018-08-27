@@ -180,6 +180,16 @@ def writeVaspFile(filename, atmnet, vornet, storeRadius = False, minRad = None, 
             if not writeToVasp(c_filename, c_atmnet, c_vornet_ptr, False):
                 raise IOError
 
+# write to atomnetwork to .vasp file. Added at 20180827
+def writeAtomNetVaspFile(filename, atmnet, storeRadius = False):
+    if isinstance(filename, unicode):
+        filename = (<unicode>filename).encode('utf8')
+    cdef char* c_filename = filename
+    cdef ATOM_NETWORK* c_atmnet = (<AtomNetwork?>atmnet).thisptr
+    if not writeAtmntToVasp(c_filename, c_atmnet, storeRadius):
+        raise IOError
+
+
 # write to .zvis file. In this file, all AtomNetwork and VoronoiNetwork information contained. Added at 20180704
 def writeZVisFile(filename, rad_flag, atmnet, vornet):
     if isinstance(filename, unicode):

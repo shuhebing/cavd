@@ -2072,3 +2072,79 @@ bool writeToVasp(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, bo
 }
 
 
+//Added at 20180826
+/**
+* Write ATOM_NETWORK to .vasp file
+*
+**/
+bool writeAtmntToVasp(char *filename, ATOM_NETWORK *cell, bool storeRadius){
+	  fstream output;
+	  int atomcount = 0;//计数标志符
+	  int flag = 0;
+	  vector<string> atomtype;
+	  vector<int> atomnum;
+	  double a,b,c;//分数坐标
+
+	  output.open(filename, fstream::out);
+	  if(!output.is_open()){
+		cerr << "Error: Failed to open .vasp output file " << filename << "\n";
+		//cerr << "Exiting ..." << "\n";
+		//exit(1);
+		return false;
+	  }
+	  else{
+		cout << "Writing ATOM_NETWORK information to " << filename << "\n";
+
+		// Write unit cell information
+		output << cell->name << "\n";
+		output << "1.0" << "\n";//缩放系数
+		output << "        " << cell->v_a.x << "        " << cell->v_a.y << "        " << cell->v_a.z << "\n";
+		output << "        " << cell->v_b.x << "        " << cell->v_b.y << "        " << cell->v_b.z << "\n";
+		output << "        " << cell->v_c.x << "        " << cell->v_c.y << "        " << cell->v_c.z << "\n";
+
+		//calculate the number of different atoms
+		atomtype.push_back(cell->atoms.at(0).type);
+		for(int i = 0; i<cell->numAtoms; i++){
+			if(cell->atoms.at(i).type.compare(atomtype.at(flag)) == 0){
+				atomcount ++;
+			}
+			else{
+				atomnum.push_back(atomcount);
+				flag++;
+				atomtype.push_back(cell->atoms.at(i).type);
+				atomcount = 1;
+			}
+			if(i == cell->numAtoms -1){
+				atomnum.push_back(atomcount);
+				atomcount = 0;//计数标志符归零
+			}
+		}
+
+		//Write static information
+		for(int i = 0; i< atomtype.size(); i++){
+			output << "   " << atomtype[i];
+		}
+		output << "\n";
+		for(int i = 0; i< atomnum.size(); i++){
+			output << "   " << atomnum[i];
+		}
+		output << "\n";
+
+		 //write the unit cell coordinate information
+		output << "Direct" << "\n";
+		for(int i = 0; i<cell->numAtoms; i++){
+			output << "    " << cell->atoms.at(i).a_coord << "         " << cell->atoms.at(i).b_coord << "         " << cell->atoms.at(i).c_coord << "\n";
+		}
+
+		//write Radius information
+		if(storeRadius == true){
+			output << "Radius" << "\n";
+			for(int i = 0; i<cell->numAtoms; i++){
+				output << "     " << cell->atoms.at(i).radius << "\n";
+			}
+		}
+	  }
+	  output.close();
+	  return true;
+}
+

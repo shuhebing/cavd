@@ -9,18 +9,22 @@ __author__ = "Bharat Kumar Medasani"
 __date__ = "2013-12-09"
 
 from libcpp.vector cimport vector
+from libcpp.string cimport string
 
 from zeo.geometry cimport CPoint
 from zeo.voronoicell cimport VOR_CELL, BASIC_VCELL
+from zeo.geometry cimport XYZ
 
 
 cdef extern from "../../zeo++/networkstorage.h":
     cdef cppclass ATOM:
         ATOM() except +
         double x, y, z
+        double a_coord, b_coord, c_coord
         double radius
-        #string type
-        #int specialID
+        string atom_type "type"
+        string label
+        int specialID
         double mass
         double charge 
 
@@ -29,6 +33,7 @@ cdef extern from "../../zeo++/networkstorage.h":
         void copy(ATOM_NETWORK*)
         double a, b, c      # Lattice parameters
         double alpha, beta, gamma   # lattice angles
+        XYZ v_a, v_b, v_c
         int no_atoms "numAtoms"
         vector[ATOM] atoms
         CPoint abc_to_xyz(double, double, double)
@@ -56,7 +61,7 @@ cdef extern from "../../zeo++/networkstorage.h":
         int delta_uc_x, delta_uc_y, delta_uc_z
 
         #added at 20180408
-        double bottleneck_x,bottleneck_y,bottle_z;
+        double bottleneck_x,bottleneck_y,bottleneck_z;
 
 
     cdef cppclass VORONOI_NETWORK:
@@ -105,7 +110,9 @@ cdef extern from '../../zeo++/networkio.h':
     cdef bint writeToMOPAC(char *filename, ATOM_NETWORK *cell, bint is_supercell)
 
     cdef bint writeVornetToXYZ "writeToXYZ"(char *filename, VORONOI_NETWORK*, double)
-
+    
+    cdef bint writeAtmntToVasp(char *filename, ATOM_NETWORK *cell, bint storeRadius)
+    
 # At present  the return value of performVoronoiDecomp is void*
 # Compile it after void* is changed to bool in the original source file
 cdef extern from "../../zeo++/network.h":
@@ -155,3 +162,9 @@ cdef class VoronoiNetwork:
     Cython wrapper class for Zeo++ VORONOI_NETWORK class.
     """
     cdef VORONOI_NETWORK* thisptr
+
+cdef class VoronoiEdge:
+    """
+    Cython wrapper class for Zeo++ VOR_EDGE class.
+    """
+    cdef VOR_EDGE* thisptr
