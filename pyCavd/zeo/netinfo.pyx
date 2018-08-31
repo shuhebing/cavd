@@ -82,13 +82,13 @@ def isMetal(element):
     return zeo_isMetal(element)
 
 #Added at 20180420
-def initializeGoldschmidtIonRadTable():
+#def initializeGoldschmidtIonRadTable():
     """
     Populate the Goldschmidt Ion radius table with Zeo++ default values
     """
-    zeo_initializeGoldschmidtIonRadTable()
+#    zeo_initializeGoldschmidtIonRadTable()
 
-def lookupGoldschmidtIonRadius(element):
+#def lookupGoldschmidtIonRadius(element):
     """"
     Args:s
         element:
@@ -99,11 +99,11 @@ def lookupGoldschmidtIonRadius(element):
         radius of the input element
     """
     #added at 20180604
-    if isinstance(element, unicode):
-        element = (<unicode>element).encode('utf8')
-    cdef string c_element = element
-    radius = zeo_lookupGoldschmidtIonRadius(c_element, True)
-    return radius    
+#    if isinstance(element, unicode):
+#        element = (<unicode>element).encode('utf8')
+#    cdef string c_element = element
+#    radius = zeo_lookupGoldschmidtIonRadius(c_element, True)
+#    return radius    
 
 #Added at 20180606
 def readIonRadTable(ionicRadDic):

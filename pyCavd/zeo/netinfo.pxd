@@ -30,8 +30,8 @@ cdef extern from "../../zeo++/networkinfo.h":
     cdef bint zeo_isMetal "isMetal"(string atomType)
     
     # Added at 20180420
-    cdef void zeo_initializeGoldschmidtIonRadTable "initializeGoldschmidtIonRadTable"()
-    cdef double zeo_lookupGoldschmidtIonRadius "lookupGoldschmidtIonRadius"(string atomType, bint radial)
+#    cdef void zeo_initializeGoldschmidtIonRadTable "initializeGoldschmidtIonRadTable"()
+#    cdef double zeo_lookupGoldschmidtIonRadius "lookupGoldschmidtIonRadius"(string atomType, bint radial)
     
     # Added at 20180606
     cdef void zeo_readIonRadTable "readIonRadTable"(map[string,double] radMap)
