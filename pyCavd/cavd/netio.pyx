@@ -7,10 +7,10 @@ from netstorage cimport ATOM_NETWORK, VORONOI_NETWORK
 
 #Added at 20180704
 from libcpp.vector cimport vector
-from zeo.voronoicell cimport VOR_CELL, BASIC_VCELL
-from zeo.channel cimport CHANNEL
-from zeo.netstorage import PerformVDError
-from zeo.channel import Channel
+from cavd.voronoicell cimport VOR_CELL, BASIC_VCELL
+from cavd.channel cimport CHANNEL
+from cavd.netstorage import PerformVDError
+from cavd.channel import Channel
 # Define the python definitions for the zeo++ functions
 
 # Easier to implement in python

@@ -9,8 +9,8 @@ from libcpp.map cimport map as cmap
 from libcpp.set cimport set as cset
 from libcpp.vector cimport vector
 
-from zeo.geometry cimport CPoint
-from zeo.netstorage cimport ATOM_NETWORK, VORONOI_NETWORK
+from cavd.geometry cimport CPoint
+from cavd.netstorage cimport ATOM_NETWORK, VORONOI_NETWORK
 
 cdef extern from "../../zeo++/voronoicell.h":
     cdef cppclass VOR_FACE:

@@ -1,7 +1,7 @@
-from zeo.netstorage import AtomNetwork
-from zeo.graphstorage import DijkstraNetwork
-from zeo.channel import Channel
-from zeo.netio import writeAtomNetVaspFile
+from cavd.netstorage import AtomNetwork
+from cavd.graphstorage import DijkstraNetwork
+from cavd.channel import Channel
+from cavd.netio import writeAtomNetVaspFile
 
 radii = {}
 atmnet = AtomNetwork.read_from_CIF("icsd_16713.cif", radii, False, None)

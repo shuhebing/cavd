@@ -1,8 +1,8 @@
 # distutils: language = c++
 # distutils: sources = ../channel.cc
 #Added at 20180704
-from zeo.netstorage cimport VoronoiNetwork
-from zeo.netstorage cimport VORONOI_NETWORK
+from cavd.netstorage cimport VoronoiNetwork
+from cavd.netstorage cimport VORONOI_NETWORK
 from channel cimport CHANNEL
 from graphstorage cimport DELTA_POS
 from graphstorage cimport CONN

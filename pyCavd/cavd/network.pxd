@@ -3,8 +3,8 @@
 
 from libcpp.vector cimport vector 
 from libcpp.string cimport string
-from zeo.netstorage cimport ATOM_NETWORK, VORONOI_NETWORK
-from zeo.voronoicell cimport VOR_CELL, BASIC_VCELL
+from cavd.netstorage cimport ATOM_NETWORK, VORONOI_NETWORK
+from cavd.voronoicell cimport VOR_CELL, BASIC_VCELL
 
 
 # At present  the return value of performVoronoiDecomp is void*

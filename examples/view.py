@@ -1,6 +1,6 @@
 import vtk
-from zeo.netstorage import AtomNetwork
-from zeo.channel import Channel
+from cavd.netstorage import AtomNetwork
+from cavd.channel import Channel
 
 #根据AtomNetwork构造展示AtomNetwork的源数据
 #点和线的数据

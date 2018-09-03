@@ -1,16 +1,16 @@
 import os
 import sys
 import re
-from zeo.netstorage import AtomNetwork
-from zeo.netstorage import connection_values_list
-from zeo.channel import Channel
-from zeo.area_volume import asa_new
-from zeo.netio import *
-from zeo.ionic_radii import get_ionic_radii
+from cavd.netstorage import AtomNetwork
+from cavd.netstorage import connection_values_list
+from cavd.channel import Channel
+from cavd.area_volume import asa_new
+from cavd.netio import *
+from cavd.ionic_radii import get_ionic_radii
 from pymatgen.core.structure import Structure
 from pymatgen.analysis.local_env import ValenceIonicRadiusEvaluator
 
-#获取输入结构中的离子半径
+#获取特定结构中离子的有效半径
 def EffectiveRadCom(filename):
     # stru = Structure.from_file(filename)
     # val_eval = ValenceIonicRadiusEvaluator(stru)
@@ -18,7 +18,7 @@ def EffectiveRadCom(filename):
     radii = get_ionic_radii(filename)
     radii_keys = list(radii.keys())
     
-    #为了防止保存的半径信息无法匹配此处对半径信息做特殊处理，如Ag+的半径会保存为Ag、Ag+、Ag1+ 1
+    #为了防止保存的半径信息无法匹配此处对半径信息做特殊处理，如Ag+的半径会保存为Ag、Ag+、Ag1+1
     for key in radii_keys:
         radii[re.sub('[^a-zA-Z]','',key)] = radii[key]
         if re.search('[A-Z][a-z]*\+|[A-Z][a-z]*\-', key) != None:

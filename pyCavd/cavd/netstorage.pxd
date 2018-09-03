@@ -11,9 +11,9 @@ __date__ = "2013-12-09"
 from libcpp.vector cimport vector
 from libcpp.string cimport string
 
-from zeo.geometry cimport CPoint
-from zeo.voronoicell cimport VOR_CELL, BASIC_VCELL
-from zeo.geometry cimport XYZ
+from cavd.geometry cimport CPoint
+from cavd.voronoicell cimport VOR_CELL, BASIC_VCELL
+from cavd.geometry cimport XYZ
 
 
 cdef extern from "../../zeo++/networkstorage.h":
@@ -119,11 +119,11 @@ cdef extern from "../../zeo++/network.h":
     cdef bint performVoronoiDecomp(bint, ATOM_NETWORK*, VORONOI_NETWORK*, 
             vector[VOR_CELL]*, bint, vector[BASIC_VCELL]*)
     cdef void calculateFreeSphereParameters(VORONOI_NETWORK*, char*, bint)
-	
-    cdef void calculateConnParameters(VORONOI_NETWORK *, char *, vector[double] *);
+
+    cdef void calculateConnParameters(VORONOI_NETWORK *, char *, vector[double] *)
     
     #added at 20180418
-	#Edited at 20180530
+    #Edited at 20180530
     cdef bint throughVorNet(VORONOI_NETWORK*, char*, double*, double*, double*)
 
     cdef void viewVoronoiDecomp(ATOM_NETWORK*, double, string)

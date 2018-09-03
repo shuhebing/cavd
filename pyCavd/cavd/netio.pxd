@@ -1,13 +1,13 @@
 # distutils: language = c++
 # distutils: sources = ../networkio.cc
 
-from zeo.netstorage cimport ATOM_NETWORK, VORONOI_NETWORK
+from cavd.netstorage cimport ATOM_NETWORK, VORONOI_NETWORK
 from libcpp.string cimport string
 
 #Added at 20180704
 from libcpp.vector cimport vector
-from zeo.voronoicell cimport VOR_CELL, BASIC_VCELL
-from zeo.channel cimport CHANNEL
+from cavd.voronoicell cimport VOR_CELL, BASIC_VCELL
+from cavd.channel cimport CHANNEL
 
 cdef extern from '../../zeo++/networkio.h':
     cdef void parseFilename(const char* filename, char* name, char* extension)

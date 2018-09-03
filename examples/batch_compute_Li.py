@@ -1,7 +1,7 @@
 import os
-from zeo import AllCom
-from zeo.netstorage import PerformVDError
-from zeo.channel import FindChannelError
+from cavd import AllCom
+from cavd.netstorage import PerformVDError
+from cavd.channel import FindChannelError
 
 filenames=[]
 path = "/home/yeanjiang/yaj/bi/Li_Na_Mg_Al_cifs/Li/"

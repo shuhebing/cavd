@@ -1,7 +1,7 @@
-from zeo.netstorage import AtomNetwork
-from zeo.netstorage import Atom
-from zeo.netstorage import VoronoiNode
-from zeo.netstorage import VoronoiEdge
+from cavd.netstorage import AtomNetwork
+from cavd.netstorage import Atom
+from cavd.netstorage import VoronoiNode
+from cavd.netstorage import VoronoiEdge
 
 a = Atom()
 print(a.cart_coords)

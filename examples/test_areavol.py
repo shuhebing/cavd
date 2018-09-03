@@ -1,5 +1,5 @@
-from zeo.netstorage import AtomNetwork
-from zeo.area_volume import volume, surface_area
+from cavd.netstorage import AtomNetwork
+from cavd.area_volume import volume, surface_area
 
 atmnet = AtomNetwork.read_from_CSSR("MgO_vac1.cssr", rad_file="MgO.rad")
 vol_str = volume(atmnet, 0.1, 0.05, 20000)

@@ -1,6 +1,6 @@
 import sys
-from zeo.netstorage import AtomNetwork
-from zeo.cycle import compute_centroid_4cycles, compute_face_centers
+from cavd.netstorage import AtomNetwork
+from cavd.cycle import compute_centroid_4cycles, compute_face_centers
 
 atmnet = AtomNetwork.read_from_CSSR("MgO.cssr", rad_file="MgO.rad")
 compute_face_centers(atmnet)

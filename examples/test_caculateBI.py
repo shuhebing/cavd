@@ -1,8 +1,8 @@
 import os
 import sys
-from zeo.high_accuracy import high_accuracy_atmnet
-from zeo.netstorage import AtomNetwork
-from zeo.netio import *
+from cavd.high_accuracy import high_accuracy_atmnet
+from cavd.netstorage import AtomNetwork
+from cavd.netio import *
 from matplotlib.font_manager import path
 
 #batch read .cif filename

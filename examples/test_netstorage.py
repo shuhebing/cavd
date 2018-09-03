@@ -1,6 +1,6 @@
 
-from zeo.netstorage import AtomNetwork
-from zeo.netio import *
+from cavd.netstorage import AtomNetwork
+from cavd.netio import *
 
 remove_filename = getRemoveMigrantFilename("Li2CO3-LDA.cif","Li")
 atmnet = AtomNetwork.read_from_CIF(remove_filename,False)
