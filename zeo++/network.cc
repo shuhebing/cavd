@@ -1395,7 +1395,7 @@ bool throughVorNet(VORONOI_NETWORK *vornet, char* filename,  double *Ri, double 
 	  output << filename << "    " << Di << " " << Df << " " << Dif << "\n";
 	  output.close();
 
-	  cout << filename << "	" << "Di = " << Di << " " << "Df = " << Df << "	" << "Dif = " << Dif << endl;
+	  cout << filename << "	" << "Ri = " << Di << " " << "Rf = " << Df << "	" << "Rif = " << Dif << endl;
 	  // compare the migrantRad and Df
 	  // if(migrantRad > Df){
 		  // cout << "migrant = " << migrantRad << "  Df = " << Df << endl;

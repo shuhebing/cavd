@@ -51,7 +51,7 @@ def AllCom(filename, probe_rad, num_sample, migrant=None, rad_flag=True, effecti
     writeZVisFile(prefixname+".zvis", rad_flag, atmnet, vornet)
     return conn,oneD,twoD,threeD
 
-#计算某个结构的瓶颈和间隙
+#计算指定结构的瓶颈和间隙
 def BIComputation(filename, migrant=None, rad_flag=True, effective_rad=True, rad_file=None, rad_store_in_vasp=True,  minRad=0.0, maxRad=0.0):
     radii = {}
     if rad_flag and effective_rad:
@@ -70,7 +70,7 @@ def BIComputation(filename, migrant=None, rad_flag=True, effective_rad=True, rad
     writeVaspFile(prefixname+"_orgin.vasp",atmnet,vornet,rad_store_in_vasp)
     writeVaspFile(prefixname+"_selected.vasp",atmnet,vornet,rad_store_in_vasp,minRad,maxRad)
 
-#计算某个结构最大自由球体半径，最大包含球体半径和沿着最大自由球体路径上的最大包含球体半径：Rf Ri Rif
+#计算指定结构最大自由球体半径，最大包含球体半径和沿着最大自由球体路径上的最大包含球体半径：Rf Ri Rif
 def ConnValCom(filename, migrant=None, rad_flag=True, effective_rad=True, rad_file=None):
     radii = {}
     if rad_flag and effective_rad:
@@ -86,7 +86,7 @@ def ConnValCom(filename, migrant=None, rad_flag=True, effective_rad=True, rad_fi
     Ri,Rf,Rif = atmnet.through_VorNet(prefixname+".res")
     return Ri,Rf,Rif
     
-#计算某个结构的连通性状态列表，存放1D，2D，3D连通半径，这些元素组成一个列表
+#计算某个结构的连通性状态列表，存放a，b，c方向上的Rf
 def ConnValListCom(filename, migrant=None, rad_flag=True, effective_rad=True, rad_file=None):
     radii = {}
     if rad_flag and effective_rad:
@@ -105,7 +105,7 @@ def ConnValListCom(filename, migrant=None, rad_flag=True, effective_rad=True, ra
     conn = connection_values_list(prefixname+".resex",vornet)
     return conn
 
-#判断某个结构的连通性,给定一个原子的半径，判断它是否是1D，2D，3D导通
+#判断某个结构的连通性,给定目标离子的半径，判断它是否是1D，2D，3D导通
 def ConnStatusCom(filename, radius, migrant=None, rad_flag=True, effective_rad=True, rad_file=None):
     connlist = ConnValListCom(filename, migrant, rad_flag, effective_rad, rad_file)
     oneD = False
