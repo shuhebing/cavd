@@ -148,7 +148,8 @@ cdef class AtomNetwork:
             cdef vector[ATOM] c_atoms = self.thisptr.atoms
             for i in range(c_atoms.size()):
                 atom_type = c_atoms[i].atom_type.decode('utf-8')
-                atom_coords = [c_atoms[i].a_coord,c_atoms[i].b_coord,c_atoms[i].c_coord]
+                #atom_coords = [c_atoms[i].a_coord,c_atoms[i].b_coord,c_atoms[i].c_coord]
+                atom_coords = [c_atoms[i].x,c_atoms[i].y,c_atoms[i].z]
                 atoms.append([atom_type, atom_coords])
             return atoms
 
