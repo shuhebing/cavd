@@ -35,6 +35,7 @@ setup(
     package_dir={"zeo": "zeo"},
     license = "",
     cmdclass = {'build_ext':build_ext},
+    package_data = {"zeo": ["ionic_radii.json"]},
     classifiers = [
         "Development Status :: 3 - Alpha",
         "Programming Language :: Cython",
