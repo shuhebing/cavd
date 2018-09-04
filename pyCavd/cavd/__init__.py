@@ -46,7 +46,7 @@ def AllCom(filename, probe_rad, num_sample, migrant=None, rad_flag=True, effecti
     writeVaspFile(prefixname+"_selected.vasp",atmnet,vornet,rad_store_in_vasp,minRad,maxRad)
     conn = connection_values_list(prefixname+".resex", vornet)
     oneD,twoD,threeD = ConnStatus(probe_rad, conn)
-    Channel.findChannelsInVornet(vornet,probe_rad,prefixname+".zchan")
+    Channel.findChannels(vornet,probe_rad,prefixname+".net")
     asa_new(prefixname+".zsa",False,atmnet,probe_rad,probe_rad,num_sample)
     writeZVisFile(prefixname+".zvis", rad_flag, atmnet, vornet)
     return conn,oneD,twoD,threeD
@@ -86,7 +86,7 @@ def ConnValCom(filename, migrant=None, rad_flag=True, effective_rad=True, rad_fi
     Ri,Rf,Rif = atmnet.through_VorNet(prefixname+".res")
     return Ri,Rf,Rif
     
-#计算某个结构的连通性状态列表，存放a，b，c方向上的Rf
+#计算某个结构的连通数值列表，存放a，b，c方向上的Rf
 def ConnValListCom(filename, migrant=None, rad_flag=True, effective_rad=True, rad_file=None):
     radii = {}
     if rad_flag and effective_rad:
@@ -100,8 +100,6 @@ def ConnValListCom(filename, migrant=None, rad_flag=True, effective_rad=True, ra
     if migrant:
         os.remove(remove_filename)
     prefixname = filename.replace(".cif","")
-    #连通性状态列表，存放1D，2D，3D连通信息元素，这些元素为一个字典，字典的键为Rf、Ri、Rif，值为对应的数值
-    #需重写该函数，需返回该列表
     conn = connection_values_list(prefixname+".resex",vornet)
     return conn
 
@@ -139,7 +137,7 @@ def ConnStatusCom(filename, radius, migrant=None, rad_flag=True, effective_rad=T
         oneD = True
     return oneD,twoD,threeD
 
-#根据连通性列表，判断某个结构的连通性,给定一个原子的半径，判断它是否是1D，2D，3D导通
+#根据连通数值列表，判断某个结构的连通性。给定一个原子的半径，判断它是否是1D，2D，3D导通
 def ConnStatus(radius,connlist):
     oneD = False
     twoD = False
@@ -186,7 +184,8 @@ def ChannelCom(filename, probe_rad, migrant=None, rad_flag=True, effective_rad=T
     if migrant:
         os.remove(remove_filename)
     prefixname = filename.replace(".cif","")
-    Channel.findChannelsInVornet(vornet,probe_rad,prefixname+".zchan")
+    #Channel.findChannelsInVornet(vornet,probe_rad,prefixname+".zchan")
+    Channel.findChannels(vornet,probe_rad,prefixname+".net")
 
 #计算ASA
 def ASACom(filename, probe_rad, num_sample, migrant=None, rad_flag=True, effective_rad=True, rad_file=None):
