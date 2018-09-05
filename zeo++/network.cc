@@ -1331,8 +1331,6 @@ void getOMSInformation(char *filename, char *filenameExtendedOutput, ATOM_NETWOR
 /**
  * Added at 20180418
  * Structure a new function to return whether a specific radius atom can through voronoi network
- * result is a array store integer,result[0],result[1],result[2] represent whether migrantRad larger than largest included sphere, largest free sphere, largest included sphere along free sphere path respectively
- * 1 is can through, 0 is can not through.
  */
 //int throughVorNet(VORONOI_NETWORK *vornet, char* filename, double migrantRad){
 //bool throughVorNet(VORONOI_NETWORK *vornet, char* filename,  double *Ri, double *Rf, double *Rif, double migrantRad){
