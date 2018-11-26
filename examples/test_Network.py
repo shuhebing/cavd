@@ -21,18 +21,12 @@ print(atmnet.lattice)
 print(atmnet.atoms_num)
 print(atmnet.atoms)
 
-b = VoronoiNode()
-print(b.coords)
-print(b.radius)
-
-c = VoronoiEdge()
-print(c.origin)
-print(c.ending)
-print(c.radius)
-print(c.leng)
-print(c.delta_uc)
-print(c.bot_coords)
-
 vornet,edge_centers,fcs = atmnet.perform_voronoi_decomposition(False)
 print(vornet.nodes)
 print(vornet.edges)
+
+channels = Channel.findChannels(vornet,1.1,"icsd_16713.net")
+for channel in channels:
+    print(channel.nodes)
+    print(channel.connections)
+    print(channel.nodes_deltapos)

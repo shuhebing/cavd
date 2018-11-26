@@ -67,6 +67,7 @@ def BIComputation(filename, migrant=None, rad_flag=True, effective_rad=True, rad
         os.remove(remove_filename)
     prefixname = filename.replace(".cif","")
     writeBIFile(prefixname+"_orgin.bi",atmnet,vornet)
+    writeBIFile(prefixname+"_selected.bi",atmnet,vornet)
     writeVaspFile(prefixname+"_orgin.vasp",atmnet,vornet,rad_store_in_vasp)
     writeVaspFile(prefixname+"_selected.vasp",atmnet,vornet,rad_store_in_vasp,minRad,maxRad)
 
