@@ -61,27 +61,27 @@ bool readCIFFile(char *filename, ATOM_NETWORK *cell, bool radial){
   string line;
   // Known markers in CIF File if you change the order it will affect the code
   string descriptor[] = {"data_",
-			 "_cell_length_a", //case 1
-			 "_cell_length_b", //2
-			 "_cell_length_c", //3
-			 "_cell_angle_alpha", //4
-			 "_cell_angle_beta", //5
-			 "_cell_angle_gamma", //6
-			 "loop_", //7
-			 "_symmetry_equiv_pos_as_xyz", //8
-			 "_space_group_symop_operation_xyz", //9
-			 "_atom_site_label", //10
-			 "_atom_site_type_symbol", //11
-			 "_atom_site_fract_x", //12
-			 "_atom_site_fract_y", //13
-			 "_atom_site_fract_z", //14
-			 "_atom_site_charge", //15
+             "_cell_length_a", //case 1
+             "_cell_length_b", //2
+             "_cell_length_c", //3
+             "_cell_angle_alpha", //4
+             "_cell_angle_beta", //5
+             "_cell_angle_gamma", //6
+             "loop_", //7
+             "_symmetry_equiv_pos_as_xyz", //8
+             "_space_group_symop_operation_xyz", //9
+             "_atom_site_label", //10
+             "_atom_site_type_symbol", //11
+             "_atom_site_fract_x", //12
+             "_atom_site_fract_y", //13
+             "_atom_site_fract_z", //14
+             "_atom_site_charge", //15
        "_symmetry_Int_Tables_number", //16
-			 "_atom_site_Cartn_x", //17
-			 "_atom_site_Cartn_y", //18
-			 "_atom_site_Cartn_z", //19
+             "_atom_site_Cartn_x", //17
+             "_atom_site_Cartn_y", //18
+             "_atom_site_Cartn_z", //19
                          "_symmetry_equiv_pos_site_id", // 20 
-			 "NULL"};  
+             "NULL"};  
   int ndx;
   vector<string> list = strAry2StrVec(descriptor);
   vector<string> token;
@@ -112,55 +112,55 @@ bool readCIFFile(char *filename, ATOM_NETWORK *cell, bool radial){
       token = split(line," ()\r\t");
       exception: //I needed an easy way to jump out of the _loop command if an unknown command was found
       if (token.size() > 0) {
-	      //Where all non-loop commands should be added
-	      if(token[0].substr(0,5).compare(list[0]) == 0){ //name of unit cell
-	        cell->name=token[0].substr(5);
-	      }
-	      else if (token[0].compare(list[1]) == 0){ //length a
-	        cell->a=convertToDouble(token[1]);
+          //Where all non-loop commands should be added
+          if(token[0].substr(0,5).compare(list[0]) == 0){ //name of unit cell
+            cell->name=token[0].substr(5);
+          }
+          else if (token[0].compare(list[1]) == 0){ //length a
+            cell->a=convertToDouble(token[1]);
           read_a = true;
-	      }
-	      else if (token[0].compare(list[2]) == 0){ //length b
-	        cell->b=convertToDouble(token[1]);
+          }
+          else if (token[0].compare(list[2]) == 0){ //length b
+            cell->b=convertToDouble(token[1]);
           read_b = true;
-	      }
-	      else if (token[0].compare(list[3]) == 0){ //length c
-	        cell->c=convertToDouble(token[1]);
+          }
+          else if (token[0].compare(list[3]) == 0){ //length c
+            cell->c=convertToDouble(token[1]);
           read_c = true;
-	      }
-	      else if (token[0].compare(list[4]) == 0){ //alpha
-	        cell->alpha=convertToDouble(token[1]);
+          }
+          else if (token[0].compare(list[4]) == 0){ //alpha
+            cell->alpha=convertToDouble(token[1]);
           read_alpha = true;
-	      }
-	      else if (token[0].compare(list[5]) == 0){ //beta
-	        cell->beta=convertToDouble(token[1]);
+          }
+          else if (token[0].compare(list[5]) == 0){ //beta
+            cell->beta=convertToDouble(token[1]);
           read_beta = true;
-	      }
-	      else if (token[0].compare(list[6]) == 0){ //gamma
-	        cell->gamma=convertToDouble(token[1]);
+          }
+          else if (token[0].compare(list[6]) == 0){ //gamma
+            cell->gamma=convertToDouble(token[1]);
           read_gamma = true;
-	      }
+          }
         else if (token[0].compare(list[16]) == 0){ //_symmetry_Int_Tables_number
-	        symmetry_Int_Table_number = convertToInt(token[1]);
-	      }
-	      else if (token[0].compare(list[7]) == 0){ //loop_
+            symmetry_Int_Table_number = convertToInt(token[1]);
+          }
+          else if (token[0].compare(list[7]) == 0){ //loop_
 //printf("DEBUG: inside a \"loop_\" section\n");
-	        vector<string> column_labels;
-	        getline(ciffile,line);
-	        token = split(line," \r\t");
+            vector<string> column_labels;
+            getline(ciffile,line);
+            token = split(line," \r\t");
           bool tokenized = false, in_loop = true;
           if(token.size()>0) tokenized=true;
-//	        while (token[0].at(0)=='_') { //collect all of the collumn labels
-	        while (tokenized && in_loop) { //collect all of the collumn labels
+//            while (token[0].at(0)=='_') { //collect all of the collumn labels
+            while (tokenized && in_loop) { //collect all of the collumn labels
             if(token[0].at(0)=='_') {
-	            column_labels.push_back(token[0]);
+                column_labels.push_back(token[0]);
 //printf("DEBUG: within loop, parsed a column header \"%s\"\n", token[0].c_str());
-	            getline(ciffile,line);
+                getline(ciffile,line);
 //printf("DEBUG: read line \"%s\" - tokenizing ...\n", line.c_str());
-	            token = split(line," \r\t");
+                token = split(line," \r\t");
               if(token.size()<=0) tokenized=false;
             } else in_loop = false;
-	        }
+            }
           if(!tokenized) {
 printf("\n#####\n##### WARNING: parsed a loop in cif file, but data was not present\n#####\n\n");
           } else {
@@ -179,67 +179,67 @@ printf("\n#####\n##### WARNING: parsed a loop in cif file, but data was not pres
               for (unsigned int i=0; i<column_labels.size(); i++){
                 switch (strCmpList(list,column_labels[i])){
   //printf("SYM DEBUG: checking for symmetry section ...\n");
-	              //Where all loop commands should be added
+                  //Where all loop commands should be added
                 case 8: //_symmetry_equiv_pos_as_xyz and
                 case 9: //_space_group_symop_operation_xyz have the same meaning
   //printf("SYM DEBUG: symmetry section found!\n");
-	              if (!((token.size()==3&&symmetry_equiv_pos_site_id_Flag==false)||(token.size()==4&&symmetry_equiv_pos_site_id_Flag==true))){
-	                cout << "Error: Expected 3 strings for _symmetry_equiv_pos_as_xyz (or 4 if _symmetry_equiv_pos_site_id is present)" << endl;
-  //	              abort();
+                  if (!((token.size()==3&&symmetry_equiv_pos_site_id_Flag==false)||(token.size()==4&&symmetry_equiv_pos_site_id_Flag==true))){
+                    cout << "Error: Expected 3 strings for _symmetry_equiv_pos_as_xyz (or 4 if _symmetry_equiv_pos_site_id is present)" << endl;
+  //                  abort();
                   ciffile.close();
                   return false;
-	              }
+                  }
                       if(token.size()==3) {
-	                sym_x.push_back(token[0]);
-	                sym_y.push_back(token[1]);
-	                sym_z.push_back(token[2]);}
+                    sym_x.push_back(token[0]);
+                    sym_y.push_back(token[1]);
+                    sym_z.push_back(token[2]);}
                         else {
                         sym_x.push_back(token[1]);
                         sym_y.push_back(token[2]);
                         sym_z.push_back(token[3]);
                         };
   //printf("SYM DEBUG: pushing back %s %s %s\n", token[0].c_str(), token[1].c_str(), token[2].c_str());
-	              break;
+                  break;
                 case 10:
-	              atom_label.push_back(token[i]);
-	              break;
+                  atom_label.push_back(token[i]);
+                  break;
                 case 11:
-	              atom_type.push_back(token[i]);
-	              break;
+                  atom_type.push_back(token[i]);
+                  break;
                 case 12:
-	              atom_x.push_back(trans_to_origuc(convertToDouble(token[i])));
-	              break;
+                  atom_x.push_back(trans_to_origuc(convertToDouble(token[i])));
+                  break;
                 case 13:
-	              atom_y.push_back(trans_to_origuc(convertToDouble(token[i])));
-	              break;
+                  atom_y.push_back(trans_to_origuc(convertToDouble(token[i])));
+                  break;
                 case 14:
-	              atom_z.push_back(trans_to_origuc(convertToDouble(token[i])));
-	              break;
+                  atom_z.push_back(trans_to_origuc(convertToDouble(token[i])));
+                  break;
                 case 15:
-	              atom_charge.push_back(convertToDouble(token[i]));
-	              break;
+                  atom_charge.push_back(convertToDouble(token[i]));
+                  break;
                 case 17:
-	              atom_x.push_back(convertToDouble(token[i]));
+                  atom_x.push_back(convertToDouble(token[i]));
                 need_to_convert_to_fractional = true;
-	              break;
+                  break;
                 case 18:
-	              atom_y.push_back(convertToDouble(token[i]));
+                  atom_y.push_back(convertToDouble(token[i]));
                 need_to_convert_to_fractional = true;
-	              break;
+                  break;
                 case 19:
-	              atom_z.push_back(convertToDouble(token[i]));
+                  atom_z.push_back(convertToDouble(token[i]));
                 need_to_convert_to_fractional = true;
-	              break;
+                  break;
                 case 20:
                       symmetry_equiv_pos_site_id_Flag = true;
                       break;
-                }	 
+                }     
               }  
               //now we've finished parsing this line, we might need to convert Cartesian to fractional coords
               if(need_to_convert_to_fractional) {
                 Point tempcoor;
                 int this_ID = atom_x.size()-1;
-        	      tempcoor = cell->xyz_to_abc(atom_x.at(this_ID),atom_y.at(this_ID),atom_z.at(this_ID));
+                  tempcoor = cell->xyz_to_abc(atom_x.at(this_ID),atom_y.at(this_ID),atom_z.at(this_ID));
 //printf("DEBUG: atom at Cartesian %.3f %.3f %.3f written to fractional %.3f %.3f %.3f\n", atom_x.at(this_ID),atom_y.at(this_ID),atom_z.at(this_ID), tempcoor[0], tempcoor[1], tempcoor[2]);
                 atom_x.at(this_ID) = tempcoor[0];
                 atom_y.at(this_ID) = tempcoor[1];
@@ -253,7 +253,7 @@ printf("\n#####\n##### WARNING: parsed a loop in cif file, but data was not pres
         }
         token.clear();
       }
-    }	  
+    }      
     ciffile.close();
     
     //If no symmetry info was provided, we can assume that none is required (i.e., structure has 'P 1' symmetry), ONLY IF we did not read a symmetry_Int_Tables_Number!=1
@@ -280,14 +280,14 @@ printf("\n#####\n##### WARNING: parsed a loop in cif file, but data was not pres
     //Parse out the numbers from atom labels and types, if specified (defined in network.h)
     if (CIF_RMV_NUMS_FROM_ATOM_TYPE){
       if (!CIF_USE_LABEL){
-	      for (unsigned int i=0; i<atom_type.size(); i++){
-	        atom_type[i] = split(atom_type[i],"0123456789").at(0);
-	      }
+          for (unsigned int i=0; i<atom_type.size(); i++){
+            atom_type[i] = split(atom_type[i],"0123456789").at(0);
+          }
       }
       else{
-	      for (unsigned int i=0; i<atom_label.size(); i++){
-	        atom_label[i] = split(atom_label[i],"0123456789").at(0);
-	      }
+          for (unsigned int i=0; i<atom_label.size(); i++){
+            atom_label[i] = split(atom_label[i],"0123456789").at(0);
+          }
       }
     }
     
@@ -327,39 +327,39 @@ printf("\n#####\n##### WARNING: parsed a loop in cif file, but data was not pres
     Point tempcoor;
     for (unsigned int i=0; i<atom_x.size(); i++){ //atoms
       if (CIF_USE_LABEL){
-	      tempatom.type = atom_label[i];
+          tempatom.type = atom_label[i];
       }
       else {
-	      tempatom.type = atom_type[i];
+          tempatom.type = atom_type[i];
       }
-	  //edited at 20180526
+      //edited at 20180526
       //tempatom.radius = lookupRadius(tempatom.type, radial);
-	  //edited at 20180606
-	  //tempatom.radius = lookupGoldschmidtIonRadius(tempatom.type, radial);
-	  if(lookupIonRadius(tempatom.type, radial) == -1)
-		  return false;
-	  else
-		  tempatom.radius = lookupIonRadius(tempatom.type, radial);
-	  
+      //edited at 20180606
+      //tempatom.radius = lookupGoldschmidtIonRadius(tempatom.type, radial);
+      if(lookupIonRadius(tempatom.type, radial) == -1)
+          return false;
+      else
+          tempatom.radius = lookupIonRadius(tempatom.type, radial);
+      
       if(CIF_CHARGES) {
         tempatom.charge = atom_charge[i];
       } else tempatom.charge = 0;
       for (unsigned int j=0;j<sym_x.size(); j++){ //symmetries
-	      tempatom.a_coord = trans_to_origuc(symbCalc(sym_x[j],atom_x[i],atom_y[i],atom_z[i]));
-	      tempatom.b_coord = trans_to_origuc(symbCalc(sym_y[j],atom_x[i],atom_y[i],atom_z[i]));
-	      tempatom.c_coord = trans_to_origuc(symbCalc(sym_z[j],atom_x[i],atom_y[i],atom_z[i]));
-	      tempcoor = cell->abc_to_xyz (tempatom.a_coord,tempatom.b_coord,tempatom.c_coord);
-	      tempatom.x = tempcoor[0]; 
-	      tempatom.y = tempcoor[1]; 
-	      tempatom.z = tempcoor[2];
-	      tempatom.specialID = (i*sym_x.size())+j;
-	
-	      //make sure that no duplicate atoms are writen
-	      int match=1;
-	      for (unsigned int k=0;k<cell->atoms.size(); k++){
+          tempatom.a_coord = trans_to_origuc(symbCalc(sym_x[j],atom_x[i],atom_y[i],atom_z[i]));
+          tempatom.b_coord = trans_to_origuc(symbCalc(sym_y[j],atom_x[i],atom_y[i],atom_z[i]));
+          tempatom.c_coord = trans_to_origuc(symbCalc(sym_z[j],atom_x[i],atom_y[i],atom_z[i]));
+          tempcoor = cell->abc_to_xyz (tempatom.a_coord,tempatom.b_coord,tempatom.c_coord);
+          tempatom.x = tempcoor[0]; 
+          tempatom.y = tempcoor[1]; 
+          tempatom.z = tempcoor[2];
+          tempatom.specialID = (i*sym_x.size())+j;
+    
+          //make sure that no duplicate atoms are writen
+          int match=1;
+          for (unsigned int k=0;k<cell->atoms.size(); k++){
                 if(cell->calcDistance(cell->atoms[k],tempatom)<thresholdLarge) { match=0;
 /*
-	        if (tempatom.a_coord-thresholdLarge < cell->atoms[k].a_coord && cell->atoms[k].a_coord < tempatom.a_coord+thresholdLarge)
+            if (tempatom.a_coord-thresholdLarge < cell->atoms[k].a_coord && cell->atoms[k].a_coord < tempatom.a_coord+thresholdLarge)
           if (tempatom.b_coord-thresholdLarge < cell->atoms[k].b_coord && cell->atoms[k].b_coord < tempatom.b_coord+thresholdLarge )
           if (tempatom.c_coord-thresholdLarge < cell->atoms[k].c_coord && cell->atoms[k].c_coord < tempatom.c_coord+thresholdLarge ){
             match=0;
@@ -544,7 +544,7 @@ bool readCUCFile(char *filename, ATOM_NETWORK *cell, bool radial){
     input >> cell->a >> cell->b >> cell->c;
     input >> cell->alpha >> cell->beta >> cell->gamma;
     cell->initialize(); // Initializes the unit cell vectors using the
-			// angles and side lengths
+            // angles and side lengths
 
     // Read and store information about each atom
     numAtoms = 0;
@@ -552,7 +552,7 @@ bool readCUCFile(char *filename, ATOM_NETWORK *cell, bool radial){
       ATOM newAtom;
       input >> newAtom.type;
       if(newAtom.type.empty())
-	break;
+    break;
       
       changeAtomType(&newAtom); // Converts to atom type
       input >> newAtom.a_coord >> newAtom.b_coord >> newAtom.c_coord;
@@ -1031,7 +1031,7 @@ bool readV1File(char *filename, ATOM_NETWORK *cell, bool radial){
     cell->beta = acos(cell->v_c.x/cell->c)*360.0/(2.0*PI);
     cell->gamma = acos(cell->v_b.x/cell->b)*360.0/(2.0*PI);
     cell->alpha = 360.0/(2*PI)*acos((cell->v_c.y/cell->c*sin(2.0*PI*cell->gamma/360.0)) 
-				    +cos(2.0*PI/360.0*cell->gamma)*cos(2.0*PI/360.0*cell->beta));
+                    +cos(2.0*PI/360.0*cell->gamma)*cos(2.0*PI/360.0*cell->beta));
 
     // Read and store information about each atom. The coordinates
     // relative to the unit cell vectors remain unknown
@@ -1086,7 +1086,7 @@ bool readDLPFile(char *filename, ATOM_NETWORK *cell, bool radial){
     cell->beta = acos(cell->v_c.x/cell->c)*360.0/(2.0*PI);
     cell->gamma = acos(cell->v_b.x/cell->b)*360.0/(2.0*PI);
     cell->alpha = 360.0/(2*PI)*acos((cell->v_c.y/cell->c*sin(2.0*PI*cell->gamma/360.0)) 
-				    +cos(2.0*PI/360.0*cell->gamma)*cos(2.0*PI/360.0*cell->beta));
+                    +cos(2.0*PI/360.0*cell->gamma)*cos(2.0*PI/360.0*cell->beta));
 
     // Read and store information about each atom
     int numAtoms = 0;
@@ -1094,8 +1094,8 @@ bool readDLPFile(char *filename, ATOM_NETWORK *cell, bool radial){
       ATOM newAtom;
       input >> newAtom.type;
       if(newAtom.type.empty())
-	break;
-	      
+    break;
+          
       input.getline(garbage,256); // reading remaining data from a line
 
       input >> newAtom.x >> newAtom.y >> newAtom.z;
@@ -1147,14 +1147,14 @@ void readNet(istream *input, VORONOI_NETWORK *vornet){
     
     while(true){
       if(*currentChar == ' ' || *currentChar == '\0'){
-	char nextID[256];
-	strncpy(nextID,connectBuff,currentChar-connectBuff);
-	nextID[currentChar-connectBuff] = '\0';
-	nearestAtoms.push_back(atoi(nextID));
-	connectBuff = currentChar + 1;
+    char nextID[256];
+    strncpy(nextID,connectBuff,currentChar-connectBuff);
+    nextID[currentChar-connectBuff] = '\0';
+    nearestAtoms.push_back(atoi(nextID));
+    connectBuff = currentChar + 1;
       }
       if(*currentChar == '\0')
-	break;
+    break;
       currentChar++;
     } 
 
@@ -1170,7 +1170,7 @@ void readNet(istream *input, VORONOI_NETWORK *vornet){
   VOR_EDGE edge;
   while(!input->eof()){
     (*input) >> edge.from >> garbage >> edge.to >> edge.rad_moving_sphere  
-	     >> edge.delta_uc_x >> edge.delta_uc_y >> edge.delta_uc_z >> edge.length;
+         >> edge.delta_uc_x >> edge.delta_uc_y >> edge.delta_uc_z >> edge.length;
     vornet->edges.push_back(edge);
   }
   vornet->edges.pop_back();
@@ -1202,7 +1202,7 @@ bool writeToCSSR(char *filename, ATOM_NETWORK *cell){
   output.open(filename, fstream::out);
   if(!output.is_open()){
     cerr << "Error: Failed to open .cssr output file " << filename << endl;
-	//cerr << "Exiting ..." << "\n";
+    //cerr << "Exiting ..." << "\n";
     //exit(1);
     return false;
   }
@@ -1222,7 +1222,7 @@ bool writeToCSSR(char *filename, ATOM_NETWORK *cell){
     for(i = 0; i<cell->numAtoms; i++){
       atm = cell->atoms.at(i);
       output << " " << i+1 << " " << cell->atoms.at(i).type << " " << atm.a_coord << " "
-	     << atm.b_coord << " " << atm.c_coord << "  0  0  0  0  0  0  0  0  " << atm.charge <<  "\n";
+         << atm.b_coord << " " << atm.c_coord << "  0  0  0  0  0  0  0  0  " << atm.charge <<  "\n";
     }
     output.close();
     return true;
@@ -1310,7 +1310,7 @@ bool writeToCIF(char *filename,  ATOM_NETWORK *cell){
   output.open(filename, fstream::out);
   if(!output.is_open()){
     cerr << "Error: Failed to open .cif output file " << filename << endl;
-	//cerr << "Exiting ..." << "\n";
+    //cerr << "Exiting ..." << "\n";
     //exit(1);
     return false;
   }
@@ -1341,15 +1341,15 @@ bool writeToCIF(char *filename,  ATOM_NETWORK *cell){
     //Determine the Crystal System
     if (cell->alpha == 90 && cell->beta == 90 && cell->gamma == 90){
       if (cell->a == cell->b || cell->b == cell->c || cell->a == cell->c){
-	      if (cell->a == cell->b && cell->b == cell->c){
-	        output << "Isometric\n" << endl;
-	      }
-	      else {
-	        output << "Tetragonal\n" << endl;
+          if (cell->a == cell->b && cell->b == cell->c){
+            output << "Isometric\n" << endl;
+          }
+          else {
+            output << "Tetragonal\n" << endl;
         }
       }
       else{
-      	output << "Orthorhombic\n" << endl;
+          output << "Orthorhombic\n" << endl;
       }
     }
     else if(cell->alpha == cell->beta || cell->beta == cell->gamma || cell->alpha == cell->gamma){
@@ -1432,17 +1432,17 @@ bool writeToNt2(char *filename, VORONOI_NETWORK *vornet, double minRad){
     int i = 0;
     while(niter != vornet->nodes.end()){
       if(niter->rad_stat_sphere > minRad){
-	output << i << " " << niter-> x << " " << niter-> y << " " 
-	       << niter-> z << " " << niter->rad_stat_sphere;
+    output << i << " " << niter-> x << " " << niter-> y << " " 
+           << niter-> z << " " << niter->rad_stat_sphere;
       
-	//Write Voronoi node/atom pairing information in i j k....z format
-	output << " ";
-	for(unsigned int j = 0; j < niter->atomIDs.size(); j++){
-	  output << niter->atomIDs.at(j);
-	  if(j < niter->atomIDs.size()-1)
-	    output << " ";
-	}
-	output <<  "\n";
+    //Write Voronoi node/atom pairing information in i j k....z format
+    output << " ";
+    for(unsigned int j = 0; j < niter->atomIDs.size(); j++){
+      output << niter->atomIDs.at(j);
+      if(j < niter->atomIDs.size()-1)
+        output << " ";
+    }
+    output <<  "\n";
       }
       i++;
       niter++;
@@ -1453,9 +1453,9 @@ bool writeToNt2(char *filename, VORONOI_NETWORK *vornet, double minRad){
     vector<VOR_EDGE> ::iterator eiter = vornet->edges.begin();
     while(eiter != vornet->edges.end()){
       if(eiter->rad_moving_sphere > minRad){
-	output << eiter->from << " -> " << eiter->to << " " << eiter->rad_moving_sphere
-	       << " " << eiter->delta_uc_x << " " << eiter->delta_uc_y << " "
-	       << eiter->delta_uc_z << " " << eiter->length << "\n";
+    output << eiter->from << " -> " << eiter->to << " " << eiter->rad_moving_sphere
+           << " " << eiter->delta_uc_x << " " << eiter->delta_uc_y << " "
+           << eiter->delta_uc_z << " " << eiter->length << "\n";
       }
       eiter++;
     }
@@ -1760,7 +1760,7 @@ void changeAtomType(ATOM *atom){
             break;
         default:
             cerr<< "Error: Atom name not recognized " << atom->type << "\n";
-            //	<< "Exiting..." << "\n";
+            //    << "Exiting..." << "\n";
             //    exit(1);
             break;
     }
@@ -1782,98 +1782,98 @@ void stripAtomNames(ATOM_NETWORK *cell)
 
 /**
  * remove a migrant ion in .cif file and restore it as a new .cif files
- *	added at 20180408
+ *    added at 20180408
  * */
 void string_replace(string &strBig, const string &strsrc, const string &strdst){
-	string::size_type pos = 0;
+    string::size_type pos = 0;
     string::size_type srclen = strsrc.size();
     string::size_type dstlen = strdst.size();
 
     while((pos=strBig.find(strsrc, pos)) != string::npos){
-	   strBig.replace( pos, srclen, strdst );
+       strBig.replace( pos, srclen, strdst );
       pos += dstlen;
     }
 }
 
 string pretreatCifFilename(char *filename,const char *migrant){
-	string line;
-	int ndx;
-	vector<string> token;
+    string line;
+    int ndx;
+    vector<string> token;
 
-	// Try opening the file if it opens proceed with processing
-	ifstream ciffile;
-	cout << "Treat file: " << filename << endl;
-	ciffile.open(filename);
+    // Try opening the file if it opens proceed with processing
+    ifstream ciffile;
+    cout << "Treat file: " << filename << endl;
+    ciffile.open(filename);
 
    if(ciffile.is_open()){
-	   //output fstream
-	   fstream output;
-	   string str = (string)filename;
-	   string outfilename = str.replace(str.find_last_of("."),4,"_remove"+(string)migrant+".cif");
-	   //outfilename = str.replace(outfilename.find_last_of("/"),1,"/results/");
-	   cout << "outfilename = " << outfilename << endl;
-	   output.open(outfilename.data(), fstream::out);
-	   if(output.is_open()){
-		   //cout << "ifstream and fstream open!" << endl;
-		   while(!ciffile.eof()){
-			   getline(ciffile,line);
-			  token = split(line," ()\r\t");
-			  exception: //an easy way to jump out of the _loop command if an unknown command was found
+       //output fstream
+       fstream output;
+       string str = (string)filename;
+       string outfilename = str.replace(str.find_last_of("."),4,"_remove"+(string)migrant+".cif");
+       //outfilename = str.replace(outfilename.find_last_of("/"),1,"/results/");
+       cout << "outfilename = " << outfilename << endl;
+       output.open(outfilename.data(), fstream::out);
+       if(output.is_open()){
+           //cout << "ifstream and fstream open!" << endl;
+           while(!ciffile.eof()){
+               getline(ciffile,line);
+              token = split(line," ()\r\t");
+              exception: //an easy way to jump out of the _loop command if an unknown command was found
 
-			  if (token.size() > 0){
-				  //Where all non-loop commands should be added
-				  if (token[0].compare("loop_") == 0){ //loop_
-					  output << line << endl;
+              if (token.size() > 0){
+                  //Where all non-loop commands should be added
+                  if (token[0].compare("loop_") == 0){ //loop_
+                      output << line << endl;
 
-					getline(ciffile,line);
-					token = split(line," \r\t");
+                    getline(ciffile,line);
+                    token = split(line," \r\t");
 
-					bool tokenized = false, in_loop = true;
-					if(token.size()>0) tokenized=true;
-					while (tokenized && in_loop){ //check _loop column label
-					if(token[0].at(0)=='_') {
-						output << line << endl;
-						getline(ciffile,line);
-						token = split(line," \r\t");
-					  if(token.size()<=0) tokenized=false;
-					}else in_loop = false;
-					 }
-				   //cout<< "break cycle" << endl;
-				  token = split(line," ,'\r\t"); //This is needed to split data
-				  while(token.size()>0){
-					   if (token[0].at(0) =='_' || token[0].compare("loop_")==0 || token[0].at(0) == '#'){
-						goto exception; // unexpected input
-						}
-					   string::size_type idx;
-					idx=line.find(migrant);
-					//check and find migrant ion
-					if(idx != string::npos){
-						//cout <<"detect migrant ion " << migrant << " and remove it." << endl;
-						getline(ciffile,line);
-						token = split(line," ,'\r\t");
-					}else {
-						output << line << endl;
-						getline(ciffile,line);
-						token = split(line," ,'\r\t");
-						}
-					 }
-				  if(token.size()==0) output << line << endl;
-				}else output << line << endl;
-			  }else output << line << endl;
-		   }
-		   ciffile.close();
-		   output.close();
-		   cout << "Remove migrant ion completed!" << endl;
-		   return outfilename;
-	   }
-	   else{
-		   cerr << "Error: Failed to open .cif output file " << outfilename << endl;
-		   return "";
-	   }
+                    bool tokenized = false, in_loop = true;
+                    if(token.size()>0) tokenized=true;
+                    while (tokenized && in_loop){ //check _loop column label
+                    if(token[0].at(0)=='_') {
+                        output << line << endl;
+                        getline(ciffile,line);
+                        token = split(line," \r\t");
+                      if(token.size()<=0) tokenized=false;
+                    }else in_loop = false;
+                     }
+                   //cout<< "break cycle" << endl;
+                  token = split(line," ,'\r\t"); //This is needed to split data
+                  while(token.size()>0){
+                       if (token[0].at(0) =='_' || token[0].compare("loop_")==0 || token[0].at(0) == '#'){
+                        goto exception; // unexpected input
+                        }
+                       string::size_type idx;
+                    idx=line.find(migrant);
+                    //check and find migrant ion
+                    if(idx != string::npos){
+                        //cout <<"detect migrant ion " << migrant << " and remove it." << endl;
+                        getline(ciffile,line);
+                        token = split(line," ,'\r\t");
+                    }else {
+                        output << line << endl;
+                        getline(ciffile,line);
+                        token = split(line," ,'\r\t");
+                        }
+                     }
+                  if(token.size()==0) output << line << endl;
+                }else output << line << endl;
+              }else output << line << endl;
+           }
+           ciffile.close();
+           output.close();
+           cout << "Remove migrant ion completed!" << endl;
+           return outfilename;
+       }
+       else{
+           cerr << "Error: Failed to open .cif output file " << outfilename << endl;
+           return "";
+       }
    }
    else{
-	   cerr << "Error: Failed to open .cif input file " << filename << endl;
-	   return "";
+       cerr << "Error: Failed to open .cif input file " << filename << endl;
+       return "";
      }
 }
 
@@ -1899,12 +1899,12 @@ bool writeToBI(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, doub
     int i = 0;
     while(niter != vornet->nodes.end()){
       if(niter->rad_stat_sphere > minRad){
-    	  a = niter->x * cell->invUCVectors[0][0] + niter->y * cell->invUCVectors[0][1] + niter->z * cell->invUCVectors[0][2];
-    	  b = niter->y * cell->invUCVectors[1][1] + niter->z * cell->invUCVectors[1][2];
-    	  c = niter->z * cell->invUCVectors[2][2];
-		  output << i << " " << a << " " << b << " "
-		  << c << " " << niter->rad_stat_sphere;
-	output <<  "\n";
+          a = niter->x * cell->invUCVectors[0][0] + niter->y * cell->invUCVectors[0][1] + niter->z * cell->invUCVectors[0][2];
+          b = niter->y * cell->invUCVectors[1][1] + niter->z * cell->invUCVectors[1][2];
+          c = niter->z * cell->invUCVectors[2][2];
+          output << i << " " << a << " " << b << " "
+          << c << " " << niter->rad_stat_sphere;
+    output <<  "\n";
       }
       i++;
       niter++;
@@ -1914,12 +1914,12 @@ bool writeToBI(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, doub
     vector<VOR_EDGE> ::iterator eiter = vornet->edges.begin();
     while(eiter != vornet->edges.end()){
       if(eiter->rad_moving_sphere > minRad){
-    	  a = eiter->bottleneck_x * cell->invUCVectors[0][0] + eiter->bottleneck_y * cell->invUCVectors[0][1] + eiter->bottleneck_z * cell->invUCVectors[0][2];
-    	  b = eiter->bottleneck_y * cell->invUCVectors[1][1] + eiter->bottleneck_z * cell->invUCVectors[1][2];
-    	  c = eiter->bottleneck_z * cell->invUCVectors[2][2];
+          a = eiter->bottleneck_x * cell->invUCVectors[0][0] + eiter->bottleneck_y * cell->invUCVectors[0][1] + eiter->bottleneck_z * cell->invUCVectors[0][2];
+          b = eiter->bottleneck_y * cell->invUCVectors[1][1] + eiter->bottleneck_z * cell->invUCVectors[1][2];
+          c = eiter->bottleneck_z * cell->invUCVectors[2][2];
 
-	output << eiter->from << " -> " << eiter->to <<" "
-	       << a <<" " << b <<" " << c << " " << eiter->rad_moving_sphere << "\n";
+    output << eiter->from << " -> " << eiter->to <<" "
+           << a <<" " << b <<" " << c << " " << eiter->rad_moving_sphere << "\n";
       }
       eiter++;
     }
@@ -1935,216 +1935,212 @@ bool writeToBI(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, doub
  * less than the provided threshold. For the default 0 minRad value, all nodes
  * and edges are included.*/
 bool writeToVasp(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, bool storeRadius, double minRad, double maxRad){
-	  fstream output;
-	  //string compareatom = cell->atoms.at(0).type;//用于比较原子类型
-	  int atomcount = 0;//计数标志符
-	  int flag = 0;
-	  vector<string> atomtype;
-	  vector<int> atomnum;
-	  double a,b,c;//分数坐标
+      fstream output;
+      //string compareatom = cell->atoms.at(0).type;
+      int atomcount = 0;
+      int flag;
+      vector<string> atomtype;
+      vector<int> atomnum;
+      double a,b,c;
 
-	  output.open(filename, fstream::out);
-	  if(!output.is_open()){
-	    cerr << "Error: Failed to open .vasp output file " << filename << "\n";
-	    //cerr << "Exiting ..." << "\n";
-	    //exit(1);
-	    return false;
-	  }
-	  else{
-	    cout << "Writing structure information to " << filename << "\n";
+      output.open(filename, fstream::out);
+      if(!output.is_open()){
+        cerr << "Error: Failed to open .vasp output file " << filename << "\n";
+        //cerr << "Exiting ..." << "\n";
+        //exit(1);
+        return false;
+      }
+      else{
+		  flag = 0;
+        cout << "Writing structure information to " << filename << "\n";
 
-	    // Write unit cell information
-	    output << cell->name << "\n";
-	    output << "1.0" << "\n";//缩放系数
-	    output << "        " << cell->v_a.x << "        " << cell->v_a.y << "        " << cell->v_a.z << "\n";
-	    output << "        " << cell->v_b.x << "        " << cell->v_b.y << "        " << cell->v_b.z << "\n";
-	    output << "        " << cell->v_c.x << "        " << cell->v_c.y << "        " << cell->v_c.z << "\n";
+        // Write unit cell information
+        output << cell->name << "\n";
+        output << "1.0" << "\n";
+        output << "        " << cell->v_a.x << "        " << cell->v_a.y << "        " << cell->v_a.z << "\n";
+        output << "        " << cell->v_b.x << "        " << cell->v_b.y << "        " << cell->v_b.z << "\n";
+        output << "        " << cell->v_c.x << "        " << cell->v_c.y << "        " << cell->v_c.z << "\n";
 
-	    //calculate the number of different atoms
-	    atomtype.push_back(cell->atoms.at(0).type);
-	    for(int i = 0; i<cell->numAtoms; i++){
-	    	if(cell->atoms.at(i).type.compare(atomtype.at(flag)) == 0){
-	    		atomcount ++;
-	    	}
-	    	else{
-	    		atomnum.push_back(atomcount);
-	    		flag++;
-	    		atomtype.push_back(cell->atoms.at(i).type);
-	    		atomcount = 1;
-	    	}
-	    	if(i == cell->numAtoms -1){
-	    		atomnum.push_back(atomcount);
-	    		atomcount = 0;//计数标志符归零
-	    	}
-	    }
+        //calculate the number of different atoms
+        atomtype.push_back(cell->atoms.at(0).type);
+        for(int i = 0; i < cell->numAtoms; i++){
+            if((cell->atoms.at(i)).type.compare(atomtype.at(flag)) == 0){
+                atomcount ++;
+            }
+            else{
+                atomnum.push_back(atomcount);
+                flag++;
+                atomtype.push_back(cell->atoms.at(i).type);
+                atomcount = 1;
+            }
+            if(i == cell->numAtoms -1){
+                atomnum.push_back(atomcount);
+                atomcount = 0;
+            }
+        }
 
-	    //calculate the interstitial numbers numbers
-	    vector<VOR_NODE> ::iterator niter = vornet->nodes.begin();
-	    while(niter != vornet->nodes.end()){
-	    	 if((minRad == 0.0 && maxRad == 0.0) || (niter->rad_stat_sphere >= minRad && niter->rad_stat_sphere <= maxRad))
-	    		 atomcount++;
-	    	 niter++;
-	    }
-	    atomtype.push_back("It");//间隙符号
-	    atomnum.push_back(atomcount);
+        //calculate the interstitial numbers numbers
+        vector<VOR_NODE> ::iterator niter = vornet->nodes.begin();
+        while(niter != vornet->nodes.end()){
+             if((minRad == 0.0 && maxRad == 0.0) || (niter->rad_stat_sphere >= minRad && niter->rad_stat_sphere <= maxRad))
+                 atomcount++;
+             niter++;
+        }
+        atomtype.push_back("It");
+        atomnum.push_back(atomcount);
 
-	    atomcount = 0;//计数标志符归零
+        atomcount = 0;
 
-	    //calculate the bottleneck numbers
-	    vector<VOR_EDGE> ::iterator eiter = vornet->edges.begin();
-	    while(eiter != vornet->edges.end()){
-	    	if((minRad == 0.0 && maxRad == 0.0) ||(eiter->rad_moving_sphere >= minRad && eiter->rad_moving_sphere <= maxRad))
-	    			atomcount++;
-	    	eiter++;
-	    }
-	    atomtype.push_back("Bn");//间隙符号
-	    atomnum.push_back(atomcount);
+        //calculate the bottleneck numbers
+        vector<VOR_EDGE> ::iterator eiter = vornet->edges.begin();
+        while(eiter != vornet->edges.end()){
+            if((minRad == 0.0 && maxRad == 0.0) ||(eiter->rad_moving_sphere >= minRad && eiter->rad_moving_sphere <= maxRad))
+                    atomcount++;
+            eiter++;
+        }
+        atomtype.push_back("Bn");
+        atomnum.push_back(atomcount);
 
-	    //Write static information
-		for(int i = 0; i< atomtype.size(); i++){
-			output << "   " << atomtype[i];
-		}
-		output << "\n";
-		for(int i = 0; i< atomnum.size(); i++){
-			output << "   " << atomnum[i];
-		}
-		output << "\n";
+        //Write static information
+        for(int i = 0; i< atomtype.size(); i++){
+            output << "   " << atomtype[i];
+        }
+        output << "\n";
+        for(int i = 0; i< atomnum.size(); i++){
+            output << "   " << atomnum[i];
+        }
+        output << "\n";
 
-	  	 //write the unit cell coordinate information
-		output << "Direct" << "\n";
-	  	for(int i = 0; i<cell->numAtoms; i++){
-	  		output << "    " << cell->atoms.at(i).a_coord << "         " << cell->atoms.at(i).b_coord << "         " << cell->atoms.at(i).c_coord << "\n";
-	  	}
+           //write the unit cell coordinate information
+        output << "Direct" << "\n";
+          for(int i = 0; i<cell->numAtoms; i++){
+              output << "    " << cell->atoms.at(i).a_coord << "         " << cell->atoms.at(i).b_coord << "         " << cell->atoms.at(i).c_coord << "\n";
+          }
 
-	  	//wirte the interstitial informations
-	  	niter = vornet->nodes.begin();
-	   while(niter != vornet->nodes.end()){
-	      if((minRad == 0.0 && maxRad == 0.0) || (niter->rad_stat_sphere >= minRad && niter->rad_stat_sphere <= maxRad)){
-	    	  //cell->initMatrices();
-	    	  a = niter->x * cell->invUCVectors[0][0] + niter->y * cell->invUCVectors[0][1] + niter->z * cell->invUCVectors[0][2];
-	    	  b = niter->y * cell->invUCVectors[1][1] + niter->z * cell->invUCVectors[1][2];
-	    	  c = niter->z * cell->invUCVectors[2][2];
-	    	  output <<"     " << a << "     " << b << "     " << c <<"\n";
-	      }
-	      niter++;
-	    }
+          //wirte the interstitial informations
+          niter = vornet->nodes.begin();
+       while(niter != vornet->nodes.end()){
+          if((minRad == 0.0 && maxRad == 0.0) || (niter->rad_stat_sphere >= minRad && niter->rad_stat_sphere <= maxRad)){
+              //cell->initMatrices();
+              a = niter->x * cell->invUCVectors[0][0] + niter->y * cell->invUCVectors[0][1] + niter->z * cell->invUCVectors[0][2];
+              b = niter->y * cell->invUCVectors[1][1] + niter->z * cell->invUCVectors[1][2];
+              c = niter->z * cell->invUCVectors[2][2];
+              output <<"     " << a << "     " << b << "     " << c <<"\n";
+          }
+          niter++;
+        }
 
-	   // Write botttleneck information
-	    eiter = vornet->edges.begin();
-	    while(eiter != vornet->edges.end()){
-	      if((minRad == 0.0 && maxRad == 0.0) || (eiter->rad_moving_sphere >= minRad && eiter->rad_moving_sphere <= maxRad)){
-	    	  a = eiter->bottleneck_x * cell->invUCVectors[0][0] + eiter->bottleneck_y * cell->invUCVectors[0][1] + eiter->bottleneck_z * cell->invUCVectors[0][2];
-	    	  b = eiter->bottleneck_y * cell->invUCVectors[1][1] + eiter->bottleneck_z * cell->invUCVectors[1][2];
-	    	  c = eiter->bottleneck_z * cell->invUCVectors[2][2];
-	    	  output <<"     " << a << "     " << b << "     " << c <<"\n";
-	      }
-	      eiter++;
-	    }
+       // Write botttleneck information
+        eiter = vornet->edges.begin();
+        while(eiter != vornet->edges.end()){
+          if((minRad == 0.0 && maxRad == 0.0) || (eiter->rad_moving_sphere >= minRad && eiter->rad_moving_sphere <= maxRad)){
+              a = eiter->bottleneck_x * cell->invUCVectors[0][0] + eiter->bottleneck_y * cell->invUCVectors[0][1] + eiter->bottleneck_z * cell->invUCVectors[0][2];
+              b = eiter->bottleneck_y * cell->invUCVectors[1][1] + eiter->bottleneck_z * cell->invUCVectors[1][2];
+              c = eiter->bottleneck_z * cell->invUCVectors[2][2];
+              output <<"     " << a << "     " << b << "     " << c <<"\n";
+          }
+          eiter++;
+        }
 
-		//write Radius information
-	    if(storeRadius == true){
-	    	output << "Radius" << "\n";
-	    	for(int i = 0; i<cell->numAtoms; i++){
-	    		output << "     " << cell->atoms.at(i).radius << "\n";
-	    	}
-	    	//wirte the interstitial radius informations
-	    	niter = vornet->nodes.begin();
-	    	while(niter != vornet->nodes.end()){
-	    		if((minRad == 0.0 && maxRad == 0.0) || (niter->rad_stat_sphere >= minRad && niter->rad_stat_sphere <= maxRad)){
-	    			output <<"     " << niter->rad_stat_sphere <<"\n";
-	    		}
-	    		niter++;
-	    	}
+        //write Radius information
+        if(storeRadius == true){
+            output << "Radius" << "\n";
+            for(int i = 0; i<cell->numAtoms; i++){
+                output << "     " << cell->atoms.at(i).radius << "\n";
+            }
+            //wirte the interstitial radius informations
+            niter = vornet->nodes.begin();
+            while(niter != vornet->nodes.end()){
+                if((minRad == 0.0 && maxRad == 0.0) || (niter->rad_stat_sphere >= minRad && niter->rad_stat_sphere <= maxRad)){
+                    output <<"     " << niter->rad_stat_sphere <<"\n";
+                }
+                niter++;
+            }
 
-	    	// Write botttleneck radius information
-	    	eiter = vornet->edges.begin();
-	    	while(eiter != vornet->edges.end()){
-	    		if((minRad == 0.0 && maxRad == 0.0) || (eiter->rad_moving_sphere >= minRad && eiter->rad_moving_sphere <= maxRad)){
-	    			output <<"     " << eiter->rad_moving_sphere <<"\n";
-	    		}
-	    		eiter++;
-	    	}
-	    }
+            // Write botttleneck radius information
+            eiter = vornet->edges.begin();
+            while(eiter != vornet->edges.end()){
+                if((minRad == 0.0 && maxRad == 0.0) || (eiter->rad_moving_sphere >= minRad && eiter->rad_moving_sphere <= maxRad)){
+                    output <<"     " << eiter->rad_moving_sphere <<"\n";
+                }
+                eiter++;
+            }
+        }
 
-	  }
-	  output.close();
-	  return true;
+      }
+      output.close();
+      return true;
 }
 
 
-//Added at 20180826
-/**
-* Write ATOM_NETWORK to .vasp file
-*
-**/
 bool writeAtmntToVasp(char *filename, ATOM_NETWORK *cell, bool storeRadius){
-	  fstream output;
-	  int atomcount = 0;//计数标志符
-	  int flag = 0;
-	  vector<string> atomtype;
-	  vector<int> atomnum;
-	  double a,b,c;//分数坐标
+      fstream output;
+      int atomcount = 0;
+      int flag = 0;
+      vector<string> atomtype;
+      vector<int> atomnum;
+      double a,b,c;
 
-	  output.open(filename, fstream::out);
-	  if(!output.is_open()){
-		cerr << "Error: Failed to open .vasp output file " << filename << "\n";
-		//cerr << "Exiting ..." << "\n";
-		//exit(1);
-		return false;
-	  }
-	  else{
-		cout << "Writing ATOM_NETWORK information to " << filename << "\n";
+      output.open(filename, fstream::out);
+      if(!output.is_open()){
+        cerr << "Error: Failed to open .vasp output file " << filename << "\n";
+        //cerr << "Exiting ..." << "\n";
+        //exit(1);
+        return false;
+      }
+      else{
+        cout << "Writing ATOM_NETWORK information to " << filename << "\n";
 
-		// Write unit cell information
-		output << cell->name << "\n";
-		output << "1.0" << "\n";//缩放系数
-		output << "        " << cell->v_a.x << "        " << cell->v_a.y << "        " << cell->v_a.z << "\n";
-		output << "        " << cell->v_b.x << "        " << cell->v_b.y << "        " << cell->v_b.z << "\n";
-		output << "        " << cell->v_c.x << "        " << cell->v_c.y << "        " << cell->v_c.z << "\n";
+        // Write unit cell information
+        output << cell->name << "\n";
+        output << "1.0" << "\n";
+        output << "        " << cell->v_a.x << "        " << cell->v_a.y << "        " << cell->v_a.z << "\n";
+        output << "        " << cell->v_b.x << "        " << cell->v_b.y << "        " << cell->v_b.z << "\n";
+        output << "        " << cell->v_c.x << "        " << cell->v_c.y << "        " << cell->v_c.z << "\n";
 
-		//calculate the number of different atoms
-		atomtype.push_back(cell->atoms.at(0).type);
-		for(int i = 0; i<cell->numAtoms; i++){
-			if(cell->atoms.at(i).type.compare(atomtype.at(flag)) == 0){
-				atomcount ++;
-			}
-			else{
-				atomnum.push_back(atomcount);
-				flag++;
-				atomtype.push_back(cell->atoms.at(i).type);
-				atomcount = 1;
-			}
-			if(i == cell->numAtoms -1){
-				atomnum.push_back(atomcount);
-				atomcount = 0;//计数标志符归零
-			}
-		}
+        //calculate the number of different atoms
+        atomtype.push_back(cell->atoms.at(0).type);
+        for(int i = 0; i<cell->numAtoms; i++){
+            if(cell->atoms.at(i).type.compare(atomtype.at(flag)) == 0){
+                atomcount ++;
+            }
+            else{
+                atomnum.push_back(atomcount);
+                flag++;
+                atomtype.push_back(cell->atoms.at(i).type);
+                atomcount = 1;
+            }
+            if(i == cell->numAtoms -1){
+                atomnum.push_back(atomcount);
+                atomcount = 0;
+            }
+        }
 
-		//Write static information
-		for(int i = 0; i< atomtype.size(); i++){
-			output << "   " << atomtype[i];
-		}
-		output << "\n";
-		for(int i = 0; i< atomnum.size(); i++){
-			output << "   " << atomnum[i];
-		}
-		output << "\n";
+        //Write static information
+        for(int i = 0; i< atomtype.size(); i++){
+            output << "   " << atomtype[i];
+        }
+        output << "\n";
+        for(int i = 0; i< atomnum.size(); i++){
+            output << "   " << atomnum[i];
+        }
+        output << "\n";
 
-		 //write the unit cell coordinate information
-		output << "Direct" << "\n";
-		for(int i = 0; i<cell->numAtoms; i++){
-			output << "    " << cell->atoms.at(i).a_coord << "         " << cell->atoms.at(i).b_coord << "         " << cell->atoms.at(i).c_coord << "\n";
-		}
+         //write the unit cell coordinate information
+        output << "Direct" << "\n";
+        for(int i = 0; i<cell->numAtoms; i++){
+            output << "    " << cell->atoms.at(i).a_coord << "         " << cell->atoms.at(i).b_coord << "         " << cell->atoms.at(i).c_coord << "\n";
+        }
 
-		//write Radius information
-		if(storeRadius == true){
-			output << "Radius" << "\n";
-			for(int i = 0; i<cell->numAtoms; i++){
-				output << "     " << cell->atoms.at(i).radius << "\n";
-			}
-		}
-	  }
-	  output.close();
-	  return true;
+        //write Radius information
+        if(storeRadius == true){
+            output << "Radius" << "\n";
+            for(int i = 0; i<cell->numAtoms; i++){
+                output << "     " << cell->atoms.at(i).radius << "\n";
+            }
+        }
+      }
+      output.close();
+      return true;
 }
 

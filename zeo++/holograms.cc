@@ -16,6 +16,14 @@
 
 using namespace std;
 
+#ifndef min
+#define min(a,b)  (((a)<(b))?(a):(b))
+#endif
+
+#ifndef max
+#define max(a,b)  (((a)>(b))?(a):(b))
+#endif
+
 
 /*
 void analyze_accessible_voronoi_by_atoms(ATOM_NETWORK *atmnet, VORONOI_NETWORK *vornet, float probeRad, vector<int> *accessInfo, vector<double> *segment_radii_vector, int num_segments, char *name) { //accessInfo now contains for each node, segment number (1+) or 0 if inaccessible

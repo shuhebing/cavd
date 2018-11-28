@@ -423,8 +423,9 @@ void voronoi_network::add_edges_to_network(v_cell &c,double x,double y,double z,
 	//真实坐标
 	//Added at 20180408
 	double *cp(c.pts);double vtx,vty,vtz;
-	double mx,my,mz;
-	
+	double mx = 0.0;
+	double my = 0.0;
+	double mz = 0.0;
 	for(l=0;l<c.p;l++) {
 		vmp=cmap+4*l;k=*(vmp++);ai=*(vmp++);aj=*(vmp++);ak=*vmp;
 		pp=pts[reg[k]]+4*regp[k];

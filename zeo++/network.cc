@@ -18,7 +18,7 @@
 #include "channel.h"
 #include "v_network.h"
 #include "material.h"
-#include "OMS.h"
+//#include "OMS.h"
 #include <exception>
 
 using namespace std;
@@ -26,41 +26,41 @@ using namespace voro;
 
 // /* 自定义异常 */
 // struct InvalidParticlesNumException : public exception{
-	// const char * what () const throw (){
-		// return "Exception: Invalid number of particles provided for Voronoi decomposition.";
-	// }
+    // const char * what () const throw (){
+        // return "Exception: Invalid number of particles provided for Voronoi decomposition.";
+    // }
 // };
 // struct InvalidBoxDimException : public exception{
-	// const char * what () const throw (){
-		// return "Exception: valid box dimensions calculated for Voronoi decomposition.";
-	// }
+    // const char * what () const throw (){
+        // return "Exception: valid box dimensions calculated for Voronoi decomposition.";
+    // }
 // };
 // struct HugeGridException : public exception{
-	// const char * what () const throw (){
-		// return "Exception: voro++: Number of computational blocks exceeds the maximum.";
-	// }
+    // const char * what () const throw (){
+        // return "Exception: voro++: Number of computational blocks exceeds the maximum.";
+    // }
 // };
 // struct AttemptException : public exception{
-	// const char * what () const throw (){
-		// return "Exception: Attempt numbers larger than excepted.";
-	// }
+    // const char * what () const throw (){
+        // return "Exception: Attempt numbers larger than excepted.";
+    // }
 // };
 // struct VoronoiDecompException : public exception{
-	// const char * what () const throw (){
-		// return "Exception: Unable to make Voronoi decomposition.";
-	// }
+    // const char * what () const throw (){
+        // return "Exception: Unable to make Voronoi decomposition.";
+    // }
 // };
 // struct CoordNumException : public exception{
-	// const char * what () const throw (){
-		// return "Exception: Improper number of node coordinates in Voronoi decomposition.";
-	// }
+    // const char * what () const throw (){
+        // return "Exception: Improper number of node coordinates in Voronoi decomposition.";
+    // }
 // };
 
-/* IMPORTANT - overwriting standard exit function - notifies user that exit was called before exiting */
-void exit(int status) {
-  printf("NOTICE: calling abort()\n");
-  abort();
-}
+// /* IMPORTANT - overwriting standard exit function - notifies user that exit was called before exiting */
+// void exit(int status) {
+  // printf("NOTICE: calling abort()\n");
+  // abort();
+// }
 
 /* converts string to upper case */
 std::string toUpperCase(const std::string & s)
@@ -76,7 +76,7 @@ std::string toUpperCase(const std::string & s)
     the option is specified, information about each VOR_CELL will also be stored using the provied pointer to
     a vector of VOR_CELL instances. The BASIC_VCELL information is stored regardless of the option specified.*/
 void* performVoronoiDecomp(bool radial, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, vector<VOR_CELL> &cells, bool saveVorCells,
-			   vector<BASIC_VCELL> &bvcells){
+               vector<BASIC_VCELL> &bvcells){
   int i,n;
   double bx,bxy,by,bxz,byz,bz;
   vector<int> atomShifts;
@@ -92,22 +92,22 @@ void* performVoronoiDecomp(bool radial, ATOM_NETWORK *cell, VORONOI_NETWORK *vor
   
   // Print the box dimensions
   printf("Box dimensions:\n"
-	 "  va=(%f 0 0)\n"
-	 "  vb=(%f %f 0)\n"
-	 "  vc=(%f %f %f)\n\n",bx,bxy,by,bxz,byz,bz);
+     "  va=(%f 0 0)\n"
+     "  vb=(%f %f 0)\n"
+     "  vc=(%f %f %f)\n\n",bx,bxy,by,bxz,byz,bz);
   
   // Check that the input parameters make sense
   if(n<1) {
     char* sentence = new char[300];
     sprintf(sentence, "Error: Invalid number of particles provided for Voronoi decomposition (%d particles were read from file, which is <1)\nExiting ...\n", n);
     fputs(sentence, stderr);
-	throw InvalidParticlesNumException();
+    throw InvalidParticlesNumException();
     //exit(1);
   }
   if(bx<tolerance||by<tolerance||bz<tolerance){
     fputs("Error: Invalid box dimensions calculated for Voronoi decomposition."
-	  " Please check unit cell parameters.\nExiting ...\n",stderr);
-	throw InvalidBoxDimException();
+      " Please check unit cell parameters.\nExiting ...\n",stderr);
+    throw InvalidBoxDimException();
     //exit(1);
   }
   
@@ -123,9 +123,9 @@ void* performVoronoiDecomp(bool radial, ATOM_NETWORK *cell, VORONOI_NETWORK *vor
   // integer wrap-arounds
   if (nxf*nyf*nzf>max_regions) {
     fprintf(stderr,"voro++: Number of computational blocks exceeds the maximum allowed of %d\n"
-		   "Either increase the particle length scale, or recompile with an increased\nmaximum.",max_regions);
+           "Either increase the particle length scale, or recompile with an increased\nmaximum.",max_regions);
     throw HugeGridException();
-	//exit(1);
+    //exit(1);
   }
   
   // Now that we are confident that the number of regions is reasonable,
@@ -167,7 +167,7 @@ void* performVoronoiDecomp(bool radial, ATOM_NETWORK *cell, VORONOI_NETWORK *vor
         return rad_con;
       } else if(attempt==numAttemptsPermitted-1) {
         printf("Exiting...\n");
-		throw AttemptException();
+        throw AttemptException();
        // exit(1);
       } else {
         cell->randomlyAdjustCoordsAndCell();
@@ -199,7 +199,7 @@ void* performVoronoiDecomp(bool radial, ATOM_NETWORK *cell, VORONOI_NETWORK *vor
         return no_rad_con;
       } else if(attempt==numAttemptsPermitted-1) {
         printf("Exiting...\n");
-		throw AttemptException();
+        throw AttemptException();
         //exit(1);
       } else {
         cell->randomlyAdjustCoordsAndCell();
@@ -213,44 +213,44 @@ void* performVoronoiDecomp(bool radial, ATOM_NETWORK *cell, VORONOI_NETWORK *vor
     a vector of VOR_CELL instances. The BASIC_VCELL information is stored regardless of the option specified. 
     This function is wrapper to above function and has no return type*/
 bool performVoronoiDecomp(bool radial, ATOM_NETWORK *atmnet, VORONOI_NETWORK *vornet, vector<VOR_CELL> *cells, bool saveVorCells,
-			   vector<BASIC_VCELL> *bvcells){
+               vector<BASIC_VCELL> *bvcells){
 
     container_periodic_poly *rad_con = NULL;
     container_periodic *no_rad_con = NULL;
     try{
-		if (radial)
-			rad_con = (container_periodic_poly *)performVoronoiDecomp(radial, atmnet, vornet, *cells, saveVorCells, *bvcells);
-		else 
-			no_rad_con = (container_periodic *)performVoronoiDecomp (radial, atmnet, vornet, *cells, saveVorCells, *bvcells); 
-		delete rad_con;
-		delete no_rad_con;
-		return true;
-	}
-	catch (InvalidParticlesNumException& e1){
-		cout << e1.what() << endl;
-		return false;
-	}
-	
-	catch (InvalidBoxDimException& e2){
-		cout << e2.what() << endl;
-		return false;
-	}
-	catch (HugeGridException& e3){
-		cout << e3.what() << endl;
-		return false;
-	}
-	catch (AttemptException& e4){
-		cout << e4.what() << endl;
-		return false;
-	}
-	catch (VoronoiDecompException& e5){
-		cout << e5.what() << endl;
-		return false;
-	}
-	catch (CoordNumException& e6){
-		cout << e6.what() << endl;
-		return false;
-	}
+        if (radial)
+            rad_con = (container_periodic_poly *)performVoronoiDecomp(radial, atmnet, vornet, *cells, saveVorCells, *bvcells);
+        else 
+            no_rad_con = (container_periodic *)performVoronoiDecomp (radial, atmnet, vornet, *cells, saveVorCells, *bvcells); 
+        delete rad_con;
+        delete no_rad_con;
+        return true;
+    }
+    catch (InvalidParticlesNumException& e1){
+        cout << e1.what() << endl;
+        return false;
+    }
+    
+    catch (InvalidBoxDimException& e2){
+        cout << e2.what() << endl;
+        return false;
+    }
+    catch (HugeGridException& e3){
+        cout << e3.what() << endl;
+        return false;
+    }
+    catch (AttemptException& e4){
+        cout << e4.what() << endl;
+        return false;
+    }
+    catch (VoronoiDecompException& e5){
+        cout << e5.what() << endl;
+        return false;
+    }
+    catch (CoordNumException& e6){
+        cout << e6.what() << endl;
+        return false;
+    }
     
 }
 
@@ -281,7 +281,7 @@ void createAdvCell(voronoicell &cell, vector<double> coords, int *idMap, VOR_CEL
     structure. */
 template<class c_option>
 bool storeVoronoiNetwork(c_option &con, ATOM_NETWORK *atmnet, VORONOI_NETWORK *vornet, double bx, double by, double bz,
-			 vector<BASIC_VCELL> &basCells, vector<int> &atomShifts, bool storeAdvCells, vector<VOR_CELL> &advCells) {
+             vector<BASIC_VCELL> &basCells, vector<int> &atomShifts, bool storeAdvCells, vector<VOR_CELL> &advCells) {
   voronoi_network vnet (con, VOR_NODE_MERGE_THRESHOLD); // data structure defined in voro++ which is not to be confused with VORONOI_NETWORK
   int id;
   double vvol=0,x,y,z,r;
@@ -304,41 +304,41 @@ bool storeVoronoiNetwork(c_option &con, ATOM_NETWORK *atmnet, VORONOI_NETWORK *v
   cellInfo = new int*[atmnet->numAtoms];
     if(vl.start()) {
       do { 
-	if(con.compute_cell(c,vl)) {
-	  vvol+=c.volume();
-	  vl.pos(id,x,y,z,r);
-	  	  
-	  int *map;
-	  vector<double> coords;
-	  c.vertices(atmnet->atoms[id].x, atmnet->atoms[id].y, atmnet->atoms[id].z, coords);
+    if(con.compute_cell(c,vl)) {
+      vvol+=c.volume();
+      vl.pos(id,x,y,z,r);
+            
+      int *map;
+      vector<double> coords;
+      c.vertices(atmnet->atoms[id].x, atmnet->atoms[id].y, atmnet->atoms[id].z, coords);
 
-	  numNodes.push_back(c.p);
-	  cellIDs.push_back(id);
-	  vertices.push_back(coords);
+      numNodes.push_back(c.p);
+      cellIDs.push_back(id);
+      vertices.push_back(coords);
 
-	  vnet.add_to_network(c,id,x,y,z,r, map);
+      vnet.add_to_network(c,id,x,y,z,r, map);
 
-	  cellInfo[cellIndex] = map;
-	  
-	  if(storeAdvCells){
-	    VOR_CELL newCell;
-	    createAdvCell(c, coords, map, newCell);
-	    advCells[id] = newCell;
-	  }
-	} 
-	else {
-	  numNodes.push_back(0);
-	  cellIDs.push_back(-1);
-	  vertices.push_back(vector<double>());
-	  
-	  cellInfo[cellIndex] = NULL;
-	}
-	cellIndex++;
+      cellInfo[cellIndex] = map;
+      
+      if(storeAdvCells){
+        VOR_CELL newCell;
+        createAdvCell(c, coords, map, newCell);
+        advCells[id] = newCell;
+      }
+    } 
+    else {
+      numNodes.push_back(0);
+      cellIDs.push_back(-1);
+      vertices.push_back(vector<double>());
+      
+      cellInfo[cellIndex] = NULL;
+    }
+    cellIndex++;
       } while(vl.inc());
     }
     else {
       fputs("Error: Unable to begin Voronoi decomposition.\nExiting...\n",stderr);
-	  throw VoronoiDecompException();
+      throw VoronoiDecompException();
      // exit(1);
     }
 
@@ -364,22 +364,22 @@ bool storeVoronoiNetwork(c_option &con, ATOM_NETWORK *atmnet, VORONOI_NETWORK *v
     vnet.store_network(vornet->nodes, vornet->edges, false);
     for(int i = 0; i < atmnet->numAtoms; i++){
       if(numNodes[i] == 0){
-	continue;
+    continue;
       }
       
       vector<int> nodeIDs;
       vector<Point> nodeLocations; 
       if((int)vertices[i].size() != 3*numNodes[i]){
-	cerr << "Error: Improper number of node coordinates in Voronoi decomposition" << "\n"
-	     << "Found " << vertices[i].size() << " but expected " << 3*numNodes[i] << "\n"
-	     << "Exiting..." << "\n";
-		 throw CoordNumException();
-	//exit(1);
+    cerr << "Error: Improper number of node coordinates in Voronoi decomposition" << "\n"
+         << "Found " << vertices[i].size() << " but expected " << 3*numNodes[i] << "\n"
+         << "Exiting..." << "\n";
+         throw CoordNumException();
+    //exit(1);
       }
 
       for(int j = 0; j < numNodes[i]; j++){
-	nodeLocations.push_back(Point(vertices[i][3*j], vertices[i][3*j+1], vertices[i][3*j+2])) ;
-	nodeIDs.push_back(cellInfo[i][j*4]);
+    nodeLocations.push_back(Point(vertices[i][3*j], vertices[i][3*j+1], vertices[i][3*j+2])) ;
+    nodeIDs.push_back(cellInfo[i][j*4]);
       }
       
       basCells[cellIDs[i]] = BASIC_VCELL(nodeLocations, nodeIDs);
@@ -410,21 +410,21 @@ void extendUnitCell(ATOM_NETWORK *cell, ATOM_NETWORK *newCell, int xfactor, int 
     ATOM oldAtom = cell->atoms.at(i);
     for(int j = 0; j < xfactor; j++){
       for(int k = 0; k < yfactor; k++){
-	for(int m = 0; m < zfactor; m++){
-	  ATOM newAtom;
-	  newAtom.specialID = i;
-	  newAtom.type = oldAtom.type;
-	  newAtom.radius = oldAtom.radius;
-	  newAtom.a_coord = oldAtom.a_coord/xfactor + j*1.0/xfactor;
-	  newAtom.b_coord = oldAtom.b_coord/yfactor + k*1.0/yfactor;
-	  newAtom.c_coord = oldAtom.c_coord/zfactor + m*1.0/zfactor;
-	  Point newCoords = newCell->abc_to_xyz(newAtom.a_coord, newAtom.b_coord, newAtom.c_coord);
-	  newAtom.x = newCoords[0];
-	  newAtom.y = newCoords[1];
-	  newAtom.z = newCoords[2];
-	  newCell->atoms.push_back(newAtom);
-	  numAtoms++;
-	}
+    for(int m = 0; m < zfactor; m++){
+      ATOM newAtom;
+      newAtom.specialID = i;
+      newAtom.type = oldAtom.type;
+      newAtom.radius = oldAtom.radius;
+      newAtom.a_coord = oldAtom.a_coord/xfactor + j*1.0/xfactor;
+      newAtom.b_coord = oldAtom.b_coord/yfactor + k*1.0/yfactor;
+      newAtom.c_coord = oldAtom.c_coord/zfactor + m*1.0/zfactor;
+      Point newCoords = newCell->abc_to_xyz(newAtom.a_coord, newAtom.b_coord, newAtom.c_coord);
+      newAtom.x = newCoords[0];
+      newAtom.y = newCoords[1];
+      newAtom.z = newCoords[2];
+      newCell->atoms.push_back(newAtom);
+      numAtoms++;
+    }
       }
     }
   }
@@ -474,8 +474,8 @@ void extendVorNet(VORONOI_NETWORK *vornet, VORONOI_NETWORK *newNet, DELTA_POS di
       newNode.rad_stat_sphere = oldNode.rad_stat_sphere;
       newNet->nodes.push_back(newNode);
       if(sourceNodes->find(j) != sourceNodes->end()){
-	sourceNodes->insert(idCount);
-	idAliases->insert(pair<int,int> (idCount,j));
+    sourceNodes->insert(idCount);
+    idAliases->insert(pair<int,int> (idCount,j));
       }
       idCount++;
     }
@@ -489,20 +489,20 @@ void extendVorNet(VORONOI_NETWORK *vornet, VORONOI_NETWORK *newNet, DELTA_POS di
 
       int changeInTo;
       if(dirComp.isZero())
-	changeInTo = 0;
+    changeInTo = 0;
       else if ((dirComp.x < 0) || (dirComp.y < 0) || (dirComp.z < 0))
-	changeInTo = -1;
+    changeInTo = -1;
       else
-	changeInTo = 1;
+    changeInTo = 1;
      
       int newTo = i + changeInTo;
       if(newTo < 0){
-	newDirection = newDirection + (direction*(-1));
-	newTo = factor;
+    newDirection = newDirection + (direction*(-1));
+    newTo = factor;
       }
       else if (newTo > factor){
-	newDirection = newDirection + direction;
-	newTo = 0;
+    newDirection = newDirection + direction;
+    newTo = 0;
       }
  
       VOR_EDGE newEdge;
@@ -539,7 +539,7 @@ void calculateFreeSphereParameters(VORONOI_NETWORK *vornet, char *filename, bool
     
     //freeRadResults.push_back(2*results.second.max_radius);
     //incRadResults.push_back(2*results.second.max_inc_radius);
-	freeRadResults.push_back(results.second.max_radius);
+    freeRadResults.push_back(results.second.max_radius);
     incRadResults.push_back(results.second.max_inc_radius);
     NtoN.push_back(results.first);
   }
@@ -608,7 +608,7 @@ void calculateConnParameters(VORONOI_NETWORK *vornet, char *filename, vector<dou
     
     //freeRadResults.push_back(2*results.second.max_radius);
     //incRadResults.push_back(2*results.second.max_inc_radius);
-	freeRadResults.push_back(results.second.max_radius);
+    freeRadResults.push_back(results.second.max_radius);
     incRadResults.push_back(results.second.max_inc_radius);
     NtoN.push_back(results.first);
   }
@@ -644,7 +644,7 @@ void calculateConnParameters(VORONOI_NETWORK *vornet, char *filename, vector<dou
   output << "  ";
   for(unsigned int i = 0; i < freeRadResults.size(); i++){
     values->push_back(freeRadResults[i]);
-	output << freeRadResults[i] << "  ";
+    output << freeRadResults[i] << "  ";
   }
 
   for(unsigned int i = 0; i < incRadResults.size(); i++)
@@ -768,9 +768,9 @@ void viewVoronoiDecomp(ATOM_NETWORK *atmnet, double r_probe, string filename){
 void loadRadii(ATOM_NETWORK *atmnet){
   vector <ATOM> ::iterator iter = atmnet->atoms.begin();
   while(iter != atmnet->atoms.end()){
-	//Edited at 2018 05 26
+    //Edited at 2018 05 26
     //iter->radius = lookupRadius(iter->type, true);
-	iter->radius = lookupRadius(iter->type, true);
+    iter->radius = lookupRadius(iter->type, true);
     iter++;
   }
 }
@@ -812,6 +812,7 @@ void getStructureInformation(char *filename, char *filenameExtendedOutput, ATOM_
 
  if(a_step>=1.0 || b_step>=1.0 || c_step>=1.0)
    {//no speed up
+
    for(unsigned int i = 0; i < atmnet->atoms.size(); i++) 
       {
       surfaceIDs.push_back(i);
@@ -1169,164 +1170,164 @@ void getStructureInformation(char *filename, char *filenameExtendedOutput, ATOM_
 
 
 
-/* Print information about the presence of open metal sites 
-   */
+// /* Print information about the presence of open metal sites 
+   // */
    
-void getOMSInformation(char *filename, char *filenameExtendedOutput, ATOM_NETWORK *atmnet, bool extendedOutput){
+// void getOMSInformation(char *filename, char *filenameExtendedOutput, ATOM_NETWORK *atmnet, bool extendedOutput){
 
- // General consts
- const double Threshold = PI/16.;
+ // // General consts
+ // const double Threshold = PI/16.;
 
- // Output variables
- int nOMS=0;
- vector< vector<int> > OMS_atomIDs;
+ // // Output variables
+ // int nOMS=0;
+ // vector< vector<int> > OMS_atomIDs;
 
- // to speed up calculations, identify atoms on the "surface" of the unit cell 
+ // // to speed up calculations, identify atoms on the "surface" of the unit cell 
 
- vector <int> surfaceIDs;
- vector <bool> surfaceFlag;
+ // vector <int> surfaceIDs;
+ // vector <bool> surfaceFlag;
 
- double surface_slab_d = 3.5; // cutoff distance from the surface 
+ // double surface_slab_d = 3.5; // cutoff distance from the surface 
 
- double a_step = surface_slab_d/atmnet->a;
- double b_step = surface_slab_d/atmnet->b;
- double c_step = surface_slab_d/atmnet->c;
+ // double a_step = surface_slab_d/atmnet->a;
+ // double b_step = surface_slab_d/atmnet->b;
+ // double c_step = surface_slab_d/atmnet->c;
 
- surfaceFlag.resize(atmnet->atoms.size(), false);
+ // surfaceFlag.resize(atmnet->atoms.size(), false);
 
- if(a_step>=1.0 || b_step>=1.0 || c_step>=1.0)
-   {//no speed up
-   for(unsigned int i = 0; i < atmnet->atoms.size(); i++) 
-      {
-      surfaceIDs.push_back(i);
-      surfaceFlag.at(i) = true;
-      };
-   cout << "Small unit cell. All(" << atmnet->atoms.size() << ") atoms considered to be on the unit cell surface." << endl;
-   }else
-   {
-   for(unsigned int i = 0; i < atmnet->atoms.size(); i++)
-      {
-      double a = atmnet->atoms.at(i).a_coord; double b = atmnet->atoms.at(i).b_coord; double c = atmnet->atoms.at(i).c_coord;
+ // if(a_step>=1.0 || b_step>=1.0 || c_step>=1.0)
+   // {//no speed up
+   // for(unsigned int i = 0; i < atmnet->atoms.size(); i++) 
+      // {
+      // surfaceIDs.push_back(i);
+      // surfaceFlag.at(i) = true;
+      // };
+   // cout << "Small unit cell. All(" << atmnet->atoms.size() << ") atoms considered to be on the unit cell surface." << endl;
+   // }else
+   // {
+   // for(unsigned int i = 0; i < atmnet->atoms.size(); i++)
+      // {
+      // double a = atmnet->atoms.at(i).a_coord; double b = atmnet->atoms.at(i).b_coord; double c = atmnet->atoms.at(i).c_coord;
 
-      if(a < a_step || a > (1-a_step) || b < b_step || b > (1-b_step) || c < c_step || c > (1-c_step) )
-        {
-        surfaceIDs.push_back(i); surfaceFlag.at(i) = true;
-        };
-      };
-   cout << "Big unit cell. " << surfaceIDs.size() << " out of " << atmnet->atoms.size() << " atoms considered to be on the unit cell surface. Surface definition = " << surface_slab_d << endl;
-   };
-
-
- for(unsigned int i = 0; i < atmnet->atoms.size(); i++)
-    {
-//    DijkstraAtomNetwork.nodes.push_back(DIJKSTRA_NODE(i, atmnet->atoms.at(i).x, atmnet->atoms.at(i).y, atmnet->atoms.at(i).z,
-//                                                           lookupCovRadius(atmnet->atoms.at(i).type), true));
-
-    if(isMetal(atmnet->atoms.at(i).type) == true)
-     {
-
-     vector< vector <double> > cluster;
-     vector <int> cluster_atomIDs;
-
-     XYZ atom1(atmnet->atoms.at(i).x, atmnet->atoms.at(i).y, atmnet->atoms.at(i).z);
-     vector <double> origin;
-     origin.push_back(atom1.x); origin.push_back(atom1.y); origin.push_back(atom1.z);
-     cluster.push_back(origin);
-     cluster_atomIDs.push_back(i);
-
-     for(int x=-1; x<2; x++) // loop over all unit cells
-     for(int y=-1; y<2; y++)
-     for(int z=-1; z<2; z++)
-       {
-       if(x==0 && y==0 && z==0)
-         { // connectivity inside cell
-         for(unsigned int j = 0; j < atmnet->atoms.size(); j++)
-            {
-            if(i!=j)
-              {
-              XYZ atom2(atmnet->atoms.at(j).x, atmnet->atoms.at(j).y, atmnet->atoms.at(j).z);
-              XYZ va = atmnet->v_a; XYZ vb = atmnet->v_b; XYZ vc = atmnet->v_c;
-              atom2 = atom2 + va.scale(x) + vb.scale(y) + vc.scale(z);
-              double dist = calcEuclideanDistance(atom1.x, atom1.y, atom1.z, atom2.x, atom2.y, atom2.z);
-              if(dist < lookupCovRadius(atmnet->atoms.at(i).type) + lookupCovRadius(atmnet->atoms.at(j).type)  + 0.4)
-               { // connected;
-               vector <double> clusteratom;
-               clusteratom.push_back(atom2.x); clusteratom.push_back(atom2.y); clusteratom.push_back(atom2.z);
-               cluster.push_back(clusteratom);
-               cluster_atomIDs.push_back(j);
-               };
-              };
-            };
-         }else
-         { // connectivity outside cell
-         if(surfaceFlag.at(i) == true) // only investigate if surface atom (other will not have a chance to be connected)
-           {
-           for(unsigned int k = 0; k < surfaceIDs.size(); k++)
-              {
-              unsigned int j = surfaceIDs.at(k);
-
-              XYZ atom2(atmnet->atoms.at(j).x, atmnet->atoms.at(j).y, atmnet->atoms.at(j).z);
-              XYZ va = atmnet->v_a; XYZ vb = atmnet->v_b; XYZ vc = atmnet->v_c;
-              atom2 = atom2 + va.scale(x) + vb.scale(y) + vc.scale(z);
-
-              double dist = calcEuclideanDistance(atom1.x, atom1.y, atom1.z, atom2.x, atom2.y, atom2.z);
-              if(dist < lookupCovRadius(atmnet->atoms.at(i).type) + lookupCovRadius(atmnet->atoms.at(j).type)  + 0.4)
-               { // connected;
-               vector <double> clusteratom;
-               clusteratom.push_back(atom2.x); clusteratom.push_back(atom2.y); clusteratom.push_back(atom2.z);
-               cluster.push_back(clusteratom);
-               cluster_atomIDs.push_back(j);
-               };
+      // if(a < a_step || a > (1-a_step) || b < b_step || b > (1-b_step) || c < c_step || c > (1-c_step) )
+        // {
+        // surfaceIDs.push_back(i); surfaceFlag.at(i) = true;
+        // };
+      // };
+   // cout << "Big unit cell. " << surfaceIDs.size() << " out of " << atmnet->atoms.size() << " atoms considered to be on the unit cell surface. Surface definition = " << surface_slab_d << endl;
+   // };
 
 
+ // for(unsigned int i = 0; i < atmnet->atoms.size(); i++)
+    // {
+// //    DijkstraAtomNetwork.nodes.push_back(DIJKSTRA_NODE(i, atmnet->atoms.at(i).x, atmnet->atoms.at(i).y, atmnet->atoms.at(i).z,
+// //                                                           lookupCovRadius(atmnet->atoms.at(i).type), true));
 
-              }; // ends loop over k
-            }; // ends surfaceFlag.at(i) if
+    // if(isMetal(atmnet->atoms.at(i).type) == true)
+     // {
 
-        }; // end loop over cells outside the central cell
-       }; //ends loop over supercell (x,y,z)
+     // vector< vector <double> > cluster;
+     // vector <int> cluster_atomIDs;
 
-   if(IsExposedMoleculeThreshold(cluster, Threshold)) 
-      {
-      nOMS++;
-      OMS_atomIDs.push_back(cluster_atomIDs);
-      };
+     // XYZ atom1(atmnet->atoms.at(i).x, atmnet->atoms.at(i).y, atmnet->atoms.at(i).z);
+     // vector <double> origin;
+     // origin.push_back(atom1.x); origin.push_back(atom1.y); origin.push_back(atom1.z);
+     // cluster.push_back(origin);
+     // cluster_atomIDs.push_back(i);
 
-   }; // ends if isMetal
-  }; // finishes loop over all atoms
+     // for(int x=-1; x<2; x++) // loop over all unit cells
+     // for(int y=-1; y<2; y++)
+     // for(int z=-1; z<2; z++)
+       // {
+       // if(x==0 && y==0 && z==0)
+         // { // connectivity inside cell
+         // for(unsigned int j = 0; j < atmnet->atoms.size(); j++)
+            // {
+            // if(i!=j)
+              // {
+              // XYZ atom2(atmnet->atoms.at(j).x, atmnet->atoms.at(j).y, atmnet->atoms.at(j).z);
+              // XYZ va = atmnet->v_a; XYZ vb = atmnet->v_b; XYZ vc = atmnet->v_c;
+              // atom2 = atom2 + va.scale(x) + vb.scale(y) + vc.scale(z);
+              // double dist = calcEuclideanDistance(atom1.x, atom1.y, atom1.z, atom2.x, atom2.y, atom2.z);
+              // if(dist < lookupCovRadius(atmnet->atoms.at(i).type) + lookupCovRadius(atmnet->atoms.at(j).type)  + 0.4)
+               // { // connected;
+               // vector <double> clusteratom;
+               // clusteratom.push_back(atom2.x); clusteratom.push_back(atom2.y); clusteratom.push_back(atom2.z);
+               // cluster.push_back(clusteratom);
+               // cluster_atomIDs.push_back(j);
+               // };
+              // };
+            // };
+         // }else
+         // { // connectivity outside cell
+         // if(surfaceFlag.at(i) == true) // only investigate if surface atom (other will not have a chance to be connected)
+           // {
+           // for(unsigned int k = 0; k < surfaceIDs.size(); k++)
+              // {
+              // unsigned int j = surfaceIDs.at(k);
 
- // Save output
- fstream output;
- output.open(filename, fstream::out);
- output << filename << " #OMS=  "<< nOMS << "\n";
- output.close();
+              // XYZ atom2(atmnet->atoms.at(j).x, atmnet->atoms.at(j).y, atmnet->atoms.at(j).z);
+              // XYZ va = atmnet->v_a; XYZ vb = atmnet->v_b; XYZ vc = atmnet->v_c;
+              // atom2 = atom2 + va.scale(x) + vb.scale(y) + vc.scale(z);
 
- // Save extended output: coordinates with framework and molecule ID
+              // double dist = calcEuclideanDistance(atom1.x, atom1.y, atom1.z, atom2.x, atom2.y, atom2.z);
+              // if(dist < lookupCovRadius(atmnet->atoms.at(i).type) + lookupCovRadius(atmnet->atoms.at(j).type)  + 0.4)
+               // { // connected;
+               // vector <double> clusteratom;
+               // clusteratom.push_back(atom2.x); clusteratom.push_back(atom2.y); clusteratom.push_back(atom2.z);
+               // cluster.push_back(clusteratom);
+               // cluster_atomIDs.push_back(j);
+               // };
 
 
 
+              // }; // ends loop over k
+            // }; // ends surfaceFlag.at(i) if
 
-/* Save additional atom statistics */
+        // }; // end loop over cells outside the central cell
+       // }; //ends loop over supercell (x,y,z)
 
- if(extendedOutput == true)
-   {
-   fstream output2;
-   output2.open(filenameExtendedOutput, fstream::out);
+   // if(IsExposedMoleculeThreshold(cluster, Threshold)) 
+      // {
+      // nOMS++;
+      // OMS_atomIDs.push_back(cluster_atomIDs);
+      // };
 
-   for(unsigned int i=0; i < OMS_atomIDs.size(); i++)
-      {
-      output2 << atmnet->atoms.at(OMS_atomIDs[i].at(0)).type << "     ";
-      output2 << OMS_atomIDs[i].size()-1 << "  ";
-      for(unsigned int j=1; j < OMS_atomIDs[i].size(); j++)
-         output2 << atmnet->atoms.at(OMS_atomIDs[i].at(j)).type << " ";
-      output2 << "\n";
-      };
+   // }; // ends if isMetal
+  // }; // finishes loop over all atoms
 
-   output2.close();
+ // // Save output
+ // fstream output;
+ // output.open(filename, fstream::out);
+ // output << filename << " #OMS=  "<< nOMS << "\n";
+ // output.close();
 
-   }; // ends extended output
+ // // Save extended output: coordinates with framework and molecule ID
 
-}
+
+
+
+// /* Save additional atom statistics */
+
+ // if(extendedOutput == true)
+   // {
+   // fstream output2;
+   // output2.open(filenameExtendedOutput, fstream::out);
+
+   // for(unsigned int i=0; i < OMS_atomIDs.size(); i++)
+      // {
+      // output2 << atmnet->atoms.at(OMS_atomIDs[i].at(0)).type << "     ";
+      // output2 << OMS_atomIDs[i].size()-1 << "  ";
+      // for(unsigned int j=1; j < OMS_atomIDs[i].size(); j++)
+         // output2 << atmnet->atoms.at(OMS_atomIDs[i].at(j)).type << " ";
+      // output2 << "\n";
+      // };
+
+   // output2.close();
+
+   // }; // ends extended output
+
+// }
 
 /**
  * Added at 20180418
@@ -1335,71 +1336,72 @@ void getOMSInformation(char *filename, char *filenameExtendedOutput, ATOM_NETWOR
 //int throughVorNet(VORONOI_NETWORK *vornet, char* filename, double migrantRad){
 //bool throughVorNet(VORONOI_NETWORK *vornet, char* filename,  double *Ri, double *Rf, double *Rif, double migrantRad){
 bool throughVorNet(VORONOI_NETWORK *vornet, char* filename,  double *Ri, double *Rf, double *Rif){
-	  vector<double> freeRadResults;
-	  vector<double> incRadResults;
-	  vector<bool> NtoN;
-	  double Di,Df,Dif;
+      vector<double> freeRadResults;
+      vector<double> incRadResults;
+      vector<bool> NtoN;
+      double Di,Df,Dif;
 
-	  DELTA_POS directions [3] = {DELTA_POS(1,0,0), DELTA_POS(0,1,0), DELTA_POS(0,0,1)};
-	  for(unsigned int i = 0; i < 3; i++){
-	    VORONOI_NETWORK newNet;
-	    set<int> sourceNodes;
-	    map<int,int> idAliases;
-	    extendVorNet(vornet, &newNet, directions[i], &idAliases, &sourceNodes);
+      DELTA_POS directions [3] = {DELTA_POS(1,0,0), DELTA_POS(0,1,0), DELTA_POS(0,0,1)};
+      for(unsigned int i = 0; i < 3; i++){
+        VORONOI_NETWORK newNet;
+        set<int> sourceNodes;
+        map<int,int> idAliases;
+        extendVorNet(vornet, &newNet, directions[i], &idAliases, &sourceNodes);
 
-	    DIJKSTRA_NETWORK dnet;
-	    DIJKSTRA_NETWORK::buildDijkstraNetwork(&newNet,&dnet);
+        DIJKSTRA_NETWORK dnet;
+        DIJKSTRA_NETWORK::buildDijkstraNetwork(&newNet,&dnet);
 
-	    TRAVERSAL_NETWORK analyzeNet = TRAVERSAL_NETWORK(directions[i].x,directions[i].y,directions[i].z, &dnet);
-	    pair<bool,PATH> results = analyzeNet.findMaxFreeSphere(&idAliases, &sourceNodes);
+        TRAVERSAL_NETWORK analyzeNet = TRAVERSAL_NETWORK(directions[i].x,directions[i].y,directions[i].z, &dnet);
+        pair<bool,PATH> results = analyzeNet.findMaxFreeSphere(&idAliases, &sourceNodes);
 
-	    freeRadResults.push_back(results.second.max_radius);
-	    incRadResults.push_back(results.second.max_inc_radius);
-	    NtoN.push_back(results.first);
-	  }
-	  Di = findMaxIncludedSphere(vornet);
+        freeRadResults.push_back(results.second.max_radius);
+        incRadResults.push_back(results.second.max_inc_radius);
+        NtoN.push_back(results.first);
+      }
+      Di = findMaxIncludedSphere(vornet);
 
-//	  output << filename << "	" << "Di = " findMaxIncludedSphere(vornet) << " " << "Df = " ;
+//      output << filename << "    " << "Di = " findMaxIncludedSphere(vornet) << " " << "Df = " ;
 
-	  double maxd=0.0; int maxdir=0;
-	  for(unsigned int i = 0; i < freeRadResults.size(); i++)
-	     {
-	     if(i==0) {maxd=freeRadResults[i]; maxdir=i;}
-	       else
-	       {
-	       if(maxd<freeRadResults[i])
-	         {
-	         maxd=freeRadResults[i];
-	         maxdir=i;
-	         }
-	       else if(maxd==freeRadResults[i])
-	         {
-	         if(incRadResults[maxdir]<incRadResults[i]) maxdir=i;
-	         };
-	       };
-	     };
-	  Df = freeRadResults[maxdir];
-	  Dif = incRadResults[maxdir];
-	  
-	  *Ri = Di;
-	  *Rf = Df;
-	  *Rif = Dif;
+      double maxd=0.0; int maxdir=0;
+      for(unsigned int i = 0; i < freeRadResults.size(); i++)
+         {
+         if(i==0) {maxd=freeRadResults[i]; maxdir=i;}
+           else
+           {
+           if(maxd<freeRadResults[i])
+             {
+             maxd=freeRadResults[i];
+             maxdir=i;
+             }
+           else if(maxd==freeRadResults[i])
+             {
+             if(incRadResults[maxdir]<incRadResults[i]) maxdir=i;
+             };
+           };
+         };
+      Df = freeRadResults[maxdir];
+      Dif = incRadResults[maxdir];
+      
+      *Ri = Di;
+      *Rf = Df;
+      *Rif = Dif;
 
-	  fstream output;
-	  output.setf(ios::fixed,ios::floatfield);
-	  output.precision(5);
-	  output.width(12);
-	  output.open(filename, fstream::out);
-	  output << filename << "    " << Di << " " << Df << " " << Dif << "\n";
-	  output.close();
+      fstream output;
+      output.setf(ios::fixed,ios::floatfield);
+      output.precision(5);
+      output.width(12);
+      output.open(filename, fstream::out);
+      output << filename << "    " << Di << " " << Df << " " << Dif << "\n";
+      output.close();
 
-	  cout << filename << "	" << "Ri = " << Di << " " << "Rf = " << Df << "	" << "Rif = " << Dif << endl;
-	  // compare the migrantRad and Df
-	  // if(migrantRad > Df){
-		  // cout << "migrant = " << migrantRad << "  Df = " << Df << endl;
-		  // return false;
-	  // }
-	  // else
-		  // return true;
+      cout << filename << "    " << "Ri = " << Di << " " << "Rf = " << Df << "    " << "Rif = " << Dif << endl;
+      // compare the migrantRad and Df
+      // if(migrantRad > Df){
+          // cout << "migrant = " << migrantRad << "  Df = " << Df << endl;
+          // return false;
+      // }
+      // else
+          // return true;
+      return true;
 }
 

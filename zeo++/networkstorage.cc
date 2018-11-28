@@ -1924,7 +1924,9 @@ vector<MOLECULE> get_multiple_best_RMSD_fits(MOLECULE mol, ATOM_NETWORK *cell, i
   vector<MOLECULE> vector_of_centred_molecules;
   for(int p=0; p<num_perm; p++) { //try each permutation!
     vector<int> perm = permutations.at(p);
-    double fixed[num_fit_sites][3], moving[num_fit_sites][3];
+	//double fixed[num_fit_sites][3], moving[num_fit_sites][3];
+	double(*fixed)[3] = new double[num_fit_sites][3];
+	double(*moving)[3] = new double[num_fit_sites][3];
     XYZ fixed_CoM = origin, moving_CoM = origin;
     for(int i=0; i<num_fit_sites; i++) {
       XYZ fix(0,0,0);
@@ -1965,6 +1967,9 @@ vector<MOLECULE> get_multiple_best_RMSD_fits(MOLECULE mol, ATOM_NETWORK *cell, i
     for(int i=0; i<3; i++) for(int j=0; j<3; j++) rotation_matrix[i][j] = 0; //dummy values - filled in by the rmsd method
     double rmsd = 0; //dummy value - filled in by the rmsd method
     calculate_rotation_rmsd(fixed, moving, num_fit_sites, mov_com, mov_to_ref, rotation_matrix, &rmsd); //calling rmsd code - writes the corresponding rotation matrix
+	delete[] fixed;
+	delete[] moving;
+
     //3b) some permutations are not possible, and produce NAN
     bool valid = true;
     if(isnan(rmsd)) valid=false;
@@ -3109,11 +3114,13 @@ if(verbose) printf("DEBUG: this vertex has %d edges and %d dummy_edges\n", num_e
 
 void read_xyz(FILE *input, MOLECULE *mol, const char *filename) {
   int length = 100;
-  char ch1[length];
+  //char ch1[length];
+  char* ch1 = new char[length];
   int status = 0;
   int num_atoms = 0;
   if(fgets(ch1, length, input)!=NULL) {
     string str = string(ch1);
+	delete[] ch1;
 //    printf("DEBUG: read char array as \"%s\", parsed to string as \"%s\"\n", ch, str.c_str());
     int pos=0;
     char c = str[pos];
@@ -3124,9 +3131,11 @@ void read_xyz(FILE *input, MOLECULE *mol, const char *filename) {
       pos++;
       c = str[pos];
     }
-    char ch2[length];
+    //char ch2[length];
+	char* ch2 = new char[length];
     str.copy(ch2, str.size()-pos, pos);
     status = sscanf(ch2, "%d", &num_atoms);
+	delete[] ch2;
     //printf("DEBUG: parsed num_atoms = %d from string %s (status = %d)\n", num_atoms, ch2, status);
   } else {
     printf("ERROR: could not read string\n");
@@ -3136,8 +3145,10 @@ void read_xyz(FILE *input, MOLECULE *mol, const char *filename) {
   search_for_char(input, '\n'); //now we are on a line containing an atom
   for(int i=0; i<num_atoms; i++) {
     XYZ a;
-    char e[length];
-    char ch[length];
+    //char e[length];
+    //char ch[length];
+	char* e = new char[length];
+	char* ch = new char[length];
     if(fgets(ch, length, input)!=NULL) {
       string str = string(ch);
       //printf("DEBUG: read char array as \"%s\", parsed to string as \"%s\"\n", ch, str.c_str());
@@ -3147,13 +3158,16 @@ void read_xyz(FILE *input, MOLECULE *mol, const char *filename) {
         pos++;
         c = str[pos];
       }
-      char ch2[length];
+      //char ch2[length];
+	  char* ch2 = new char[length];
       str.copy(ch2, str.size()-pos, pos);
       status = sscanf(ch2, "%s %lf %lf %lf", e, &a.x, &a.y, &a.z);
+	  delete[] ch2;
     } else {
       printf("ERROR: could not read expected atom coord string from %s - %d out of %d atom coords were read\n", filename, i, num_atoms);
       //exit(EXIT_FAILURE);
     }
+	delete[] ch;
 
     mol->atoms_xyz.push_back(a);
     string name_string(e);
@@ -3174,6 +3188,7 @@ void read_xyz(FILE *input, MOLECULE *mol, const char *filename) {
       }
       mol->atoms_type.push_back(element);
     }
+	delete[] e;
   }
 }
 

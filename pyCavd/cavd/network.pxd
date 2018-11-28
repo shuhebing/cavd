@@ -16,7 +16,7 @@ cdef extern from "../../zeo++/network.h":
     cdef void calculateFreeSphereParameters(VORONOI_NETWORK*, char*, bint)
     
     #added at 20180418
-    cdef bint throughVorNet(VORONOI_NETWORK*, char*, double)
+    #cdef bint throughVorNet(VORONOI_NETWORK*, char*, double)
 
     cdef void viewVoronoiDecomp(ATOM_NETWORK*, double, string)
 

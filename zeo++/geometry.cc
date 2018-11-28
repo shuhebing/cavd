@@ -140,6 +140,7 @@ void Point::print(std::ostream &out) const {
 }
 ostream &operator<<(ostream &out, Point &obj) {
     obj.print(out);
+	return out;
 }
 
 

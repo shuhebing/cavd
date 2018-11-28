@@ -749,9 +749,12 @@ void calcSpheresDistance(ATOM_NETWORK atomnetwork, vector <pair <Point, double> 
 //R1: bin step R2: Count R3: Cumulative distribution R4: Derivative of Cumulative distribution (PSD)
 void Histogram(ostream& output, const double binSize, const int maxBins, vector<double>& diam, int count, double nodefrac, double outfrac, int numSamples){
   assert(binSize > threshold);
-  int bins[maxBins]; 
-  double cumBins[maxBins];
-  double derivBins[maxBins];
+  //int bins[maxBins]; 
+  //double cumBins[maxBins];
+  //double derivBins[maxBins];
+  int* bins = new int[maxBins];
+  double* cumBins = new double[maxBins];
+  double* derivBins = new double[maxBins];
   for (int i=0; i<maxBins; i++){
     bins[i] = 0;
     cumBins[i] = 0;
@@ -796,6 +799,9 @@ void Histogram(ostream& output, const double binSize, const int maxBins, vector<
   for (int i=0; i<maxBins; i++){
     output<<binSize*1.0*i<<" "<<bins[i]<<" "<<cumBins[i]<<" "<<derivBins[i]<<"\n";
   }
+  delete[] bins;
+  delete[] cumBins;
+  delete[] derivBins;
 }
 
 
