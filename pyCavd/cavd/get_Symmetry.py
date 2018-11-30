@@ -225,7 +225,7 @@ def get_Symmetry(filename):
     poscar = Poscar_new.from_string(contents, False, read_velocities=False)
     positions = poscar.coords
     #positions = []
-    print(positions)
+    #print(positions)
     lattice = poscar.lattice
     #for i in s2.sites:
     #    positions.append(i._fcoords)
@@ -265,6 +265,8 @@ def get_Symmetry(filename):
         #print((s2.sites[i])._fcoords)
 
 if __name__ == "__main__":
-    #get_Symmetry("../../examples/icsd_16713.vasp")
-    get_Symmetry("../../examples/Li2CO3-LDA_orgin.vasp")
-    
+    #get_Symmetry("../../examples/icsd_246817_orgin.vasp")
+    #get_Symmetry("../../examples/icsd_246817.vasp")
+    #get_Symmetry("../../examples/Li2CO3-LDA_orgin.vasp")
+    #get_Symmetry("../../examples/LPS.vasp")
+    get_Symmetry("../../examples/LPS_orgin.vasp")
