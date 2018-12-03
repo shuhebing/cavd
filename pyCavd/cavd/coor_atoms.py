@@ -84,7 +84,7 @@ class VoronoiNN_self(VoronoiNN):
                 if i is 0:
                     continue
                 if "-" in neighbors[i].species_string:
-                    new_neighbors.append(neighbors[i].species_string)
+                    new_neighbors.append(neighbors[i])
                 if "+" in neighbors[i].species_string:
                     break
             neighbors = new_neighbors
@@ -98,7 +98,7 @@ class VoronoiNN_self(VoronoiNN):
                 if i is 0:
                     continue
                 if "+" in neighbors[i].species_string:
-                    new_neighbors.append(neighbors[i].species_string)
+                    new_neighbors.append(neighbors[i])
                 if "-" in neighbors[i].species_string:
                     break
             neighbors = new_neighbors
@@ -441,8 +441,9 @@ if __name__ == "__main__":
     labels2 = []
     els2 = []
     cns2 = []
+    Migrant_para = []
     vnn = VoronoiNN_self(cutoff = 10.0)
-    with zopen("icsd_16713.cif", "rt") as f:
+    with zopen("../../examples/icsd_16713.cif", "rt") as f:
         input_string = f.read()
     parser = CifParser_new.from_string(input_string)
     stru = parser.get_structures(primitive=False)[0]
@@ -450,10 +451,20 @@ if __name__ == "__main__":
         site = stru.sites[i]
         label = site._atom_site_label
         coord_no = vnn.get_cn(stru, i)
+        #print(site)
+        #print(coord_no)
+
         if label in labels2:
             continue
+        
+        if "Li" in site.species_string:
+            print(site)
+            print(coord_no[0])
+            Migrant_para.append([label,site.distance(coord_no[0])])
+
         labels2.append(label)
-        els2.append(site.species_string)
+        els2.append(site)
         cns2.append(coord_no)
         coor_atom_list = list(zip(labels2, els2, cns2))
     print(coor_atom_list)
+    print(Migrant_para)

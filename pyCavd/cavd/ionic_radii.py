@@ -91,7 +91,7 @@ class VoronoiNN_self(VoronoiNN):
                 if i is 0:
                     continue
                 if "-" in neighbors[i].species_string:
-                    new_neighbors.append(neighbors[i].species_string)
+                    new_neighbors.append(neighbors[i])
                 if "+" in neighbors[i].species_string:
                     break
             neighbors = new_neighbors
@@ -105,11 +105,11 @@ class VoronoiNN_self(VoronoiNN):
                 if i is 0:
                     continue
                 if "+" in neighbors[i].species_string:
-                    new_neighbors.append(neighbors[i].species_string)
+                    new_neighbors.append(neighbors[i])
                 if "-" in neighbors[i].species_string:
                     break
             neighbors = new_neighbors
-        return len(neighbors)
+        return len(neighbors),neighbors
     
 
 # 自定义的Cif文件解析类
@@ -478,7 +478,7 @@ class Radius():
 #         d["radius"] =  self._radius
         return d
        
-def get_ionic_radii(filename):
+def get_ionic_radii(filename,migrant):
     """
     Computes ionic radii of elements for all sites in the structure.
     If valence is zero, atomic radius is used.
@@ -491,6 +491,7 @@ def get_ionic_radii(filename):
     cn2 = []
     el2 = []
     labels2 = []
+    migrant_para_tmp = []
     
     vnn = VoronoiNN_self(cutoff = 10.0)
     with zopen(filename, "rt") as f:
@@ -530,7 +531,7 @@ def get_ionic_radii(filename):
             
         el = site.specie.symbol
         oxi_state = int(round(site.specie.oxi_state))
-        coord_no = int(round(vnn.get_cn(stru, i)))
+        coord_no, coord_neighbors = vnn.get_cn(stru, i)
         label = site._atom_site_label
         try:
             tab_oxi_states = sorted(map(int, _ion_radii[el].keys()))
@@ -573,11 +574,26 @@ def get_ionic_radii(filename):
         
         if label in labels2:
             continue
+
+        if migrant in site.species_string:
+            print(site)
+            print(coord_neighbors[0])
+            dis = site.distance(coord_neighbors[0])
+            migrant_para_tmp.append([label,radius,coord_neighbors[0],dis])
+
         labels2.append(label)
         radii2.append(radius)
         cn2.append(coord_no)
         el2.append(site.species_string)
 
+        label_radii_list = dict(zip(labels2, radii2))
+
+        migrant_para = []
+        for i in migrant_para_tmp:
+            nei = i[2]._atom_site_label
+            alpa = (i[3]-label_radii_list[nei])/i[1]
+            migrant_para.append([i[0],i[1],i[2]._atom_site_label,label_radii_list[nei],i[3],alpa])
+        print(migrant_para)
     radii_dict = dict(zip(el2,radii2))
     return radii_dict
     #以自定的数据结构Radius列表形式返回    
@@ -597,7 +613,7 @@ def get_ionic_radii(filename):
 #    label_cn_radii_list = list(zip(labels2, el2, cn2, radii2))  
 #    return radii_list, cn_list, radii_cn_list,label_cn_radii_list
 
-# if __name__ == "__main__":
+if __name__ == "__main__":
     # radii_list, cn_list, radii_cn_list, label_cn_radii_list = get_ionic_radii("icsd_16713.cif")
     # #输出的信息格式为：_atom_site_label, species, coordination number, ion radius
     # print(label_cn_radii_list)
@@ -605,5 +621,5 @@ def get_ionic_radii(filename):
     # print(cn_list)
     # print(radii_cn_list)
 
-    # radii = get_ionic_radii("icsd_16713.cif")
-    # print(radii)
+    radii = get_ionic_radii("../../examples/icsd_16713.cif","Li")
+    #print(radii)

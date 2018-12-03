@@ -230,7 +230,7 @@ def get_Symmetry(filename):
     #for i in s2.sites:
     #    positions.append(i._fcoords)
     atomic_symbols = poscar.atomic_symbols
-    print(atomic_symbols)
+    #print(atomic_symbols)
     
     numbers = [] 
     a = ""
@@ -248,11 +248,11 @@ def get_Symmetry(filename):
     print(len(numbers))
     cell = (lattice, positions, numbers)
 
-    spacegroup = spglib.get_spacegroup(cell, symprec=1e-5)
+    spacegroup = spglib.get_spacegroup(cell, symprec=0.01, angle_tolerance=5)
     print(spacegroup)  
     #symmetry = spglib.get_symmetry(cell, symprec=1e-5)
     #print(symmetry)
-    dataset = spglib.get_symmetry_dataset(cell)
+    dataset = spglib.get_symmetry_dataset(cell, symprec=0.01, angle_tolerance=5)
     print(len(dataset['equivalent_atoms']))
     #print(dataset['rotations'])
     #print(dataset['translations'])
@@ -265,8 +265,14 @@ def get_Symmetry(filename):
         #print((s2.sites[i])._fcoords)
 
 if __name__ == "__main__":
-    #get_Symmetry("../../examples/icsd_246817_orgin.vasp")
-    #get_Symmetry("../../examples/icsd_246817.vasp")
+    #get_Symmetry("../../examples/icsd_246817_orgin_copy.vasp")
     #get_Symmetry("../../examples/Li2CO3-LDA_orgin.vasp")
     #get_Symmetry("../../examples/LPS.vasp")
-    get_Symmetry("../../examples/LPS_orgin.vasp")
+    #get_Symmetry("../../examples/LPS_orgin.vasp")
+    #get_Symmetry("../../examples/icsd_20610.vasp")
+    #get_Symmetry("../../examples/icsd_20610_orgin.vasp")
+    #get_Symmetry("../../examples/icsd_29225.vasp")
+    get_Symmetry("../../examples/icsd_29225_orgin.vasp")
+    #get_Symmetry("../../examples/LLZO-48g-180721_orgin.vasp")
+    #get_Symmetry("../../examples/custom_300001.vasp")
+    #get_Symmetry("../../examples/custom_300001_orgin.vasp")
