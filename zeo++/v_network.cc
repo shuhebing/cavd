@@ -422,10 +422,10 @@ void voronoi_network::add_edges_to_network(v_cell &c,double x,double y,double z,
 	
 	//真实坐标
 	//Added at 20180408
+
 	double *cp(c.pts);double vtx,vty,vtz;
-	double mx = 0.0;
-	double my = 0.0;
-	double mz = 0.0;
+	//double mx,my,mz;
+
 	for(l=0;l<c.p;l++) {
 		vmp=cmap+4*l;k=*(vmp++);ai=*(vmp++);aj=*(vmp++);ak=*vmp;
 		pp=pts[reg[k]]+4*regp[k];
@@ -434,6 +434,7 @@ void voronoi_network::add_edges_to_network(v_cell &c,double x,double y,double z,
 		vz=pp[2]+ak*bz;
 		
 		// Added at 20180408
+
 		vtx=x+cp[4*l]*0.5;vty=y+cp[4*l+1]*0.5;vtz=z+cp[4*l+2]*0.5;
 
 		for(q=0;q<c.nu[l];q++) {
@@ -442,22 +443,30 @@ void voronoi_network::add_edges_to_network(v_cell &c,double x,double y,double z,
 			j=*(vmp++);bi=*(vmp++);bj=*(vmp++);bk=*vmp;
 
 			// Skip if this is a self-connecting edge
-			if(j==k&&bi==ai&&bj==aj&&bk==ak) continue;
+			if(j==k&&bi==ai&&bj==aj&&bk==ak)
+				continue;
 			cper=pack_periodicity(bi-ai,bj-aj,bk-ak);
 			pp=pts[reg[j]]+(4*regp[j]);
 			wx=pp[0]+bi*bx+bj*bxy+bk*bxz;
 			wy=pp[1]+bj*by+bk*byz;
 			wz=pp[2]+bk*bz;
-			dx=wx-vx;dy=wy-vy;dz=wz-vz;
+			dx=wx-vx;
+			dy=wy-vy;
+			dz=wz-vz;
 			dis=(x-vx)*dx+(y-vy)*dy+(z-vz)*dz;
 			dis/=dx*dx+dy*dy+dz*dz;
-			if(dis<0) dis=0;if(dis>1) dis=1;
+			if(dis<0)
+				dis=0;
+			else if(dis>1)
+				dis=1;
 			wx=vx-x+dis*dx;wy=vy-y+dis*dy;wz=vz-z+dis*dz;
 			//cout<< "wx = " << wx << "wy = " << wy << "wz = " << wz << endl;
 
 			//added at 20180408
-			//定义瓶颈位置（点到线段距离最小处）
-			mx=vtx+dis*dx;my=vty+dis*dy;mz=vtz+dis*dz;
+
+			double mx=vtx+dis*dx;
+			double my=vty+dis*dy;
+			double mz=vtz+dis*dz;
 			//cout<< "mx = " << mx << "my = " << my << "mz = " << mz << endl;
 
 			int nat=not_already_there(k,j,cper);
@@ -465,13 +474,10 @@ void voronoi_network::add_edges_to_network(v_cell &c,double x,double y,double z,
 				if(nu[k]==numem[k]) add_particular_vertex_memory(k);
 				ed[k][nu[k]]=j;
 
-				//Edited at 20180408
 				raded[k][nu[k]].first(sqrt(wx*wx+wy*wy+wz*wz)-rad,dis,mx,my,mz);
-				
+
 				pered[k][nu[k]++]=cper;
 			} else {
-				
-				//Edited at 20180408
 				raded[k][nat].add(sqrt(wx*wx+wy*wy+wz*wz)-rad,dis,mx,my,mz);
 			}
 		}
