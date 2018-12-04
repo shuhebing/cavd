@@ -492,6 +492,7 @@ def get_ionic_radii(filename,migrant):
     el2 = []
     labels2 = []
     migrant_para_tmp = []
+    migrant_para = []
     
     vnn = VoronoiNN_self(cutoff = 10.0)
     with zopen(filename, "rt") as f:
@@ -578,8 +579,9 @@ def get_ionic_radii(filename,migrant):
         if migrant in site.species_string:
             print(site)
             print(coord_neighbors[0])
-            dis = site.distance(coord_neighbors[0])
-            migrant_para_tmp.append([label,radius,coord_neighbors[0],dis])
+            mindis = site.distance(coord_neighbors[0])
+            maxdis = site.distance(coord_neighbors[len(coord_neighbors)-1])
+            migrant_para_tmp.append([label,radius,coord_neighbors[0],mindis,coord_neighbors[len(coord_neighbors)-1],maxdis])
 
         labels2.append(label)
         radii2.append(radius)
@@ -588,12 +590,18 @@ def get_ionic_radii(filename,migrant):
 
         label_radii_list = dict(zip(labels2, radii2))
 
-        migrant_para = []
+        
         for i in migrant_para_tmp:
-            nei = i[2]._atom_site_label
-            alpa = (i[3]-label_radii_list[nei])/i[1]
-            migrant_para.append([i[0],i[1],i[2]._atom_site_label,label_radii_list[nei],i[3],alpa])
-        print(migrant_para)
+            minnei = i[2]._atom_site_label
+            maxnei = i[4]._atom_site_label
+            minrad = label_radii_list[minnei]
+            maxrad = label_radii_list[maxnei]
+
+            minalpa = (i[3]-minrad)/i[1]
+            maxalpa = (i[5]-maxrad)/i[1]
+            migrant_para.append([i[0],i[1],minnei,minrad,i[3],minalpa,maxnei,maxrad,i[5],maxalpa])
+    
+    print(migrant_para)
     radii_dict = dict(zip(el2,radii2))
     return radii_dict
     #以自定的数据结构Radius列表形式返回    
