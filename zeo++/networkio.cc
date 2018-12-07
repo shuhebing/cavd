@@ -272,8 +272,8 @@ printf("\n#####\n##### WARNING: parsed a loop in cif file, but data was not pres
     }
 
     //Now determine whether it is correct to use atom_label or atom_type (atom_label used only if atom_type has no data)
-    bool CIF_USE_LABEL = atom_type.size()==0;
-
+    // bool CIF_USE_LABEL = atom_type.size()==0;
+    bool CIF_USE_LABEL = atom_label.size()>0;
     //Now determine whether charges are used - only if they were provided
     bool CIF_CHARGES = atom_charge.size()>0;
 
@@ -287,6 +287,7 @@ printf("\n#####\n##### WARNING: parsed a loop in cif file, but data was not pres
       else{
           for (unsigned int i=0; i<atom_label.size(); i++){
             atom_label[i] = split(atom_label[i],"0123456789").at(0);
+            atom_type[i] = split(atom_type[i],"0123456789").at(0);
           }
       }
     }
@@ -327,7 +328,8 @@ printf("\n#####\n##### WARNING: parsed a loop in cif file, but data was not pres
     Point tempcoor;
     for (unsigned int i=0; i<atom_x.size(); i++){ //atoms
       if (CIF_USE_LABEL){
-          tempatom.type = atom_label[i];
+          tempatom.label = atom_label[i];
+          tempatom.type = atom_type[i];
       }
       else {
           tempatom.type = atom_type[i];
@@ -336,11 +338,19 @@ printf("\n#####\n##### WARNING: parsed a loop in cif file, but data was not pres
       //tempatom.radius = lookupRadius(tempatom.type, radial);
       //edited at 20180606
       //tempatom.radius = lookupGoldschmidtIonRadius(tempatom.type, radial);
-      if(lookupIonRadius(tempatom.type, radial) == -1)
+      if(CIF_USE_LABEL){
+        if(lookupIonRadius(tempatom.label, radial) == -1)
           return false;
-      else
+        else
+          tempatom.radius = lookupIonRadius(tempatom.label, radial);
+      }
+      else{
+        if(lookupIonRadius(tempatom.type, radial) == -1)
+          return false;
+        else
           tempatom.radius = lookupIonRadius(tempatom.type, radial);
-      
+      }
+
       if(CIF_CHARGES) {
         tempatom.charge = atom_charge[i];
       } else tempatom.charge = 0;

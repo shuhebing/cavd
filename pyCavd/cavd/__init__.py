@@ -6,31 +6,83 @@ from cavd.netstorage import connection_values_list
 from cavd.channel import Channel
 from cavd.area_volume import asa_new
 from cavd.netio import *
-from cavd.ionic_radii import get_ionic_radii
+from cavd.local_environment import get_local_envir
 from pymatgen.core.structure import Structure
 from pymatgen.analysis.local_env import ValenceIonicRadiusEvaluator
 
-#获取特定结构中离子的有效半径
-def EffectiveRadCom(filename):
+#from local_environment import get_local_envir,Coordination
+
+
+# 获取特定结构中
+# 所有离子的有效半径，
+# 迁移离子到最邻近离子表面距离与迁移离子半径的比值alpha，
+# 迁移离子半径
+def LocalEnvirCom(filename, migrant):
     # stru = Structure.from_file(filename)
     # val_eval = ValenceIonicRadiusEvaluator(stru)
     # radii = val_eval.radii
-    radii = get_ionic_radii(filename)
-    radii_keys = list(radii.keys())
+    coordination_list, radii = get_local_envir(filename)
     
-    #为了防止保存的半径信息无法匹配此处对半径信息做特殊处理，如Ag+的半径会保存为Ag、Ag+、Ag1+1
-    for key in radii_keys:
-        radii[re.sub('[^a-zA-Z]','',key)] = radii[key]
-        if re.search('[A-Z][a-z]*\+|[A-Z][a-z]*\-', key) != None:
-            s1 = re.sub('\+','1+',key)
-            radii[re.sub('\-','1-',s1)] = radii[key]
+    # 为了防止保存的半径信息无法匹配此处对半径信息做特殊处理，如Ag+的半径会保存为Ag、Ag+、Ag1+1
+    # radii_keys = list(radii.keys())
+    # for key in radii_keys:
+    #     radii[re.sub('[^a-zA-Z]','',key)] = radii[key]
+    #     if re.search('[A-Z][a-z]*\+|[A-Z][a-z]*\-', key) != None:
+    #         s1 = re.sub('\+','1+',key)
+    #         radii[re.sub('\-','1-',s1)] = radii[key]
+
+    # minRad = 0
+    # for label in radii:
+    #     if migrant in label:
+    #         # 取最小值作为迁移离子半径
+    #         if minRad == 0:
+    #             minRad = radii[label]
+    #         elif radii[label] < minRad:
+    #             minRad = radii[label]
+
+    migrant_labels = []
+    migrant_radii_tmp = []
+    migrant_paras_tmp = []
+    for i in coordination_list:
+        if migrant in i["label"]:
+            nei = i["coord_nei"][0]
+            nei_dis = nei[1]
+            nei_label = nei[0]
+            nei_radius = radii[nei_label]
+            migrant_radius = i["radius"]
+            migrant_label = i["label"]
+            alpha = (nei_dis - nei_radius)/migrant_radius
+
+            migrant_labels.append(migrant_label)
+            migrant_radii_tmp.append(migrant_radius)
+            migrant_paras_tmp.append(alpha)
+
+    migrant_radii = dict(zip(migrant_labels, migrant_radii_tmp))
+    migrant_paras = dict(zip(migrant_labels, migrant_paras_tmp))
+
+    rad_sum = 0
+    alpha_sum = 0
+    for value in migrant_radii.values():
+        rad_sum += value
+    for value in migrant_paras.values():
+        alpha_sum += value
+    migrant_radius = rad_sum/len(migrant_radii)
+    migrant_alpha = alpha_sum/len(migrant_paras)
+    
     print(radii)
-    return radii
+    # print(migrant_radii)
+    # print(migrant_paras)
+    print(migrant_radius)
+    print(migrant_alpha)
+
+    return radii,migrant_radius,migrant_alpha
+
 
 def AllCom(filename, probe_rad, num_sample, migrant=None, rad_flag=True, effective_rad=True, rad_file=None, rad_store_in_vasp=True, minRad=0.0, maxRad=0.0):
     radii = {}
     if rad_flag and effective_rad:
-        radii = EffectiveRadCom(filename)
+        #考虑如何利用migrant_radius与migrant_alpha
+        radii,migrant_radius,migrant_alpha = LocalEnvirCom(filename,"Li")
     if migrant:
         remove_filename = getRemoveMigrantFilename(filename,migrant)
     else:
@@ -55,7 +107,7 @@ def AllCom(filename, probe_rad, num_sample, migrant=None, rad_flag=True, effecti
 def BIComputation(filename, migrant=None, rad_flag=True, effective_rad=True, rad_file=None, rad_store_in_vasp=True,  minRad=0.0, maxRad=0.0):
     radii = {}
     if rad_flag and effective_rad:
-        radii = EffectiveRadCom(filename)
+        radii = LocalEnvirCom(filename)
     if migrant:
         remove_filename = getRemoveMigrantFilename(filename,migrant)
     else:
@@ -75,7 +127,7 @@ def BIComputation(filename, migrant=None, rad_flag=True, effective_rad=True, rad
 def ConnValCom(filename, migrant=None, rad_flag=True, effective_rad=True, rad_file=None):
     radii = {}
     if rad_flag and effective_rad:
-        radii = EffectiveRadCom(filename)
+        radii = LocalEnvirCom(filename)
     if migrant:
         remove_filename = getRemoveMigrantFilename(filename,migrant)
     else:
@@ -91,7 +143,7 @@ def ConnValCom(filename, migrant=None, rad_flag=True, effective_rad=True, rad_fi
 def ConnValListCom(filename, migrant=None, rad_flag=True, effective_rad=True, rad_file=None):
     radii = {}
     if rad_flag and effective_rad:
-        radii = EffectiveRadCom(filename)
+        radii = LocalEnvirCom(filename)
     if migrant:
         remove_filename = getRemoveMigrantFilename(filename,migrant)
     else:
@@ -175,7 +227,7 @@ def ConnStatus(radius,connlist):
 def ChannelCom(filename, probe_rad, migrant=None, rad_flag=True, effective_rad=True, rad_file=None):
     radii = {}
     if rad_flag and effective_rad:
-        radii = EffectiveRadCom(filename)
+        radii = LocalEnvirCom(filename)
     if migrant:
         remove_filename = getRemoveMigrantFilename(filename,migrant)
     else:
@@ -192,7 +244,7 @@ def ChannelCom(filename, probe_rad, migrant=None, rad_flag=True, effective_rad=T
 def ASACom(filename, probe_rad, num_sample, migrant=None, rad_flag=True, effective_rad=True, rad_file=None):
     radii = {}
     if rad_flag and effective_rad:
-        radii = EffectiveRadCom(filename)
+        radii = LocalEnvirCom(filename)
     if migrant:
         remove_filename = getRemoveMigrantFilename(filename,migrant)
     else:
@@ -207,7 +259,7 @@ def ASACom(filename, probe_rad, num_sample, migrant=None, rad_flag=True, effecti
 def VoidNetCom(filename, migrant=None, rad_flag=True, effective_rad=True, rad_file=None):
     radii = {}
     if rad_flag and effective_rad:
-        radii = EffectiveRadCom(filename)
+        radii = LocalEnvirCom(filename)
     if migrant:
         remove_filename = getRemoveMigrantFilename(filename,migrant)
     else:
@@ -218,3 +270,8 @@ def VoidNetCom(filename, migrant=None, rad_flag=True, effective_rad=True, rad_fi
         os.remove(remove_filename)
     prefixname = filename.replace(".cif","")
     writeZVisFile(prefixname+".zvis", False, atmnet, vornet)
+
+
+# if __name__ == "__main__":
+#     # radii = LocalEnvirCom("../../examples/icsd_16713.cif")
+#     conn,oneD,twoD,threeD = AllCom("../../examples/Li2CO3-LDA.cif",0.5,1000,"Li", True,True,None,True,0.5,0.7)

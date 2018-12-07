@@ -10,7 +10,9 @@ from monty.io import zopen
 import numpy as np
 from pymatgen.io.vasp import Poscar
 import spglib
-
+from cavd.netstorage import AtomNetwork
+from cavd import LocalEnvirCom,writeVaspFile
+from cavd.netio import getRemoveMigrantFilename
 class Poscar_new():
     def __init__(self, atomic_symbols, coords, lattice, comment=None, selective_dynamics=None,
                  true_names=True, velocities=None, predictor_corrector=None,
@@ -225,8 +227,9 @@ def get_Symmetry(filename):
     poscar = Poscar_new.from_string(contents, False, read_velocities=False)
     positions = poscar.coords
     #positions = []
-    #print(positions)
+    print(positions)
     lattice = poscar.lattice
+    print(lattice)
     #for i in s2.sites:
     #    positions.append(i._fcoords)
     atomic_symbols = poscar.atomic_symbols
@@ -264,15 +267,60 @@ def get_Symmetry(filename):
         print(positions[i])
         #print((s2.sites[i])._fcoords)
 
-if __name__ == "__main__":
-    #get_Symmetry("../../examples/icsd_246817_orgin_copy.vasp")
-    #get_Symmetry("../../examples/Li2CO3-LDA_orgin.vasp")
-    #get_Symmetry("../../examples/LPS.vasp")
-    #get_Symmetry("../../examples/LPS_orgin.vasp")
-    #get_Symmetry("../../examples/icsd_20610.vasp")
-    #get_Symmetry("../../examples/icsd_20610_orgin.vasp")
-    #get_Symmetry("../../examples/icsd_29225.vasp")
-    get_Symmetry("../../examples/icsd_29225_orgin.vasp")
-    #get_Symmetry("../../examples/LLZO-48g-180721_orgin.vasp")
-    #get_Symmetry("../../examples/custom_300001.vasp")
-    #get_Symmetry("../../examples/custom_300001_orgin.vasp")
+def get_Symmetry(atmnt, vornet):
+    positions = []
+    #print(positions)
+    lattice = atmnt.lattice
+    for i in vornet.nodes:
+        positions.append(atmnt.absolute_to_relative(i[1][0],i[1][1],i[1][2]))
+
+    numbers = [1,]*len(vornet.nodes)
+    
+    # print(numbers)
+    # print(len(positions))
+    # print(len(numbers))
+    cell = (lattice, positions, numbers)
+
+    spacegroup = spglib.get_spacegroup(cell, symprec=0.01, angle_tolerance=5)
+    print(spacegroup)  
+    #symmetry = spglib.get_symmetry(cell, symprec=1e-5)
+    #print(symmetry)
+    dataset = spglib.get_symmetry_dataset(cell, symprec=0.01, angle_tolerance=5)
+    print(len(dataset['equivalent_atoms']))
+    #print(dataset['rotations'])
+    #print(dataset['translations'])
+    print(dataset['equivalent_atoms'])
+    sym_independ = np.unique(dataset['equivalent_atoms'])
+
+    for i in range(len(vornet.nodes)):
+        #此处需修改定义
+        #vornet.nodes[i] = [sym_independ[i],vornet.nodes[i][1], vornet.nodes[i][2]]
+
+    # print(len(sym_independ))
+    # print(sym_independ)
+    for i in sym_independ:
+        print(positions[i])
+        #print((s2.sites[i])._fcoords)
+    
+    return vornet
+
+# if __name__ == "__main__":
+#     #get_Symmetry("../../examples/icsd_246817_orgin_copy.vasp")
+#     # get_Symmetry("../../examples/Li2CO3-LDA_orgin.vasp")
+#     #get_Symmetry("../../examples/LPS.vasp")
+#     #get_Symmetry("../../examples/LPS_orgin.vasp")
+#     #get_Symmetry("../../examples/icsd_20610.vasp")
+#     #get_Symmetry("../../examples/icsd_20610_orgin.vasp")
+#     #get_Symmetry("../../examples/icsd_29225.vasp")
+#     # get_Symmetry("../../examples/icsd_29225_orgin.vasp")
+#     #get_Symmetry("../../examples/LLZO-48g-180721_orgin.vasp")
+#     #get_Symmetry("../../examples/custom_300001.vasp")
+#     #get_Symmetry("../../examples/custom_300001_orgin.vasp")
+
+#     radii = {}
+#     remove_filename = getRemoveMigrantFilename("../../examples/Li2CO3-LDA.cif","Li")
+#     radii,migrant_radius,migrant_alpha = LocalEnvirCom("../../examples/Li2CO3-LDA.cif","Li")
+#     atmnet = AtomNetwork.read_from_CIF(remove_filename, radii, True, None)
+#     vornet,edge_centers,fcs = atmnet.perform_voronoi_decomposition(False)
+#     writeVaspFile("../../examples/Li2CO3-LDA"+"_orgin.vasp",atmnet,vornet,True)
+#     sym_vornet = get_Symmetry(atmnet, vornet)

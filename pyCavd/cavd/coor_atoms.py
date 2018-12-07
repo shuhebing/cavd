@@ -454,12 +454,12 @@ if __name__ == "__main__":
         #print(site)
         #print(coord_no)
 
-        if label in labels2:
-            continue
+        # if label in labels2:
+        #     continue
         
         if "Li" in site.species_string:
-            print(site)
-            print(coord_no[0])
+            # print(site)
+            # print(coord_no[0])
             Migrant_para.append([label,site.distance(coord_no[0])])
 
         labels2.append(label)

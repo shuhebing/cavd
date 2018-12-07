@@ -171,11 +171,8 @@ cdef class AtomNetwork:
     #    return Point(abs_point.vals[0], abs_point.vals[1], 
     #            abs_point.vals[2])
 
-    #def absolute_to_relative(self, point):
-    #    cdef CPoint* cpoint_ptr = (<Point?>point).thisptr
-    #    cdef CPoint rel_point = self.thisptr.xyz_to_abc(abs_point)
-    #    return Point(rel_point.vals[0], rel_point.vals[1], 
-    #            rel_point.vals[2])
+    def absolute_to_relative(self, x, y, z):
+        return [self.thisptr.xyz_to_abc(x, y, z).vals[0], self.thisptr.xyz_to_abc(x, y, z).vals[1], self.thisptr.xyz_to_abc(x, y, z).vals[2]]
 
     @classmethod
     def read_from_CIF(cls, filename, radii, rad_flag=True, rad_file=None):
@@ -614,6 +611,11 @@ cdef class VoronoiNode:
             self.thisptr.x = coords[0]
             self.thisptr.y = coords[1]
             self.thisptr.z = coords[2]
+    
+    property label:
+        def __get__(self): return self.thisptr.label
+        def __set__(self, label):
+            self.thisptr.label = label
 
     property radius:
         def __get__(self): return self.thisptr.rad_stat_sphere
@@ -711,7 +713,8 @@ cdef class VoronoiNetwork:
             for i in range(c_nodes.size()):
                 node_coords = [c_nodes[i].x,c_nodes[i].y,c_nodes[i].z]
                 node_radius = c_nodes[i].rad_stat_sphere
-                nodes.append([node_coords, node_radius])
+                node_label = c_nodes[i].label
+                nodes.append([node_label, node_coords, node_radius])
             return nodes
 
     property edges:

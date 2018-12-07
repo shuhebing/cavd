@@ -54,7 +54,7 @@ ATOM::ATOM(XYZ xyz, string s, string l, double r) {
 
 /** Print the information about this atom to the provided output stream. */
 void ATOM::print(ostream &out){
-    out << "   type:" << type << "   x:" << x << "   y:" << y << "   z:"  << z
+    out << "   label:" << label << "   type:" << type << "   charge:" << charge << "   x:" << x << "   y:" << y << "   z:"  << z
     << "   a:" << a_coord << "   b:" << b_coord << "   c:" << c_coord
     << "   radius:" << radius << "\n";
 }

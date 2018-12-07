@@ -306,6 +306,7 @@ public:
   std::vector<int> atomIDs;
   bool active; // flag tells if a node is taken into consideration when analyzing the framework
                // e.g. this typically will set to false after pruning the network using a probe radius
+  std::string label;
 };
 
 /** Data structure that stores the nodes and edges that comprise a 

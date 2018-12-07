@@ -46,6 +46,7 @@ cdef extern from "../../zeo++/networkstorage.h":
         VOR_NODE(double, double, double, double, vector[int])
         double x, y, z
         double rad_stat_sphere
+        string label
 
     cdef cppclass VOR_EDGE:
         VOR_EDGE() except +
