@@ -162,14 +162,8 @@ cdef class AtomNetwork:
         newatmnet.rad_flag = self.rad_flag
         return newatmnet
 
-    #def relative_to_absolute(self, point):
-    #    cdef CPoint* cpoint_ptr = (<Point?>point).thisptr
-    #    cdef double x = cpoint_ptr.vals[0]
-    #    cdef double y = cpoint_ptr.vals[1]
-    #    cdef double z = cpoint_ptr.vals[2]
-    #    cdef CPoint abs_point = self.thisptr.abc_to_xyz(x,y,z)
-    #    return Point(abs_point.vals[0], abs_point.vals[1], 
-    #            abs_point.vals[2])
+    def relative_to_absolute(self, a, b, c):
+        return [self.thisptr.abc_to_xyz(a, b, c).vals[0], self.thisptr.abc_to_xyz(a, b, c).vals[1], self.thisptr.abc_to_xyz(a, b, c).vals[2]]
 
     def absolute_to_relative(self, x, y, z):
         return [self.thisptr.xyz_to_abc(x, y, z).vals[0], self.thisptr.xyz_to_abc(x, y, z).vals[1], self.thisptr.xyz_to_abc(x, y, z).vals[2]]
@@ -811,7 +805,8 @@ cdef class VoronoiNetwork:
         #print self.rad_flag
         if not performVoronoiDecomp(atmnet.rad_flag, c_atmnetptr, 
                 vornet.thisptr, &vcells, saveVorCells, &bvcells):
-            raise ValueError # Change it to appropriate error
+            #raise ValueError # Change it to appropriate error
+            raise PerformVDError
         #cdef int N
         #vorcelllist = []
         #bvcelllist = []
@@ -827,6 +822,14 @@ cdef class VoronoiNetwork:
             #basicvcell.thisptr = &(bvcells[i])
             #bvcelllist.append(bvcells[i])
         return vornet
+    
+    def parse_symmetry(self,symm_label):
+        cdef vector[int] c_symm_label
+        for i in range(len(symm_label)):
+            c_symm_label.push_back(symm_label[i])
+        parseNetworkSymmetry(c_symm_label, self.thisptr)
+        return self
+
 
 def substitute_atoms(atmnet, substituteSeed, radialFlag):
     """

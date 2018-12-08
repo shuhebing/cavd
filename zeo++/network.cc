@@ -1405,3 +1405,10 @@ bool throughVorNet(VORONOI_NETWORK *vornet, char* filename,  double *Ri, double 
       return true;
 }
 
+
+//根据对称性列表，获取每个Voronoi Node的label
+void parseNetworkSymmetry(std::vector<int> symmlabels, VORONOI_NETWORK *vornet){
+	for (unsigned int i = 0; i < (vornet->nodes).size(); i++) {
+		(vornet->nodes[i]).label = symmlabels[i];
+	}
+}

@@ -11,8 +11,8 @@ import numpy as np
 from pymatgen.io.vasp import Poscar
 import spglib
 from cavd.netstorage import AtomNetwork
-from cavd import LocalEnvirCom,writeVaspFile
-from cavd.netio import getRemoveMigrantFilename
+from cavd import LocalEnvirCom
+from cavd.netio import getRemoveMigrantFilename,writeVaspFile,writeBIFile
 class Poscar_new():
     def __init__(self, atomic_symbols, coords, lattice, comment=None, selective_dynamics=None,
                  true_names=True, velocities=None, predictor_corrector=None,
@@ -246,9 +246,9 @@ def get_Symmetry(filename):
 
     #numbers = s2.atomic_numbers
     
-    print(numbers)
-    print(len(positions))
-    print(len(numbers))
+    # print(numbers)
+    # print(len(positions))
+    # print(len(numbers))
     cell = (lattice, positions, numbers)
 
     spacegroup = spglib.get_spacegroup(cell, symprec=0.01, angle_tolerance=5)
@@ -256,12 +256,12 @@ def get_Symmetry(filename):
     #symmetry = spglib.get_symmetry(cell, symprec=1e-5)
     #print(symmetry)
     dataset = spglib.get_symmetry_dataset(cell, symprec=0.01, angle_tolerance=5)
-    print(len(dataset['equivalent_atoms']))
+    # print(len(dataset['equivalent_atoms']))
     #print(dataset['rotations'])
     #print(dataset['translations'])
-    print(dataset['equivalent_atoms'])
+    # print(dataset['equivalent_atoms'])
     sym_independ = np.unique(dataset['equivalent_atoms'])
-    print(len(sym_independ))
+    # print(len(sym_independ))
     print(sym_independ)
     for i in sym_independ:
         print(positions[i])
@@ -273,38 +273,37 @@ def get_Symmetry(atmnt, vornet):
     lattice = atmnt.lattice
     for i in vornet.nodes:
         positions.append(atmnt.absolute_to_relative(i[1][0],i[1][1],i[1][2]))
-
     numbers = [1,]*len(vornet.nodes)
     
     # print(numbers)
+    # print(positions)
     # print(len(positions))
     # print(len(numbers))
     cell = (lattice, positions, numbers)
 
     spacegroup = spglib.get_spacegroup(cell, symprec=0.01, angle_tolerance=5)
-    print(spacegroup)  
+    print(spacegroup)
     #symmetry = spglib.get_symmetry(cell, symprec=1e-5)
     #print(symmetry)
     dataset = spglib.get_symmetry_dataset(cell, symprec=0.01, angle_tolerance=5)
-    print(len(dataset['equivalent_atoms']))
+    symm_label = dataset['equivalent_atoms']
+
+    # print(len(symm_label))
     #print(dataset['rotations'])
     #print(dataset['translations'])
-    print(dataset['equivalent_atoms'])
+    #print(symm_label)
+    vornet_uni_symm = vornet.parse_symmetry(symm_label)
+
     sym_independ = np.unique(dataset['equivalent_atoms'])
-
-    for i in range(len(vornet.nodes)):
-        #此处需修改定义
-        #vornet.nodes[i] = [sym_independ[i],vornet.nodes[i][1], vornet.nodes[i][2]]
-
-    # print(len(sym_independ))
+    print(len(sym_independ))
     # print(sym_independ)
     for i in sym_independ:
         print(positions[i])
         #print((s2.sites[i])._fcoords)
     
-    return vornet
+    return vornet_uni_symm
 
-# if __name__ == "__main__":
+if __name__ == "__main__":
 #     #get_Symmetry("../../examples/icsd_246817_orgin_copy.vasp")
 #     # get_Symmetry("../../examples/Li2CO3-LDA_orgin.vasp")
 #     #get_Symmetry("../../examples/LPS.vasp")
@@ -317,10 +316,11 @@ def get_Symmetry(atmnt, vornet):
 #     #get_Symmetry("../../examples/custom_300001.vasp")
 #     #get_Symmetry("../../examples/custom_300001_orgin.vasp")
 
-#     radii = {}
-#     remove_filename = getRemoveMigrantFilename("../../examples/Li2CO3-LDA.cif","Li")
-#     radii,migrant_radius,migrant_alpha = LocalEnvirCom("../../examples/Li2CO3-LDA.cif","Li")
-#     atmnet = AtomNetwork.read_from_CIF(remove_filename, radii, True, None)
-#     vornet,edge_centers,fcs = atmnet.perform_voronoi_decomposition(False)
-#     writeVaspFile("../../examples/Li2CO3-LDA"+"_orgin.vasp",atmnet,vornet,True)
-#     sym_vornet = get_Symmetry(atmnet, vornet)
+    radii = {}
+    remove_filename = getRemoveMigrantFilename("../../examples/Li2CO3-LDA.cif","Li")
+    radii,migrant_radius,migrant_alpha = LocalEnvirCom("../../examples/Li2CO3-LDA.cif","Li")
+    atmnet = AtomNetwork.read_from_CIF(remove_filename, radii, True, None)
+    vornet,edge_centers,fcs = atmnet.perform_voronoi_decomposition(False)
+    writeVaspFile("../../examples/Li2CO3-LDA"+"_orgin.vasp",atmnet,vornet,True)
+    sym_vornet = get_Symmetry(atmnet, vornet)
+    writeBIFile("../../examples/Li2CO3-LDA"+"_orgin.bitest",atmnet,sym_vornet)

@@ -930,7 +930,7 @@ struct __pyx_obj_4cavd_11voronoicell_BasicVCell {
 };
 
 
-/* "netstorage.pxd":139
+/* "netstorage.pxd":142
  *             VORONOI_NETWORK* vornet, ATOM_NETWORK* atmnet)
  * 
  * cdef class Atom:             # <<<<<<<<<<<<<<
@@ -943,7 +943,7 @@ struct __pyx_obj_4cavd_10netstorage_Atom {
 };
 
 
-/* "netstorage.pxd":145
+/* "netstorage.pxd":148
  *     cdef ATOM* thisptr
  * 
  * cdef class AtomNetwork:             # <<<<<<<<<<<<<<
@@ -957,7 +957,7 @@ struct __pyx_obj_4cavd_10netstorage_AtomNetwork {
 };
 
 
-/* "netstorage.pxd":154
+/* "netstorage.pxd":157
  *     cdef bint rad_flag
  * 
  * cdef class VoronoiNode:             # <<<<<<<<<<<<<<
@@ -970,7 +970,7 @@ struct __pyx_obj_4cavd_10netstorage_VoronoiNode {
 };
 
 
-/* "netstorage.pxd":160
+/* "netstorage.pxd":163
  *     cdef VOR_NODE* thisptr
  * 
  * cdef class VoronoiNetwork:             # <<<<<<<<<<<<<<
@@ -983,7 +983,7 @@ struct __pyx_obj_4cavd_10netstorage_VoronoiNetwork {
 };
 
 
-/* "netstorage.pxd":166
+/* "netstorage.pxd":169
  *     cdef VORONOI_NETWORK* thisptr
  * 
  * cdef class VoronoiEdge:             # <<<<<<<<<<<<<<
@@ -1995,7 +1995,7 @@ static PyObject *__pyx_pw_4cavd_12graphstorage_15DijkstraNetwork_5nodes_1__get__
 static PyObject *__pyx_pf_4cavd_12graphstorage_15DijkstraNetwork_5nodes___get__(struct __pyx_obj_4cavd_12graphstorage_DijkstraNetwork *__pyx_v_self) {
   PyObject *__pyx_v_nodes = NULL;
   std::vector<DIJKSTRA_NODE>  __pyx_v_c_nodes;
-  std::vector<CONN> ::size_type __pyx_v_i;
+  std::vector<DIJKSTRA_NODE> ::size_type __pyx_v_i;
   int __pyx_v_node_id;
   PyObject *__pyx_v_node_pos = NULL;
   double __pyx_v_node_radius;
@@ -2014,7 +2014,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_15DijkstraNetwork_5nodes___get__(
   std::vector<DIJKSTRA_NODE>  __pyx_t_2;
   std::vector<DIJKSTRA_NODE> ::size_type __pyx_t_3;
   std::vector<DIJKSTRA_NODE> ::size_type __pyx_t_4;
-  std::vector<CONN> ::size_type __pyx_t_5;
+  std::vector<DIJKSTRA_NODE> ::size_type __pyx_t_5;
   int __pyx_t_6;
   PyObject *__pyx_t_7 = NULL;
   PyObject *__pyx_t_8 = NULL;
@@ -2023,7 +2023,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_15DijkstraNetwork_5nodes___get__(
   std::vector<CONN>  __pyx_t_11;
   std::vector<CONN> ::size_type __pyx_t_12;
   std::vector<CONN> ::size_type __pyx_t_13;
-  std::vector<CONN> ::size_type __pyx_t_14;
+  std::vector<DIJKSTRA_NODE> ::size_type __pyx_t_14;
   PyObject *__pyx_t_15 = NULL;
   int __pyx_t_16;
   __Pyx_RefNannySetupContext("__get__", 0);
@@ -5924,18 +5924,18 @@ static int __Pyx_modinit_type_import_code(void) {
   __pyx_ptype_4cavd_11voronoicell_BasicVCell = __Pyx_ImportType(__pyx_t_1, "cavd.voronoicell", "BasicVCell", sizeof(struct __pyx_obj_4cavd_11voronoicell_BasicVCell), __Pyx_ImportType_CheckSize_Warn);
    if (!__pyx_ptype_4cavd_11voronoicell_BasicVCell) __PYX_ERR(3, 45, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyImport_ImportModule("cavd.netstorage"); if (unlikely(!__pyx_t_1)) __PYX_ERR(4, 139, __pyx_L1_error)
+  __pyx_t_1 = PyImport_ImportModule("cavd.netstorage"); if (unlikely(!__pyx_t_1)) __PYX_ERR(4, 142, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_ptype_4cavd_10netstorage_Atom = __Pyx_ImportType(__pyx_t_1, "cavd.netstorage", "Atom", sizeof(struct __pyx_obj_4cavd_10netstorage_Atom), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_4cavd_10netstorage_Atom) __PYX_ERR(4, 139, __pyx_L1_error)
+   if (!__pyx_ptype_4cavd_10netstorage_Atom) __PYX_ERR(4, 142, __pyx_L1_error)
   __pyx_ptype_4cavd_10netstorage_AtomNetwork = __Pyx_ImportType(__pyx_t_1, "cavd.netstorage", "AtomNetwork", sizeof(struct __pyx_obj_4cavd_10netstorage_AtomNetwork), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_4cavd_10netstorage_AtomNetwork) __PYX_ERR(4, 145, __pyx_L1_error)
+   if (!__pyx_ptype_4cavd_10netstorage_AtomNetwork) __PYX_ERR(4, 148, __pyx_L1_error)
   __pyx_ptype_4cavd_10netstorage_VoronoiNode = __Pyx_ImportType(__pyx_t_1, "cavd.netstorage", "VoronoiNode", sizeof(struct __pyx_obj_4cavd_10netstorage_VoronoiNode), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_4cavd_10netstorage_VoronoiNode) __PYX_ERR(4, 154, __pyx_L1_error)
+   if (!__pyx_ptype_4cavd_10netstorage_VoronoiNode) __PYX_ERR(4, 157, __pyx_L1_error)
   __pyx_ptype_4cavd_10netstorage_VoronoiNetwork = __Pyx_ImportType(__pyx_t_1, "cavd.netstorage", "VoronoiNetwork", sizeof(struct __pyx_obj_4cavd_10netstorage_VoronoiNetwork), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_4cavd_10netstorage_VoronoiNetwork) __PYX_ERR(4, 160, __pyx_L1_error)
+   if (!__pyx_ptype_4cavd_10netstorage_VoronoiNetwork) __PYX_ERR(4, 163, __pyx_L1_error)
   __pyx_ptype_4cavd_10netstorage_VoronoiEdge = __Pyx_ImportType(__pyx_t_1, "cavd.netstorage", "VoronoiEdge", sizeof(struct __pyx_obj_4cavd_10netstorage_VoronoiEdge), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_4cavd_10netstorage_VoronoiEdge) __PYX_ERR(4, 166, __pyx_L1_error)
+   if (!__pyx_ptype_4cavd_10netstorage_VoronoiEdge) __PYX_ERR(4, 169, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
   return 0;

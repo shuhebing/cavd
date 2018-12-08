@@ -46,7 +46,7 @@ cdef extern from "../../zeo++/networkstorage.h":
         VOR_NODE(double, double, double, double, vector[int])
         double x, y, z
         double rad_stat_sphere
-        string label
+        int label
 
     cdef cppclass VOR_EDGE:
         VOR_EDGE() except +
@@ -132,6 +132,8 @@ cdef extern from "../../zeo++/network.h":
     cdef void loadRadii(ATOM_NETWORK*)
 
     cdef void loadMass(bool, ATOM_NETWORK*)
+
+    cdef void parseNetworkSymmetry(vector[int], VORONOI_NETWORK*)
 
 cdef extern from "../../zeo++/area_and_volume.h":
     cdef void visVoro(char* name, double probeRad, int skel_a, int skel_b, int skel_c,
