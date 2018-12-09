@@ -107,11 +107,12 @@ void CONN::print(ostream &out) const{
  */
 
 /** Create a node using the provided parameters. */
-DIJKSTRA_NODE::DIJKSTRA_NODE(int myID, double myX, double myY, double myZ, double maxR, bool active_flag){
+DIJKSTRA_NODE::DIJKSTRA_NODE(int myID, double myX, double myY, double myZ, double maxR, bool active_flag, int label_flag){
     id = myID; x = myX; y = myY; z = myZ;
     connections = vector<CONN> ();
     max_radius = maxR;
     active = active_flag;
+	label = label_flag;
 }
 
 /** Output information about the node to the provided output stream. */
@@ -156,7 +157,7 @@ void DIJKSTRA_NETWORK::buildDijkstraNetwork(const VORONOI_NETWORK *vornet, DIJKS
     
     // Add copies of all nodes to the network
     while(niter != vornet->nodes.end()){
-        DIJKSTRA_NODE node = DIJKSTRA_NODE(i, niter->x, niter->y, niter->z, niter->rad_stat_sphere, niter->active);
+        DIJKSTRA_NODE node = DIJKSTRA_NODE(i, niter->x, niter->y, niter->z, niter->rad_stat_sphere, niter->active, niter->label);
         i++;
         niter++;
         dnet->nodes.push_back(node);

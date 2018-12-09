@@ -1912,6 +1912,7 @@ bool writeToBI(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, doub
           a = niter->x * cell->invUCVectors[0][0] + niter->y * cell->invUCVectors[0][1] + niter->z * cell->invUCVectors[0][2];
           b = niter->y * cell->invUCVectors[1][1] + niter->z * cell->invUCVectors[1][2];
           c = niter->z * cell->invUCVectors[2][2];
+          //cout << i << " " << niter->x << " " << niter->y << " " << niter->z << endl;
           output << i << " " << niter->label << " " << a << " " << b << " "
           << c << " " << niter->rad_stat_sphere;
     output <<  "\n";

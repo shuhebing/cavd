@@ -288,7 +288,7 @@ def get_Symmetry(atmnt, vornet):
     dataset = spglib.get_symmetry_dataset(cell, symprec=0.01, angle_tolerance=5)
     symm_label = dataset['equivalent_atoms']
 
-    # print(len(symm_label))
+    print(len(symm_label))
     #print(dataset['rotations'])
     #print(dataset['translations'])
     #print(symm_label)

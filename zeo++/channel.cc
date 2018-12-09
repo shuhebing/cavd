@@ -1779,7 +1779,7 @@ bool writeToVMD_new(vector<CHANNEL> channels, char *filename){
 
 /** Write the CHANNEL to network file
 */
-void CHANNEL::writeToNET(int n, fstream &output){
+void CHANNEL::writeToNET(int n, fstream &output, ATOM_NETWORK *atmNet){
     if(!output.is_open()){
         cerr << "Error: File stream needed to print channel information was not open." << "\n"
         << "Exiting ..." << "\n";
@@ -1803,15 +1803,21 @@ void CHANNEL::writeToNET(int n, fstream &output){
             for(unsigned int j = 0; j < nodeIDs.size(); j++){
                 DIJKSTRA_NODE curNode = nodes.at(nodeIDs.at(j));
 				//output << j << "\t";
-				output << curNode.id << "\t";
+				output << curNode.id << " " << curNode.label << "\t";
 				//output << curNode.x << "\t" << curNode.y << "\t" << curNode.z << "\t";
                 
                 //直角坐标
                 double xCoord = curNode.x + v_a.x*disp.x + v_b.x*disp.y + v_c.x*disp.z;
                 double yCoord = curNode.y + v_a.y*disp.x + v_b.y*disp.y + v_c.y*disp.z;
                 double zCoord = curNode.z + v_a.z*disp.x + v_b.z*disp.y + v_c.z*disp.z;
+                
+                //分数坐标
+                Point pt = atmNet->xyz_to_abc(nodes.at(i).x, nodes.at(i).y, nodes.at(i).z);
+                pt = atmNet->shiftABCInUC(pt);
+
                 output << xCoord <<  "\t" << yCoord << "\t" << zCoord << "\t" << disp.x << "\t" << disp.y << "\t" << disp.z << "\t";
-				output << curNode.max_radius << endl;
+				output << pt[0] << "\t" << pt[1] << "\t" << pt[2] << "\t" << disp.x << "\t" << disp.y << "\t" << disp.z << "\t";
+                output << curNode.max_radius << endl;
 				
             }
         }
@@ -1836,12 +1842,12 @@ void CHANNEL::writeToNET(int n, fstream &output){
     }
 }
 
-bool writeToNET_new(vector<CHANNEL> channels, char *filename){
+bool writeToNET_new(vector<CHANNEL> channels, char *filename, ATOM_NETWORK *atmNet){
 	fstream output;
 	try{
 		output.open(filename, fstream::out);
 		for(unsigned int i = 0; i < channels.size(); i++){
-			channels.at(i).writeToNET(i, output);
+			channels.at(i).writeToNET(i, output, atmNet);
 		}
 		cout << "Writing CHANNEL information to .net file sucessful!" << endl;
 		return true;

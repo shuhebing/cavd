@@ -1,6 +1,7 @@
 from libcpp.vector cimport vector
 from libcpp.map cimport map
 from netstorage cimport VORONOI_NETWORK
+from netstorage cimport ATOM_NETWORK
 from graphstorage cimport DELTA_POS
 from graphstorage cimport CONN
 from graphstorage cimport DIJKSTRA_NODE
@@ -27,7 +28,7 @@ cdef extern from "../../zeo++/channel.h" namespace "CHANNEL":
 
 cdef extern from "../../zeo++/channel.h":
     cdef bint c_writeToVMD "writeToVMD_new"(vector[CHANNEL] channels, char *filename)
-    cdef bint c_writeToNET "writeToNET_new"(vector[CHANNEL] channels, char *filename)
+    cdef bint c_writeToNET "writeToNET_new"(vector[CHANNEL] channels, char *filename, ATOM_NETWORK *cell)
 
 cdef class Channel:
     cdef CHANNEL* thisptr

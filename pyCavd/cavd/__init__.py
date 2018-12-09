@@ -98,7 +98,7 @@ def AllCom(filename, probe_rad, num_sample, migrant=None, rad_flag=True, effecti
     writeVaspFile(prefixname+"_selected.vasp",atmnet,vornet,rad_store_in_vasp,minRad,maxRad)
     conn = connection_values_list(prefixname+".resex", vornet)
     oneD,twoD,threeD = ConnStatus(probe_rad, conn)
-    Channel.findChannels(vornet,probe_rad,prefixname+".net")
+    Channel.findChannels(vornet,atmnet,probe_rad,prefixname+".net")
     asa_new(prefixname+".zsa",False,atmnet,probe_rad,probe_rad,num_sample)
     writeZVisFile(prefixname+".zvis", rad_flag, atmnet, vornet)
     return conn,oneD,twoD,threeD

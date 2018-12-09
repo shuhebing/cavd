@@ -1052,8 +1052,8 @@ struct __pyx_obj_4cavd_12graphstorage_DijkstraNetwork {
 };
 
 
-/* "cavd/channel.pxd":32
- *     cdef bint c_writeToNET "writeToNET_new"(vector[CHANNEL] channels, char *filename)
+/* "cavd/channel.pxd":33
+ *     cdef bint c_writeToNET "writeToNET_new"(vector[CHANNEL] channels, char *filename, ATOM_NETWORK *cell)
  * 
  * cdef class Channel:             # <<<<<<<<<<<<<<
  *     cdef CHANNEL* thisptr
@@ -6082,10 +6082,10 @@ static int __Pyx_modinit_type_import_code(void) {
   __pyx_ptype_4cavd_12graphstorage_DijkstraNetwork = __Pyx_ImportType(__pyx_t_1, "cavd.graphstorage", "DijkstraNetwork", sizeof(struct __pyx_obj_4cavd_12graphstorage_DijkstraNetwork), __Pyx_ImportType_CheckSize_Warn);
    if (!__pyx_ptype_4cavd_12graphstorage_DijkstraNetwork) __PYX_ERR(5, 64, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyImport_ImportModule("cavd.channel"); if (unlikely(!__pyx_t_1)) __PYX_ERR(6, 32, __pyx_L1_error)
+  __pyx_t_1 = PyImport_ImportModule("cavd.channel"); if (unlikely(!__pyx_t_1)) __PYX_ERR(6, 33, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_ptype_4cavd_7channel_Channel = __Pyx_ImportType(__pyx_t_1, "cavd.channel", "Channel", sizeof(struct __pyx_obj_4cavd_7channel_Channel), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_4cavd_7channel_Channel) __PYX_ERR(6, 32, __pyx_L1_error)
+   if (!__pyx_ptype_4cavd_7channel_Channel) __PYX_ERR(6, 33, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
   return 0;

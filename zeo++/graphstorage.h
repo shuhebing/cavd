@@ -60,13 +60,15 @@ public:
     std::vector <CONN> connections; // List of connections that lead from the node to other nodes
     double max_radius;         // Maximum radius of particle that can sit at the node
     bool active;               // flag used to disactivate a node
+    int label;
+
     /* Creates a node with an invalid id, no connections and a radius of 0.*/
     /** Create a node using the provided parameters. */
     //DIJKSTRA_NODE();
     
     /* Creates a node. Default is with an invalid id, no connections and a radius of 0.*/
     DIJKSTRA_NODE(int myID = -1, double myX = 0, double myY = 0, double myZ = 0,
-                  double maxR = 0, bool active_flag = true);
+                  double maxR = 0, bool active_flag = true, int label = -1);
     
     /** Output information about the node to the provided output stream. Default is std::cout*/
     void print(std::ostream &out = std::cout) const;

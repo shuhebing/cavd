@@ -3,6 +3,8 @@
 #Added at 20180704
 from cavd.netstorage cimport VoronoiNetwork
 from cavd.netstorage cimport VORONOI_NETWORK
+from netstorage cimport ATOM_NETWORK
+from netstorage cimport AtomNetwork
 from channel cimport CHANNEL
 from graphstorage cimport DELTA_POS
 from graphstorage cimport CONN
@@ -93,15 +95,16 @@ cdef class Channel:
     
     @classmethod
     #Add at 20180826
-    def findChannels(cls, vornet, probe_rad, filename):
+    def findChannels(cls, vornet, atmnet, probe_rad, filename):
         cdef VORONOI_NETWORK* c_vornet_ptr = (<VoronoiNetwork?>vornet).thisptr
+        cdef ATOM_NETWORK* c_atmnet_ptr = (<AtomNetwork?>atmnet).thisptr
         if isinstance(filename, unicode):
             filename = (<unicode>filename).encode('utf8')
         cdef char* c_filename = filename
         cdef vector[CHANNEL] c_channels
         if not findChannels_new(c_vornet_ptr, probe_rad, &c_channels):
             raise FindChannelError
-        if not c_writeToNET(c_channels, c_filename):
+        if not c_writeToNET(c_channels, c_filename, c_atmnet_ptr):
             raise IOError
         channels = []
         channel = Channel()
