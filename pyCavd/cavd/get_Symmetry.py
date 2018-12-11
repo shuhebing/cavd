@@ -291,7 +291,7 @@ def get_Symmetry(atmnt, vornet):
     print(len(symm_label))
     #print(dataset['rotations'])
     #print(dataset['translations'])
-    #print(symm_label)
+    print(symm_label)
     vornet_uni_symm = vornet.parse_symmetry(symm_label)
 
     sym_independ = np.unique(dataset['equivalent_atoms'])

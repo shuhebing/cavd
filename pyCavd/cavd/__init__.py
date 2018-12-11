@@ -237,8 +237,8 @@ def ChannelCom(filename, probe_rad, migrant=None, rad_flag=True, effective_rad=T
     if migrant:
         os.remove(remove_filename)
     prefixname = filename.replace(".cif","")
-    #Channel.findChannelsInVornet(vornet,probe_rad,prefixname+".zchan")
-    Channel.findChannels(vornet,probe_rad,prefixname+".net")
+    Channel.findChannels(vornet,atmnet,probe_rad,prefixname+".net")
+
 
 #计算ASA
 def ASACom(filename, probe_rad, num_sample, migrant=None, rad_flag=True, effective_rad=True, rad_file=None):
