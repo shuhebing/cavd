@@ -554,7 +554,8 @@ def get_local_envir(filename):
             oxi_state = nearest_key(tab_oxi_states, oxi_state)
             radius = _ion_radii[el][str(oxi_state)][str(coord_no)]
         except KeyError:
-            if vnn.get_cn(stru, i)-coord_no > 0:
+            coord_num,neig = vnn.get_cn(stru, i)
+            if coord_num - coord_no > 0:
                 new_coord_no = coord_no + 1
             else:
                 new_coord_no = coord_no - 1
