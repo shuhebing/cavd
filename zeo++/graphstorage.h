@@ -39,12 +39,15 @@ public:
     double length;      // Length of edge
     double max_radius;  // Radius of largest spherical probe that can travel along edge
     DELTA_POS deltaPos; // Change in unit cell
+    double btx,bty,btz;
     
     /* Create a CONN using the provided parameters */
     CONN(int myFrom, int myTo, double len, double maxR, DELTA_POS deltaP);
 	//Add a new construct function for Cython wrapper
 	CONN();
     CONN(int myFrom, int myTo, double len, double maxR, int myX = 0, int myY = 0, int myZ = 0);
+    CONN(int myFrom, int myTo, double len, double bt_x, double bt_y, double bt_z, double maxR, DELTA_POS deltaP);
+    CONN(int myFrom, int myTo, double len, double bt_x, double bt_y, double bt_z, double maxR, int myX = 0, int myY = 0, int myZ = 0);
     /* Output information about the connection to the provided output stream*/
     void print(std::ostream& out = std::cout) const;
     //void print();

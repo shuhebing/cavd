@@ -14,7 +14,7 @@ output_path = path+"results/"
 result_file = open(output_path+"com_result_Li.txt","w")
 result_file.write('filename\tProblem\n')
 Rf_file = open(output_path+"Rf_Li.txt","w")
-Rf_file.write('filename\ta_Rf\tb_Rf\tc_Rf\toneD_Conn\ttwoD_Conn\tthreeD_Conn\n')
+Rf_file.write('filename\ta_Rf\tb_Rf\tc_Rf\toneD_Conn\ttwoD_Conn\tthreeD_Conn\tmin_dises\tchannels_dim\tvoids\n')
 for i in os.listdir(path):
     if ".cif" in i:
         filenames.append(i)
@@ -22,11 +22,20 @@ for i in os.listdir(path):
 for filename in filenames:
     filename = path+filename
     try:
-        conn,oneD,twoD,threeD = AllCom(filename, 0.584, 1000, migrant="Li", rad_flag=True, effective_rad=True, rad_file=None, rad_store_in_vasp=True, minRad=0.584, maxRad=0.876)
+        conn,oneD,twoD,threeD,nei_dises,dims,voids = AllCom(filename, 0.584, 1000, migrant="Li", rad_flag=True, effective_rad=True, rad_file=None, rad_store_in_vasp=True, minRad=0.584, maxRad=0.876)
         Rf_file.write(filename)
         for i in conn:
             Rf_file.write('\t'+str(i))
         Rf_file.write('\t'+str(oneD)+'\t'+str(twoD)+'\t'+str(threeD))
+        Rf_file.write('\t')
+        for key in nei_dises:
+            Rf_file.write(str(key)+" "+str(nei_dises[key])+" ")
+        Rf_file.write('\t')
+        for value in dims:
+            f_file.write(str(value)+" ")
+        Rf_file.write('\t')
+        for void in voids:
+            Rf_file.write("("+str(void[0])+","+str(void[1])+","+str(void[2])+") ")
         Rf_file.write("\n")
         print(filename+" compute complete!")
         out = filename+'\t'+'compute complete!'+'\n'

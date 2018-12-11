@@ -11,7 +11,6 @@ import numpy as np
 from pymatgen.io.vasp import Poscar
 import spglib
 from cavd.netstorage import AtomNetwork
-from cavd import LocalEnvirCom
 from cavd.netio import getRemoveMigrantFilename,writeVaspFile,writeBIFile
 class Poscar_new():
     def __init__(self, atomic_symbols, coords, lattice, comment=None, selective_dynamics=None,
@@ -288,39 +287,41 @@ def get_Symmetry(atmnt, vornet):
     dataset = spglib.get_symmetry_dataset(cell, symprec=0.01, angle_tolerance=5)
     symm_label = dataset['equivalent_atoms']
 
-    print(len(symm_label))
+    # print(len(symm_label))
     #print(dataset['rotations'])
     #print(dataset['translations'])
-    print(symm_label)
+    # print(symm_label)
     vornet_uni_symm = vornet.parse_symmetry(symm_label)
 
     sym_independ = np.unique(dataset['equivalent_atoms'])
-    print(len(sym_independ))
+    # print(len(sym_independ))
     # print(sym_independ)
+    voids = []
     for i in sym_independ:
-        print(positions[i])
+        voids.append(positions[i])
+        # print(positions[i])
         #print((s2.sites[i])._fcoords)
     
-    return vornet_uni_symm
+    return vornet_uni_symm,voids
 
-if __name__ == "__main__":
-#     #get_Symmetry("../../examples/icsd_246817_orgin_copy.vasp")
-#     # get_Symmetry("../../examples/Li2CO3-LDA_orgin.vasp")
-#     #get_Symmetry("../../examples/LPS.vasp")
-#     #get_Symmetry("../../examples/LPS_orgin.vasp")
-#     #get_Symmetry("../../examples/icsd_20610.vasp")
-#     #get_Symmetry("../../examples/icsd_20610_orgin.vasp")
-#     #get_Symmetry("../../examples/icsd_29225.vasp")
-#     # get_Symmetry("../../examples/icsd_29225_orgin.vasp")
-#     #get_Symmetry("../../examples/LLZO-48g-180721_orgin.vasp")
-#     #get_Symmetry("../../examples/custom_300001.vasp")
-#     #get_Symmetry("../../examples/custom_300001_orgin.vasp")
+# if __name__ == "__main__":
+# #     #get_Symmetry("../../examples/icsd_246817_orgin_copy.vasp")
+# #     # get_Symmetry("../../examples/Li2CO3-LDA_orgin.vasp")
+# #     #get_Symmetry("../../examples/LPS.vasp")
+# #     #get_Symmetry("../../examples/LPS_orgin.vasp")
+# #     #get_Symmetry("../../examples/icsd_20610.vasp")
+# #     #get_Symmetry("../../examples/icsd_20610_orgin.vasp")
+# #     #get_Symmetry("../../examples/icsd_29225.vasp")
+# #     # get_Symmetry("../../examples/icsd_29225_orgin.vasp")
+# #     #get_Symmetry("../../examples/LLZO-48g-180721_orgin.vasp")
+# #     #get_Symmetry("../../examples/custom_300001.vasp")
+# #     #get_Symmetry("../../examples/custom_300001_orgin.vasp")
 
-    radii = {}
-    remove_filename = getRemoveMigrantFilename("../../examples/Li2CO3-LDA.cif","Li")
-    radii,migrant_radius,migrant_alpha = LocalEnvirCom("../../examples/Li2CO3-LDA.cif","Li")
-    atmnet = AtomNetwork.read_from_CIF(remove_filename, radii, True, None)
-    vornet,edge_centers,fcs = atmnet.perform_voronoi_decomposition(False)
-    writeVaspFile("../../examples/Li2CO3-LDA"+"_orgin.vasp",atmnet,vornet,True)
-    sym_vornet = get_Symmetry(atmnet, vornet)
-    writeBIFile("../../examples/Li2CO3-LDA"+"_orgin.bitest",atmnet,sym_vornet)
+#     radii = {}
+#     remove_filename = getRemoveMigrantFilename("../../examples/Li2CO3-LDA.cif","Li")
+#     radii,migrant_radius,migrant_alpha = LocalEnvirCom("../../examples/Li2CO3-LDA.cif","Li")
+#     atmnet = AtomNetwork.read_from_CIF(remove_filename, radii, True, None)
+#     vornet,edge_centers,fcs = atmnet.perform_voronoi_decomposition(False)
+#     writeVaspFile("../../examples/Li2CO3-LDA"+"_orgin.vasp",atmnet,vornet,True)
+#     sym_vornet = get_Symmetry(atmnet, vornet)
+#     writeBIFile("../../examples/Li2CO3-LDA"+"_orgin.bitest",atmnet,sym_vornet)

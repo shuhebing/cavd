@@ -7,6 +7,7 @@ from cavd.channel import Channel
 from cavd.area_volume import asa_new
 from cavd.netio import *
 from cavd.local_environment import get_local_envir
+from cavd.get_Symmetry import get_Symmetry
 from pymatgen.core.structure import Structure
 from pymatgen.analysis.local_env import ValenceIonicRadiusEvaluator
 
@@ -41,6 +42,8 @@ def LocalEnvirCom(filename, migrant):
     #             minRad = radii[label]
 
     migrant_labels = []
+    coord_tmp = []
+    nei_dis_tmp = []
     migrant_radii_tmp = []
     migrant_paras_tmp = []
     for i in coordination_list:
@@ -56,9 +59,13 @@ def LocalEnvirCom(filename, migrant):
             migrant_labels.append(migrant_label)
             migrant_radii_tmp.append(migrant_radius)
             migrant_paras_tmp.append(alpha)
+            coord_tmp.append(len(i["coord_nei"]))
+            nei_dis_tmp.append(nei_dis)
+
 
     migrant_radii = dict(zip(migrant_labels, migrant_radii_tmp))
     migrant_paras = dict(zip(migrant_labels, migrant_paras_tmp))
+    nei_dises = dict(zip(coord_tmp, nei_dis_tmp))
 
     rad_sum = 0
     alpha_sum = 0
@@ -75,14 +82,14 @@ def LocalEnvirCom(filename, migrant):
     print(migrant_radius)
     print(migrant_alpha)
 
-    return radii,migrant_radius,migrant_alpha
+    return radii,migrant_radius,migrant_alpha,nei_dises
 
 
 def AllCom(filename, probe_rad, num_sample, migrant=None, rad_flag=True, effective_rad=True, rad_file=None, rad_store_in_vasp=True, minRad=0.0, maxRad=0.0):
     radii = {}
     if rad_flag and effective_rad:
         #考虑如何利用migrant_radius与migrant_alpha
-        radii,migrant_radius,migrant_alpha = LocalEnvirCom(filename,"Li")
+        radii,migrant_radius,migrant_alpha, nei_dises = LocalEnvirCom(filename,"Li")
     if migrant:
         remove_filename = getRemoveMigrantFilename(filename,migrant)
     else:
@@ -91,17 +98,26 @@ def AllCom(filename, probe_rad, num_sample, migrant=None, rad_flag=True, effecti
     if migrant:
         os.remove(remove_filename)
     vornet,edge_centers,fcs = atmnet.perform_voronoi_decomposition(False)
+    sym_vornet,voids = get_Symmetry(atmnet, vornet)
     
     prefixname = filename.replace(".cif","")
     writeBIFile(prefixname+"_orgin.bi",atmnet,vornet)
     writeVaspFile(prefixname+"_orgin.vasp",atmnet,vornet,rad_store_in_vasp)
+
+    probe_rad = migrant_radius*migrant_alpha
+    minRad = migrant_radius*migrant_alpha*0.85
+    maxRad = migrant_radius*migrant_alpha*1.15
+
     writeVaspFile(prefixname+"_selected.vasp",atmnet,vornet,rad_store_in_vasp,minRad,maxRad)
     conn = connection_values_list(prefixname+".resex", vornet)
-    oneD,twoD,threeD = ConnStatus(probe_rad, conn)
-    Channel.findChannels(vornet,atmnet,probe_rad,prefixname+".net")
-    asa_new(prefixname+".zsa",False,atmnet,probe_rad,probe_rad,num_sample)
-    writeZVisFile(prefixname+".zvis", rad_flag, atmnet, vornet)
-    return conn,oneD,twoD,threeD
+
+    oneD,twoD,threeD = ConnStatus(minRad, conn)
+    channels = Channel.findChannels(vornet,atmnet,minRad,prefixname+".net")
+    
+    dims = []
+    for i in channels:
+        dims.append(i.dimensionality)
+    return conn,oneD,twoD,threeD,nei_dises,dims,voids
 
 #计算指定结构的瓶颈和间隙
 def BIComputation(filename, migrant=None, rad_flag=True, effective_rad=True, rad_file=None, rad_store_in_vasp=True,  minRad=0.0, maxRad=0.0):

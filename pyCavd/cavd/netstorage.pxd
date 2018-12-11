@@ -68,6 +68,7 @@ cdef extern from "../../zeo++/networkstorage.h":
     cdef cppclass VORONOI_NETWORK:
         VORONOI_NETWORK() except +
         VORONOI_NETWORK prune(double)
+        XYZ v_a, v_b, v_c
         vector[VOR_NODE] nodes
         vector[VOR_EDGE] edges
 

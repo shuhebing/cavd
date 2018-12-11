@@ -927,7 +927,7 @@ struct __pyx_obj_4cavd_11voronoicell_BasicVCell {
 };
 
 
-/* "cavd/netstorage.pxd":142
+/* "cavd/netstorage.pxd":143
  *             VORONOI_NETWORK* vornet, ATOM_NETWORK* atmnet)
  * 
  * cdef class Atom:             # <<<<<<<<<<<<<<
@@ -940,7 +940,7 @@ struct __pyx_obj_4cavd_10netstorage_Atom {
 };
 
 
-/* "cavd/netstorage.pxd":148
+/* "cavd/netstorage.pxd":149
  *     cdef ATOM* thisptr
  * 
  * cdef class AtomNetwork:             # <<<<<<<<<<<<<<
@@ -954,7 +954,7 @@ struct __pyx_obj_4cavd_10netstorage_AtomNetwork {
 };
 
 
-/* "cavd/netstorage.pxd":157
+/* "cavd/netstorage.pxd":158
  *     cdef bint rad_flag
  * 
  * cdef class VoronoiNode:             # <<<<<<<<<<<<<<
@@ -967,7 +967,7 @@ struct __pyx_obj_4cavd_10netstorage_VoronoiNode {
 };
 
 
-/* "cavd/netstorage.pxd":163
+/* "cavd/netstorage.pxd":164
  *     cdef VOR_NODE* thisptr
  * 
  * cdef class VoronoiNetwork:             # <<<<<<<<<<<<<<
@@ -980,7 +980,7 @@ struct __pyx_obj_4cavd_10netstorage_VoronoiNetwork {
 };
 
 
-/* "cavd/netstorage.pxd":169
+/* "cavd/netstorage.pxd":170
  *     cdef VORONOI_NETWORK* thisptr
  * 
  * cdef class VoronoiEdge:             # <<<<<<<<<<<<<<
