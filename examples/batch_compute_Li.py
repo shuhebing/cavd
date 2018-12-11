@@ -32,7 +32,7 @@ for filename in filenames:
             Rf_file.write(str(key)+" "+str(nei_dises[key])+" ")
         Rf_file.write('\t')
         for value in dims:
-            f_file.write(str(value)+" ")
+            Rf_file.write(str(value)+" ")
         Rf_file.write('\t')
         for void in voids:
             Rf_file.write("("+str(void[0])+","+str(void[1])+","+str(void[2])+") ")
