@@ -2,9 +2,10 @@ import os
 from cavd import AllCom
 from cavd.netstorage import PerformVDError
 from cavd.channel import FindChannelError
+from cavd.local_environment import CoordComError
 
 filenames=[]
-path = "/home/yeanjiang/yaj/bi/Li_Na_Mg_Al_cifs/Li/"
+path = "../../bi/Li_Na_Mg_Al_cifs/Li/"
 if not os.path.exists(path+"results"):
     os.mkdir(path+"results")
     print("create results directory successful !")
@@ -21,6 +22,7 @@ for i in os.listdir(path):
 
 for filename in filenames:
     filename = path+filename
+    print(filename)
     try:
         conn,oneD,twoD,threeD,nei_dises,dims,voids = AllCom(filename, 0.584, 1000, migrant="Li", rad_flag=True, effective_rad=True, rad_file=None, rad_store_in_vasp=True, minRad=0.584, maxRad=0.876)
         Rf_file.write(filename)
@@ -85,4 +87,16 @@ for filename in filenames:
         out = filename+'\t'+"Integer division or modulo by zero."+'\n'
         result_file.write(out)
         continue
+    except CoordComError:
+        print(filename, " Computer Coord Failed! Maybe have no CN!")
+        out = filename+'\t'+"Computer Coord Failed! Maybe have no CN!"+'\n'
+        result_file.write(out)
+        continue
+
+    except IndexError:
+        print(filename, "IndexError: list index out of range! Maybe occuied in local_environment compute neighbor!")
+        out = filename+'\t'+"Maybe occuied in local_environment compute neighbor!"+'\n'
+        result_file.write(out)
+        continue
+
 print("All File compute completed!")

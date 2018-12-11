@@ -51,6 +51,9 @@ from pymatgen.core.operations import MagSymmOp
 from collections import OrderedDict
 from pymatgen.core.periodic_table import Element, Specie, get_el_sp, DummySpecie
 
+class CoordComError(Exception):
+    #print("Computer Coord Failed!")
+    pass
 
 file_dir = os.path.dirname(__file__)
 #file_dir = os.path.abspath("/home/yeanjiang/yaj/CAVD/pyCavd/zeo/")
@@ -467,6 +470,8 @@ class Coordination():
             coord_nei = []
             for j in range(len(coord_neighbors[i])):
                 coord_nei.append((coord_neighbors[i][j]._atom_site_label, distances[i][j]))
+            if coord_nei ==0:
+                raise CoordComError
             coordination_list.append(Coordination(labels[i], sites[i].coords, sites[i].frac_coords, elements[i], radii[i], coord_nei).as_dict())
         return coordination_list
     

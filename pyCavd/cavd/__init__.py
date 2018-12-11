@@ -8,6 +8,7 @@ from cavd.area_volume import asa_new
 from cavd.netio import *
 from cavd.local_environment import get_local_envir
 from cavd.get_Symmetry import get_Symmetry
+from cavd.high_accuracy import high_accuracy_atmnet
 from pymatgen.core.structure import Structure
 from pymatgen.analysis.local_env import ValenceIonicRadiusEvaluator
 
@@ -95,8 +96,12 @@ def AllCom(filename, probe_rad, num_sample, migrant=None, rad_flag=True, effecti
     else:
         remove_filename = filename
     atmnet = AtomNetwork.read_from_CIF(remove_filename, radii, rad_flag, rad_file)
+    # high_accur_atmnet = atmnet.copy()
+    # high_accuracy_atmnet(high_accur_atmnet, "S50")
+
     if migrant:
         os.remove(remove_filename)
+    # vornet,edge_centers,fcs = high_accur_atmnet.perform_voronoi_decomposition(False)
     vornet,edge_centers,fcs = atmnet.perform_voronoi_decomposition(False)
     sym_vornet,voids = get_Symmetry(atmnet, vornet)
     
