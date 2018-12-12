@@ -90,7 +90,7 @@ def AllCom(filename, probe_rad, num_sample, migrant=None, rad_flag=True, effecti
     radii = {}
     if rad_flag and effective_rad:
         #考虑如何利用migrant_radius与migrant_alpha
-        radii,migrant_radius,migrant_alpha, nei_dises = LocalEnvirCom(filename,"Li")
+        radii,migrant_radius,migrant_alpha, nei_dises = LocalEnvirCom(filename,migrant)
     if migrant:
         remove_filename = getRemoveMigrantFilename(filename,migrant)
     else:
