@@ -1995,7 +1995,7 @@ static PyObject *__pyx_pw_4cavd_12graphstorage_15DijkstraNetwork_5nodes_1__get__
 static PyObject *__pyx_pf_4cavd_12graphstorage_15DijkstraNetwork_5nodes___get__(struct __pyx_obj_4cavd_12graphstorage_DijkstraNetwork *__pyx_v_self) {
   PyObject *__pyx_v_nodes = NULL;
   std::vector<DIJKSTRA_NODE>  __pyx_v_c_nodes;
-  std::vector<DIJKSTRA_NODE> ::size_type __pyx_v_i;
+  std::vector<CONN> ::size_type __pyx_v_i;
   int __pyx_v_node_id;
   PyObject *__pyx_v_node_pos = NULL;
   double __pyx_v_node_radius;
@@ -2014,7 +2014,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_15DijkstraNetwork_5nodes___get__(
   std::vector<DIJKSTRA_NODE>  __pyx_t_2;
   std::vector<DIJKSTRA_NODE> ::size_type __pyx_t_3;
   std::vector<DIJKSTRA_NODE> ::size_type __pyx_t_4;
-  std::vector<DIJKSTRA_NODE> ::size_type __pyx_t_5;
+  std::vector<CONN> ::size_type __pyx_t_5;
   int __pyx_t_6;
   PyObject *__pyx_t_7 = NULL;
   PyObject *__pyx_t_8 = NULL;
@@ -2023,7 +2023,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_15DijkstraNetwork_5nodes___get__(
   std::vector<CONN>  __pyx_t_11;
   std::vector<CONN> ::size_type __pyx_t_12;
   std::vector<CONN> ::size_type __pyx_t_13;
-  std::vector<DIJKSTRA_NODE> ::size_type __pyx_t_14;
+  std::vector<CONN> ::size_type __pyx_t_14;
   PyObject *__pyx_t_15 = NULL;
   int __pyx_t_16;
   __Pyx_RefNannySetupContext("__get__", 0);

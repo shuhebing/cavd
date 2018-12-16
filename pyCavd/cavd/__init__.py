@@ -45,28 +45,34 @@ def LocalEnvirCom(filename, migrant):
     migrant_labels = []
     coord_tmp = []
     nei_dis_tmp = []
+    min_nei_dis_tmp = []
     migrant_radii_tmp = []
     migrant_paras_tmp = []
     for i in coordination_list:
         if migrant in i["label"]:
             nei = i["coord_nei"][0]
             nei_dis = nei[1]
+
             nei_label = nei[0]
             nei_radius = radii[nei_label]
+
             migrant_radius = i["radius"]
             migrant_label = i["label"]
+
             alpha = (nei_dis - nei_radius)/migrant_radius
 
             migrant_labels.append(migrant_label)
             migrant_radii_tmp.append(migrant_radius)
             migrant_paras_tmp.append(alpha)
-            coord_tmp.append(len(i["coord_nei"]))
+            coord_tmp.append(i["coord_num"])
             nei_dis_tmp.append(nei_dis)
+            min_nei_dis_tmp.append(nei_dis - nei_radius)
 
 
     migrant_radii = dict(zip(migrant_labels, migrant_radii_tmp))
     migrant_paras = dict(zip(migrant_labels, migrant_paras_tmp))
-    nei_dises = dict(zip(coord_tmp, nei_dis_tmp))
+
+    nei_dises = dict(zip(coord_tmp, zip(nei_dis_tmp, min_nei_dis_tmp)))
 
     rad_sum = 0
     alpha_sum = 0

@@ -5,7 +5,7 @@ from cavd.channel import FindChannelError
 from cavd.local_environment import CoordComError
 
 filenames=[]
-path = "../../bi/Li_Na_Mg_Al_cifs/Na/"
+path = "../../bi_20181216/Li_Na_Mg_Al_cifs/Na/"
 if not os.path.exists(path+"results"):
     os.mkdir(path+"results")
     print("create results directory successful !")
@@ -31,7 +31,7 @@ for filename in filenames:
         Rf_file.write('\t'+str(oneD)+'\t'+str(twoD)+'\t'+str(threeD))
         Rf_file.write('\t')
         for key in nei_dises:
-            Rf_file.write(str(key)+" "+str(nei_dises[key])+" ")
+            Rf_file.write(str(key)+" "+str(nei_dises[key][0])+" "+str(nei_dises[key][1])+" ")
         Rf_file.write('\t')
         for value in dims:
             Rf_file.write(str(value)+" ")
