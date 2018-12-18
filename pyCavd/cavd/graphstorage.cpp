@@ -996,7 +996,7 @@ struct __pyx_obj_4cavd_10netstorage_VoronoiEdge {
 };
 
 
-/* "cavd/graphstorage.pxd":55
+/* "cavd/graphstorage.pxd":56
  * #    cdef DIJKSTRA_NODE* thisptr
  * 
  * cdef class DeltaPos:             # <<<<<<<<<<<<<<
@@ -1009,7 +1009,7 @@ struct __pyx_obj_4cavd_12graphstorage_DeltaPos {
 };
 
 
-/* "cavd/graphstorage.pxd":58
+/* "cavd/graphstorage.pxd":59
  *    cdef DELTA_POS* thisptr
  * 
  * cdef class Conn:             # <<<<<<<<<<<<<<
@@ -1022,7 +1022,7 @@ struct __pyx_obj_4cavd_12graphstorage_Conn {
 };
 
 
-/* "cavd/graphstorage.pxd":61
+/* "cavd/graphstorage.pxd":62
  *    cdef CONN* thisptr
  * 
  * cdef class DijkstraNode:             # <<<<<<<<<<<<<<
@@ -1035,7 +1035,7 @@ struct __pyx_obj_4cavd_12graphstorage_DijkstraNode {
 };
 
 
-/* "cavd/graphstorage.pxd":64
+/* "cavd/graphstorage.pxd":65
  *    cdef DIJKSTRA_NODE* thisptr
  * 
  * cdef class DijkstraNetwork:             # <<<<<<<<<<<<<<
@@ -1995,8 +1995,9 @@ static PyObject *__pyx_pw_4cavd_12graphstorage_15DijkstraNetwork_5nodes_1__get__
 static PyObject *__pyx_pf_4cavd_12graphstorage_15DijkstraNetwork_5nodes___get__(struct __pyx_obj_4cavd_12graphstorage_DijkstraNetwork *__pyx_v_self) {
   PyObject *__pyx_v_nodes = NULL;
   std::vector<DIJKSTRA_NODE>  __pyx_v_c_nodes;
-  std::vector<CONN> ::size_type __pyx_v_i;
+  std::vector<DIJKSTRA_NODE> ::size_type __pyx_v_i;
   int __pyx_v_node_id;
+  int __pyx_v_node_label;
   PyObject *__pyx_v_node_pos = NULL;
   double __pyx_v_node_radius;
   std::vector<CONN>  __pyx_v_c_node_conns;
@@ -2014,7 +2015,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_15DijkstraNetwork_5nodes___get__(
   std::vector<DIJKSTRA_NODE>  __pyx_t_2;
   std::vector<DIJKSTRA_NODE> ::size_type __pyx_t_3;
   std::vector<DIJKSTRA_NODE> ::size_type __pyx_t_4;
-  std::vector<CONN> ::size_type __pyx_t_5;
+  std::vector<DIJKSTRA_NODE> ::size_type __pyx_t_5;
   int __pyx_t_6;
   PyObject *__pyx_t_7 = NULL;
   PyObject *__pyx_t_8 = NULL;
@@ -2023,7 +2024,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_15DijkstraNetwork_5nodes___get__(
   std::vector<CONN>  __pyx_t_11;
   std::vector<CONN> ::size_type __pyx_t_12;
   std::vector<CONN> ::size_type __pyx_t_13;
-  std::vector<CONN> ::size_type __pyx_t_14;
+  std::vector<DIJKSTRA_NODE> ::size_type __pyx_t_14;
   PyObject *__pyx_t_15 = NULL;
   int __pyx_t_16;
   __Pyx_RefNannySetupContext("__get__", 0);
@@ -2055,7 +2056,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_15DijkstraNetwork_5nodes___get__(
  *             cdef vector[DIJKSTRA_NODE] c_nodes = self.thisptr.nodes
  *             for i in range(c_nodes.size()):             # <<<<<<<<<<<<<<
  *                 node_id = c_nodes[i].id
- *                 node_pos = [c_nodes[i].x, c_nodes[i].y, c_nodes[i].z]
+ *                 node_label = c_nodes[i].label
  */
   __pyx_t_3 = __pyx_v_c_nodes.size();
   __pyx_t_4 = __pyx_t_3;
@@ -2066,8 +2067,8 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_15DijkstraNetwork_5nodes___get__(
  *             cdef vector[DIJKSTRA_NODE] c_nodes = self.thisptr.nodes
  *             for i in range(c_nodes.size()):
  *                 node_id = c_nodes[i].id             # <<<<<<<<<<<<<<
+ *                 node_label = c_nodes[i].label
  *                 node_pos = [c_nodes[i].x, c_nodes[i].y, c_nodes[i].z]
- *                 node_radius = c_nodes[i].max_radius
  */
     __pyx_t_6 = (__pyx_v_c_nodes[__pyx_v_i]).id;
     __pyx_v_node_id = __pyx_t_6;
@@ -2075,17 +2076,27 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_15DijkstraNetwork_5nodes___get__(
     /* "cavd/graphstorage.pyx":40
  *             for i in range(c_nodes.size()):
  *                 node_id = c_nodes[i].id
+ *                 node_label = c_nodes[i].label             # <<<<<<<<<<<<<<
+ *                 node_pos = [c_nodes[i].x, c_nodes[i].y, c_nodes[i].z]
+ *                 node_radius = c_nodes[i].max_radius
+ */
+    __pyx_t_6 = (__pyx_v_c_nodes[__pyx_v_i]).label;
+    __pyx_v_node_label = __pyx_t_6;
+
+    /* "cavd/graphstorage.pyx":41
+ *                 node_id = c_nodes[i].id
+ *                 node_label = c_nodes[i].label
  *                 node_pos = [c_nodes[i].x, c_nodes[i].y, c_nodes[i].z]             # <<<<<<<<<<<<<<
  *                 node_radius = c_nodes[i].max_radius
  *                 c_node_conns = c_nodes[i].connections
  */
-    __pyx_t_1 = PyFloat_FromDouble((__pyx_v_c_nodes[__pyx_v_i]).x); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 40, __pyx_L1_error)
+    __pyx_t_1 = PyFloat_FromDouble((__pyx_v_c_nodes[__pyx_v_i]).x); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 41, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_7 = PyFloat_FromDouble((__pyx_v_c_nodes[__pyx_v_i]).y); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 40, __pyx_L1_error)
+    __pyx_t_7 = PyFloat_FromDouble((__pyx_v_c_nodes[__pyx_v_i]).y); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 41, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_8 = PyFloat_FromDouble((__pyx_v_c_nodes[__pyx_v_i]).z); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 40, __pyx_L1_error)
+    __pyx_t_8 = PyFloat_FromDouble((__pyx_v_c_nodes[__pyx_v_i]).z); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 41, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    __pyx_t_9 = PyList_New(3); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 40, __pyx_L1_error)
+    __pyx_t_9 = PyList_New(3); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 41, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     __Pyx_GIVEREF(__pyx_t_1);
     PyList_SET_ITEM(__pyx_t_9, 0, __pyx_t_1);
@@ -2099,8 +2110,8 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_15DijkstraNetwork_5nodes___get__(
     __Pyx_XDECREF_SET(__pyx_v_node_pos, ((PyObject*)__pyx_t_9));
     __pyx_t_9 = 0;
 
-    /* "cavd/graphstorage.pyx":41
- *                 node_id = c_nodes[i].id
+    /* "cavd/graphstorage.pyx":42
+ *                 node_label = c_nodes[i].label
  *                 node_pos = [c_nodes[i].x, c_nodes[i].y, c_nodes[i].z]
  *                 node_radius = c_nodes[i].max_radius             # <<<<<<<<<<<<<<
  *                 c_node_conns = c_nodes[i].connections
@@ -2109,7 +2120,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_15DijkstraNetwork_5nodes___get__(
     __pyx_t_10 = (__pyx_v_c_nodes[__pyx_v_i]).max_radius;
     __pyx_v_node_radius = __pyx_t_10;
 
-    /* "cavd/graphstorage.pyx":42
+    /* "cavd/graphstorage.pyx":43
  *                 node_pos = [c_nodes[i].x, c_nodes[i].y, c_nodes[i].z]
  *                 node_radius = c_nodes[i].max_radius
  *                 c_node_conns = c_nodes[i].connections             # <<<<<<<<<<<<<<
@@ -2119,19 +2130,19 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_15DijkstraNetwork_5nodes___get__(
     __pyx_t_11 = (__pyx_v_c_nodes[__pyx_v_i]).connections;
     __pyx_v_c_node_conns = __pyx_t_11;
 
-    /* "cavd/graphstorage.pyx":43
+    /* "cavd/graphstorage.pyx":44
  *                 node_radius = c_nodes[i].max_radius
  *                 c_node_conns = c_nodes[i].connections
  *                 node_conns = []             # <<<<<<<<<<<<<<
  *                 for i in range(c_node_conns.size()):
  *                     conn_from = c_node_conns[i].origin
  */
-    __pyx_t_9 = PyList_New(0); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 43, __pyx_L1_error)
+    __pyx_t_9 = PyList_New(0); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 44, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     __Pyx_XDECREF_SET(__pyx_v_node_conns, ((PyObject*)__pyx_t_9));
     __pyx_t_9 = 0;
 
-    /* "cavd/graphstorage.pyx":44
+    /* "cavd/graphstorage.pyx":45
  *                 c_node_conns = c_nodes[i].connections
  *                 node_conns = []
  *                 for i in range(c_node_conns.size()):             # <<<<<<<<<<<<<<
@@ -2143,7 +2154,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_15DijkstraNetwork_5nodes___get__(
     for (__pyx_t_14 = 0; __pyx_t_14 < __pyx_t_13; __pyx_t_14+=1) {
       __pyx_v_i = __pyx_t_14;
 
-      /* "cavd/graphstorage.pyx":45
+      /* "cavd/graphstorage.pyx":46
  *                 node_conns = []
  *                 for i in range(c_node_conns.size()):
  *                     conn_from = c_node_conns[i].origin             # <<<<<<<<<<<<<<
@@ -2153,7 +2164,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_15DijkstraNetwork_5nodes___get__(
       __pyx_t_6 = (__pyx_v_c_node_conns[__pyx_v_i]).from;
       __pyx_v_conn_from = __pyx_t_6;
 
-      /* "cavd/graphstorage.pyx":46
+      /* "cavd/graphstorage.pyx":47
  *                 for i in range(c_node_conns.size()):
  *                     conn_from = c_node_conns[i].origin
  *                     conn_to = c_node_conns[i].ending             # <<<<<<<<<<<<<<
@@ -2163,7 +2174,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_15DijkstraNetwork_5nodes___get__(
       __pyx_t_6 = (__pyx_v_c_node_conns[__pyx_v_i]).to;
       __pyx_v_conn_to = __pyx_t_6;
 
-      /* "cavd/graphstorage.pyx":47
+      /* "cavd/graphstorage.pyx":48
  *                     conn_from = c_node_conns[i].origin
  *                     conn_to = c_node_conns[i].ending
  *                     conn_length = c_node_conns[i].length             # <<<<<<<<<<<<<<
@@ -2173,7 +2184,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_15DijkstraNetwork_5nodes___get__(
       __pyx_t_10 = (__pyx_v_c_node_conns[__pyx_v_i]).length;
       __pyx_v_conn_length = __pyx_t_10;
 
-      /* "cavd/graphstorage.pyx":48
+      /* "cavd/graphstorage.pyx":49
  *                     conn_to = c_node_conns[i].ending
  *                     conn_length = c_node_conns[i].length
  *                     conn_max_radius = c_node_conns[i].max_radius             # <<<<<<<<<<<<<<
@@ -2183,20 +2194,20 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_15DijkstraNetwork_5nodes___get__(
       __pyx_t_10 = (__pyx_v_c_node_conns[__pyx_v_i]).max_radius;
       __pyx_v_conn_max_radius = __pyx_t_10;
 
-      /* "cavd/graphstorage.pyx":49
+      /* "cavd/graphstorage.pyx":50
  *                     conn_length = c_node_conns[i].length
  *                     conn_max_radius = c_node_conns[i].max_radius
  *                     conn_delta_pos = [c_node_conns[i].deltaPos.x,c_node_conns[i].deltaPos.y,c_node_conns[i].deltaPos.z]             # <<<<<<<<<<<<<<
  *                     conn = [conn_from, conn_to, conn_length, conn_max_radius, conn_delta_pos]
  *                 node_conns.append(conn)
  */
-      __pyx_t_9 = __Pyx_PyInt_From_int((__pyx_v_c_node_conns[__pyx_v_i]).deltaPos.x); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 49, __pyx_L1_error)
+      __pyx_t_9 = __Pyx_PyInt_From_int((__pyx_v_c_node_conns[__pyx_v_i]).deltaPos.x); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 50, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_9);
-      __pyx_t_8 = __Pyx_PyInt_From_int((__pyx_v_c_node_conns[__pyx_v_i]).deltaPos.y); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 49, __pyx_L1_error)
+      __pyx_t_8 = __Pyx_PyInt_From_int((__pyx_v_c_node_conns[__pyx_v_i]).deltaPos.y); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 50, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
-      __pyx_t_7 = __Pyx_PyInt_From_int((__pyx_v_c_node_conns[__pyx_v_i]).deltaPos.z); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 49, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_PyInt_From_int((__pyx_v_c_node_conns[__pyx_v_i]).deltaPos.z); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 50, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
-      __pyx_t_1 = PyList_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 49, __pyx_L1_error)
+      __pyx_t_1 = PyList_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 50, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_GIVEREF(__pyx_t_9);
       PyList_SET_ITEM(__pyx_t_1, 0, __pyx_t_9);
@@ -2210,22 +2221,22 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_15DijkstraNetwork_5nodes___get__(
       __Pyx_XDECREF_SET(__pyx_v_conn_delta_pos, ((PyObject*)__pyx_t_1));
       __pyx_t_1 = 0;
 
-      /* "cavd/graphstorage.pyx":50
+      /* "cavd/graphstorage.pyx":51
  *                     conn_max_radius = c_node_conns[i].max_radius
  *                     conn_delta_pos = [c_node_conns[i].deltaPos.x,c_node_conns[i].deltaPos.y,c_node_conns[i].deltaPos.z]
  *                     conn = [conn_from, conn_to, conn_length, conn_max_radius, conn_delta_pos]             # <<<<<<<<<<<<<<
  *                 node_conns.append(conn)
- *                 node = [node_id, node_pos, node_radius, node_conns]
+ *                 node = [node_id, node_label, node_pos, node_radius, node_conns]
  */
-      __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_conn_from); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 50, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_conn_from); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 51, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_7 = __Pyx_PyInt_From_int(__pyx_v_conn_to); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 50, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_PyInt_From_int(__pyx_v_conn_to); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 51, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
-      __pyx_t_8 = PyFloat_FromDouble(__pyx_v_conn_length); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 50, __pyx_L1_error)
+      __pyx_t_8 = PyFloat_FromDouble(__pyx_v_conn_length); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 51, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
-      __pyx_t_9 = PyFloat_FromDouble(__pyx_v_conn_max_radius); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 50, __pyx_L1_error)
+      __pyx_t_9 = PyFloat_FromDouble(__pyx_v_conn_max_radius); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 51, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_9);
-      __pyx_t_15 = PyList_New(5); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 50, __pyx_L1_error)
+      __pyx_t_15 = PyList_New(5); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 51, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_15);
       __Pyx_GIVEREF(__pyx_t_1);
       PyList_SET_ITEM(__pyx_t_15, 0, __pyx_t_1);
@@ -2246,56 +2257,61 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_15DijkstraNetwork_5nodes___get__(
       __pyx_t_15 = 0;
     }
 
-    /* "cavd/graphstorage.pyx":51
+    /* "cavd/graphstorage.pyx":52
  *                     conn_delta_pos = [c_node_conns[i].deltaPos.x,c_node_conns[i].deltaPos.y,c_node_conns[i].deltaPos.z]
  *                     conn = [conn_from, conn_to, conn_length, conn_max_radius, conn_delta_pos]
  *                 node_conns.append(conn)             # <<<<<<<<<<<<<<
- *                 node = [node_id, node_pos, node_radius, node_conns]
+ *                 node = [node_id, node_label, node_pos, node_radius, node_conns]
  *                 nodes.append(node)
  */
-    if (unlikely(!__pyx_v_conn)) { __Pyx_RaiseUnboundLocalError("conn"); __PYX_ERR(0, 51, __pyx_L1_error) }
-    __pyx_t_16 = __Pyx_PyList_Append(__pyx_v_node_conns, __pyx_v_conn); if (unlikely(__pyx_t_16 == ((int)-1))) __PYX_ERR(0, 51, __pyx_L1_error)
+    if (unlikely(!__pyx_v_conn)) { __Pyx_RaiseUnboundLocalError("conn"); __PYX_ERR(0, 52, __pyx_L1_error) }
+    __pyx_t_16 = __Pyx_PyList_Append(__pyx_v_node_conns, __pyx_v_conn); if (unlikely(__pyx_t_16 == ((int)-1))) __PYX_ERR(0, 52, __pyx_L1_error)
 
-    /* "cavd/graphstorage.pyx":52
+    /* "cavd/graphstorage.pyx":53
  *                     conn = [conn_from, conn_to, conn_length, conn_max_radius, conn_delta_pos]
  *                 node_conns.append(conn)
- *                 node = [node_id, node_pos, node_radius, node_conns]             # <<<<<<<<<<<<<<
+ *                 node = [node_id, node_label, node_pos, node_radius, node_conns]             # <<<<<<<<<<<<<<
  *                 nodes.append(node)
  *             return nodes
  */
-    __pyx_t_15 = __Pyx_PyInt_From_int(__pyx_v_node_id); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 52, __pyx_L1_error)
+    __pyx_t_15 = __Pyx_PyInt_From_int(__pyx_v_node_id); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 53, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_15);
-    __pyx_t_9 = PyFloat_FromDouble(__pyx_v_node_radius); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 52, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyInt_From_int(__pyx_v_node_label); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 53, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_8 = PyList_New(4); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 52, __pyx_L1_error)
+    __pyx_t_8 = PyFloat_FromDouble(__pyx_v_node_radius); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 53, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
+    __pyx_t_7 = PyList_New(5); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 53, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_7);
     __Pyx_GIVEREF(__pyx_t_15);
-    PyList_SET_ITEM(__pyx_t_8, 0, __pyx_t_15);
+    PyList_SET_ITEM(__pyx_t_7, 0, __pyx_t_15);
+    __Pyx_GIVEREF(__pyx_t_9);
+    PyList_SET_ITEM(__pyx_t_7, 1, __pyx_t_9);
     __Pyx_INCREF(__pyx_v_node_pos);
     __Pyx_GIVEREF(__pyx_v_node_pos);
-    PyList_SET_ITEM(__pyx_t_8, 1, __pyx_v_node_pos);
-    __Pyx_GIVEREF(__pyx_t_9);
-    PyList_SET_ITEM(__pyx_t_8, 2, __pyx_t_9);
+    PyList_SET_ITEM(__pyx_t_7, 2, __pyx_v_node_pos);
+    __Pyx_GIVEREF(__pyx_t_8);
+    PyList_SET_ITEM(__pyx_t_7, 3, __pyx_t_8);
     __Pyx_INCREF(__pyx_v_node_conns);
     __Pyx_GIVEREF(__pyx_v_node_conns);
-    PyList_SET_ITEM(__pyx_t_8, 3, __pyx_v_node_conns);
+    PyList_SET_ITEM(__pyx_t_7, 4, __pyx_v_node_conns);
     __pyx_t_15 = 0;
     __pyx_t_9 = 0;
-    __Pyx_XDECREF_SET(__pyx_v_node, ((PyObject*)__pyx_t_8));
     __pyx_t_8 = 0;
+    __Pyx_XDECREF_SET(__pyx_v_node, ((PyObject*)__pyx_t_7));
+    __pyx_t_7 = 0;
 
-    /* "cavd/graphstorage.pyx":53
+    /* "cavd/graphstorage.pyx":54
  *                 node_conns.append(conn)
- *                 node = [node_id, node_pos, node_radius, node_conns]
+ *                 node = [node_id, node_label, node_pos, node_radius, node_conns]
  *                 nodes.append(node)             # <<<<<<<<<<<<<<
  *             return nodes
  * 
  */
-    __pyx_t_16 = __Pyx_PyList_Append(__pyx_v_nodes, __pyx_v_node); if (unlikely(__pyx_t_16 == ((int)-1))) __PYX_ERR(0, 53, __pyx_L1_error)
+    __pyx_t_16 = __Pyx_PyList_Append(__pyx_v_nodes, __pyx_v_node); if (unlikely(__pyx_t_16 == ((int)-1))) __PYX_ERR(0, 54, __pyx_L1_error)
   }
 
-  /* "cavd/graphstorage.pyx":54
- *                 node = [node_id, node_pos, node_radius, node_conns]
+  /* "cavd/graphstorage.pyx":55
+ *                 node = [node_id, node_label, node_pos, node_radius, node_conns]
  *                 nodes.append(node)
  *             return nodes             # <<<<<<<<<<<<<<
  * 
@@ -2442,7 +2458,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_15DijkstraNetwork_8__setstate_cyt
   return __pyx_r;
 }
 
-/* "cavd/graphstorage.pyx":57
+/* "cavd/graphstorage.pyx":58
  * 
  * cdef class DeltaPos:
  *     def __cinit__(self, int x, int y, int z):             # <<<<<<<<<<<<<<
@@ -2484,17 +2500,17 @@ static int __pyx_pw_4cavd_12graphstorage_8DeltaPos_1__cinit__(PyObject *__pyx_v_
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_y)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 3, 3, 1); __PYX_ERR(0, 57, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 3, 3, 1); __PYX_ERR(0, 58, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_z)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 3, 3, 2); __PYX_ERR(0, 57, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 3, 3, 2); __PYX_ERR(0, 58, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 57, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 58, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -2503,13 +2519,13 @@ static int __pyx_pw_4cavd_12graphstorage_8DeltaPos_1__cinit__(PyObject *__pyx_v_
       values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
       values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
     }
-    __pyx_v_x = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_x == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 57, __pyx_L3_error)
-    __pyx_v_y = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_y == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 57, __pyx_L3_error)
-    __pyx_v_z = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_z == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 57, __pyx_L3_error)
+    __pyx_v_x = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_x == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 58, __pyx_L3_error)
+    __pyx_v_y = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_y == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 58, __pyx_L3_error)
+    __pyx_v_z = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_z == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 58, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 57, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 58, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("cavd.graphstorage.DeltaPos.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -2527,7 +2543,7 @@ static int __pyx_pf_4cavd_12graphstorage_8DeltaPos___cinit__(struct __pyx_obj_4c
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "cavd/graphstorage.pyx":58
+  /* "cavd/graphstorage.pyx":59
  * cdef class DeltaPos:
  *     def __cinit__(self, int x, int y, int z):
  *         self.thisptr = new DELTA_POS(x,y,z)             # <<<<<<<<<<<<<<
@@ -2536,7 +2552,7 @@ static int __pyx_pf_4cavd_12graphstorage_8DeltaPos___cinit__(struct __pyx_obj_4c
  */
   __pyx_v_self->thisptr = new DELTA_POS(__pyx_v_x, __pyx_v_y, __pyx_v_z);
 
-  /* "cavd/graphstorage.pyx":57
+  /* "cavd/graphstorage.pyx":58
  * 
  * cdef class DeltaPos:
  *     def __cinit__(self, int x, int y, int z):             # <<<<<<<<<<<<<<
@@ -2550,7 +2566,7 @@ static int __pyx_pf_4cavd_12graphstorage_8DeltaPos___cinit__(struct __pyx_obj_4c
   return __pyx_r;
 }
 
-/* "cavd/graphstorage.pyx":60
+/* "cavd/graphstorage.pyx":61
  *         self.thisptr = new DELTA_POS(x,y,z)
  * 
  *     def __init__(self, int x, int y, int z):             # <<<<<<<<<<<<<<
@@ -2592,17 +2608,17 @@ static int __pyx_pw_4cavd_12graphstorage_8DeltaPos_3__init__(PyObject *__pyx_v_s
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_y)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 3, 3, 1); __PYX_ERR(0, 60, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 3, 3, 1); __PYX_ERR(0, 61, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_z)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 3, 3, 2); __PYX_ERR(0, 60, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 3, 3, 2); __PYX_ERR(0, 61, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 60, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 61, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -2611,13 +2627,13 @@ static int __pyx_pw_4cavd_12graphstorage_8DeltaPos_3__init__(PyObject *__pyx_v_s
       values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
       values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
     }
-    __pyx_v_x = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_x == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 60, __pyx_L3_error)
-    __pyx_v_y = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_y == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 60, __pyx_L3_error)
-    __pyx_v_z = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_z == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 60, __pyx_L3_error)
+    __pyx_v_x = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_x == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 61, __pyx_L3_error)
+    __pyx_v_y = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_y == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 61, __pyx_L3_error)
+    __pyx_v_z = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_z == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 61, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 60, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 61, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("cavd.graphstorage.DeltaPos.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -2641,7 +2657,7 @@ static int __pyx_pf_4cavd_12graphstorage_8DeltaPos_2__init__(CYTHON_UNUSED struc
   return __pyx_r;
 }
 
-/* "cavd/graphstorage.pyx":63
+/* "cavd/graphstorage.pyx":64
  *         pass
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -2664,7 +2680,7 @@ static void __pyx_pf_4cavd_12graphstorage_8DeltaPos_4__dealloc__(struct __pyx_ob
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__dealloc__", 0);
 
-  /* "cavd/graphstorage.pyx":64
+  /* "cavd/graphstorage.pyx":65
  * 
  *     def __dealloc__(self):
  *         del self.thisptr             # <<<<<<<<<<<<<<
@@ -2673,7 +2689,7 @@ static void __pyx_pf_4cavd_12graphstorage_8DeltaPos_4__dealloc__(struct __pyx_ob
  */
   delete __pyx_v_self->thisptr;
 
-  /* "cavd/graphstorage.pyx":63
+  /* "cavd/graphstorage.pyx":64
  *         pass
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -2685,7 +2701,7 @@ static void __pyx_pf_4cavd_12graphstorage_8DeltaPos_4__dealloc__(struct __pyx_ob
   __Pyx_RefNannyFinishContext();
 }
 
-/* "cavd/graphstorage.pyx":67
+/* "cavd/graphstorage.pyx":68
  * 
  *     property pos:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -2716,20 +2732,20 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_8DeltaPos_3pos___get__(struct __p
   PyObject *__pyx_t_4 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "cavd/graphstorage.pyx":68
+  /* "cavd/graphstorage.pyx":69
  *     property pos:
  *         def __get__(self):
  *             pos = [self.thisptr.x, self.thisptr.y, self.thisptr.z]             # <<<<<<<<<<<<<<
  *             return pos
  *         def __set__(self, pos):      # Don't set this
  */
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->x); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 68, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->x); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 69, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->y); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 68, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->y); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 69, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->z); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 68, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->z); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 69, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = PyList_New(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 68, __pyx_L1_error)
+  __pyx_t_4 = PyList_New(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 69, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_GIVEREF(__pyx_t_1);
   PyList_SET_ITEM(__pyx_t_4, 0, __pyx_t_1);
@@ -2743,7 +2759,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_8DeltaPos_3pos___get__(struct __p
   __pyx_v_pos = ((PyObject*)__pyx_t_4);
   __pyx_t_4 = 0;
 
-  /* "cavd/graphstorage.pyx":69
+  /* "cavd/graphstorage.pyx":70
  *         def __get__(self):
  *             pos = [self.thisptr.x, self.thisptr.y, self.thisptr.z]
  *             return pos             # <<<<<<<<<<<<<<
@@ -2755,7 +2771,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_8DeltaPos_3pos___get__(struct __p
   __pyx_r = __pyx_v_pos;
   goto __pyx_L0;
 
-  /* "cavd/graphstorage.pyx":67
+  /* "cavd/graphstorage.pyx":68
  * 
  *     property pos:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -2778,7 +2794,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_8DeltaPos_3pos___get__(struct __p
   return __pyx_r;
 }
 
-/* "cavd/graphstorage.pyx":70
+/* "cavd/graphstorage.pyx":71
  *             pos = [self.thisptr.x, self.thisptr.y, self.thisptr.z]
  *             return pos
  *         def __set__(self, pos):      # Don't set this             # <<<<<<<<<<<<<<
@@ -2806,55 +2822,55 @@ static int __pyx_pf_4cavd_12graphstorage_8DeltaPos_3pos_2__set__(struct __pyx_ob
   int __pyx_t_2;
   __Pyx_RefNannySetupContext("__set__", 0);
 
-  /* "cavd/graphstorage.pyx":74
+  /* "cavd/graphstorage.pyx":75
  *             This variable is not supposed to be modified manually
  *             """
  *             print ("This value is not supposed to be modified")             # <<<<<<<<<<<<<<
  *             self.thisptr.x = pos[0]
  *             self.thisptr.y = pos[1]
  */
-  if (__Pyx_PrintOne(0, __pyx_kp_s_This_value_is_not_supposed_to_be) < 0) __PYX_ERR(0, 74, __pyx_L1_error)
+  if (__Pyx_PrintOne(0, __pyx_kp_s_This_value_is_not_supposed_to_be) < 0) __PYX_ERR(0, 75, __pyx_L1_error)
 
-  /* "cavd/graphstorage.pyx":75
+  /* "cavd/graphstorage.pyx":76
  *             """
  *             print ("This value is not supposed to be modified")
  *             self.thisptr.x = pos[0]             # <<<<<<<<<<<<<<
  *             self.thisptr.y = pos[1]
  *             self.thisptr.z = pos[2]
  */
-  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_pos, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 75, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_pos, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 76, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 75, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 76, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_self->thisptr->x = __pyx_t_2;
 
-  /* "cavd/graphstorage.pyx":76
+  /* "cavd/graphstorage.pyx":77
  *             print ("This value is not supposed to be modified")
  *             self.thisptr.x = pos[0]
  *             self.thisptr.y = pos[1]             # <<<<<<<<<<<<<<
  *             self.thisptr.z = pos[2]
  * 
  */
-  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_pos, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 76, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_pos, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 77, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 76, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 77, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_self->thisptr->y = __pyx_t_2;
 
-  /* "cavd/graphstorage.pyx":77
+  /* "cavd/graphstorage.pyx":78
  *             self.thisptr.x = pos[0]
  *             self.thisptr.y = pos[1]
  *             self.thisptr.z = pos[2]             # <<<<<<<<<<<<<<
  * 
  * cdef class Conn:
  */
-  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_pos, 2, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 77, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_pos, 2, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 78, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 77, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 78, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_self->thisptr->z = __pyx_t_2;
 
-  /* "cavd/graphstorage.pyx":70
+  /* "cavd/graphstorage.pyx":71
  *             pos = [self.thisptr.x, self.thisptr.y, self.thisptr.z]
  *             return pos
  *         def __set__(self, pos):      # Don't set this             # <<<<<<<<<<<<<<
@@ -2981,7 +2997,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_8DeltaPos_8__setstate_cython__(CY
   return __pyx_r;
 }
 
-/* "cavd/graphstorage.pyx":80
+/* "cavd/graphstorage.pyx":81
  * 
  * cdef class Conn:
  *     def __cinit__(self, int origin, int ending, double length, double max_radius, int x, int y, int z):             # <<<<<<<<<<<<<<
@@ -3035,41 +3051,41 @@ static int __pyx_pw_4cavd_12graphstorage_4Conn_1__cinit__(PyObject *__pyx_v_self
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_ending)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 7, 7, 1); __PYX_ERR(0, 80, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 7, 7, 1); __PYX_ERR(0, 81, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_length)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 7, 7, 2); __PYX_ERR(0, 80, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 7, 7, 2); __PYX_ERR(0, 81, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_max_radius)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 7, 7, 3); __PYX_ERR(0, 80, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 7, 7, 3); __PYX_ERR(0, 81, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_x)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 7, 7, 4); __PYX_ERR(0, 80, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 7, 7, 4); __PYX_ERR(0, 81, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  5:
         if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_y)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 7, 7, 5); __PYX_ERR(0, 80, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 7, 7, 5); __PYX_ERR(0, 81, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  6:
         if (likely((values[6] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_z)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 7, 7, 6); __PYX_ERR(0, 80, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 7, 7, 6); __PYX_ERR(0, 81, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 80, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 81, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 7) {
       goto __pyx_L5_argtuple_error;
@@ -3082,17 +3098,17 @@ static int __pyx_pw_4cavd_12graphstorage_4Conn_1__cinit__(PyObject *__pyx_v_self
       values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
       values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
     }
-    __pyx_v_origin = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_origin == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 80, __pyx_L3_error)
-    __pyx_v_ending = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_ending == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 80, __pyx_L3_error)
-    __pyx_v_length = __pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_length == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 80, __pyx_L3_error)
-    __pyx_v_max_radius = __pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_max_radius == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 80, __pyx_L3_error)
-    __pyx_v_x = __Pyx_PyInt_As_int(values[4]); if (unlikely((__pyx_v_x == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 80, __pyx_L3_error)
-    __pyx_v_y = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_y == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 80, __pyx_L3_error)
-    __pyx_v_z = __Pyx_PyInt_As_int(values[6]); if (unlikely((__pyx_v_z == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 80, __pyx_L3_error)
+    __pyx_v_origin = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_origin == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 81, __pyx_L3_error)
+    __pyx_v_ending = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_ending == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 81, __pyx_L3_error)
+    __pyx_v_length = __pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_length == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 81, __pyx_L3_error)
+    __pyx_v_max_radius = __pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_max_radius == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 81, __pyx_L3_error)
+    __pyx_v_x = __Pyx_PyInt_As_int(values[4]); if (unlikely((__pyx_v_x == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 81, __pyx_L3_error)
+    __pyx_v_y = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_y == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 81, __pyx_L3_error)
+    __pyx_v_z = __Pyx_PyInt_As_int(values[6]); if (unlikely((__pyx_v_z == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 81, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 7, 7, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 80, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 7, 7, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 81, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("cavd.graphstorage.Conn.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -3110,7 +3126,7 @@ static int __pyx_pf_4cavd_12graphstorage_4Conn___cinit__(struct __pyx_obj_4cavd_
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "cavd/graphstorage.pyx":81
+  /* "cavd/graphstorage.pyx":82
  * cdef class Conn:
  *     def __cinit__(self, int origin, int ending, double length, double max_radius, int x, int y, int z):
  *         self.thisptr = new CONN(origin, ending, length, max_radius, x, y, z)             # <<<<<<<<<<<<<<
@@ -3119,7 +3135,7 @@ static int __pyx_pf_4cavd_12graphstorage_4Conn___cinit__(struct __pyx_obj_4cavd_
  */
   __pyx_v_self->thisptr = new CONN(__pyx_v_origin, __pyx_v_ending, __pyx_v_length, __pyx_v_max_radius, __pyx_v_x, __pyx_v_y, __pyx_v_z);
 
-  /* "cavd/graphstorage.pyx":80
+  /* "cavd/graphstorage.pyx":81
  * 
  * cdef class Conn:
  *     def __cinit__(self, int origin, int ending, double length, double max_radius, int x, int y, int z):             # <<<<<<<<<<<<<<
@@ -3133,7 +3149,7 @@ static int __pyx_pf_4cavd_12graphstorage_4Conn___cinit__(struct __pyx_obj_4cavd_
   return __pyx_r;
 }
 
-/* "cavd/graphstorage.pyx":83
+/* "cavd/graphstorage.pyx":84
  *         self.thisptr = new CONN(origin, ending, length, max_radius, x, y, z)
  * 
  *     def __init__(self, int origin, int ending, double length, double max_radius, int x, int y, int z):             # <<<<<<<<<<<<<<
@@ -3187,41 +3203,41 @@ static int __pyx_pw_4cavd_12graphstorage_4Conn_3__init__(PyObject *__pyx_v_self,
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_ending)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 7, 7, 1); __PYX_ERR(0, 83, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 7, 7, 1); __PYX_ERR(0, 84, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_length)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 7, 7, 2); __PYX_ERR(0, 83, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 7, 7, 2); __PYX_ERR(0, 84, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_max_radius)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 7, 7, 3); __PYX_ERR(0, 83, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 7, 7, 3); __PYX_ERR(0, 84, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_x)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 7, 7, 4); __PYX_ERR(0, 83, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 7, 7, 4); __PYX_ERR(0, 84, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  5:
         if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_y)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 7, 7, 5); __PYX_ERR(0, 83, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 7, 7, 5); __PYX_ERR(0, 84, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  6:
         if (likely((values[6] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_z)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 7, 7, 6); __PYX_ERR(0, 83, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 7, 7, 6); __PYX_ERR(0, 84, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 83, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 84, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 7) {
       goto __pyx_L5_argtuple_error;
@@ -3234,17 +3250,17 @@ static int __pyx_pw_4cavd_12graphstorage_4Conn_3__init__(PyObject *__pyx_v_self,
       values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
       values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
     }
-    __pyx_v_origin = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_origin == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 83, __pyx_L3_error)
-    __pyx_v_ending = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_ending == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 83, __pyx_L3_error)
-    __pyx_v_length = __pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_length == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 83, __pyx_L3_error)
-    __pyx_v_max_radius = __pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_max_radius == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 83, __pyx_L3_error)
-    __pyx_v_x = __Pyx_PyInt_As_int(values[4]); if (unlikely((__pyx_v_x == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 83, __pyx_L3_error)
-    __pyx_v_y = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_y == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 83, __pyx_L3_error)
-    __pyx_v_z = __Pyx_PyInt_As_int(values[6]); if (unlikely((__pyx_v_z == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 83, __pyx_L3_error)
+    __pyx_v_origin = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_origin == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 84, __pyx_L3_error)
+    __pyx_v_ending = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_ending == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 84, __pyx_L3_error)
+    __pyx_v_length = __pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_length == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 84, __pyx_L3_error)
+    __pyx_v_max_radius = __pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_max_radius == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 84, __pyx_L3_error)
+    __pyx_v_x = __Pyx_PyInt_As_int(values[4]); if (unlikely((__pyx_v_x == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 84, __pyx_L3_error)
+    __pyx_v_y = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_y == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 84, __pyx_L3_error)
+    __pyx_v_z = __Pyx_PyInt_As_int(values[6]); if (unlikely((__pyx_v_z == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 84, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 1, 7, 7, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 83, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 1, 7, 7, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 84, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("cavd.graphstorage.Conn.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -3268,7 +3284,7 @@ static int __pyx_pf_4cavd_12graphstorage_4Conn_2__init__(CYTHON_UNUSED struct __
   return __pyx_r;
 }
 
-/* "cavd/graphstorage.pyx":86
+/* "cavd/graphstorage.pyx":87
  *         pass
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -3291,7 +3307,7 @@ static void __pyx_pf_4cavd_12graphstorage_4Conn_4__dealloc__(struct __pyx_obj_4c
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__dealloc__", 0);
 
-  /* "cavd/graphstorage.pyx":87
+  /* "cavd/graphstorage.pyx":88
  * 
  *     def __dealloc__(self):
  *         del self.thisptr             # <<<<<<<<<<<<<<
@@ -3300,7 +3316,7 @@ static void __pyx_pf_4cavd_12graphstorage_4Conn_4__dealloc__(struct __pyx_obj_4c
  */
   delete __pyx_v_self->thisptr;
 
-  /* "cavd/graphstorage.pyx":86
+  /* "cavd/graphstorage.pyx":87
  *         pass
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -3312,7 +3328,7 @@ static void __pyx_pf_4cavd_12graphstorage_4Conn_4__dealloc__(struct __pyx_obj_4c
   __Pyx_RefNannyFinishContext();
 }
 
-/* "cavd/graphstorage.pyx":90
+/* "cavd/graphstorage.pyx":91
  * 
  *     property origin:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -3341,7 +3357,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_4Conn_6origin___get__(struct __py
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "cavd/graphstorage.pyx":91
+  /* "cavd/graphstorage.pyx":92
  *     property origin:
  *         def __get__(self):
  *             origin = self.thisptr.origin             # <<<<<<<<<<<<<<
@@ -3351,7 +3367,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_4Conn_6origin___get__(struct __py
   __pyx_t_1 = __pyx_v_self->thisptr->from;
   __pyx_v_origin = __pyx_t_1;
 
-  /* "cavd/graphstorage.pyx":92
+  /* "cavd/graphstorage.pyx":93
  *         def __get__(self):
  *             origin = self.thisptr.origin
  *             return origin             # <<<<<<<<<<<<<<
@@ -3359,13 +3375,13 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_4Conn_6origin___get__(struct __py
  *             """
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_origin); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_origin); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 93, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "cavd/graphstorage.pyx":90
+  /* "cavd/graphstorage.pyx":91
  * 
  *     property origin:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -3384,7 +3400,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_4Conn_6origin___get__(struct __py
   return __pyx_r;
 }
 
-/* "cavd/graphstorage.pyx":93
+/* "cavd/graphstorage.pyx":94
  *             origin = self.thisptr.origin
  *             return origin
  *         def __set__(self, origin):      # Don't set this             # <<<<<<<<<<<<<<
@@ -3411,26 +3427,26 @@ static int __pyx_pf_4cavd_12graphstorage_4Conn_6origin_2__set__(struct __pyx_obj
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("__set__", 0);
 
-  /* "cavd/graphstorage.pyx":97
+  /* "cavd/graphstorage.pyx":98
  *             This variable is not supposed to be modified manually
  *             """
  *             print ("This value is not supposed to be modified")             # <<<<<<<<<<<<<<
  *             self.thisptr.origin = origin
  * 
  */
-  if (__Pyx_PrintOne(0, __pyx_kp_s_This_value_is_not_supposed_to_be) < 0) __PYX_ERR(0, 97, __pyx_L1_error)
+  if (__Pyx_PrintOne(0, __pyx_kp_s_This_value_is_not_supposed_to_be) < 0) __PYX_ERR(0, 98, __pyx_L1_error)
 
-  /* "cavd/graphstorage.pyx":98
+  /* "cavd/graphstorage.pyx":99
  *             """
  *             print ("This value is not supposed to be modified")
  *             self.thisptr.origin = origin             # <<<<<<<<<<<<<<
  * 
  *     property ending:
  */
-  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_origin); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 98, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_origin); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 99, __pyx_L1_error)
   __pyx_v_self->thisptr->from = __pyx_t_1;
 
-  /* "cavd/graphstorage.pyx":93
+  /* "cavd/graphstorage.pyx":94
  *             origin = self.thisptr.origin
  *             return origin
  *         def __set__(self, origin):      # Don't set this             # <<<<<<<<<<<<<<
@@ -3449,7 +3465,7 @@ static int __pyx_pf_4cavd_12graphstorage_4Conn_6origin_2__set__(struct __pyx_obj
   return __pyx_r;
 }
 
-/* "cavd/graphstorage.pyx":101
+/* "cavd/graphstorage.pyx":102
  * 
  *     property ending:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -3478,7 +3494,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_4Conn_6ending___get__(struct __py
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "cavd/graphstorage.pyx":102
+  /* "cavd/graphstorage.pyx":103
  *     property ending:
  *         def __get__(self):
  *             ending = self.thisptr.ending             # <<<<<<<<<<<<<<
@@ -3488,7 +3504,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_4Conn_6ending___get__(struct __py
   __pyx_t_1 = __pyx_v_self->thisptr->to;
   __pyx_v_ending = __pyx_t_1;
 
-  /* "cavd/graphstorage.pyx":103
+  /* "cavd/graphstorage.pyx":104
  *         def __get__(self):
  *             ending = self.thisptr.ending
  *             return ending             # <<<<<<<<<<<<<<
@@ -3496,13 +3512,13 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_4Conn_6ending___get__(struct __py
  *             """
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_ending); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 103, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_ending); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 104, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "cavd/graphstorage.pyx":101
+  /* "cavd/graphstorage.pyx":102
  * 
  *     property ending:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -3521,7 +3537,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_4Conn_6ending___get__(struct __py
   return __pyx_r;
 }
 
-/* "cavd/graphstorage.pyx":104
+/* "cavd/graphstorage.pyx":105
  *             ending = self.thisptr.ending
  *             return ending
  *         def __set__(self, ending):      # Don't set this             # <<<<<<<<<<<<<<
@@ -3548,26 +3564,26 @@ static int __pyx_pf_4cavd_12graphstorage_4Conn_6ending_2__set__(struct __pyx_obj
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("__set__", 0);
 
-  /* "cavd/graphstorage.pyx":108
+  /* "cavd/graphstorage.pyx":109
  *             This variable is not supposed to be modified manually
  *             """
  *             print ("This value is not supposed to be modified")             # <<<<<<<<<<<<<<
  *             self.thisptr.ending = ending
  * 
  */
-  if (__Pyx_PrintOne(0, __pyx_kp_s_This_value_is_not_supposed_to_be) < 0) __PYX_ERR(0, 108, __pyx_L1_error)
+  if (__Pyx_PrintOne(0, __pyx_kp_s_This_value_is_not_supposed_to_be) < 0) __PYX_ERR(0, 109, __pyx_L1_error)
 
-  /* "cavd/graphstorage.pyx":109
+  /* "cavd/graphstorage.pyx":110
  *             """
  *             print ("This value is not supposed to be modified")
  *             self.thisptr.ending = ending             # <<<<<<<<<<<<<<
  * 
  *     property length:
  */
-  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_ending); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 109, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_ending); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 110, __pyx_L1_error)
   __pyx_v_self->thisptr->to = __pyx_t_1;
 
-  /* "cavd/graphstorage.pyx":104
+  /* "cavd/graphstorage.pyx":105
  *             ending = self.thisptr.ending
  *             return ending
  *         def __set__(self, ending):      # Don't set this             # <<<<<<<<<<<<<<
@@ -3586,7 +3602,7 @@ static int __pyx_pf_4cavd_12graphstorage_4Conn_6ending_2__set__(struct __pyx_obj
   return __pyx_r;
 }
 
-/* "cavd/graphstorage.pyx":112
+/* "cavd/graphstorage.pyx":113
  * 
  *     property length:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -3615,7 +3631,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_4Conn_6length___get__(struct __py
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "cavd/graphstorage.pyx":113
+  /* "cavd/graphstorage.pyx":114
  *     property length:
  *         def __get__(self):
  *             length = self.thisptr.length             # <<<<<<<<<<<<<<
@@ -3625,7 +3641,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_4Conn_6length___get__(struct __py
   __pyx_t_1 = __pyx_v_self->thisptr->length;
   __pyx_v_length = __pyx_t_1;
 
-  /* "cavd/graphstorage.pyx":114
+  /* "cavd/graphstorage.pyx":115
  *         def __get__(self):
  *             length = self.thisptr.length
  *             return length             # <<<<<<<<<<<<<<
@@ -3633,13 +3649,13 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_4Conn_6length___get__(struct __py
  *             """
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_length); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 114, __pyx_L1_error)
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_length); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 115, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "cavd/graphstorage.pyx":112
+  /* "cavd/graphstorage.pyx":113
  * 
  *     property length:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -3658,7 +3674,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_4Conn_6length___get__(struct __py
   return __pyx_r;
 }
 
-/* "cavd/graphstorage.pyx":115
+/* "cavd/graphstorage.pyx":116
  *             length = self.thisptr.length
  *             return length
  *         def __set__(self, length):      # Don't set this             # <<<<<<<<<<<<<<
@@ -3685,26 +3701,26 @@ static int __pyx_pf_4cavd_12graphstorage_4Conn_6length_2__set__(struct __pyx_obj
   double __pyx_t_1;
   __Pyx_RefNannySetupContext("__set__", 0);
 
-  /* "cavd/graphstorage.pyx":119
+  /* "cavd/graphstorage.pyx":120
  *             This variable is not supposed to be modified manually
  *             """
  *             print ("This value is not supposed to be modified")             # <<<<<<<<<<<<<<
  *             self.thisptr.length = length
  * 
  */
-  if (__Pyx_PrintOne(0, __pyx_kp_s_This_value_is_not_supposed_to_be) < 0) __PYX_ERR(0, 119, __pyx_L1_error)
+  if (__Pyx_PrintOne(0, __pyx_kp_s_This_value_is_not_supposed_to_be) < 0) __PYX_ERR(0, 120, __pyx_L1_error)
 
-  /* "cavd/graphstorage.pyx":120
+  /* "cavd/graphstorage.pyx":121
  *             """
  *             print ("This value is not supposed to be modified")
  *             self.thisptr.length = length             # <<<<<<<<<<<<<<
  * 
  *     property max_radius:
  */
-  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_length); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 120, __pyx_L1_error)
+  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_length); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 121, __pyx_L1_error)
   __pyx_v_self->thisptr->length = __pyx_t_1;
 
-  /* "cavd/graphstorage.pyx":115
+  /* "cavd/graphstorage.pyx":116
  *             length = self.thisptr.length
  *             return length
  *         def __set__(self, length):      # Don't set this             # <<<<<<<<<<<<<<
@@ -3723,7 +3739,7 @@ static int __pyx_pf_4cavd_12graphstorage_4Conn_6length_2__set__(struct __pyx_obj
   return __pyx_r;
 }
 
-/* "cavd/graphstorage.pyx":123
+/* "cavd/graphstorage.pyx":124
  * 
  *     property max_radius:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -3752,7 +3768,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_4Conn_10max_radius___get__(struct
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "cavd/graphstorage.pyx":124
+  /* "cavd/graphstorage.pyx":125
  *     property max_radius:
  *         def __get__(self):
  *             max_radius = self.thisptr.max_radius             # <<<<<<<<<<<<<<
@@ -3762,7 +3778,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_4Conn_10max_radius___get__(struct
   __pyx_t_1 = __pyx_v_self->thisptr->max_radius;
   __pyx_v_max_radius = __pyx_t_1;
 
-  /* "cavd/graphstorage.pyx":125
+  /* "cavd/graphstorage.pyx":126
  *         def __get__(self):
  *             max_radius = self.thisptr.max_radius
  *             return max_radius             # <<<<<<<<<<<<<<
@@ -3770,13 +3786,13 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_4Conn_10max_radius___get__(struct
  *             """
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_max_radius); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 125, __pyx_L1_error)
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_max_radius); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 126, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "cavd/graphstorage.pyx":123
+  /* "cavd/graphstorage.pyx":124
  * 
  *     property max_radius:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -3795,7 +3811,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_4Conn_10max_radius___get__(struct
   return __pyx_r;
 }
 
-/* "cavd/graphstorage.pyx":126
+/* "cavd/graphstorage.pyx":127
  *             max_radius = self.thisptr.max_radius
  *             return max_radius
  *         def __set__(self, max_radius):      # Don't set this             # <<<<<<<<<<<<<<
@@ -3822,26 +3838,26 @@ static int __pyx_pf_4cavd_12graphstorage_4Conn_10max_radius_2__set__(struct __py
   double __pyx_t_1;
   __Pyx_RefNannySetupContext("__set__", 0);
 
-  /* "cavd/graphstorage.pyx":130
+  /* "cavd/graphstorage.pyx":131
  *             This variable is not supposed to be modified manually
  *             """
  *             print ("This value is not supposed to be modified")             # <<<<<<<<<<<<<<
  *             self.thisptr.max_radius = max_radius
  * 
  */
-  if (__Pyx_PrintOne(0, __pyx_kp_s_This_value_is_not_supposed_to_be) < 0) __PYX_ERR(0, 130, __pyx_L1_error)
+  if (__Pyx_PrintOne(0, __pyx_kp_s_This_value_is_not_supposed_to_be) < 0) __PYX_ERR(0, 131, __pyx_L1_error)
 
-  /* "cavd/graphstorage.pyx":131
+  /* "cavd/graphstorage.pyx":132
  *             """
  *             print ("This value is not supposed to be modified")
  *             self.thisptr.max_radius = max_radius             # <<<<<<<<<<<<<<
  * 
  *     property pos:
  */
-  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_max_radius); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 131, __pyx_L1_error)
+  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_max_radius); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 132, __pyx_L1_error)
   __pyx_v_self->thisptr->max_radius = __pyx_t_1;
 
-  /* "cavd/graphstorage.pyx":126
+  /* "cavd/graphstorage.pyx":127
  *             max_radius = self.thisptr.max_radius
  *             return max_radius
  *         def __set__(self, max_radius):      # Don't set this             # <<<<<<<<<<<<<<
@@ -3860,7 +3876,7 @@ static int __pyx_pf_4cavd_12graphstorage_4Conn_10max_radius_2__set__(struct __py
   return __pyx_r;
 }
 
-/* "cavd/graphstorage.pyx":134
+/* "cavd/graphstorage.pyx":135
  * 
  *     property pos:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -3891,20 +3907,20 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_4Conn_3pos___get__(struct __pyx_o
   PyObject *__pyx_t_4 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "cavd/graphstorage.pyx":135
+  /* "cavd/graphstorage.pyx":136
  *     property pos:
  *         def __get__(self):
  *             pos = [self.thisptr.deltaPos.x, self.thisptr.deltaPos.y, self.thisptr.deltaPos.z]             # <<<<<<<<<<<<<<
  *             return pos
  *         def __set__(self, pos):      # Don't set this
  */
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->deltaPos.x); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 135, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->deltaPos.x); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 136, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->deltaPos.y); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 135, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->deltaPos.y); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 136, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->deltaPos.z); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 135, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->deltaPos.z); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 136, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = PyList_New(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 135, __pyx_L1_error)
+  __pyx_t_4 = PyList_New(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 136, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_GIVEREF(__pyx_t_1);
   PyList_SET_ITEM(__pyx_t_4, 0, __pyx_t_1);
@@ -3918,7 +3934,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_4Conn_3pos___get__(struct __pyx_o
   __pyx_v_pos = ((PyObject*)__pyx_t_4);
   __pyx_t_4 = 0;
 
-  /* "cavd/graphstorage.pyx":136
+  /* "cavd/graphstorage.pyx":137
  *         def __get__(self):
  *             pos = [self.thisptr.deltaPos.x, self.thisptr.deltaPos.y, self.thisptr.deltaPos.z]
  *             return pos             # <<<<<<<<<<<<<<
@@ -3930,7 +3946,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_4Conn_3pos___get__(struct __pyx_o
   __pyx_r = __pyx_v_pos;
   goto __pyx_L0;
 
-  /* "cavd/graphstorage.pyx":134
+  /* "cavd/graphstorage.pyx":135
  * 
  *     property pos:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -3953,7 +3969,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_4Conn_3pos___get__(struct __pyx_o
   return __pyx_r;
 }
 
-/* "cavd/graphstorage.pyx":137
+/* "cavd/graphstorage.pyx":138
  *             pos = [self.thisptr.deltaPos.x, self.thisptr.deltaPos.y, self.thisptr.deltaPos.z]
  *             return pos
  *         def __set__(self, pos):      # Don't set this             # <<<<<<<<<<<<<<
@@ -3981,55 +3997,55 @@ static int __pyx_pf_4cavd_12graphstorage_4Conn_3pos_2__set__(struct __pyx_obj_4c
   int __pyx_t_2;
   __Pyx_RefNannySetupContext("__set__", 0);
 
-  /* "cavd/graphstorage.pyx":141
+  /* "cavd/graphstorage.pyx":142
  *             This variable is not supposed to be modified manually
  *             """
  *             print ("This value is not supposed to be modified")             # <<<<<<<<<<<<<<
  *             self.thisptr.deltaPos.x = pos[0]
  *             self.thisptr.deltaPos.y = pos[1]
  */
-  if (__Pyx_PrintOne(0, __pyx_kp_s_This_value_is_not_supposed_to_be) < 0) __PYX_ERR(0, 141, __pyx_L1_error)
+  if (__Pyx_PrintOne(0, __pyx_kp_s_This_value_is_not_supposed_to_be) < 0) __PYX_ERR(0, 142, __pyx_L1_error)
 
-  /* "cavd/graphstorage.pyx":142
+  /* "cavd/graphstorage.pyx":143
  *             """
  *             print ("This value is not supposed to be modified")
  *             self.thisptr.deltaPos.x = pos[0]             # <<<<<<<<<<<<<<
  *             self.thisptr.deltaPos.y = pos[1]
  *             self.thisptr.deltaPos.z = pos[2]
  */
-  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_pos, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 142, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_pos, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 143, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 142, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 143, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_self->thisptr->deltaPos.x = __pyx_t_2;
 
-  /* "cavd/graphstorage.pyx":143
+  /* "cavd/graphstorage.pyx":144
  *             print ("This value is not supposed to be modified")
  *             self.thisptr.deltaPos.x = pos[0]
  *             self.thisptr.deltaPos.y = pos[1]             # <<<<<<<<<<<<<<
  *             self.thisptr.deltaPos.z = pos[2]
  * 
  */
-  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_pos, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 143, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_pos, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 144, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 143, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 144, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_self->thisptr->deltaPos.y = __pyx_t_2;
 
-  /* "cavd/graphstorage.pyx":144
+  /* "cavd/graphstorage.pyx":145
  *             self.thisptr.deltaPos.x = pos[0]
  *             self.thisptr.deltaPos.y = pos[1]
  *             self.thisptr.deltaPos.z = pos[2]             # <<<<<<<<<<<<<<
  * 
  * cdef class DijkstraNode:
  */
-  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_pos, 2, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 144, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_pos, 2, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 145, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 144, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 145, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_self->thisptr->deltaPos.z = __pyx_t_2;
 
-  /* "cavd/graphstorage.pyx":137
+  /* "cavd/graphstorage.pyx":138
  *             pos = [self.thisptr.deltaPos.x, self.thisptr.deltaPos.y, self.thisptr.deltaPos.z]
  *             return pos
  *         def __set__(self, pos):      # Don't set this             # <<<<<<<<<<<<<<
@@ -4156,7 +4172,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_4Conn_8__setstate_cython__(CYTHON
   return __pyx_r;
 }
 
-/* "cavd/graphstorage.pyx":147
+/* "cavd/graphstorage.pyx":148
  * 
  * cdef class DijkstraNode:
  *     def __cinit__(self):             # <<<<<<<<<<<<<<
@@ -4186,7 +4202,7 @@ static int __pyx_pf_4cavd_12graphstorage_12DijkstraNode___cinit__(struct __pyx_o
   DIJKSTRA_NODE *__pyx_t_1;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "cavd/graphstorage.pyx":148
+  /* "cavd/graphstorage.pyx":149
  * cdef class DijkstraNode:
  *     def __cinit__(self):
  *         self.thisptr = new DIJKSTRA_NODE()             # <<<<<<<<<<<<<<
@@ -4197,11 +4213,11 @@ static int __pyx_pf_4cavd_12graphstorage_12DijkstraNode___cinit__(struct __pyx_o
     __pyx_t_1 = new DIJKSTRA_NODE();
   } catch(...) {
     __Pyx_CppExn2PyErr();
-    __PYX_ERR(0, 148, __pyx_L1_error)
+    __PYX_ERR(0, 149, __pyx_L1_error)
   }
   __pyx_v_self->thisptr = __pyx_t_1;
 
-  /* "cavd/graphstorage.pyx":147
+  /* "cavd/graphstorage.pyx":148
  * 
  * cdef class DijkstraNode:
  *     def __cinit__(self):             # <<<<<<<<<<<<<<
@@ -4220,7 +4236,7 @@ static int __pyx_pf_4cavd_12graphstorage_12DijkstraNode___cinit__(struct __pyx_o
   return __pyx_r;
 }
 
-/* "cavd/graphstorage.pyx":150
+/* "cavd/graphstorage.pyx":151
  *         self.thisptr = new DIJKSTRA_NODE()
  * 
  *     def __init__(self):             # <<<<<<<<<<<<<<
@@ -4255,7 +4271,7 @@ static int __pyx_pf_4cavd_12graphstorage_12DijkstraNode_2__init__(CYTHON_UNUSED 
   return __pyx_r;
 }
 
-/* "cavd/graphstorage.pyx":153
+/* "cavd/graphstorage.pyx":154
  *         pass
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -4278,7 +4294,7 @@ static void __pyx_pf_4cavd_12graphstorage_12DijkstraNode_4__dealloc__(struct __p
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__dealloc__", 0);
 
-  /* "cavd/graphstorage.pyx":154
+  /* "cavd/graphstorage.pyx":155
  * 
  *     def __dealloc__(self):
  *         del self.thisptr             # <<<<<<<<<<<<<<
@@ -4287,7 +4303,7 @@ static void __pyx_pf_4cavd_12graphstorage_12DijkstraNode_4__dealloc__(struct __p
  */
   delete __pyx_v_self->thisptr;
 
-  /* "cavd/graphstorage.pyx":153
+  /* "cavd/graphstorage.pyx":154
  *         pass
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -4299,7 +4315,7 @@ static void __pyx_pf_4cavd_12graphstorage_12DijkstraNode_4__dealloc__(struct __p
   __Pyx_RefNannyFinishContext();
 }
 
-/* "cavd/graphstorage.pyx":157
+/* "cavd/graphstorage.pyx":158
  * 
  *     property id:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -4328,7 +4344,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_2id___get__(struct
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "cavd/graphstorage.pyx":158
+  /* "cavd/graphstorage.pyx":159
  *     property id:
  *         def __get__(self):
  *             id = self.thisptr.id             # <<<<<<<<<<<<<<
@@ -4338,7 +4354,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_2id___get__(struct
   __pyx_t_1 = __pyx_v_self->thisptr->id;
   __pyx_v_id = __pyx_t_1;
 
-  /* "cavd/graphstorage.pyx":159
+  /* "cavd/graphstorage.pyx":160
  *         def __get__(self):
  *             id = self.thisptr.id
  *             return id             # <<<<<<<<<<<<<<
@@ -4346,13 +4362,13 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_2id___get__(struct
  *             """
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_id); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 159, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_id); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "cavd/graphstorage.pyx":157
+  /* "cavd/graphstorage.pyx":158
  * 
  *     property id:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -4371,7 +4387,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_2id___get__(struct
   return __pyx_r;
 }
 
-/* "cavd/graphstorage.pyx":160
+/* "cavd/graphstorage.pyx":161
  *             id = self.thisptr.id
  *             return id
  *         def __set__(self, id):      # Don't set this             # <<<<<<<<<<<<<<
@@ -4398,26 +4414,26 @@ static int __pyx_pf_4cavd_12graphstorage_12DijkstraNode_2id_2__set__(struct __py
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("__set__", 0);
 
-  /* "cavd/graphstorage.pyx":164
+  /* "cavd/graphstorage.pyx":165
  *             This variable is not supposed to be modified manually
  *             """
  *             print ("This value is not supposed to be modified")             # <<<<<<<<<<<<<<
  *             self.thisptr.id = id
  * 
  */
-  if (__Pyx_PrintOne(0, __pyx_kp_s_This_value_is_not_supposed_to_be) < 0) __PYX_ERR(0, 164, __pyx_L1_error)
+  if (__Pyx_PrintOne(0, __pyx_kp_s_This_value_is_not_supposed_to_be) < 0) __PYX_ERR(0, 165, __pyx_L1_error)
 
-  /* "cavd/graphstorage.pyx":165
+  /* "cavd/graphstorage.pyx":166
  *             """
  *             print ("This value is not supposed to be modified")
  *             self.thisptr.id = id             # <<<<<<<<<<<<<<
  * 
  *     property coords:
  */
-  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_id); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 165, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_id); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 166, __pyx_L1_error)
   __pyx_v_self->thisptr->id = __pyx_t_1;
 
-  /* "cavd/graphstorage.pyx":160
+  /* "cavd/graphstorage.pyx":161
  *             id = self.thisptr.id
  *             return id
  *         def __set__(self, id):      # Don't set this             # <<<<<<<<<<<<<<
@@ -4436,7 +4452,7 @@ static int __pyx_pf_4cavd_12graphstorage_12DijkstraNode_2id_2__set__(struct __py
   return __pyx_r;
 }
 
-/* "cavd/graphstorage.pyx":168
+/* "cavd/graphstorage.pyx":169
  * 
  *     property coords:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -4467,20 +4483,20 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_6coords___get__(st
   PyObject *__pyx_t_4 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "cavd/graphstorage.pyx":169
+  /* "cavd/graphstorage.pyx":170
  *     property coords:
  *         def __get__(self):
  *             coords = [self.thisptr.x, self.thisptr.y, self.thisptr.z]             # <<<<<<<<<<<<<<
  *             return coords
  *         def __set__(self, coords):      # Don't set this
  */
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->x); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 169, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->x); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 170, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_self->thisptr->y); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 169, __pyx_L1_error)
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_self->thisptr->y); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 170, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_self->thisptr->z); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 169, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_self->thisptr->z); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 170, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = PyList_New(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 169, __pyx_L1_error)
+  __pyx_t_4 = PyList_New(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 170, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_GIVEREF(__pyx_t_1);
   PyList_SET_ITEM(__pyx_t_4, 0, __pyx_t_1);
@@ -4494,7 +4510,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_6coords___get__(st
   __pyx_v_coords = ((PyObject*)__pyx_t_4);
   __pyx_t_4 = 0;
 
-  /* "cavd/graphstorage.pyx":170
+  /* "cavd/graphstorage.pyx":171
  *         def __get__(self):
  *             coords = [self.thisptr.x, self.thisptr.y, self.thisptr.z]
  *             return coords             # <<<<<<<<<<<<<<
@@ -4506,7 +4522,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_6coords___get__(st
   __pyx_r = __pyx_v_coords;
   goto __pyx_L0;
 
-  /* "cavd/graphstorage.pyx":168
+  /* "cavd/graphstorage.pyx":169
  * 
  *     property coords:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -4529,7 +4545,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_6coords___get__(st
   return __pyx_r;
 }
 
-/* "cavd/graphstorage.pyx":171
+/* "cavd/graphstorage.pyx":172
  *             coords = [self.thisptr.x, self.thisptr.y, self.thisptr.z]
  *             return coords
  *         def __set__(self, coords):      # Don't set this             # <<<<<<<<<<<<<<
@@ -4557,55 +4573,55 @@ static int __pyx_pf_4cavd_12graphstorage_12DijkstraNode_6coords_2__set__(struct 
   double __pyx_t_2;
   __Pyx_RefNannySetupContext("__set__", 0);
 
-  /* "cavd/graphstorage.pyx":175
+  /* "cavd/graphstorage.pyx":176
  *             This variable is not supposed to be modified manually
  *             """
  *             print ("This value is not supposed to be modified")             # <<<<<<<<<<<<<<
  *             self.thisptr.x = coords[0]
  *             self.thisptr.y = coords[1]
  */
-  if (__Pyx_PrintOne(0, __pyx_kp_s_This_value_is_not_supposed_to_be) < 0) __PYX_ERR(0, 175, __pyx_L1_error)
+  if (__Pyx_PrintOne(0, __pyx_kp_s_This_value_is_not_supposed_to_be) < 0) __PYX_ERR(0, 176, __pyx_L1_error)
 
-  /* "cavd/graphstorage.pyx":176
+  /* "cavd/graphstorage.pyx":177
  *             """
  *             print ("This value is not supposed to be modified")
  *             self.thisptr.x = coords[0]             # <<<<<<<<<<<<<<
  *             self.thisptr.y = coords[1]
  *             self.thisptr.z = coords[2]
  */
-  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_coords, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 176, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_coords, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 177, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 176, __pyx_L1_error)
+  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 177, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_self->thisptr->x = __pyx_t_2;
 
-  /* "cavd/graphstorage.pyx":177
+  /* "cavd/graphstorage.pyx":178
  *             print ("This value is not supposed to be modified")
  *             self.thisptr.x = coords[0]
  *             self.thisptr.y = coords[1]             # <<<<<<<<<<<<<<
  *             self.thisptr.z = coords[2]
  * 
  */
-  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_coords, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 177, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_coords, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 178, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 177, __pyx_L1_error)
+  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 178, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_self->thisptr->y = __pyx_t_2;
 
-  /* "cavd/graphstorage.pyx":178
+  /* "cavd/graphstorage.pyx":179
  *             self.thisptr.x = coords[0]
  *             self.thisptr.y = coords[1]
  *             self.thisptr.z = coords[2]             # <<<<<<<<<<<<<<
  * 
  *     property max_radius:
  */
-  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_coords, 2, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 178, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_coords, 2, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 179, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 178, __pyx_L1_error)
+  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 179, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_self->thisptr->z = __pyx_t_2;
 
-  /* "cavd/graphstorage.pyx":171
+  /* "cavd/graphstorage.pyx":172
  *             coords = [self.thisptr.x, self.thisptr.y, self.thisptr.z]
  *             return coords
  *         def __set__(self, coords):      # Don't set this             # <<<<<<<<<<<<<<
@@ -4625,7 +4641,7 @@ static int __pyx_pf_4cavd_12graphstorage_12DijkstraNode_6coords_2__set__(struct 
   return __pyx_r;
 }
 
-/* "cavd/graphstorage.pyx":181
+/* "cavd/graphstorage.pyx":182
  * 
  *     property max_radius:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -4654,7 +4670,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_10max_radius___get
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "cavd/graphstorage.pyx":182
+  /* "cavd/graphstorage.pyx":183
  *     property max_radius:
  *         def __get__(self):
  *             max_radius = self.thisptr.max_radius             # <<<<<<<<<<<<<<
@@ -4664,7 +4680,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_10max_radius___get
   __pyx_t_1 = __pyx_v_self->thisptr->max_radius;
   __pyx_v_max_radius = __pyx_t_1;
 
-  /* "cavd/graphstorage.pyx":183
+  /* "cavd/graphstorage.pyx":184
  *         def __get__(self):
  *             max_radius = self.thisptr.max_radius
  *             return max_radius             # <<<<<<<<<<<<<<
@@ -4672,13 +4688,13 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_10max_radius___get
  *             """
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_max_radius); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 183, __pyx_L1_error)
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_max_radius); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 184, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "cavd/graphstorage.pyx":181
+  /* "cavd/graphstorage.pyx":182
  * 
  *     property max_radius:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -4697,7 +4713,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_10max_radius___get
   return __pyx_r;
 }
 
-/* "cavd/graphstorage.pyx":184
+/* "cavd/graphstorage.pyx":185
  *             max_radius = self.thisptr.max_radius
  *             return max_radius
  *         def __set__(self, max_radius):      # Don't set this             # <<<<<<<<<<<<<<
@@ -4724,26 +4740,26 @@ static int __pyx_pf_4cavd_12graphstorage_12DijkstraNode_10max_radius_2__set__(st
   double __pyx_t_1;
   __Pyx_RefNannySetupContext("__set__", 0);
 
-  /* "cavd/graphstorage.pyx":188
+  /* "cavd/graphstorage.pyx":189
  *             This variable is not supposed to be modified manually
  *             """
  *             print ("This value is not supposed to be modified")             # <<<<<<<<<<<<<<
  *             self.thisptr.max_radius = max_radius
  * 
  */
-  if (__Pyx_PrintOne(0, __pyx_kp_s_This_value_is_not_supposed_to_be) < 0) __PYX_ERR(0, 188, __pyx_L1_error)
+  if (__Pyx_PrintOne(0, __pyx_kp_s_This_value_is_not_supposed_to_be) < 0) __PYX_ERR(0, 189, __pyx_L1_error)
 
-  /* "cavd/graphstorage.pyx":189
+  /* "cavd/graphstorage.pyx":190
  *             """
  *             print ("This value is not supposed to be modified")
  *             self.thisptr.max_radius = max_radius             # <<<<<<<<<<<<<<
  * 
  *     property connections:
  */
-  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_max_radius); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 189, __pyx_L1_error)
+  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_max_radius); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 190, __pyx_L1_error)
   __pyx_v_self->thisptr->max_radius = __pyx_t_1;
 
-  /* "cavd/graphstorage.pyx":184
+  /* "cavd/graphstorage.pyx":185
  *             max_radius = self.thisptr.max_radius
  *             return max_radius
  *         def __set__(self, max_radius):      # Don't set this             # <<<<<<<<<<<<<<
@@ -4762,7 +4778,7 @@ static int __pyx_pf_4cavd_12graphstorage_12DijkstraNode_10max_radius_2__set__(st
   return __pyx_r;
 }
 
-/* "cavd/graphstorage.pyx":192
+/* "cavd/graphstorage.pyx":193
  * 
  *     property connections:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -4809,7 +4825,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_11connections___ge
   int __pyx_t_12;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "cavd/graphstorage.pyx":193
+  /* "cavd/graphstorage.pyx":194
  *     property connections:
  *         def __get__(self):
  *             cdef vector[CONN] conns = self.thisptr.connections             # <<<<<<<<<<<<<<
@@ -4819,19 +4835,19 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_11connections___ge
   __pyx_t_1 = __pyx_v_self->thisptr->connections;
   __pyx_v_conns = __pyx_t_1;
 
-  /* "cavd/graphstorage.pyx":194
+  /* "cavd/graphstorage.pyx":195
  *         def __get__(self):
  *             cdef vector[CONN] conns = self.thisptr.connections
  *             connections = []             # <<<<<<<<<<<<<<
  *             for i in range(conns.size()):
  *                 conn_from = conns[i].origin
  */
-  __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 194, __pyx_L1_error)
+  __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 195, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_v_connections = ((PyObject*)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "cavd/graphstorage.pyx":195
+  /* "cavd/graphstorage.pyx":196
  *             cdef vector[CONN] conns = self.thisptr.connections
  *             connections = []
  *             for i in range(conns.size()):             # <<<<<<<<<<<<<<
@@ -4843,7 +4859,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_11connections___ge
   for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
     __pyx_v_i = __pyx_t_5;
 
-    /* "cavd/graphstorage.pyx":196
+    /* "cavd/graphstorage.pyx":197
  *             connections = []
  *             for i in range(conns.size()):
  *                 conn_from = conns[i].origin             # <<<<<<<<<<<<<<
@@ -4853,7 +4869,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_11connections___ge
     __pyx_t_6 = (__pyx_v_conns[__pyx_v_i]).from;
     __pyx_v_conn_from = __pyx_t_6;
 
-    /* "cavd/graphstorage.pyx":197
+    /* "cavd/graphstorage.pyx":198
  *             for i in range(conns.size()):
  *                 conn_from = conns[i].origin
  *                 conn_to = conns[i].ending             # <<<<<<<<<<<<<<
@@ -4863,7 +4879,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_11connections___ge
     __pyx_t_6 = (__pyx_v_conns[__pyx_v_i]).to;
     __pyx_v_conn_to = __pyx_t_6;
 
-    /* "cavd/graphstorage.pyx":198
+    /* "cavd/graphstorage.pyx":199
  *                 conn_from = conns[i].origin
  *                 conn_to = conns[i].ending
  *                 conn_length = conns[i].length             # <<<<<<<<<<<<<<
@@ -4873,7 +4889,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_11connections___ge
     __pyx_t_7 = (__pyx_v_conns[__pyx_v_i]).length;
     __pyx_v_conn_length = __pyx_t_7;
 
-    /* "cavd/graphstorage.pyx":199
+    /* "cavd/graphstorage.pyx":200
  *                 conn_to = conns[i].ending
  *                 conn_length = conns[i].length
  *                 conn_max_radius = conns[i].max_radius             # <<<<<<<<<<<<<<
@@ -4883,20 +4899,20 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_11connections___ge
     __pyx_t_7 = (__pyx_v_conns[__pyx_v_i]).max_radius;
     __pyx_v_conn_max_radius = __pyx_t_7;
 
-    /* "cavd/graphstorage.pyx":200
+    /* "cavd/graphstorage.pyx":201
  *                 conn_length = conns[i].length
  *                 conn_max_radius = conns[i].max_radius
  *                 conn_delta_pos = [conns[i].deltaPos.x,conns[i].deltaPos.y,conns[i].deltaPos.z]             # <<<<<<<<<<<<<<
  *                 conn = [conn_from, conn_to, conn_length, conn_max_radius, conn_delta_pos]
  *                 connections.append(conn)
  */
-    __pyx_t_2 = __Pyx_PyInt_From_int((__pyx_v_conns[__pyx_v_i]).deltaPos.x); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 200, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyInt_From_int((__pyx_v_conns[__pyx_v_i]).deltaPos.x); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 201, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_8 = __Pyx_PyInt_From_int((__pyx_v_conns[__pyx_v_i]).deltaPos.y); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 200, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyInt_From_int((__pyx_v_conns[__pyx_v_i]).deltaPos.y); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 201, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    __pyx_t_9 = __Pyx_PyInt_From_int((__pyx_v_conns[__pyx_v_i]).deltaPos.z); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 200, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyInt_From_int((__pyx_v_conns[__pyx_v_i]).deltaPos.z); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 201, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_10 = PyList_New(3); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 200, __pyx_L1_error)
+    __pyx_t_10 = PyList_New(3); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 201, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
     __Pyx_GIVEREF(__pyx_t_2);
     PyList_SET_ITEM(__pyx_t_10, 0, __pyx_t_2);
@@ -4910,22 +4926,22 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_11connections___ge
     __Pyx_XDECREF_SET(__pyx_v_conn_delta_pos, ((PyObject*)__pyx_t_10));
     __pyx_t_10 = 0;
 
-    /* "cavd/graphstorage.pyx":201
+    /* "cavd/graphstorage.pyx":202
  *                 conn_max_radius = conns[i].max_radius
  *                 conn_delta_pos = [conns[i].deltaPos.x,conns[i].deltaPos.y,conns[i].deltaPos.z]
  *                 conn = [conn_from, conn_to, conn_length, conn_max_radius, conn_delta_pos]             # <<<<<<<<<<<<<<
  *                 connections.append(conn)
  *             return connections
  */
-    __pyx_t_10 = __Pyx_PyInt_From_int(__pyx_v_conn_from); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 201, __pyx_L1_error)
+    __pyx_t_10 = __Pyx_PyInt_From_int(__pyx_v_conn_from); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 202, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
-    __pyx_t_9 = __Pyx_PyInt_From_int(__pyx_v_conn_to); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 201, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyInt_From_int(__pyx_v_conn_to); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 202, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_8 = PyFloat_FromDouble(__pyx_v_conn_length); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 201, __pyx_L1_error)
+    __pyx_t_8 = PyFloat_FromDouble(__pyx_v_conn_length); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 202, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    __pyx_t_2 = PyFloat_FromDouble(__pyx_v_conn_max_radius); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 201, __pyx_L1_error)
+    __pyx_t_2 = PyFloat_FromDouble(__pyx_v_conn_max_radius); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 202, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_11 = PyList_New(5); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 201, __pyx_L1_error)
+    __pyx_t_11 = PyList_New(5); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 202, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_11);
     __Pyx_GIVEREF(__pyx_t_10);
     PyList_SET_ITEM(__pyx_t_11, 0, __pyx_t_10);
@@ -4945,17 +4961,17 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_11connections___ge
     __Pyx_XDECREF_SET(__pyx_v_conn, ((PyObject*)__pyx_t_11));
     __pyx_t_11 = 0;
 
-    /* "cavd/graphstorage.pyx":202
+    /* "cavd/graphstorage.pyx":203
  *                 conn_delta_pos = [conns[i].deltaPos.x,conns[i].deltaPos.y,conns[i].deltaPos.z]
  *                 conn = [conn_from, conn_to, conn_length, conn_max_radius, conn_delta_pos]
  *                 connections.append(conn)             # <<<<<<<<<<<<<<
  *             return connections
  * 
  */
-    __pyx_t_12 = __Pyx_PyList_Append(__pyx_v_connections, __pyx_v_conn); if (unlikely(__pyx_t_12 == ((int)-1))) __PYX_ERR(0, 202, __pyx_L1_error)
+    __pyx_t_12 = __Pyx_PyList_Append(__pyx_v_connections, __pyx_v_conn); if (unlikely(__pyx_t_12 == ((int)-1))) __PYX_ERR(0, 203, __pyx_L1_error)
   }
 
-  /* "cavd/graphstorage.pyx":203
+  /* "cavd/graphstorage.pyx":204
  *                 conn = [conn_from, conn_to, conn_length, conn_max_radius, conn_delta_pos]
  *                 connections.append(conn)
  *             return connections             # <<<<<<<<<<<<<<
@@ -4966,7 +4982,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_11connections___ge
   __pyx_r = __pyx_v_connections;
   goto __pyx_L0;
 
-  /* "cavd/graphstorage.pyx":192
+  /* "cavd/graphstorage.pyx":193
  * 
  *     property connections:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -5864,29 +5880,29 @@ static int __Pyx_modinit_type_init_code(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_modinit_type_init_code", 0);
   /*--- Type init code ---*/
-  if (PyType_Ready(&__pyx_type_4cavd_12graphstorage_DeltaPos) < 0) __PYX_ERR(0, 56, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_4cavd_12graphstorage_DeltaPos) < 0) __PYX_ERR(0, 57, __pyx_L1_error)
   __pyx_type_4cavd_12graphstorage_DeltaPos.tp_print = 0;
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_4cavd_12graphstorage_DeltaPos.tp_dictoffset && __pyx_type_4cavd_12graphstorage_DeltaPos.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_4cavd_12graphstorage_DeltaPos.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_DeltaPos, (PyObject *)&__pyx_type_4cavd_12graphstorage_DeltaPos) < 0) __PYX_ERR(0, 56, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_4cavd_12graphstorage_DeltaPos) < 0) __PYX_ERR(0, 56, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_DeltaPos, (PyObject *)&__pyx_type_4cavd_12graphstorage_DeltaPos) < 0) __PYX_ERR(0, 57, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_4cavd_12graphstorage_DeltaPos) < 0) __PYX_ERR(0, 57, __pyx_L1_error)
   __pyx_ptype_4cavd_12graphstorage_DeltaPos = &__pyx_type_4cavd_12graphstorage_DeltaPos;
-  if (PyType_Ready(&__pyx_type_4cavd_12graphstorage_Conn) < 0) __PYX_ERR(0, 79, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_4cavd_12graphstorage_Conn) < 0) __PYX_ERR(0, 80, __pyx_L1_error)
   __pyx_type_4cavd_12graphstorage_Conn.tp_print = 0;
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_4cavd_12graphstorage_Conn.tp_dictoffset && __pyx_type_4cavd_12graphstorage_Conn.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_4cavd_12graphstorage_Conn.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_Conn, (PyObject *)&__pyx_type_4cavd_12graphstorage_Conn) < 0) __PYX_ERR(0, 79, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_4cavd_12graphstorage_Conn) < 0) __PYX_ERR(0, 79, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_Conn, (PyObject *)&__pyx_type_4cavd_12graphstorage_Conn) < 0) __PYX_ERR(0, 80, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_4cavd_12graphstorage_Conn) < 0) __PYX_ERR(0, 80, __pyx_L1_error)
   __pyx_ptype_4cavd_12graphstorage_Conn = &__pyx_type_4cavd_12graphstorage_Conn;
-  if (PyType_Ready(&__pyx_type_4cavd_12graphstorage_DijkstraNode) < 0) __PYX_ERR(0, 146, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_4cavd_12graphstorage_DijkstraNode) < 0) __PYX_ERR(0, 147, __pyx_L1_error)
   __pyx_type_4cavd_12graphstorage_DijkstraNode.tp_print = 0;
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_4cavd_12graphstorage_DijkstraNode.tp_dictoffset && __pyx_type_4cavd_12graphstorage_DijkstraNode.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_4cavd_12graphstorage_DijkstraNode.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_DijkstraNode, (PyObject *)&__pyx_type_4cavd_12graphstorage_DijkstraNode) < 0) __PYX_ERR(0, 146, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_4cavd_12graphstorage_DijkstraNode) < 0) __PYX_ERR(0, 146, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_DijkstraNode, (PyObject *)&__pyx_type_4cavd_12graphstorage_DijkstraNode) < 0) __PYX_ERR(0, 147, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_4cavd_12graphstorage_DijkstraNode) < 0) __PYX_ERR(0, 147, __pyx_L1_error)
   __pyx_ptype_4cavd_12graphstorage_DijkstraNode = &__pyx_type_4cavd_12graphstorage_DijkstraNode;
   if (PyType_Ready(&__pyx_type_4cavd_12graphstorage_DijkstraNetwork) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
   __pyx_type_4cavd_12graphstorage_DijkstraNetwork.tp_print = 0;

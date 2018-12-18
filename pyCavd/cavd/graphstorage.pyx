@@ -37,6 +37,7 @@ cdef class DijkstraNetwork:
             cdef vector[DIJKSTRA_NODE] c_nodes = self.thisptr.nodes
             for i in range(c_nodes.size()):
                 node_id = c_nodes[i].id
+                node_label = c_nodes[i].label
                 node_pos = [c_nodes[i].x, c_nodes[i].y, c_nodes[i].z]
                 node_radius = c_nodes[i].max_radius
                 c_node_conns = c_nodes[i].connections
@@ -49,7 +50,7 @@ cdef class DijkstraNetwork:
                     conn_delta_pos = [c_node_conns[i].deltaPos.x,c_node_conns[i].deltaPos.y,c_node_conns[i].deltaPos.z]
                     conn = [conn_from, conn_to, conn_length, conn_max_radius, conn_delta_pos]
                 node_conns.append(conn)
-                node = [node_id, node_pos, node_radius, node_conns]
+                node = [node_id, node_label, node_pos, node_radius, node_conns]
                 nodes.append(node)
             return nodes
 

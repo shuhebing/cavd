@@ -34,9 +34,10 @@ cdef class Channel:
             cdef vector[DIJKSTRA_NODE] dj_nodes = self.thisptr.nodes
             for i in range(dj_nodes.size()):
                 dj_id = dj_nodes[i].id
+                dj_label = dj_nodes[i].label
                 dj_coords = [dj_nodes[i].x,dj_nodes[i].y,dj_nodes[i].z]
                 dj_max_radius = dj_nodes[i].max_radius
-                nodes.append([dj_id, dj_coords, dj_max_radius])
+                nodes.append([dj_id, dj_label, dj_coords, dj_max_radius])
             return nodes
 
     property connections:
@@ -49,7 +50,7 @@ cdef class Channel:
                 conn_length = conns[i].length
                 conn_max_radius = conns[i].max_radius
                 conn_delta_pos = [conns[i].deltaPos.x,conns[i].deltaPos.y,conns[i].deltaPos.z]
-                conn = [conn_from, conn_to, conn_length, conn_max_radius, conn_delta_pos]
+                conn = [conn_from, conn_to, conn_length, conn_max_radius]
                 connections.append(conn)
             return connections
     

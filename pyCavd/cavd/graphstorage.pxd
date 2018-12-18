@@ -35,6 +35,7 @@ cdef extern from "../../zeo++/graphstorage.h":
         vector[CONN] connections
         double max_radius
         bint active
+        int label
         DIJKSTRA_NODE() except +
 
     cdef cppclass DIJKSTRA_NETWORK:

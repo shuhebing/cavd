@@ -112,18 +112,18 @@ def AllCom(filename, probe_rad, num_sample, migrant=None, rad_flag=True, effecti
     sym_vornet,voids = get_Symmetry(atmnet, vornet)
     
     prefixname = filename.replace(".cif","")
-    writeBIFile(prefixname+"_orgin.bi",atmnet,vornet)
-    writeVaspFile(prefixname+"_orgin.vasp",atmnet,vornet,rad_store_in_vasp)
+    writeBIFile(prefixname+"_orgin.bi",atmnet,sym_vornet)
+    writeVaspFile(prefixname+"_orgin.vasp",atmnet,sym_vornet,rad_store_in_vasp)
 
     probe_rad = migrant_radius*migrant_alpha
     minRad = migrant_radius*migrant_alpha*0.85
     maxRad = migrant_radius*migrant_alpha*1.15
 
-    writeVaspFile(prefixname+"_selected.vasp",atmnet,vornet,rad_store_in_vasp,minRad,maxRad)
-    conn = connection_values_list(prefixname+".resex", vornet)
+    writeVaspFile(prefixname+"_selected.vasp",atmnet,sym_vornet,rad_store_in_vasp,minRad,maxRad)
+    conn = connection_values_list(prefixname+".resex", sym_vornet)
 
     oneD,twoD,threeD = ConnStatus(minRad, conn)
-    channels = Channel.findChannels(vornet,atmnet,minRad,prefixname+".net")
+    channels = Channel.findChannels(sym_vornet,atmnet,minRad,prefixname+".net")
     
     dims = []
     for i in channels:

@@ -1000,7 +1000,7 @@ struct __pyx_obj_4cavd_10netstorage_VoronoiEdge {
 };
 
 
-/* "graphstorage.pxd":55
+/* "graphstorage.pxd":56
  * #    cdef DIJKSTRA_NODE* thisptr
  * 
  * cdef class DeltaPos:             # <<<<<<<<<<<<<<
@@ -1013,7 +1013,7 @@ struct __pyx_obj_4cavd_12graphstorage_DeltaPos {
 };
 
 
-/* "graphstorage.pxd":58
+/* "graphstorage.pxd":59
  *    cdef DELTA_POS* thisptr
  * 
  * cdef class Conn:             # <<<<<<<<<<<<<<
@@ -1026,7 +1026,7 @@ struct __pyx_obj_4cavd_12graphstorage_Conn {
 };
 
 
-/* "graphstorage.pxd":61
+/* "graphstorage.pxd":62
  *    cdef CONN* thisptr
  * 
  * cdef class DijkstraNode:             # <<<<<<<<<<<<<<
@@ -1039,7 +1039,7 @@ struct __pyx_obj_4cavd_12graphstorage_DijkstraNode {
 };
 
 
-/* "graphstorage.pxd":64
+/* "graphstorage.pxd":65
  *    cdef DIJKSTRA_NODE* thisptr
  * 
  * cdef class DijkstraNetwork:             # <<<<<<<<<<<<<<
@@ -6071,16 +6071,16 @@ static int __Pyx_modinit_type_import_code(void) {
   __pyx_ptype_4cavd_10netstorage_VoronoiEdge = __Pyx_ImportType(__pyx_t_1, "cavd.netstorage", "VoronoiEdge", sizeof(struct __pyx_obj_4cavd_10netstorage_VoronoiEdge), __Pyx_ImportType_CheckSize_Warn);
    if (!__pyx_ptype_4cavd_10netstorage_VoronoiEdge) __PYX_ERR(4, 170, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyImport_ImportModule("cavd.graphstorage"); if (unlikely(!__pyx_t_1)) __PYX_ERR(5, 55, __pyx_L1_error)
+  __pyx_t_1 = PyImport_ImportModule("cavd.graphstorage"); if (unlikely(!__pyx_t_1)) __PYX_ERR(5, 56, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_ptype_4cavd_12graphstorage_DeltaPos = __Pyx_ImportType(__pyx_t_1, "cavd.graphstorage", "DeltaPos", sizeof(struct __pyx_obj_4cavd_12graphstorage_DeltaPos), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_4cavd_12graphstorage_DeltaPos) __PYX_ERR(5, 55, __pyx_L1_error)
+   if (!__pyx_ptype_4cavd_12graphstorage_DeltaPos) __PYX_ERR(5, 56, __pyx_L1_error)
   __pyx_ptype_4cavd_12graphstorage_Conn = __Pyx_ImportType(__pyx_t_1, "cavd.graphstorage", "Conn", sizeof(struct __pyx_obj_4cavd_12graphstorage_Conn), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_4cavd_12graphstorage_Conn) __PYX_ERR(5, 58, __pyx_L1_error)
+   if (!__pyx_ptype_4cavd_12graphstorage_Conn) __PYX_ERR(5, 59, __pyx_L1_error)
   __pyx_ptype_4cavd_12graphstorage_DijkstraNode = __Pyx_ImportType(__pyx_t_1, "cavd.graphstorage", "DijkstraNode", sizeof(struct __pyx_obj_4cavd_12graphstorage_DijkstraNode), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_4cavd_12graphstorage_DijkstraNode) __PYX_ERR(5, 61, __pyx_L1_error)
+   if (!__pyx_ptype_4cavd_12graphstorage_DijkstraNode) __PYX_ERR(5, 62, __pyx_L1_error)
   __pyx_ptype_4cavd_12graphstorage_DijkstraNetwork = __Pyx_ImportType(__pyx_t_1, "cavd.graphstorage", "DijkstraNetwork", sizeof(struct __pyx_obj_4cavd_12graphstorage_DijkstraNetwork), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_4cavd_12graphstorage_DijkstraNetwork) __PYX_ERR(5, 64, __pyx_L1_error)
+   if (!__pyx_ptype_4cavd_12graphstorage_DijkstraNetwork) __PYX_ERR(5, 65, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_1 = PyImport_ImportModule("cavd.channel"); if (unlikely(!__pyx_t_1)) __PYX_ERR(6, 33, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
