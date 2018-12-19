@@ -926,7 +926,7 @@ struct __pyx_obj_4cavd_11voronoicell_BasicVCell {
 };
 
 
-/* "cavd/netstorage.pxd":143
+/* "cavd/netstorage.pxd":145
  *             VORONOI_NETWORK* vornet, ATOM_NETWORK* atmnet)
  * 
  * cdef class Atom:             # <<<<<<<<<<<<<<
@@ -939,7 +939,7 @@ struct __pyx_obj_4cavd_10netstorage_Atom {
 };
 
 
-/* "cavd/netstorage.pxd":149
+/* "cavd/netstorage.pxd":151
  *     cdef ATOM* thisptr
  * 
  * cdef class AtomNetwork:             # <<<<<<<<<<<<<<
@@ -953,7 +953,7 @@ struct __pyx_obj_4cavd_10netstorage_AtomNetwork {
 };
 
 
-/* "cavd/netstorage.pxd":158
+/* "cavd/netstorage.pxd":160
  *     cdef bint rad_flag
  * 
  * cdef class VoronoiNode:             # <<<<<<<<<<<<<<
@@ -966,7 +966,7 @@ struct __pyx_obj_4cavd_10netstorage_VoronoiNode {
 };
 
 
-/* "cavd/netstorage.pxd":164
+/* "cavd/netstorage.pxd":166
  *     cdef VOR_NODE* thisptr
  * 
  * cdef class VoronoiNetwork:             # <<<<<<<<<<<<<<
@@ -979,7 +979,7 @@ struct __pyx_obj_4cavd_10netstorage_VoronoiNetwork {
 };
 
 
-/* "cavd/netstorage.pxd":170
+/* "cavd/netstorage.pxd":172
  *     cdef VORONOI_NETWORK* thisptr
  * 
  * cdef class VoronoiEdge:             # <<<<<<<<<<<<<<
@@ -1794,18 +1794,18 @@ static int __Pyx_modinit_type_import_code(void) {
   __pyx_ptype_4cavd_11voronoicell_BasicVCell = __Pyx_ImportType(__pyx_t_1, "cavd.voronoicell", "BasicVCell", sizeof(struct __pyx_obj_4cavd_11voronoicell_BasicVCell), __Pyx_ImportType_CheckSize_Warn);
    if (!__pyx_ptype_4cavd_11voronoicell_BasicVCell) __PYX_ERR(3, 45, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyImport_ImportModule("cavd.netstorage"); if (unlikely(!__pyx_t_1)) __PYX_ERR(4, 143, __pyx_L1_error)
+  __pyx_t_1 = PyImport_ImportModule("cavd.netstorage"); if (unlikely(!__pyx_t_1)) __PYX_ERR(4, 145, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_ptype_4cavd_10netstorage_Atom = __Pyx_ImportType(__pyx_t_1, "cavd.netstorage", "Atom", sizeof(struct __pyx_obj_4cavd_10netstorage_Atom), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_4cavd_10netstorage_Atom) __PYX_ERR(4, 143, __pyx_L1_error)
+   if (!__pyx_ptype_4cavd_10netstorage_Atom) __PYX_ERR(4, 145, __pyx_L1_error)
   __pyx_ptype_4cavd_10netstorage_AtomNetwork = __Pyx_ImportType(__pyx_t_1, "cavd.netstorage", "AtomNetwork", sizeof(struct __pyx_obj_4cavd_10netstorage_AtomNetwork), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_4cavd_10netstorage_AtomNetwork) __PYX_ERR(4, 149, __pyx_L1_error)
+   if (!__pyx_ptype_4cavd_10netstorage_AtomNetwork) __PYX_ERR(4, 151, __pyx_L1_error)
   __pyx_ptype_4cavd_10netstorage_VoronoiNode = __Pyx_ImportType(__pyx_t_1, "cavd.netstorage", "VoronoiNode", sizeof(struct __pyx_obj_4cavd_10netstorage_VoronoiNode), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_4cavd_10netstorage_VoronoiNode) __PYX_ERR(4, 158, __pyx_L1_error)
+   if (!__pyx_ptype_4cavd_10netstorage_VoronoiNode) __PYX_ERR(4, 160, __pyx_L1_error)
   __pyx_ptype_4cavd_10netstorage_VoronoiNetwork = __Pyx_ImportType(__pyx_t_1, "cavd.netstorage", "VoronoiNetwork", sizeof(struct __pyx_obj_4cavd_10netstorage_VoronoiNetwork), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_4cavd_10netstorage_VoronoiNetwork) __PYX_ERR(4, 164, __pyx_L1_error)
+   if (!__pyx_ptype_4cavd_10netstorage_VoronoiNetwork) __PYX_ERR(4, 166, __pyx_L1_error)
   __pyx_ptype_4cavd_10netstorage_VoronoiEdge = __Pyx_ImportType(__pyx_t_1, "cavd.netstorage", "VoronoiEdge", sizeof(struct __pyx_obj_4cavd_10netstorage_VoronoiEdge), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_4cavd_10netstorage_VoronoiEdge) __PYX_ERR(4, 170, __pyx_L1_error)
+   if (!__pyx_ptype_4cavd_10netstorage_VoronoiEdge) __PYX_ERR(4, 172, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
   return 0;

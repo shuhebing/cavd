@@ -930,7 +930,7 @@ struct __pyx_obj_4cavd_11voronoicell_BasicVCell {
 };
 
 
-/* "netstorage.pxd":143
+/* "netstorage.pxd":145
  *             VORONOI_NETWORK* vornet, ATOM_NETWORK* atmnet)
  * 
  * cdef class Atom:             # <<<<<<<<<<<<<<
@@ -943,7 +943,7 @@ struct __pyx_obj_4cavd_10netstorage_Atom {
 };
 
 
-/* "netstorage.pxd":149
+/* "netstorage.pxd":151
  *     cdef ATOM* thisptr
  * 
  * cdef class AtomNetwork:             # <<<<<<<<<<<<<<
@@ -957,7 +957,7 @@ struct __pyx_obj_4cavd_10netstorage_AtomNetwork {
 };
 
 
-/* "netstorage.pxd":158
+/* "netstorage.pxd":160
  *     cdef bint rad_flag
  * 
  * cdef class VoronoiNode:             # <<<<<<<<<<<<<<
@@ -970,7 +970,7 @@ struct __pyx_obj_4cavd_10netstorage_VoronoiNode {
 };
 
 
-/* "netstorage.pxd":164
+/* "netstorage.pxd":166
  *     cdef VOR_NODE* thisptr
  * 
  * cdef class VoronoiNetwork:             # <<<<<<<<<<<<<<
@@ -983,7 +983,7 @@ struct __pyx_obj_4cavd_10netstorage_VoronoiNetwork {
 };
 
 
-/* "netstorage.pxd":170
+/* "netstorage.pxd":172
  *     cdef VORONOI_NETWORK* thisptr
  * 
  * cdef class VoronoiEdge:             # <<<<<<<<<<<<<<
@@ -996,7 +996,7 @@ struct __pyx_obj_4cavd_10netstorage_VoronoiEdge {
 };
 
 
-/* "cavd/graphstorage.pxd":56
+/* "cavd/graphstorage.pxd":59
  * #    cdef DIJKSTRA_NODE* thisptr
  * 
  * cdef class DeltaPos:             # <<<<<<<<<<<<<<
@@ -1009,7 +1009,7 @@ struct __pyx_obj_4cavd_12graphstorage_DeltaPos {
 };
 
 
-/* "cavd/graphstorage.pxd":59
+/* "cavd/graphstorage.pxd":62
  *    cdef DELTA_POS* thisptr
  * 
  * cdef class Conn:             # <<<<<<<<<<<<<<
@@ -1022,7 +1022,7 @@ struct __pyx_obj_4cavd_12graphstorage_Conn {
 };
 
 
-/* "cavd/graphstorage.pxd":62
+/* "cavd/graphstorage.pxd":65
  *    cdef CONN* thisptr
  * 
  * cdef class DijkstraNode:             # <<<<<<<<<<<<<<
@@ -1035,7 +1035,7 @@ struct __pyx_obj_4cavd_12graphstorage_DijkstraNode {
 };
 
 
-/* "cavd/graphstorage.pxd":65
+/* "cavd/graphstorage.pxd":68
  *    cdef DIJKSTRA_NODE* thisptr
  * 
  * cdef class DijkstraNetwork:             # <<<<<<<<<<<<<<
@@ -1566,6 +1566,8 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_4Conn_10max_radius___get__(struct
 static int __pyx_pf_4cavd_12graphstorage_4Conn_10max_radius_2__set__(struct __pyx_obj_4cavd_12graphstorage_Conn *__pyx_v_self, PyObject *__pyx_v_max_radius); /* proto */
 static PyObject *__pyx_pf_4cavd_12graphstorage_4Conn_3pos___get__(struct __pyx_obj_4cavd_12graphstorage_Conn *__pyx_v_self); /* proto */
 static int __pyx_pf_4cavd_12graphstorage_4Conn_3pos_2__set__(struct __pyx_obj_4cavd_12graphstorage_Conn *__pyx_v_self, PyObject *__pyx_v_pos); /* proto */
+static PyObject *__pyx_pf_4cavd_12graphstorage_4Conn_5coord___get__(struct __pyx_obj_4cavd_12graphstorage_Conn *__pyx_v_self); /* proto */
+static int __pyx_pf_4cavd_12graphstorage_4Conn_5coord_2__set__(struct __pyx_obj_4cavd_12graphstorage_Conn *__pyx_v_self, PyObject *__pyx_v_coords); /* proto */
 static PyObject *__pyx_pf_4cavd_12graphstorage_4Conn_6__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_4cavd_12graphstorage_Conn *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_4cavd_12graphstorage_4Conn_8__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_4cavd_12graphstorage_Conn *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
 static int __pyx_pf_4cavd_12graphstorage_12DijkstraNode___cinit__(struct __pyx_obj_4cavd_12graphstorage_DijkstraNode *__pyx_v_self); /* proto */
@@ -1573,6 +1575,8 @@ static int __pyx_pf_4cavd_12graphstorage_12DijkstraNode_2__init__(CYTHON_UNUSED 
 static void __pyx_pf_4cavd_12graphstorage_12DijkstraNode_4__dealloc__(struct __pyx_obj_4cavd_12graphstorage_DijkstraNode *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_2id___get__(struct __pyx_obj_4cavd_12graphstorage_DijkstraNode *__pyx_v_self); /* proto */
 static int __pyx_pf_4cavd_12graphstorage_12DijkstraNode_2id_2__set__(struct __pyx_obj_4cavd_12graphstorage_DijkstraNode *__pyx_v_self, PyObject *__pyx_v_id); /* proto */
+static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_5label___get__(struct __pyx_obj_4cavd_12graphstorage_DijkstraNode *__pyx_v_self); /* proto */
+static int __pyx_pf_4cavd_12graphstorage_12DijkstraNode_5label_2__set__(struct __pyx_obj_4cavd_12graphstorage_DijkstraNode *__pyx_v_self, PyObject *__pyx_v_label); /* proto */
 static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_6coords___get__(struct __pyx_obj_4cavd_12graphstorage_DijkstraNode *__pyx_v_self); /* proto */
 static int __pyx_pf_4cavd_12graphstorage_12DijkstraNode_6coords_2__set__(struct __pyx_obj_4cavd_12graphstorage_DijkstraNode *__pyx_v_self, PyObject *__pyx_v_coords); /* proto */
 static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_10max_radius___get__(struct __pyx_obj_4cavd_12graphstorage_DijkstraNode *__pyx_v_self); /* proto */
@@ -1995,7 +1999,7 @@ static PyObject *__pyx_pw_4cavd_12graphstorage_15DijkstraNetwork_5nodes_1__get__
 static PyObject *__pyx_pf_4cavd_12graphstorage_15DijkstraNetwork_5nodes___get__(struct __pyx_obj_4cavd_12graphstorage_DijkstraNetwork *__pyx_v_self) {
   PyObject *__pyx_v_nodes = NULL;
   std::vector<DIJKSTRA_NODE>  __pyx_v_c_nodes;
-  std::vector<DIJKSTRA_NODE> ::size_type __pyx_v_i;
+  std::vector<CONN> ::size_type __pyx_v_i;
   int __pyx_v_node_id;
   int __pyx_v_node_label;
   PyObject *__pyx_v_node_pos = NULL;
@@ -2015,7 +2019,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_15DijkstraNetwork_5nodes___get__(
   std::vector<DIJKSTRA_NODE>  __pyx_t_2;
   std::vector<DIJKSTRA_NODE> ::size_type __pyx_t_3;
   std::vector<DIJKSTRA_NODE> ::size_type __pyx_t_4;
-  std::vector<DIJKSTRA_NODE> ::size_type __pyx_t_5;
+  std::vector<CONN> ::size_type __pyx_t_5;
   int __pyx_t_6;
   PyObject *__pyx_t_7 = NULL;
   PyObject *__pyx_t_8 = NULL;
@@ -2024,7 +2028,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_15DijkstraNetwork_5nodes___get__(
   std::vector<CONN>  __pyx_t_11;
   std::vector<CONN> ::size_type __pyx_t_12;
   std::vector<CONN> ::size_type __pyx_t_13;
-  std::vector<DIJKSTRA_NODE> ::size_type __pyx_t_14;
+  std::vector<CONN> ::size_type __pyx_t_14;
   PyObject *__pyx_t_15 = NULL;
   int __pyx_t_16;
   __Pyx_RefNannySetupContext("__get__", 0);
@@ -4037,7 +4041,7 @@ static int __pyx_pf_4cavd_12graphstorage_4Conn_3pos_2__set__(struct __pyx_obj_4c
  *             self.thisptr.deltaPos.y = pos[1]
  *             self.thisptr.deltaPos.z = pos[2]             # <<<<<<<<<<<<<<
  * 
- * cdef class DijkstraNode:
+ *     property coord:
  */
   __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_pos, 2, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 145, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -4059,6 +4063,195 @@ static int __pyx_pf_4cavd_12graphstorage_4Conn_3pos_2__set__(struct __pyx_obj_4c
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("cavd.graphstorage.Conn.pos.__set__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = -1;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "cavd/graphstorage.pyx":148
+ * 
+ *     property coord:
+ *         def __get__(self):             # <<<<<<<<<<<<<<
+ *             coords = [self.thisptr.btx, self.thisptr.bty, self.thisptr.btz]
+ *             return coords
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_4cavd_12graphstorage_4Conn_5coord_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_4cavd_12graphstorage_4Conn_5coord_1__get__(PyObject *__pyx_v_self) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_4cavd_12graphstorage_4Conn_5coord___get__(((struct __pyx_obj_4cavd_12graphstorage_Conn *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_4cavd_12graphstorage_4Conn_5coord___get__(struct __pyx_obj_4cavd_12graphstorage_Conn *__pyx_v_self) {
+  PyObject *__pyx_v_coords = NULL;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  PyObject *__pyx_t_4 = NULL;
+  __Pyx_RefNannySetupContext("__get__", 0);
+
+  /* "cavd/graphstorage.pyx":149
+ *     property coord:
+ *         def __get__(self):
+ *             coords = [self.thisptr.btx, self.thisptr.bty, self.thisptr.btz]             # <<<<<<<<<<<<<<
+ *             return coords
+ *         def __set__(self, coords):      # Don't set this
+ */
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->btx); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 149, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_self->thisptr->bty); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 149, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_self->thisptr->btz); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 149, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_4 = PyList_New(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 149, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_GIVEREF(__pyx_t_1);
+  PyList_SET_ITEM(__pyx_t_4, 0, __pyx_t_1);
+  __Pyx_GIVEREF(__pyx_t_2);
+  PyList_SET_ITEM(__pyx_t_4, 1, __pyx_t_2);
+  __Pyx_GIVEREF(__pyx_t_3);
+  PyList_SET_ITEM(__pyx_t_4, 2, __pyx_t_3);
+  __pyx_t_1 = 0;
+  __pyx_t_2 = 0;
+  __pyx_t_3 = 0;
+  __pyx_v_coords = ((PyObject*)__pyx_t_4);
+  __pyx_t_4 = 0;
+
+  /* "cavd/graphstorage.pyx":150
+ *         def __get__(self):
+ *             coords = [self.thisptr.btx, self.thisptr.bty, self.thisptr.btz]
+ *             return coords             # <<<<<<<<<<<<<<
+ *         def __set__(self, coords):      # Don't set this
+ *             """
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __Pyx_INCREF(__pyx_v_coords);
+  __pyx_r = __pyx_v_coords;
+  goto __pyx_L0;
+
+  /* "cavd/graphstorage.pyx":148
+ * 
+ *     property coord:
+ *         def __get__(self):             # <<<<<<<<<<<<<<
+ *             coords = [self.thisptr.btx, self.thisptr.bty, self.thisptr.btz]
+ *             return coords
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_AddTraceback("cavd.graphstorage.Conn.coord.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_coords);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "cavd/graphstorage.pyx":151
+ *             coords = [self.thisptr.btx, self.thisptr.bty, self.thisptr.btz]
+ *             return coords
+ *         def __set__(self, coords):      # Don't set this             # <<<<<<<<<<<<<<
+ *             """
+ *             This variable is not supposed to be modified manually
+ */
+
+/* Python wrapper */
+static int __pyx_pw_4cavd_12graphstorage_4Conn_5coord_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_coords); /*proto*/
+static int __pyx_pw_4cavd_12graphstorage_4Conn_5coord_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_coords) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__set__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_4cavd_12graphstorage_4Conn_5coord_2__set__(((struct __pyx_obj_4cavd_12graphstorage_Conn *)__pyx_v_self), ((PyObject *)__pyx_v_coords));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static int __pyx_pf_4cavd_12graphstorage_4Conn_5coord_2__set__(struct __pyx_obj_4cavd_12graphstorage_Conn *__pyx_v_self, PyObject *__pyx_v_coords) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  double __pyx_t_2;
+  __Pyx_RefNannySetupContext("__set__", 0);
+
+  /* "cavd/graphstorage.pyx":155
+ *             This variable is not supposed to be modified manually
+ *             """
+ *             print ("This value is not supposed to be modified")             # <<<<<<<<<<<<<<
+ *             self.thisptr.btx = coords[0]
+ *             self.thisptr.bty = coords[1]
+ */
+  if (__Pyx_PrintOne(0, __pyx_kp_s_This_value_is_not_supposed_to_be) < 0) __PYX_ERR(0, 155, __pyx_L1_error)
+
+  /* "cavd/graphstorage.pyx":156
+ *             """
+ *             print ("This value is not supposed to be modified")
+ *             self.thisptr.btx = coords[0]             # <<<<<<<<<<<<<<
+ *             self.thisptr.bty = coords[1]
+ *             self.thisptr.btz = coords[2]
+ */
+  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_coords, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 156, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 156, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_v_self->thisptr->btx = __pyx_t_2;
+
+  /* "cavd/graphstorage.pyx":157
+ *             print ("This value is not supposed to be modified")
+ *             self.thisptr.btx = coords[0]
+ *             self.thisptr.bty = coords[1]             # <<<<<<<<<<<<<<
+ *             self.thisptr.btz = coords[2]
+ * 
+ */
+  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_coords, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 157, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 157, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_v_self->thisptr->bty = __pyx_t_2;
+
+  /* "cavd/graphstorage.pyx":158
+ *             self.thisptr.btx = coords[0]
+ *             self.thisptr.bty = coords[1]
+ *             self.thisptr.btz = coords[2]             # <<<<<<<<<<<<<<
+ * 
+ * cdef class DijkstraNode:
+ */
+  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_coords, 2, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 158, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_v_self->thisptr->btz = __pyx_t_2;
+
+  /* "cavd/graphstorage.pyx":151
+ *             coords = [self.thisptr.btx, self.thisptr.bty, self.thisptr.btz]
+ *             return coords
+ *         def __set__(self, coords):      # Don't set this             # <<<<<<<<<<<<<<
+ *             """
+ *             This variable is not supposed to be modified manually
+ */
+
+  /* function exit code */
+  __pyx_r = 0;
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("cavd.graphstorage.Conn.coord.__set__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = -1;
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
@@ -4172,7 +4365,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_4Conn_8__setstate_cython__(CYTHON
   return __pyx_r;
 }
 
-/* "cavd/graphstorage.pyx":148
+/* "cavd/graphstorage.pyx":161
  * 
  * cdef class DijkstraNode:
  *     def __cinit__(self):             # <<<<<<<<<<<<<<
@@ -4202,7 +4395,7 @@ static int __pyx_pf_4cavd_12graphstorage_12DijkstraNode___cinit__(struct __pyx_o
   DIJKSTRA_NODE *__pyx_t_1;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "cavd/graphstorage.pyx":149
+  /* "cavd/graphstorage.pyx":162
  * cdef class DijkstraNode:
  *     def __cinit__(self):
  *         self.thisptr = new DIJKSTRA_NODE()             # <<<<<<<<<<<<<<
@@ -4213,11 +4406,11 @@ static int __pyx_pf_4cavd_12graphstorage_12DijkstraNode___cinit__(struct __pyx_o
     __pyx_t_1 = new DIJKSTRA_NODE();
   } catch(...) {
     __Pyx_CppExn2PyErr();
-    __PYX_ERR(0, 149, __pyx_L1_error)
+    __PYX_ERR(0, 162, __pyx_L1_error)
   }
   __pyx_v_self->thisptr = __pyx_t_1;
 
-  /* "cavd/graphstorage.pyx":148
+  /* "cavd/graphstorage.pyx":161
  * 
  * cdef class DijkstraNode:
  *     def __cinit__(self):             # <<<<<<<<<<<<<<
@@ -4236,7 +4429,7 @@ static int __pyx_pf_4cavd_12graphstorage_12DijkstraNode___cinit__(struct __pyx_o
   return __pyx_r;
 }
 
-/* "cavd/graphstorage.pyx":151
+/* "cavd/graphstorage.pyx":164
  *         self.thisptr = new DIJKSTRA_NODE()
  * 
  *     def __init__(self):             # <<<<<<<<<<<<<<
@@ -4271,7 +4464,7 @@ static int __pyx_pf_4cavd_12graphstorage_12DijkstraNode_2__init__(CYTHON_UNUSED 
   return __pyx_r;
 }
 
-/* "cavd/graphstorage.pyx":154
+/* "cavd/graphstorage.pyx":167
  *         pass
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -4294,7 +4487,7 @@ static void __pyx_pf_4cavd_12graphstorage_12DijkstraNode_4__dealloc__(struct __p
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__dealloc__", 0);
 
-  /* "cavd/graphstorage.pyx":155
+  /* "cavd/graphstorage.pyx":168
  * 
  *     def __dealloc__(self):
  *         del self.thisptr             # <<<<<<<<<<<<<<
@@ -4303,7 +4496,7 @@ static void __pyx_pf_4cavd_12graphstorage_12DijkstraNode_4__dealloc__(struct __p
  */
   delete __pyx_v_self->thisptr;
 
-  /* "cavd/graphstorage.pyx":154
+  /* "cavd/graphstorage.pyx":167
  *         pass
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -4315,7 +4508,7 @@ static void __pyx_pf_4cavd_12graphstorage_12DijkstraNode_4__dealloc__(struct __p
   __Pyx_RefNannyFinishContext();
 }
 
-/* "cavd/graphstorage.pyx":158
+/* "cavd/graphstorage.pyx":171
  * 
  *     property id:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -4344,7 +4537,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_2id___get__(struct
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "cavd/graphstorage.pyx":159
+  /* "cavd/graphstorage.pyx":172
  *     property id:
  *         def __get__(self):
  *             id = self.thisptr.id             # <<<<<<<<<<<<<<
@@ -4354,7 +4547,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_2id___get__(struct
   __pyx_t_1 = __pyx_v_self->thisptr->id;
   __pyx_v_id = __pyx_t_1;
 
-  /* "cavd/graphstorage.pyx":160
+  /* "cavd/graphstorage.pyx":173
  *         def __get__(self):
  *             id = self.thisptr.id
  *             return id             # <<<<<<<<<<<<<<
@@ -4362,13 +4555,13 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_2id___get__(struct
  *             """
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_id); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 160, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_id); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 173, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "cavd/graphstorage.pyx":158
+  /* "cavd/graphstorage.pyx":171
  * 
  *     property id:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -4387,7 +4580,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_2id___get__(struct
   return __pyx_r;
 }
 
-/* "cavd/graphstorage.pyx":161
+/* "cavd/graphstorage.pyx":174
  *             id = self.thisptr.id
  *             return id
  *         def __set__(self, id):      # Don't set this             # <<<<<<<<<<<<<<
@@ -4414,26 +4607,26 @@ static int __pyx_pf_4cavd_12graphstorage_12DijkstraNode_2id_2__set__(struct __py
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("__set__", 0);
 
-  /* "cavd/graphstorage.pyx":165
+  /* "cavd/graphstorage.pyx":178
  *             This variable is not supposed to be modified manually
  *             """
  *             print ("This value is not supposed to be modified")             # <<<<<<<<<<<<<<
  *             self.thisptr.id = id
  * 
  */
-  if (__Pyx_PrintOne(0, __pyx_kp_s_This_value_is_not_supposed_to_be) < 0) __PYX_ERR(0, 165, __pyx_L1_error)
+  if (__Pyx_PrintOne(0, __pyx_kp_s_This_value_is_not_supposed_to_be) < 0) __PYX_ERR(0, 178, __pyx_L1_error)
 
-  /* "cavd/graphstorage.pyx":166
+  /* "cavd/graphstorage.pyx":179
  *             """
  *             print ("This value is not supposed to be modified")
  *             self.thisptr.id = id             # <<<<<<<<<<<<<<
  * 
- *     property coords:
+ *     property label:
  */
-  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_id); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 166, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_id); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 179, __pyx_L1_error)
   __pyx_v_self->thisptr->id = __pyx_t_1;
 
-  /* "cavd/graphstorage.pyx":161
+  /* "cavd/graphstorage.pyx":174
  *             id = self.thisptr.id
  *             return id
  *         def __set__(self, id):      # Don't set this             # <<<<<<<<<<<<<<
@@ -4452,7 +4645,144 @@ static int __pyx_pf_4cavd_12graphstorage_12DijkstraNode_2id_2__set__(struct __py
   return __pyx_r;
 }
 
-/* "cavd/graphstorage.pyx":169
+/* "cavd/graphstorage.pyx":182
+ * 
+ *     property label:
+ *         def __get__(self):             # <<<<<<<<<<<<<<
+ *             id = self.thisptr.label
+ *             return id
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_4cavd_12graphstorage_12DijkstraNode_5label_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_4cavd_12graphstorage_12DijkstraNode_5label_1__get__(PyObject *__pyx_v_self) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_4cavd_12graphstorage_12DijkstraNode_5label___get__(((struct __pyx_obj_4cavd_12graphstorage_DijkstraNode *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_5label___get__(struct __pyx_obj_4cavd_12graphstorage_DijkstraNode *__pyx_v_self) {
+  int __pyx_v_id;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  PyObject *__pyx_t_2 = NULL;
+  __Pyx_RefNannySetupContext("__get__", 0);
+
+  /* "cavd/graphstorage.pyx":183
+ *     property label:
+ *         def __get__(self):
+ *             id = self.thisptr.label             # <<<<<<<<<<<<<<
+ *             return id
+ *         def __set__(self, label):      # Don't set this
+ */
+  __pyx_t_1 = __pyx_v_self->thisptr->label;
+  __pyx_v_id = __pyx_t_1;
+
+  /* "cavd/graphstorage.pyx":184
+ *         def __get__(self):
+ *             id = self.thisptr.label
+ *             return id             # <<<<<<<<<<<<<<
+ *         def __set__(self, label):      # Don't set this
+ *             """
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_id); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 184, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_r = __pyx_t_2;
+  __pyx_t_2 = 0;
+  goto __pyx_L0;
+
+  /* "cavd/graphstorage.pyx":182
+ * 
+ *     property label:
+ *         def __get__(self):             # <<<<<<<<<<<<<<
+ *             id = self.thisptr.label
+ *             return id
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_AddTraceback("cavd.graphstorage.DijkstraNode.label.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "cavd/graphstorage.pyx":185
+ *             id = self.thisptr.label
+ *             return id
+ *         def __set__(self, label):      # Don't set this             # <<<<<<<<<<<<<<
+ *             """
+ *             This variable is not supposed to be modified manually
+ */
+
+/* Python wrapper */
+static int __pyx_pw_4cavd_12graphstorage_12DijkstraNode_5label_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_label); /*proto*/
+static int __pyx_pw_4cavd_12graphstorage_12DijkstraNode_5label_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_label) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__set__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_4cavd_12graphstorage_12DijkstraNode_5label_2__set__(((struct __pyx_obj_4cavd_12graphstorage_DijkstraNode *)__pyx_v_self), ((PyObject *)__pyx_v_label));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static int __pyx_pf_4cavd_12graphstorage_12DijkstraNode_5label_2__set__(struct __pyx_obj_4cavd_12graphstorage_DijkstraNode *__pyx_v_self, PyObject *__pyx_v_label) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  __Pyx_RefNannySetupContext("__set__", 0);
+
+  /* "cavd/graphstorage.pyx":189
+ *             This variable is not supposed to be modified manually
+ *             """
+ *             print ("This value is not supposed to be modified")             # <<<<<<<<<<<<<<
+ *             self.thisptr.label = label
+ * 
+ */
+  if (__Pyx_PrintOne(0, __pyx_kp_s_This_value_is_not_supposed_to_be) < 0) __PYX_ERR(0, 189, __pyx_L1_error)
+
+  /* "cavd/graphstorage.pyx":190
+ *             """
+ *             print ("This value is not supposed to be modified")
+ *             self.thisptr.label = label             # <<<<<<<<<<<<<<
+ * 
+ *     property coords:
+ */
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_label); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 190, __pyx_L1_error)
+  __pyx_v_self->thisptr->label = __pyx_t_1;
+
+  /* "cavd/graphstorage.pyx":185
+ *             id = self.thisptr.label
+ *             return id
+ *         def __set__(self, label):      # Don't set this             # <<<<<<<<<<<<<<
+ *             """
+ *             This variable is not supposed to be modified manually
+ */
+
+  /* function exit code */
+  __pyx_r = 0;
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_AddTraceback("cavd.graphstorage.DijkstraNode.label.__set__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = -1;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "cavd/graphstorage.pyx":193
  * 
  *     property coords:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -4483,20 +4813,20 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_6coords___get__(st
   PyObject *__pyx_t_4 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "cavd/graphstorage.pyx":170
+  /* "cavd/graphstorage.pyx":194
  *     property coords:
  *         def __get__(self):
  *             coords = [self.thisptr.x, self.thisptr.y, self.thisptr.z]             # <<<<<<<<<<<<<<
  *             return coords
  *         def __set__(self, coords):      # Don't set this
  */
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->x); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 170, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->x); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 194, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_self->thisptr->y); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 170, __pyx_L1_error)
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_self->thisptr->y); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 194, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_self->thisptr->z); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 170, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_self->thisptr->z); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 194, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = PyList_New(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 170, __pyx_L1_error)
+  __pyx_t_4 = PyList_New(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 194, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_GIVEREF(__pyx_t_1);
   PyList_SET_ITEM(__pyx_t_4, 0, __pyx_t_1);
@@ -4510,7 +4840,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_6coords___get__(st
   __pyx_v_coords = ((PyObject*)__pyx_t_4);
   __pyx_t_4 = 0;
 
-  /* "cavd/graphstorage.pyx":171
+  /* "cavd/graphstorage.pyx":195
  *         def __get__(self):
  *             coords = [self.thisptr.x, self.thisptr.y, self.thisptr.z]
  *             return coords             # <<<<<<<<<<<<<<
@@ -4522,7 +4852,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_6coords___get__(st
   __pyx_r = __pyx_v_coords;
   goto __pyx_L0;
 
-  /* "cavd/graphstorage.pyx":169
+  /* "cavd/graphstorage.pyx":193
  * 
  *     property coords:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -4545,7 +4875,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_6coords___get__(st
   return __pyx_r;
 }
 
-/* "cavd/graphstorage.pyx":172
+/* "cavd/graphstorage.pyx":196
  *             coords = [self.thisptr.x, self.thisptr.y, self.thisptr.z]
  *             return coords
  *         def __set__(self, coords):      # Don't set this             # <<<<<<<<<<<<<<
@@ -4573,55 +4903,55 @@ static int __pyx_pf_4cavd_12graphstorage_12DijkstraNode_6coords_2__set__(struct 
   double __pyx_t_2;
   __Pyx_RefNannySetupContext("__set__", 0);
 
-  /* "cavd/graphstorage.pyx":176
+  /* "cavd/graphstorage.pyx":200
  *             This variable is not supposed to be modified manually
  *             """
  *             print ("This value is not supposed to be modified")             # <<<<<<<<<<<<<<
  *             self.thisptr.x = coords[0]
  *             self.thisptr.y = coords[1]
  */
-  if (__Pyx_PrintOne(0, __pyx_kp_s_This_value_is_not_supposed_to_be) < 0) __PYX_ERR(0, 176, __pyx_L1_error)
+  if (__Pyx_PrintOne(0, __pyx_kp_s_This_value_is_not_supposed_to_be) < 0) __PYX_ERR(0, 200, __pyx_L1_error)
 
-  /* "cavd/graphstorage.pyx":177
+  /* "cavd/graphstorage.pyx":201
  *             """
  *             print ("This value is not supposed to be modified")
  *             self.thisptr.x = coords[0]             # <<<<<<<<<<<<<<
  *             self.thisptr.y = coords[1]
  *             self.thisptr.z = coords[2]
  */
-  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_coords, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 177, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_coords, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 201, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 177, __pyx_L1_error)
+  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 201, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_self->thisptr->x = __pyx_t_2;
 
-  /* "cavd/graphstorage.pyx":178
+  /* "cavd/graphstorage.pyx":202
  *             print ("This value is not supposed to be modified")
  *             self.thisptr.x = coords[0]
  *             self.thisptr.y = coords[1]             # <<<<<<<<<<<<<<
  *             self.thisptr.z = coords[2]
  * 
  */
-  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_coords, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 178, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_coords, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 202, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 178, __pyx_L1_error)
+  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 202, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_self->thisptr->y = __pyx_t_2;
 
-  /* "cavd/graphstorage.pyx":179
+  /* "cavd/graphstorage.pyx":203
  *             self.thisptr.x = coords[0]
  *             self.thisptr.y = coords[1]
  *             self.thisptr.z = coords[2]             # <<<<<<<<<<<<<<
  * 
  *     property max_radius:
  */
-  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_coords, 2, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 179, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_coords, 2, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 203, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 179, __pyx_L1_error)
+  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 203, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_self->thisptr->z = __pyx_t_2;
 
-  /* "cavd/graphstorage.pyx":172
+  /* "cavd/graphstorage.pyx":196
  *             coords = [self.thisptr.x, self.thisptr.y, self.thisptr.z]
  *             return coords
  *         def __set__(self, coords):      # Don't set this             # <<<<<<<<<<<<<<
@@ -4641,7 +4971,7 @@ static int __pyx_pf_4cavd_12graphstorage_12DijkstraNode_6coords_2__set__(struct 
   return __pyx_r;
 }
 
-/* "cavd/graphstorage.pyx":182
+/* "cavd/graphstorage.pyx":206
  * 
  *     property max_radius:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -4670,7 +5000,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_10max_radius___get
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "cavd/graphstorage.pyx":183
+  /* "cavd/graphstorage.pyx":207
  *     property max_radius:
  *         def __get__(self):
  *             max_radius = self.thisptr.max_radius             # <<<<<<<<<<<<<<
@@ -4680,7 +5010,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_10max_radius___get
   __pyx_t_1 = __pyx_v_self->thisptr->max_radius;
   __pyx_v_max_radius = __pyx_t_1;
 
-  /* "cavd/graphstorage.pyx":184
+  /* "cavd/graphstorage.pyx":208
  *         def __get__(self):
  *             max_radius = self.thisptr.max_radius
  *             return max_radius             # <<<<<<<<<<<<<<
@@ -4688,13 +5018,13 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_10max_radius___get
  *             """
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_max_radius); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 184, __pyx_L1_error)
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_max_radius); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 208, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "cavd/graphstorage.pyx":182
+  /* "cavd/graphstorage.pyx":206
  * 
  *     property max_radius:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -4713,7 +5043,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_10max_radius___get
   return __pyx_r;
 }
 
-/* "cavd/graphstorage.pyx":185
+/* "cavd/graphstorage.pyx":209
  *             max_radius = self.thisptr.max_radius
  *             return max_radius
  *         def __set__(self, max_radius):      # Don't set this             # <<<<<<<<<<<<<<
@@ -4740,26 +5070,26 @@ static int __pyx_pf_4cavd_12graphstorage_12DijkstraNode_10max_radius_2__set__(st
   double __pyx_t_1;
   __Pyx_RefNannySetupContext("__set__", 0);
 
-  /* "cavd/graphstorage.pyx":189
+  /* "cavd/graphstorage.pyx":213
  *             This variable is not supposed to be modified manually
  *             """
  *             print ("This value is not supposed to be modified")             # <<<<<<<<<<<<<<
  *             self.thisptr.max_radius = max_radius
  * 
  */
-  if (__Pyx_PrintOne(0, __pyx_kp_s_This_value_is_not_supposed_to_be) < 0) __PYX_ERR(0, 189, __pyx_L1_error)
+  if (__Pyx_PrintOne(0, __pyx_kp_s_This_value_is_not_supposed_to_be) < 0) __PYX_ERR(0, 213, __pyx_L1_error)
 
-  /* "cavd/graphstorage.pyx":190
+  /* "cavd/graphstorage.pyx":214
  *             """
  *             print ("This value is not supposed to be modified")
  *             self.thisptr.max_radius = max_radius             # <<<<<<<<<<<<<<
  * 
  *     property connections:
  */
-  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_max_radius); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 190, __pyx_L1_error)
+  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_max_radius); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 214, __pyx_L1_error)
   __pyx_v_self->thisptr->max_radius = __pyx_t_1;
 
-  /* "cavd/graphstorage.pyx":185
+  /* "cavd/graphstorage.pyx":209
  *             max_radius = self.thisptr.max_radius
  *             return max_radius
  *         def __set__(self, max_radius):      # Don't set this             # <<<<<<<<<<<<<<
@@ -4778,7 +5108,7 @@ static int __pyx_pf_4cavd_12graphstorage_12DijkstraNode_10max_radius_2__set__(st
   return __pyx_r;
 }
 
-/* "cavd/graphstorage.pyx":193
+/* "cavd/graphstorage.pyx":217
  * 
  *     property connections:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -4825,7 +5155,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_11connections___ge
   int __pyx_t_12;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "cavd/graphstorage.pyx":194
+  /* "cavd/graphstorage.pyx":218
  *     property connections:
  *         def __get__(self):
  *             cdef vector[CONN] conns = self.thisptr.connections             # <<<<<<<<<<<<<<
@@ -4835,19 +5165,19 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_11connections___ge
   __pyx_t_1 = __pyx_v_self->thisptr->connections;
   __pyx_v_conns = __pyx_t_1;
 
-  /* "cavd/graphstorage.pyx":195
+  /* "cavd/graphstorage.pyx":219
  *         def __get__(self):
  *             cdef vector[CONN] conns = self.thisptr.connections
  *             connections = []             # <<<<<<<<<<<<<<
  *             for i in range(conns.size()):
  *                 conn_from = conns[i].origin
  */
-  __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 195, __pyx_L1_error)
+  __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 219, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_v_connections = ((PyObject*)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "cavd/graphstorage.pyx":196
+  /* "cavd/graphstorage.pyx":220
  *             cdef vector[CONN] conns = self.thisptr.connections
  *             connections = []
  *             for i in range(conns.size()):             # <<<<<<<<<<<<<<
@@ -4859,7 +5189,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_11connections___ge
   for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
     __pyx_v_i = __pyx_t_5;
 
-    /* "cavd/graphstorage.pyx":197
+    /* "cavd/graphstorage.pyx":221
  *             connections = []
  *             for i in range(conns.size()):
  *                 conn_from = conns[i].origin             # <<<<<<<<<<<<<<
@@ -4869,7 +5199,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_11connections___ge
     __pyx_t_6 = (__pyx_v_conns[__pyx_v_i]).from;
     __pyx_v_conn_from = __pyx_t_6;
 
-    /* "cavd/graphstorage.pyx":198
+    /* "cavd/graphstorage.pyx":222
  *             for i in range(conns.size()):
  *                 conn_from = conns[i].origin
  *                 conn_to = conns[i].ending             # <<<<<<<<<<<<<<
@@ -4879,7 +5209,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_11connections___ge
     __pyx_t_6 = (__pyx_v_conns[__pyx_v_i]).to;
     __pyx_v_conn_to = __pyx_t_6;
 
-    /* "cavd/graphstorage.pyx":199
+    /* "cavd/graphstorage.pyx":223
  *                 conn_from = conns[i].origin
  *                 conn_to = conns[i].ending
  *                 conn_length = conns[i].length             # <<<<<<<<<<<<<<
@@ -4889,7 +5219,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_11connections___ge
     __pyx_t_7 = (__pyx_v_conns[__pyx_v_i]).length;
     __pyx_v_conn_length = __pyx_t_7;
 
-    /* "cavd/graphstorage.pyx":200
+    /* "cavd/graphstorage.pyx":224
  *                 conn_to = conns[i].ending
  *                 conn_length = conns[i].length
  *                 conn_max_radius = conns[i].max_radius             # <<<<<<<<<<<<<<
@@ -4899,20 +5229,20 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_11connections___ge
     __pyx_t_7 = (__pyx_v_conns[__pyx_v_i]).max_radius;
     __pyx_v_conn_max_radius = __pyx_t_7;
 
-    /* "cavd/graphstorage.pyx":201
+    /* "cavd/graphstorage.pyx":225
  *                 conn_length = conns[i].length
  *                 conn_max_radius = conns[i].max_radius
  *                 conn_delta_pos = [conns[i].deltaPos.x,conns[i].deltaPos.y,conns[i].deltaPos.z]             # <<<<<<<<<<<<<<
  *                 conn = [conn_from, conn_to, conn_length, conn_max_radius, conn_delta_pos]
  *                 connections.append(conn)
  */
-    __pyx_t_2 = __Pyx_PyInt_From_int((__pyx_v_conns[__pyx_v_i]).deltaPos.x); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 201, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyInt_From_int((__pyx_v_conns[__pyx_v_i]).deltaPos.x); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 225, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_8 = __Pyx_PyInt_From_int((__pyx_v_conns[__pyx_v_i]).deltaPos.y); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 201, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyInt_From_int((__pyx_v_conns[__pyx_v_i]).deltaPos.y); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 225, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    __pyx_t_9 = __Pyx_PyInt_From_int((__pyx_v_conns[__pyx_v_i]).deltaPos.z); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 201, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyInt_From_int((__pyx_v_conns[__pyx_v_i]).deltaPos.z); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 225, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_10 = PyList_New(3); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 201, __pyx_L1_error)
+    __pyx_t_10 = PyList_New(3); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 225, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
     __Pyx_GIVEREF(__pyx_t_2);
     PyList_SET_ITEM(__pyx_t_10, 0, __pyx_t_2);
@@ -4926,22 +5256,22 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_11connections___ge
     __Pyx_XDECREF_SET(__pyx_v_conn_delta_pos, ((PyObject*)__pyx_t_10));
     __pyx_t_10 = 0;
 
-    /* "cavd/graphstorage.pyx":202
+    /* "cavd/graphstorage.pyx":226
  *                 conn_max_radius = conns[i].max_radius
  *                 conn_delta_pos = [conns[i].deltaPos.x,conns[i].deltaPos.y,conns[i].deltaPos.z]
  *                 conn = [conn_from, conn_to, conn_length, conn_max_radius, conn_delta_pos]             # <<<<<<<<<<<<<<
  *                 connections.append(conn)
  *             return connections
  */
-    __pyx_t_10 = __Pyx_PyInt_From_int(__pyx_v_conn_from); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 202, __pyx_L1_error)
+    __pyx_t_10 = __Pyx_PyInt_From_int(__pyx_v_conn_from); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 226, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
-    __pyx_t_9 = __Pyx_PyInt_From_int(__pyx_v_conn_to); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 202, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyInt_From_int(__pyx_v_conn_to); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 226, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_8 = PyFloat_FromDouble(__pyx_v_conn_length); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 202, __pyx_L1_error)
+    __pyx_t_8 = PyFloat_FromDouble(__pyx_v_conn_length); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 226, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    __pyx_t_2 = PyFloat_FromDouble(__pyx_v_conn_max_radius); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 202, __pyx_L1_error)
+    __pyx_t_2 = PyFloat_FromDouble(__pyx_v_conn_max_radius); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 226, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_11 = PyList_New(5); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 202, __pyx_L1_error)
+    __pyx_t_11 = PyList_New(5); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 226, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_11);
     __Pyx_GIVEREF(__pyx_t_10);
     PyList_SET_ITEM(__pyx_t_11, 0, __pyx_t_10);
@@ -4961,17 +5291,17 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_11connections___ge
     __Pyx_XDECREF_SET(__pyx_v_conn, ((PyObject*)__pyx_t_11));
     __pyx_t_11 = 0;
 
-    /* "cavd/graphstorage.pyx":203
+    /* "cavd/graphstorage.pyx":227
  *                 conn_delta_pos = [conns[i].deltaPos.x,conns[i].deltaPos.y,conns[i].deltaPos.z]
  *                 conn = [conn_from, conn_to, conn_length, conn_max_radius, conn_delta_pos]
  *                 connections.append(conn)             # <<<<<<<<<<<<<<
  *             return connections
  * 
  */
-    __pyx_t_12 = __Pyx_PyList_Append(__pyx_v_connections, __pyx_v_conn); if (unlikely(__pyx_t_12 == ((int)-1))) __PYX_ERR(0, 203, __pyx_L1_error)
+    __pyx_t_12 = __Pyx_PyList_Append(__pyx_v_connections, __pyx_v_conn); if (unlikely(__pyx_t_12 == ((int)-1))) __PYX_ERR(0, 227, __pyx_L1_error)
   }
 
-  /* "cavd/graphstorage.pyx":204
+  /* "cavd/graphstorage.pyx":228
  *                 conn = [conn_from, conn_to, conn_length, conn_max_radius, conn_delta_pos]
  *                 connections.append(conn)
  *             return connections             # <<<<<<<<<<<<<<
@@ -4982,7 +5312,7 @@ static PyObject *__pyx_pf_4cavd_12graphstorage_12DijkstraNode_11connections___ge
   __pyx_r = __pyx_v_connections;
   goto __pyx_L0;
 
-  /* "cavd/graphstorage.pyx":193
+  /* "cavd/graphstorage.pyx":217
  * 
  *     property connections:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -5332,6 +5662,20 @@ static int __pyx_setprop_4cavd_12graphstorage_4Conn_pos(PyObject *o, PyObject *v
   }
 }
 
+static PyObject *__pyx_getprop_4cavd_12graphstorage_4Conn_coord(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_4cavd_12graphstorage_4Conn_5coord_1__get__(o);
+}
+
+static int __pyx_setprop_4cavd_12graphstorage_4Conn_coord(PyObject *o, PyObject *v, CYTHON_UNUSED void *x) {
+  if (v) {
+    return __pyx_pw_4cavd_12graphstorage_4Conn_5coord_3__set__(o, v);
+  }
+  else {
+    PyErr_SetString(PyExc_NotImplementedError, "__del__");
+    return -1;
+  }
+}
+
 static PyMethodDef __pyx_methods_4cavd_12graphstorage_Conn[] = {
   {"__reduce_cython__", (PyCFunction)__pyx_pw_4cavd_12graphstorage_4Conn_7__reduce_cython__, METH_NOARGS, 0},
   {"__setstate_cython__", (PyCFunction)__pyx_pw_4cavd_12graphstorage_4Conn_9__setstate_cython__, METH_O, 0},
@@ -5344,6 +5688,7 @@ static struct PyGetSetDef __pyx_getsets_4cavd_12graphstorage_Conn[] = {
   {(char *)"length", __pyx_getprop_4cavd_12graphstorage_4Conn_length, __pyx_setprop_4cavd_12graphstorage_4Conn_length, (char *)0, 0},
   {(char *)"max_radius", __pyx_getprop_4cavd_12graphstorage_4Conn_max_radius, __pyx_setprop_4cavd_12graphstorage_4Conn_max_radius, (char *)0, 0},
   {(char *)"pos", __pyx_getprop_4cavd_12graphstorage_4Conn_pos, __pyx_setprop_4cavd_12graphstorage_4Conn_pos, (char *)0, 0},
+  {(char *)"coord", __pyx_getprop_4cavd_12graphstorage_4Conn_coord, __pyx_setprop_4cavd_12graphstorage_4Conn_coord, (char *)0, 0},
   {0, 0, 0, 0, 0}
 };
 
@@ -5451,6 +5796,20 @@ static int __pyx_setprop_4cavd_12graphstorage_12DijkstraNode_id(PyObject *o, PyO
   }
 }
 
+static PyObject *__pyx_getprop_4cavd_12graphstorage_12DijkstraNode_label(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_4cavd_12graphstorage_12DijkstraNode_5label_1__get__(o);
+}
+
+static int __pyx_setprop_4cavd_12graphstorage_12DijkstraNode_label(PyObject *o, PyObject *v, CYTHON_UNUSED void *x) {
+  if (v) {
+    return __pyx_pw_4cavd_12graphstorage_12DijkstraNode_5label_3__set__(o, v);
+  }
+  else {
+    PyErr_SetString(PyExc_NotImplementedError, "__del__");
+    return -1;
+  }
+}
+
 static PyObject *__pyx_getprop_4cavd_12graphstorage_12DijkstraNode_coords(PyObject *o, CYTHON_UNUSED void *x) {
   return __pyx_pw_4cavd_12graphstorage_12DijkstraNode_6coords_1__get__(o);
 }
@@ -5491,6 +5850,7 @@ static PyMethodDef __pyx_methods_4cavd_12graphstorage_DijkstraNode[] = {
 
 static struct PyGetSetDef __pyx_getsets_4cavd_12graphstorage_DijkstraNode[] = {
   {(char *)"id", __pyx_getprop_4cavd_12graphstorage_12DijkstraNode_id, __pyx_setprop_4cavd_12graphstorage_12DijkstraNode_id, (char *)0, 0},
+  {(char *)"label", __pyx_getprop_4cavd_12graphstorage_12DijkstraNode_label, __pyx_setprop_4cavd_12graphstorage_12DijkstraNode_label, (char *)0, 0},
   {(char *)"coords", __pyx_getprop_4cavd_12graphstorage_12DijkstraNode_coords, __pyx_setprop_4cavd_12graphstorage_12DijkstraNode_coords, (char *)0, 0},
   {(char *)"max_radius", __pyx_getprop_4cavd_12graphstorage_12DijkstraNode_max_radius, __pyx_setprop_4cavd_12graphstorage_12DijkstraNode_max_radius, (char *)0, 0},
   {(char *)"connections", __pyx_getprop_4cavd_12graphstorage_12DijkstraNode_connections, 0, (char *)0, 0},
@@ -5896,13 +6256,13 @@ static int __Pyx_modinit_type_init_code(void) {
   if (PyObject_SetAttr(__pyx_m, __pyx_n_s_Conn, (PyObject *)&__pyx_type_4cavd_12graphstorage_Conn) < 0) __PYX_ERR(0, 80, __pyx_L1_error)
   if (__Pyx_setup_reduce((PyObject*)&__pyx_type_4cavd_12graphstorage_Conn) < 0) __PYX_ERR(0, 80, __pyx_L1_error)
   __pyx_ptype_4cavd_12graphstorage_Conn = &__pyx_type_4cavd_12graphstorage_Conn;
-  if (PyType_Ready(&__pyx_type_4cavd_12graphstorage_DijkstraNode) < 0) __PYX_ERR(0, 147, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_4cavd_12graphstorage_DijkstraNode) < 0) __PYX_ERR(0, 160, __pyx_L1_error)
   __pyx_type_4cavd_12graphstorage_DijkstraNode.tp_print = 0;
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_4cavd_12graphstorage_DijkstraNode.tp_dictoffset && __pyx_type_4cavd_12graphstorage_DijkstraNode.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_4cavd_12graphstorage_DijkstraNode.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_DijkstraNode, (PyObject *)&__pyx_type_4cavd_12graphstorage_DijkstraNode) < 0) __PYX_ERR(0, 147, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_4cavd_12graphstorage_DijkstraNode) < 0) __PYX_ERR(0, 147, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_DijkstraNode, (PyObject *)&__pyx_type_4cavd_12graphstorage_DijkstraNode) < 0) __PYX_ERR(0, 160, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_4cavd_12graphstorage_DijkstraNode) < 0) __PYX_ERR(0, 160, __pyx_L1_error)
   __pyx_ptype_4cavd_12graphstorage_DijkstraNode = &__pyx_type_4cavd_12graphstorage_DijkstraNode;
   if (PyType_Ready(&__pyx_type_4cavd_12graphstorage_DijkstraNetwork) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
   __pyx_type_4cavd_12graphstorage_DijkstraNetwork.tp_print = 0;
@@ -5940,18 +6300,18 @@ static int __Pyx_modinit_type_import_code(void) {
   __pyx_ptype_4cavd_11voronoicell_BasicVCell = __Pyx_ImportType(__pyx_t_1, "cavd.voronoicell", "BasicVCell", sizeof(struct __pyx_obj_4cavd_11voronoicell_BasicVCell), __Pyx_ImportType_CheckSize_Warn);
    if (!__pyx_ptype_4cavd_11voronoicell_BasicVCell) __PYX_ERR(3, 45, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyImport_ImportModule("cavd.netstorage"); if (unlikely(!__pyx_t_1)) __PYX_ERR(4, 143, __pyx_L1_error)
+  __pyx_t_1 = PyImport_ImportModule("cavd.netstorage"); if (unlikely(!__pyx_t_1)) __PYX_ERR(4, 145, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_ptype_4cavd_10netstorage_Atom = __Pyx_ImportType(__pyx_t_1, "cavd.netstorage", "Atom", sizeof(struct __pyx_obj_4cavd_10netstorage_Atom), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_4cavd_10netstorage_Atom) __PYX_ERR(4, 143, __pyx_L1_error)
+   if (!__pyx_ptype_4cavd_10netstorage_Atom) __PYX_ERR(4, 145, __pyx_L1_error)
   __pyx_ptype_4cavd_10netstorage_AtomNetwork = __Pyx_ImportType(__pyx_t_1, "cavd.netstorage", "AtomNetwork", sizeof(struct __pyx_obj_4cavd_10netstorage_AtomNetwork), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_4cavd_10netstorage_AtomNetwork) __PYX_ERR(4, 149, __pyx_L1_error)
+   if (!__pyx_ptype_4cavd_10netstorage_AtomNetwork) __PYX_ERR(4, 151, __pyx_L1_error)
   __pyx_ptype_4cavd_10netstorage_VoronoiNode = __Pyx_ImportType(__pyx_t_1, "cavd.netstorage", "VoronoiNode", sizeof(struct __pyx_obj_4cavd_10netstorage_VoronoiNode), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_4cavd_10netstorage_VoronoiNode) __PYX_ERR(4, 158, __pyx_L1_error)
+   if (!__pyx_ptype_4cavd_10netstorage_VoronoiNode) __PYX_ERR(4, 160, __pyx_L1_error)
   __pyx_ptype_4cavd_10netstorage_VoronoiNetwork = __Pyx_ImportType(__pyx_t_1, "cavd.netstorage", "VoronoiNetwork", sizeof(struct __pyx_obj_4cavd_10netstorage_VoronoiNetwork), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_4cavd_10netstorage_VoronoiNetwork) __PYX_ERR(4, 164, __pyx_L1_error)
+   if (!__pyx_ptype_4cavd_10netstorage_VoronoiNetwork) __PYX_ERR(4, 166, __pyx_L1_error)
   __pyx_ptype_4cavd_10netstorage_VoronoiEdge = __Pyx_ImportType(__pyx_t_1, "cavd.netstorage", "VoronoiEdge", sizeof(struct __pyx_obj_4cavd_10netstorage_VoronoiEdge), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_4cavd_10netstorage_VoronoiEdge) __PYX_ERR(4, 170, __pyx_L1_error)
+   if (!__pyx_ptype_4cavd_10netstorage_VoronoiEdge) __PYX_ERR(4, 172, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
   return 0;

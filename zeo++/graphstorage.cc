@@ -89,6 +89,28 @@ CONN::CONN(int myFrom, int myTo, double len, double maxR, int myX, int myY, int 
 	deltaPos = DELTA_POS(myX, myY, myZ);
 }
 
+CONN::CONN(int myFrom, int myTo, double len, double bt_x, double bt_y, double bt_z, double maxR, DELTA_POS deltaP){
+    from       = myFrom;
+    to         = myTo;
+    length     = len;
+    btx = bt_x;
+    bty = bt_y;
+    btz = bt_z;
+    max_radius = maxR;
+    deltaPos   = deltaP;
+
+}
+CONN::CONN(int myFrom, int myTo, double len, double bt_x, double bt_y, double bt_z, double maxR, int myX, int myY, int myZ){
+    from       = myFrom;
+    to         = myTo;
+    length     = len;
+    btx = bt_x;
+    bty = bt_y;
+    btz = bt_z;
+    max_radius = maxR;
+    deltaPos   = DELTA_POS(myX, myY, myZ);
+}
+
 /* Output information about the connection to the provided output stream*/
 void CONN::print(ostream &out) const{
     out << from << "->" << to << "   Length:" << length
@@ -157,7 +179,8 @@ void DIJKSTRA_NETWORK::buildDijkstraNetwork(const VORONOI_NETWORK *vornet, DIJKS
     
     // Add copies of all nodes to the network
     while(niter != vornet->nodes.end()){
-        DIJKSTRA_NODE node = DIJKSTRA_NODE(i, niter->x, niter->y, niter->z, niter->rad_stat_sphere, niter->active, niter->label);
+        // DIJKSTRA_NODE node = DIJKSTRA_NODE(i, niter->x, niter->y, niter->z, niter->rad_stat_sphere, niter->active, niter->label);
+        DIJKSTRA_NODE node = DIJKSTRA_NODE(niter->id, niter->x, niter->y, niter->z, niter->rad_stat_sphere, niter->active, niter->label);
         i++;
         niter++;
         dnet->nodes.push_back(node);
@@ -168,7 +191,7 @@ void DIJKSTRA_NETWORK::buildDijkstraNetwork(const VORONOI_NETWORK *vornet, DIJKS
     vector<VOR_EDGE> ::const_iterator eiter = vornet->edges.begin();
     while(eiter != vornet->edges.end()){
         DELTA_POS pos = DELTA_POS(eiter->delta_uc_x, eiter->delta_uc_y, eiter->delta_uc_z);
-        CONN conn = CONN(eiter->from, eiter->to, eiter->length, eiter->rad_moving_sphere,pos);
+        CONN conn = CONN(eiter->from, eiter->to, eiter->length, eiter->bottleneck_x, eiter->bottleneck_y, eiter->bottleneck_z, eiter->rad_moving_sphere,pos);
         dnet->nodes.at(conn.from).connections.push_back(conn);
         eiter++;
     }

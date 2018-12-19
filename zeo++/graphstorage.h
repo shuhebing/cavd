@@ -46,6 +46,8 @@ public:
 	//Add a new construct function for Cython wrapper
 	CONN();
     CONN(int myFrom, int myTo, double len, double maxR, int myX = 0, int myY = 0, int myZ = 0);
+
+    
     CONN(int myFrom, int myTo, double len, double bt_x, double bt_y, double bt_z, double maxR, DELTA_POS deltaP);
     CONN(int myFrom, int myTo, double len, double bt_x, double bt_y, double bt_z, double maxR, int myX = 0, int myY = 0, int myZ = 0);
     /* Output information about the connection to the provided output stream*/

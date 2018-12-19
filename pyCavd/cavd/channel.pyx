@@ -40,18 +40,36 @@ cdef class Channel:
                 nodes.append([dj_id, dj_label, dj_coords, dj_max_radius])
             return nodes
 
+    # property connections:
+    #     def __get__(self):
+    #         connections = []
+    #         cdef vector[CONN] conns = self.thisptr.connections
+    #         for i in range(conns.size()):
+    #             conn_from = conns[i].origin
+    #             conn_to = conns[i].ending
+    #             conn_length = conns[i].length
+    #             conn_bt = [conns[i].btx, conns[i].bty, conns[i].btz]
+    #             conn_max_radius = conns[i].max_radius
+    #             conn_delta_pos = [conns[i].deltaPos.x,conns[i].deltaPos.y,conns[i].deltaPos.z]
+    #             conn = [conn_from, conn_to, conn_length, conn_bt, conn_max_radius]
+    #             connections.append(conn)
+    #         return connections
+
     property connections:
         def __get__(self):
             connections = []
-            cdef vector[CONN] conns = self.thisptr.connections
-            for i in range(conns.size()):
-                conn_from = conns[i].origin
-                conn_to = conns[i].ending
-                conn_length = conns[i].length
-                conn_max_radius = conns[i].max_radius
-                conn_delta_pos = [conns[i].deltaPos.x,conns[i].deltaPos.y,conns[i].deltaPos.z]
-                conn = [conn_from, conn_to, conn_length, conn_max_radius]
-                connections.append(conn)
+            cdef vector[CONN] conns
+            cdef vector[DIJKSTRA_NODE] dj_nodes = self.thisptr.nodes
+            for i in range(dj_nodes.size()):
+                conns = dj_nodes[i].connections
+                for j in range(conns.size()):
+                    conn_from = conns[j].origin
+                    conn_to = conns[i].ending
+                    conn_length = conns[j].length
+                    conn_bt = [conns[j].btx, conns[j].bty, conns[j].btz]
+                    conn_max_radius = conns[j].max_radius
+                    conn = [conn_from, conn_to, conn_length, conn_bt, conn_max_radius]
+                    connections.append(conn)
             return connections
     
     property nodes_deltapos:
@@ -95,7 +113,6 @@ cdef class Channel:
             raise FindChannelError
     
     @classmethod
-    #Add at 20180826
     def findChannels(cls, vornet, atmnet, probe_rad, filename):
         cdef VORONOI_NETWORK* c_vornet_ptr = (<VoronoiNetwork?>vornet).thisptr
         cdef ATOM_NETWORK* c_atmnet_ptr = (<AtomNetwork?>atmnet).thisptr
@@ -107,21 +124,57 @@ cdef class Channel:
             raise FindChannelError
         if not c_writeToNET(c_channels, c_filename, c_atmnet_ptr):
             raise IOError
+
         channels = []
-        channel = Channel()
+        cdef vector[int] nodeIDs
+        cdef DELTA_POS disp
+        cdef DIJKSTRA_NODE curNode
+        cdef DIJKSTRA_NODE otherNode
+        cdef CONN curConn
         for i in range(c_channels.size()):
-            channel.thisptr.idMappings = (&(c_channels[i])).idMappings
-            channel.thisptr.reverseIDMappings = (&(c_channels[i])).reverseIDMappings
-            channel.thisptr.nodes = (&(c_channels[i])).nodes
-            channel.thisptr.connections = (&(c_channels[i])).connections
-            channel.thisptr.unitCells = (&(c_channels[i])).unitCells
-            channel.thisptr.ucNodes = (&(c_channels[i])).ucNodes
-            channel.thisptr.v_a = (&(c_channels[i])).v_a
-            channel.thisptr.v_b = (&(c_channels[i])).v_b
-            channel.thisptr.v_c = (&(c_channels[i])).v_c
-            channel.thisptr.dimensionality = (&(c_channels[i])).dimensionality
+            nodes = []
+            conns = []
+            channel = {}
+            # channel = Channel()
+            # channel.thisptr = &(c_channels[i])
+            # channel.thisptr.idMappings = (&(c_channels[i])).idMappings
+            # channel.thisptr.reverseIDMappings = (&(c_channels[i])).reverseIDMappings
+            # channel.thisptr.nodes = (&(c_channels[i])).nodes
+            # channel.thisptr.unitCells = (&(c_channels[i])).unitCells
+            # channel.thisptr.ucNodes = (&(c_channels[i])).ucNodes
+            # channel.thisptr.v_a = (&(c_channels[i])).v_a
+            # channel.thisptr.v_b = (&(c_channels[i])).v_b
+            # channel.thisptr.v_c = (&(c_channels[i])).v_c
+            # channel.thisptr.dimensionality = (&(c_channels[i])).dimensionality
+            
+            # #print(channel.nodes)
+            # #print(channel.connections)
+            # #print(channel.nodes_deltapos)
+
+            for j in range((c_channels[i].unitCells).size()):
+                nodeIDs = (c_channels[i].ucNodes).at(j)
+                disp = (c_channels[i].unitCells).at(j)
+                for k in range(nodeIDs.size()):
+                    curNode = (c_channels[i].nodes).at(nodeIDs.at(k))
+                    frac_coord = atmnet.absolute_to_relative(curNode.x, curNode.y, curNode.z)
+                    nodes.append([curNode.id, curNode.label, frac_coord , curNode.max_radius, [disp.x, disp.y, disp.z]])
+            for j in range((c_channels[i].unitCells).size()):
+                nodeIDs = (c_channels[i].ucNodes).at(j)
+                disp = (c_channels[i].unitCells).at(j)
+                for k in range(nodeIDs.size()):
+                    curNode = (c_channels[i].nodes).at(nodeIDs.at(k))
+                    for l in range((curNode.connections).size()):
+                        curConn = curNode.connections.at(l)
+                        otherNode = (c_channels[i].nodes).at(curConn.ending)
+                        frac_coord = atmnet.absolute_to_relative(curConn.btx, curConn.bty, curConn.btz)
+                        conns.append([curNode.id, otherNode.id, frac_coord, curConn.max_radius])
+            channel["id"] = i
+            channel["dim"] = c_channels[i].dimensionality
+            channel["nodes"] = nodes
+            channel["conns"] = conns
             channels.append(channel)
         return channels
+
 
 
 # #Add at 20180823

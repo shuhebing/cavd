@@ -75,7 +75,7 @@ int main(int argc, char * argv[]){
       initializeRadTable();
       //initializeGoldschmidtIonRadTable();
       initializeIonRadTable();
-      initializeMassTable();
+      // initializeMassTable();
       initializeCovRadTable();
       initializePT();
 
@@ -131,8 +131,8 @@ int main(int argc, char * argv[]){
           atmnet.allowAdjustCoordsAndCellFlag = allowAdjustCoordsAndCell;
           orgAtomnet.allowAdjustCoordsAndCellFlag = allowAdjustCoordsAndCell;
         }
-	//添加迁移离子去除功能
-	//added at 20180408
+	      //添加迁移离子去除功能
+      	//added at 20180408
         else if(commands[i][0].compare("-migrant") == 0){
         	 migrant = processMigrantParameters(command).data();
           useMigrant = true;
@@ -306,7 +306,20 @@ int main(int argc, char * argv[]){
             string filename =  processFilename(command, name, ".nt2", 0, 1);
             if(filename.empty()) {error=true; break;}
             if(!writeToNt2((char *)filename.data(), &vornet)) {error=true; break;}
+
+            // //Test Code
+            // atmnet.print();
+            // vector<VOR_NODE> ::iterator niter = vornet.nodes.begin();
+            // while(niter != vornet.nodes.end()){
+            //   for(int i = 0; i < niter->atomIDs.size(); i++){
+            //     cout << niter->atomIDs[i] << " ";
+            //   }
+            //   cout << endl;
+            //   niter++;
+            // }
+
           }
+
           //added at 20180408
           else if(command[0].compare("-bi") == 0){
         	   string filename =  processFilename(command, name, ".bi", 0, 1);
@@ -359,17 +372,17 @@ int main(int argc, char * argv[]){
               else
               getStructureInformation((char *)filename.data(), (char *)filenameExtOutput.data(), &atmnet, true);
           }
-          else if(command[0].compare("-oms") == 0 || command[0].compare("-omsex") == 0){
-                                               // print information about open metal site present 
-                                               // extended option saves detailed information for each atom 
-            string filename = processFilename(command, name, ".oms", 0, 1);
-            string filenameExtOutput = processFilename(command, name, ".omsex", 0, 1); // filename to save ext. output
-            if(filename.empty()) {error=true; break;}
-            if(command[0].compare("-oms") == 0)
-              getOMSInformation((char *)filename.data(), (char *)filenameExtOutput.data(), &atmnet, false); // last argument 4 ext. output
-              else
-              getOMSInformation((char *)filename.data(), (char *)filenameExtOutput.data(), &atmnet, true);
-          }
+          // else if(command[0].compare("-oms") == 0 || command[0].compare("-omsex") == 0){
+          //                                      // print information about open metal site present 
+          //                                      // extended option saves detailed information for each atom 
+          //   string filename = processFilename(command, name, ".oms", 0, 1);
+          //   string filenameExtOutput = processFilename(command, name, ".omsex", 0, 1); // filename to save ext. output
+          //   if(filename.empty()) {error=true; break;}
+          //   if(command[0].compare("-oms") == 0)
+          //     getOMSInformation((char *)filename.data(), (char *)filenameExtOutput.data(), &atmnet, false); // last argument 4 ext. output
+          //     else
+          //     getOMSInformation((char *)filename.data(), (char *)filenameExtOutput.data(), &atmnet, true);
+          // }
           else if(command[0].compare("-zvis") == 0){
             string filename = processFilename(command, name, ".zvis", 0, 1);
             if(filename.empty()) {error=true; break;}

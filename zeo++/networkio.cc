@@ -1441,8 +1441,9 @@ bool writeToNt2(char *filename, VORONOI_NETWORK *vornet, double minRad){
     vector<VOR_NODE> ::iterator niter = vornet->nodes.begin();
     int i = 0;
     while(niter != vornet->nodes.end()){
-      if(niter->rad_stat_sphere > minRad){
-    output << i << " " << niter-> x << " " << niter-> y << " " 
+      if(niter->rad_stat_sphere > minRad && niter->active != false){
+    // output << i << " " << niter-> x << " " << niter-> y << " " 
+    output << niter->id << " " << niter-> x << " " << niter-> y << " " 
            << niter-> z << " " << niter->rad_stat_sphere;
       
     //Write Voronoi node/atom pairing information in i j k....z format
@@ -1913,7 +1914,8 @@ bool writeToBI(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, doub
           b = niter->y * cell->invUCVectors[1][1] + niter->z * cell->invUCVectors[1][2];
           c = niter->z * cell->invUCVectors[2][2];
           //cout << i << " " << niter->x << " " << niter->y << " " << niter->z << endl;
-          output << i << " " << niter->label << " " << niter->x << " " << niter->y << " " << niter->z << " " 
+          // output << i << " " << niter->label << " " << niter->x << " " << niter->y << " " << niter->z << " " 
+          output << niter->id << " " << niter->label << " " << niter->x << " " << niter->y << " " << niter->z << " " 
 			  << a << " " << b << " " << c << " " << niter->rad_stat_sphere;
           output <<  "\n";
       }

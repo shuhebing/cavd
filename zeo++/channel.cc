@@ -1,6 +1,7 @@
 //#include "network.h"
 #include "channel.h"
 #include <cmath>
+#include "networkio.h"
 
 using namespace std;
 
@@ -59,7 +60,8 @@ PORE::PORE(vector<int> nodeIDs, DIJKSTRA_NETWORK *dnet, int dim, int basisVecs[3
     // Iterate over all nodes in list
     for(unsigned int i = 0; i < nodeIDs.size(); i++){
         DIJKSTRA_NODE oldNode = dnet->nodes.at(nodeIDs.at(i));
-        DIJKSTRA_NODE newNode = DIJKSTRA_NODE(i, oldNode.x, oldNode.y, oldNode.z, oldNode.max_radius);
+        // DIJKSTRA_NODE newNode = DIJKSTRA_NODE(i, oldNode.x, oldNode.y, oldNode.z, oldNode.max_radius);
+        DIJKSTRA_NODE newNode = DIJKSTRA_NODE(oldNode.id, oldNode.x, oldNode.y, oldNode.z, oldNode.max_radius, oldNode.active, oldNode.label);
         
         // Include connection only if end node is in pore
         // Reindex connection start and end ids
@@ -67,8 +69,10 @@ PORE::PORE(vector<int> nodeIDs, DIJKSTRA_NETWORK *dnet, int dim, int basisVecs[3
             CONN oldConn = oldNode.connections.at(j);
             map<int,int>::iterator id1Iter = idMappings.find(oldConn.from);
             map<int,int>::iterator id2Iter = idMappings.find(oldConn.to);
+            // cout << "1: " << id1Iter->first << " " << id1Iter->second << "2: " << id2Iter->first << " " << id2Iter->second << endl;
             if(id2Iter != idMappings.end()){
-                CONN newConn = CONN(id1Iter->second,id2Iter->second,oldConn.length,oldConn.max_radius,oldConn.deltaPos);
+                CONN newConn = CONN(id1Iter->second,id2Iter->second,oldConn.length,oldConn.btx,oldConn.bty,oldConn.btz,oldConn.max_radius,oldConn.deltaPos);
+                // CONN newConn = CONN(id1Iter->first,id2Iter->first,oldConn.length,oldConn.btx,oldConn.bty,oldConn.btz,oldConn.max_radius,oldConn.deltaPos);
                 newNode.connections.push_back(newConn);
                 connections.push_back(newConn);
             }
@@ -331,7 +335,7 @@ void PORE::findChannelsAndPockets(VORONOI_NETWORK *vornet, double minRadius,
     //VORONOI_NETWORK newNetwork;
     //pruneVoronoiNetwork(vornet, &newNetwork, minRadius);
     VORONOI_NETWORK newNetwork = vornet->prune(minRadius);
-    
+
     //Build graph data structure
     DIJKSTRA_NETWORK dnet;
     DIJKSTRA_NETWORK::buildDijkstraNetwork(&newNetwork, &dnet);
@@ -1792,10 +1796,18 @@ void CHANNEL::writeToNET(int n, fstream &output, ATOM_NETWORK *atmNet){
     else{
         output << "channeId " << n << "\n";
 		output << "dimensionality " << dimensionality << "\n";
-		// output << "(" << v_a.x << "," << v_a.y << "," << v_a.z << ")\n";
-		// output << "(" << v_b.x << "," << v_b.y << "," << v_b.z << ")\n";
-		// output << "(" << v_c.x << "," << v_c.y << "," << v_c.z << ")\n";
-		
+		output << "(" << v_a.x << "," << v_a.y << "," << v_a.z << ")\n";
+		output << "(" << v_b.x << "," << v_b.y << "," << v_b.z << ")\n";
+		output << "(" << v_c.x << "," << v_c.y << "," << v_c.z << ")\n";
+        for(int i=0; i<3; i++){
+            for(int j=0; j<3; j++){
+                if(j)
+                    output << " ";
+                output << basis[i][j];
+            }
+            output << "\n";
+        }
+	
 		output << "Interstitial table:" << "\n";
         
         // Draw the components located in each unit cell
@@ -1807,7 +1819,7 @@ void CHANNEL::writeToNET(int n, fstream &output, ATOM_NETWORK *atmNet){
             for(unsigned int j = 0; j < nodeIDs.size(); j++){
                 DIJKSTRA_NODE curNode = nodes.at(nodeIDs.at(j));
 				//output << j << "\t";
-				output << curNode.id << " " << curNode.label << "\t";
+				output << curNode.id << "\t" << curNode.label << "\t";
 				// output << curNode.x << "\t" << curNode.y << "\t" << curNode.z << "\t";
                 
                 //实际坐标
@@ -1843,11 +1855,16 @@ void CHANNEL::writeToNET(int n, fstream &output, ATOM_NETWORK *atmNet){
                     CONN curConn = curNode.connections.at(k);
                     DIJKSTRA_NODE otherNode = nodes.at(curConn.to);
 					output << curNode.id << "\t" << otherNode.id << "\t";
-                    // output << curConn.btx << "\t" << curConn.bty << "\t" << curConn.btz;
-                    output << "\t" << curConn.max_radius << "\t" << curConn.deltaPos.x << "\t" << curConn.deltaPos.y << "\t" << curConn.deltaPos.z << endl;
+                    output << curConn.btx << "\t" << curConn.bty << "\t" << curConn.btz << "\t";
+
+                    //分数坐标
+                    Point pt = atmNet->xyz_to_abc(curConn.btx, curConn.bty, curConn.btz);
+                    output << pt[0] << "\t" << pt[1] << "\t" << pt[2] << "\t";
+                    output << curConn.max_radius << "\t" << curConn.deltaPos.x << "\t" << curConn.deltaPos.y << "\t" << curConn.deltaPos.z << endl;
                 }
 			}
 		}
+        output << "\n";
     }
 }
 

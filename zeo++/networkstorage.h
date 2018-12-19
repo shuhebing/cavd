@@ -303,10 +303,16 @@ public:
   VOR_NODE(double myX, double myY, double myZ, double rad, std::vector<int> ids);
   double x,y,z;
   double rad_stat_sphere;
+  //neighbor atom's ID of voronoi node
   std::vector<int> atomIDs;
+
   bool active; // flag tells if a node is taken into consideration when analyzing the framework
                // e.g. this typically will set to false after pruning the network using a probe radius
-  int label = -1; 
+  
+  //add id and label
+  int id;
+  int label = -1;
+
 };
 
 /** Data structure that stores the nodes and edges that comprise a 

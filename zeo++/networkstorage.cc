@@ -831,11 +831,9 @@ const VORONOI_NETWORK VORONOI_NETWORK::prune(const double& minRadius)
         edgeIter != edges.end(); edgeIter++) {
         if(edgeIter->rad_moving_sphere > minRadius){
             //VOR_EDGE newEdge = *edgeIter;
-            
             // further check: keep edges only if they connect accessible nodes
             if( nodes[edgeIter->from].rad_stat_sphere > minRadius && nodes[edgeIter->to].rad_stat_sphere > minRadius )
                 newEdges.push_back(*edgeIter);
-            
         }
     };
     

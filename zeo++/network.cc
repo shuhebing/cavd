@@ -218,10 +218,14 @@ bool performVoronoiDecomp(bool radial, ATOM_NETWORK *atmnet, VORONOI_NETWORK *vo
     container_periodic_poly *rad_con = NULL;
     container_periodic *no_rad_con = NULL;
     try{
-        if (radial)
-            rad_con = (container_periodic_poly *)performVoronoiDecomp(radial, atmnet, vornet, *cells, saveVorCells, *bvcells);
-        else 
-            no_rad_con = (container_periodic *)performVoronoiDecomp (radial, atmnet, vornet, *cells, saveVorCells, *bvcells); 
+		if (radial) {
+			rad_con = (container_periodic_poly *)performVoronoiDecomp(radial, atmnet, vornet, *cells, saveVorCells, *bvcells);
+			addVorNetId(vornet);
+		}
+		else {
+			no_rad_con = (container_periodic *)performVoronoiDecomp(radial, atmnet, vornet, *cells, saveVorCells, *bvcells);
+			addVorNetId(vornet);
+		}
         delete rad_con;
         delete no_rad_con;
         return true;
@@ -1410,5 +1414,12 @@ bool throughVorNet(VORONOI_NETWORK *vornet, char* filename,  double *Ri, double 
 void parseNetworkSymmetry(std::vector<int> symmlabels, VORONOI_NETWORK *vornet){
 	for (unsigned int i = 0; i < (vornet->nodes).size(); i++) {
 		(vornet->nodes[i]).label = symmlabels[i];
+	}
+}
+
+//给每个VoronoiNode设置全局id
+void addVorNetId(VORONOI_NETWORK *vornet){
+  for (unsigned int i = 0; i < (vornet->nodes).size(); i++) {
+		(vornet->nodes[i]).id = i;
 	}
 }

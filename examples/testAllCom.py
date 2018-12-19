@@ -9,14 +9,13 @@ print(nei_dises)
 print(dims)
 print(voids)
 Rf_file = open("Rf_Li.txt","w")
-Rf_file.write('filename\ta_Rf\tb_Rf\tc_Rf\toneD_Conn\ttwoD_Conn\tthreeD_Conn\tmin_dises\tchannels_dim\tvoids\n')
-Rf_file.write("Li2CO3-LDA.cif")
+Rf_file.write('a_Rf\tb_Rf\tc_Rf\toneD_Conn\ttwoD_Conn\tthreeD_Conn\tmin_dises\tchannels_dim\tvoids\n')
 for i in conn:
-    Rf_file.write('\t'+str(i))
-Rf_file.write('\t'+str(oneD)+'\t'+str(twoD)+'\t'+str(threeD))
+    Rf_file.write(str(i)+'\t')
+Rf_file.write(str(oneD)+'\t'+str(twoD)+'\t'+str(threeD))
 Rf_file.write('\t')
 for key in nei_dises:
-    Rf_file.write(str(key)+" "+str(nei_dises[key])+" ")
+    Rf_file.write(str(key)+" "+str(nei_dises[key][0])+" "+str(nei_dises[key][1])+" ")
 Rf_file.write('\t')
 for value in dims:
     Rf_file.write(str(value)+" ")

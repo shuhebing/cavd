@@ -22,8 +22,6 @@ def ChannelSource(channel):
 
 
 
-
-
 def Display(atomnetwork,channel):
     
     renWin = vtk.vtkRenderWindow()

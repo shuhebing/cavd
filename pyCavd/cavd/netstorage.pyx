@@ -831,6 +831,10 @@ cdef class VoronoiNetwork:
             c_symm_label.push_back(symm_label[i])
         parseNetworkSymmetry(c_symm_label, self.thisptr)
         return self
+    
+    def add_vornet_id(self):
+        addVorNetId(self.thisptr)
+        return self
 
 
 def substitute_atoms(atmnet, substituteSeed, radialFlag):

@@ -143,6 +143,19 @@ cdef class Conn:
             self.thisptr.deltaPos.x = pos[0]
             self.thisptr.deltaPos.y = pos[1]
             self.thisptr.deltaPos.z = pos[2]
+    
+    property coord:
+        def __get__(self):
+            coords = [self.thisptr.btx, self.thisptr.bty, self.thisptr.btz]
+            return coords
+        def __set__(self, coords):      # Don't set this
+            """
+            This variable is not supposed to be modified manually
+            """
+            print ("This value is not supposed to be modified")
+            self.thisptr.btx = coords[0]
+            self.thisptr.bty = coords[1]
+            self.thisptr.btz = coords[2]
 
 cdef class DijkstraNode:
     def __cinit__(self):
@@ -164,6 +177,17 @@ cdef class DijkstraNode:
             """
             print ("This value is not supposed to be modified")
             self.thisptr.id = id
+    
+    property label:
+        def __get__(self):
+            id = self.thisptr.label
+            return id
+        def __set__(self, label):      # Don't set this
+            """
+            This variable is not supposed to be modified manually
+            """
+            print ("This value is not supposed to be modified")
+            self.thisptr.label = label
     
     property coords:
         def __get__(self):
