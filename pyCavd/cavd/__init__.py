@@ -133,7 +133,7 @@ def AllCom(filename, probe_rad, num_sample, migrant=None, rad_flag=True, effecti
     
     dims = []
     for i in channels:
-        dims.append(i.dimensionality)
+        dims.append(i["dim"])
     return conn,oneD,twoD,threeD,nei_dises,dims,voids
 
 #计算指定结构的瓶颈和间隙
