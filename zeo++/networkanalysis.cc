@@ -112,43 +112,43 @@ TRAVERSAL_NETWORK::TRAVERSAL_NETWORK(int dx, int dy, int dz, DIJKSTRA_NETWORK * 
       int otherComp;
       
       if(!component.isZero()){
-	if(direction.x != 0){
-	  directionComp = direction.x;
-	  otherComp = component.x;
-	}
-	else if (direction.y != 0){
-	  directionComp = direction.y;
-	  otherComp = component.y;
-	}
-	else if (direction.z != 0){
-	  directionComp = direction.z;
-	  otherComp = component.z;
-	}
-	else{
-	  cerr << "Invalid argument reached when building TRAVERSAL_NETWORK. Please contact the source code provider with your input" 
-	       << "\n" << "Exiting..." << "\n";
-	  exit(1);
-	}
-	
-	if(directionComp == otherComp){
-	  //Connection is a drain connection and receiver is a drain node
-	  drainConns.push_back(currentConn);
-	}
-	else if (directionComp == -1*otherComp){
-	  //Connection is source connection and receiver is a source node
-	  srcConns.push_back(currentConn);
-	  sourceIDs.insert(pair<int,bool> (currentConn.to,true));
-	}
-	else{
-	  // There's a problem with the logic
-	  cerr << "Invalid argument reached when building TRAVERSAL_NETWORK. Please contact the source code provider with your input" 
-	       << "\n" << "Exiting..." << "\n";
-	  exit(1);
-	}
+        if(direction.x != 0){
+          directionComp = direction.x;
+          otherComp = component.x;
+        }
+        else if (direction.y != 0){
+          directionComp = direction.y;
+          otherComp = component.y;
+        }
+        else if (direction.z != 0){
+          directionComp = direction.z;
+          otherComp = component.z;
+        }
+        else{
+          cerr << "Invalid argument reached when building TRAVERSAL_NETWORK. Please contact the source code provider with your input" 
+              << "\n" << "Exiting..." << "\n";
+          exit(1);
+        }
+        
+        if(directionComp == otherComp){
+          //Connection is a drain connection and receiver is a drain node
+          drainConns.push_back(currentConn);
+        }
+        else if (directionComp == -1*otherComp){
+          //Connection is source connection and receiver is a source node
+          srcConns.push_back(currentConn);
+          sourceIDs.insert(pair<int,bool> (currentConn.to,true));
+        }
+        else{
+          // There's a problem with the logic
+          cerr << "Invalid argument reached when building TRAVERSAL_NETWORK. Please contact the source code provider with your input" 
+              << "\n" << "Exiting..." << "\n";
+          exit(1);
+        }
       }
       else{
-	// Connection is a drain connection
-	regConns.push_back(currentConn);
+	      // Connection is a drain connection
+	      regConns.push_back(currentConn);
       }
     }      
     

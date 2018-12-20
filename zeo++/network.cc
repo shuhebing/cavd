@@ -612,6 +612,7 @@ void calculateConnParameters(VORONOI_NETWORK *vornet, char *filename, vector<dou
     
     //freeRadResults.push_back(2*results.second.max_radius);
     //incRadResults.push_back(2*results.second.max_inc_radius);
+    // cout << " max_radius " << results.second.max_radius << " " << "max_inc_radius " << results.second.max_inc_radius << endl;
     freeRadResults.push_back(results.second.max_radius);
     incRadResults.push_back(results.second.max_inc_radius);
     NtoN.push_back(results.first);

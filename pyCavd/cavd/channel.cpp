@@ -1269,6 +1269,17 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg
 #define __Pyx_PyObject_Call(func, arg, kw) PyObject_Call(func, arg, kw)
 #endif
 
+/* DictGetItem.proto */
+#if PY_MAJOR_VERSION >= 3 && !CYTHON_COMPILING_IN_PYPY
+static PyObject *__Pyx_PyDict_GetItem(PyObject *d, PyObject* key);
+#define __Pyx_PyObject_Dict_GetItem(obj, name)\
+    (likely(PyDict_CheckExact(obj)) ?\
+     __Pyx_PyDict_GetItem(obj, name) : PyObject_GetItem(obj, name))
+#else
+#define __Pyx_PyDict_GetItem(d, key) PyObject_GetItem(d, key)
+#define __Pyx_PyObject_Dict_GetItem(obj, name)  PyObject_GetItem(obj, name)
+#endif
+
 /* PyObject_GenericGetAttrNoDict.proto */
 #if CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP && PY_VERSION_HEX < 0x03070000
 static CYTHON_INLINE PyObject* __Pyx_PyObject_GenericGetAttrNoDict(PyObject* obj, PyObject* attr_name);
@@ -1476,7 +1487,6 @@ static const char __pyx_k_main[] = "__main__";
 static const char __pyx_k_name[] = "__name__";
 static const char __pyx_k_test[] = "__test__";
 static const char __pyx_k_conns[] = "conns";
-static const char __pyx_k_nodes[] = "nodes";
 static const char __pyx_k_range[] = "range";
 static const char __pyx_k_atmnet[] = "atmnet";
 static const char __pyx_k_module[] = "__module__";
@@ -1523,7 +1533,6 @@ static PyObject *__pyx_n_s_metaclass;
 static PyObject *__pyx_n_s_module;
 static PyObject *__pyx_n_s_name;
 static PyObject *__pyx_kp_s_no_default___reduce___due_to_non;
-static PyObject *__pyx_n_s_nodes;
 static PyObject *__pyx_n_s_prepare;
 static PyObject *__pyx_n_s_probe_rad;
 static PyObject *__pyx_n_s_qualname;
@@ -2919,8 +2928,8 @@ static PyObject *__pyx_pf_4cavd_7channel_7Channel_6findChannels(CYTHON_UNUSED Py
   PyObject *__pyx_v_channel = NULL;
   std::vector<DELTA_POS> ::size_type __pyx_v_j;
   std::vector<int> ::size_type __pyx_v_k;
-  PyObject *__pyx_v_frac_coord = NULL;
   std::vector<CONN> ::size_type __pyx_v_l;
+  PyObject *__pyx_v_frac_coord = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   VORONOI_NETWORK *__pyx_t_1;
@@ -2946,20 +2955,19 @@ static PyObject *__pyx_pf_4cavd_7channel_7Channel_6findChannels(CYTHON_UNUSED Py
   PyObject *__pyx_t_21 = NULL;
   PyObject *__pyx_t_22 = NULL;
   PyObject *__pyx_t_23 = NULL;
-  PyObject *__pyx_t_24 = NULL;
-  PyObject *__pyx_t_25 = NULL;
-  int __pyx_t_26;
-  PyObject *__pyx_t_27 = NULL;
-  int __pyx_t_28;
-  __Pyx_FakeReference<std::vector<int> > __pyx_t_29;
-  __Pyx_FakeReference<DELTA_POS> __pyx_t_30;
-  __Pyx_FakeReference<int> __pyx_t_31;
-  __Pyx_FakeReference<DIJKSTRA_NODE> __pyx_t_32;
-  std::vector<CONN> ::size_type __pyx_t_33;
-  std::vector<CONN> ::size_type __pyx_t_34;
-  std::vector<CONN> ::size_type __pyx_t_35;
-  __Pyx_FakeReference<CONN> __pyx_t_36;
-  __Pyx_FakeReference<DIJKSTRA_NODE> __pyx_t_37;
+  __Pyx_FakeReference<std::vector<int> > __pyx_t_24;
+  __Pyx_FakeReference<int> __pyx_t_25;
+  __Pyx_FakeReference<DIJKSTRA_NODE> __pyx_t_26;
+  std::vector<CONN> ::size_type __pyx_t_27;
+  std::vector<CONN> ::size_type __pyx_t_28;
+  std::vector<CONN> ::size_type __pyx_t_29;
+  __Pyx_FakeReference<CONN> __pyx_t_30;
+  __Pyx_FakeReference<DIJKSTRA_NODE> __pyx_t_31;
+  PyObject *__pyx_t_32 = NULL;
+  PyObject *__pyx_t_33 = NULL;
+  int __pyx_t_34;
+  PyObject *__pyx_t_35 = NULL;
+  int __pyx_t_36;
   __Pyx_RefNannySetupContext("findChannels", 0);
   __Pyx_INCREF(__pyx_v_filename);
 
@@ -3109,7 +3117,7 @@ static PyObject *__pyx_pf_4cavd_7channel_7Channel_6findChannels(CYTHON_UNUSED Py
  *         cdef DIJKSTRA_NODE otherNode
  *         cdef CONN curConn
  *         for i in range(c_channels.size()):             # <<<<<<<<<<<<<<
- *             nodes = []
+ *             nodes = {}
  *             conns = []
  */
   __pyx_t_8 = __pyx_v_c_channels.size();
@@ -3120,18 +3128,18 @@ static PyObject *__pyx_pf_4cavd_7channel_7Channel_6findChannels(CYTHON_UNUSED Py
     /* "cavd/channel.pyx":135
  *         cdef CONN curConn
  *         for i in range(c_channels.size()):
- *             nodes = []             # <<<<<<<<<<<<<<
+ *             nodes = {}             # <<<<<<<<<<<<<<
  *             conns = []
  *             channel = {}
  */
-    __pyx_t_5 = PyList_New(0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 135, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 135, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_XDECREF_SET(__pyx_v_nodes, ((PyObject*)__pyx_t_5));
     __pyx_t_5 = 0;
 
     /* "cavd/channel.pyx":136
  *         for i in range(c_channels.size()):
- *             nodes = []
+ *             nodes = {}
  *             conns = []             # <<<<<<<<<<<<<<
  *             channel = {}
  *             # channel = Channel()
@@ -3142,7 +3150,7 @@ static PyObject *__pyx_pf_4cavd_7channel_7Channel_6findChannels(CYTHON_UNUSED Py
     __pyx_t_5 = 0;
 
     /* "cavd/channel.pyx":137
- *             nodes = []
+ *             nodes = {}
  *             conns = []
  *             channel = {}             # <<<<<<<<<<<<<<
  *             # channel = Channel()
@@ -3200,7 +3208,7 @@ static PyObject *__pyx_pf_4cavd_7channel_7Channel_6findChannels(CYTHON_UNUSED Py
  *                 disp = (c_channels[i].unitCells).at(j)
  *                 for k in range(nodeIDs.size()):             # <<<<<<<<<<<<<<
  *                     curNode = (c_channels[i].nodes).at(nodeIDs.at(k))
- *                     frac_coord = atmnet.absolute_to_relative(curNode.x, curNode.y, curNode.z)
+ *                     nodes[curNode.id] = [disp.x, disp.y, disp.z]
  */
       __pyx_t_16 = __pyx_v_nodeIDs.size();
       __pyx_t_17 = __pyx_t_16;
@@ -3211,8 +3219,8 @@ static PyObject *__pyx_pf_4cavd_7channel_7Channel_6findChannels(CYTHON_UNUSED Py
  *                 disp = (c_channels[i].unitCells).at(j)
  *                 for k in range(nodeIDs.size()):
  *                     curNode = (c_channels[i].nodes).at(nodeIDs.at(k))             # <<<<<<<<<<<<<<
- *                     frac_coord = atmnet.absolute_to_relative(curNode.x, curNode.y, curNode.z)
- *                     nodes.append([curNode.id, curNode.label, frac_coord , curNode.max_radius, [disp.x, disp.y, disp.z]])
+ *                     nodes[curNode.id] = [disp.x, disp.y, disp.z]
+ *             for j in range((c_channels[i].unitCells).size()):
  */
         try {
           __pyx_t_19 = __pyx_v_nodeIDs.at(__pyx_v_k);
@@ -3231,172 +3239,65 @@ static PyObject *__pyx_pf_4cavd_7channel_7Channel_6findChannels(CYTHON_UNUSED Py
         /* "cavd/channel.pyx":159
  *                 for k in range(nodeIDs.size()):
  *                     curNode = (c_channels[i].nodes).at(nodeIDs.at(k))
- *                     frac_coord = atmnet.absolute_to_relative(curNode.x, curNode.y, curNode.z)             # <<<<<<<<<<<<<<
- *                     nodes.append([curNode.id, curNode.label, frac_coord , curNode.max_radius, [disp.x, disp.y, disp.z]])
- *             for j in range((c_channels[i].unitCells).size()):
- */
-        __pyx_t_21 = __Pyx_PyObject_GetAttrStr(__pyx_v_atmnet, __pyx_n_s_absolute_to_relative); if (unlikely(!__pyx_t_21)) __PYX_ERR(0, 159, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_21);
-        __pyx_t_22 = PyFloat_FromDouble(__pyx_v_curNode.x); if (unlikely(!__pyx_t_22)) __PYX_ERR(0, 159, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_22);
-        __pyx_t_23 = PyFloat_FromDouble(__pyx_v_curNode.y); if (unlikely(!__pyx_t_23)) __PYX_ERR(0, 159, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_23);
-        __pyx_t_24 = PyFloat_FromDouble(__pyx_v_curNode.z); if (unlikely(!__pyx_t_24)) __PYX_ERR(0, 159, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_24);
-        __pyx_t_25 = NULL;
-        __pyx_t_26 = 0;
-        if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_21))) {
-          __pyx_t_25 = PyMethod_GET_SELF(__pyx_t_21);
-          if (likely(__pyx_t_25)) {
-            PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_21);
-            __Pyx_INCREF(__pyx_t_25);
-            __Pyx_INCREF(function);
-            __Pyx_DECREF_SET(__pyx_t_21, function);
-            __pyx_t_26 = 1;
-          }
-        }
-        #if CYTHON_FAST_PYCALL
-        if (PyFunction_Check(__pyx_t_21)) {
-          PyObject *__pyx_temp[4] = {__pyx_t_25, __pyx_t_22, __pyx_t_23, __pyx_t_24};
-          __pyx_t_5 = __Pyx_PyFunction_FastCall(__pyx_t_21, __pyx_temp+1-__pyx_t_26, 3+__pyx_t_26); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 159, __pyx_L1_error)
-          __Pyx_XDECREF(__pyx_t_25); __pyx_t_25 = 0;
-          __Pyx_GOTREF(__pyx_t_5);
-          __Pyx_DECREF(__pyx_t_22); __pyx_t_22 = 0;
-          __Pyx_DECREF(__pyx_t_23); __pyx_t_23 = 0;
-          __Pyx_DECREF(__pyx_t_24); __pyx_t_24 = 0;
-        } else
-        #endif
-        #if CYTHON_FAST_PYCCALL
-        if (__Pyx_PyFastCFunction_Check(__pyx_t_21)) {
-          PyObject *__pyx_temp[4] = {__pyx_t_25, __pyx_t_22, __pyx_t_23, __pyx_t_24};
-          __pyx_t_5 = __Pyx_PyCFunction_FastCall(__pyx_t_21, __pyx_temp+1-__pyx_t_26, 3+__pyx_t_26); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 159, __pyx_L1_error)
-          __Pyx_XDECREF(__pyx_t_25); __pyx_t_25 = 0;
-          __Pyx_GOTREF(__pyx_t_5);
-          __Pyx_DECREF(__pyx_t_22); __pyx_t_22 = 0;
-          __Pyx_DECREF(__pyx_t_23); __pyx_t_23 = 0;
-          __Pyx_DECREF(__pyx_t_24); __pyx_t_24 = 0;
-        } else
-        #endif
-        {
-          __pyx_t_27 = PyTuple_New(3+__pyx_t_26); if (unlikely(!__pyx_t_27)) __PYX_ERR(0, 159, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_27);
-          if (__pyx_t_25) {
-            __Pyx_GIVEREF(__pyx_t_25); PyTuple_SET_ITEM(__pyx_t_27, 0, __pyx_t_25); __pyx_t_25 = NULL;
-          }
-          __Pyx_GIVEREF(__pyx_t_22);
-          PyTuple_SET_ITEM(__pyx_t_27, 0+__pyx_t_26, __pyx_t_22);
-          __Pyx_GIVEREF(__pyx_t_23);
-          PyTuple_SET_ITEM(__pyx_t_27, 1+__pyx_t_26, __pyx_t_23);
-          __Pyx_GIVEREF(__pyx_t_24);
-          PyTuple_SET_ITEM(__pyx_t_27, 2+__pyx_t_26, __pyx_t_24);
-          __pyx_t_22 = 0;
-          __pyx_t_23 = 0;
-          __pyx_t_24 = 0;
-          __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_21, __pyx_t_27, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 159, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_5);
-          __Pyx_DECREF(__pyx_t_27); __pyx_t_27 = 0;
-        }
-        __Pyx_DECREF(__pyx_t_21); __pyx_t_21 = 0;
-        __Pyx_XDECREF_SET(__pyx_v_frac_coord, __pyx_t_5);
-        __pyx_t_5 = 0;
-
-        /* "cavd/channel.pyx":160
- *                     curNode = (c_channels[i].nodes).at(nodeIDs.at(k))
- *                     frac_coord = atmnet.absolute_to_relative(curNode.x, curNode.y, curNode.z)
- *                     nodes.append([curNode.id, curNode.label, frac_coord , curNode.max_radius, [disp.x, disp.y, disp.z]])             # <<<<<<<<<<<<<<
+ *                     nodes[curNode.id] = [disp.x, disp.y, disp.z]             # <<<<<<<<<<<<<<
  *             for j in range((c_channels[i].unitCells).size()):
  *                 nodeIDs = (c_channels[i].ucNodes).at(j)
  */
-        __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_curNode.id); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 160, __pyx_L1_error)
+        __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_disp.x); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 159, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
-        __pyx_t_21 = __Pyx_PyInt_From_int(__pyx_v_curNode.label); if (unlikely(!__pyx_t_21)) __PYX_ERR(0, 160, __pyx_L1_error)
+        __pyx_t_21 = __Pyx_PyInt_From_int(__pyx_v_disp.y); if (unlikely(!__pyx_t_21)) __PYX_ERR(0, 159, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_21);
-        __pyx_t_27 = PyFloat_FromDouble(__pyx_v_curNode.max_radius); if (unlikely(!__pyx_t_27)) __PYX_ERR(0, 160, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_27);
-        __pyx_t_24 = __Pyx_PyInt_From_int(__pyx_v_disp.x); if (unlikely(!__pyx_t_24)) __PYX_ERR(0, 160, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_24);
-        __pyx_t_23 = __Pyx_PyInt_From_int(__pyx_v_disp.y); if (unlikely(!__pyx_t_23)) __PYX_ERR(0, 160, __pyx_L1_error)
+        __pyx_t_22 = __Pyx_PyInt_From_int(__pyx_v_disp.z); if (unlikely(!__pyx_t_22)) __PYX_ERR(0, 159, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_22);
+        __pyx_t_23 = PyList_New(3); if (unlikely(!__pyx_t_23)) __PYX_ERR(0, 159, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_23);
-        __pyx_t_22 = __Pyx_PyInt_From_int(__pyx_v_disp.z); if (unlikely(!__pyx_t_22)) __PYX_ERR(0, 160, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_22);
-        __pyx_t_25 = PyList_New(3); if (unlikely(!__pyx_t_25)) __PYX_ERR(0, 160, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_25);
-        __Pyx_GIVEREF(__pyx_t_24);
-        PyList_SET_ITEM(__pyx_t_25, 0, __pyx_t_24);
-        __Pyx_GIVEREF(__pyx_t_23);
-        PyList_SET_ITEM(__pyx_t_25, 1, __pyx_t_23);
-        __Pyx_GIVEREF(__pyx_t_22);
-        PyList_SET_ITEM(__pyx_t_25, 2, __pyx_t_22);
-        __pyx_t_24 = 0;
-        __pyx_t_23 = 0;
-        __pyx_t_22 = 0;
-        __pyx_t_22 = PyList_New(5); if (unlikely(!__pyx_t_22)) __PYX_ERR(0, 160, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_22);
         __Pyx_GIVEREF(__pyx_t_5);
-        PyList_SET_ITEM(__pyx_t_22, 0, __pyx_t_5);
+        PyList_SET_ITEM(__pyx_t_23, 0, __pyx_t_5);
         __Pyx_GIVEREF(__pyx_t_21);
-        PyList_SET_ITEM(__pyx_t_22, 1, __pyx_t_21);
-        __Pyx_INCREF(__pyx_v_frac_coord);
-        __Pyx_GIVEREF(__pyx_v_frac_coord);
-        PyList_SET_ITEM(__pyx_t_22, 2, __pyx_v_frac_coord);
-        __Pyx_GIVEREF(__pyx_t_27);
-        PyList_SET_ITEM(__pyx_t_22, 3, __pyx_t_27);
-        __Pyx_GIVEREF(__pyx_t_25);
-        PyList_SET_ITEM(__pyx_t_22, 4, __pyx_t_25);
+        PyList_SET_ITEM(__pyx_t_23, 1, __pyx_t_21);
+        __Pyx_GIVEREF(__pyx_t_22);
+        PyList_SET_ITEM(__pyx_t_23, 2, __pyx_t_22);
         __pyx_t_5 = 0;
         __pyx_t_21 = 0;
-        __pyx_t_27 = 0;
-        __pyx_t_25 = 0;
-        __pyx_t_28 = __Pyx_PyList_Append(__pyx_v_nodes, __pyx_t_22); if (unlikely(__pyx_t_28 == ((int)-1))) __PYX_ERR(0, 160, __pyx_L1_error)
+        __pyx_t_22 = 0;
+        __pyx_t_22 = __Pyx_PyInt_From_int(__pyx_v_curNode.id); if (unlikely(!__pyx_t_22)) __PYX_ERR(0, 159, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_22);
+        if (unlikely(PyDict_SetItem(__pyx_v_nodes, __pyx_t_22, __pyx_t_23) < 0)) __PYX_ERR(0, 159, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_22); __pyx_t_22 = 0;
+        __Pyx_DECREF(__pyx_t_23); __pyx_t_23 = 0;
       }
     }
 
-    /* "cavd/channel.pyx":161
- *                     frac_coord = atmnet.absolute_to_relative(curNode.x, curNode.y, curNode.z)
- *                     nodes.append([curNode.id, curNode.label, frac_coord , curNode.max_radius, [disp.x, disp.y, disp.z]])
+    /* "cavd/channel.pyx":160
+ *                     curNode = (c_channels[i].nodes).at(nodeIDs.at(k))
+ *                     nodes[curNode.id] = [disp.x, disp.y, disp.z]
  *             for j in range((c_channels[i].unitCells).size()):             # <<<<<<<<<<<<<<
  *                 nodeIDs = (c_channels[i].ucNodes).at(j)
- *                 disp = (c_channels[i].unitCells).at(j)
+ *                 for k in range(nodeIDs.size()):
  */
     __pyx_t_11 = (__pyx_v_c_channels[__pyx_v_i]).unitCells.size();
     __pyx_t_12 = __pyx_t_11;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_j = __pyx_t_13;
 
-      /* "cavd/channel.pyx":162
- *                     nodes.append([curNode.id, curNode.label, frac_coord , curNode.max_radius, [disp.x, disp.y, disp.z]])
+      /* "cavd/channel.pyx":161
+ *                     nodes[curNode.id] = [disp.x, disp.y, disp.z]
  *             for j in range((c_channels[i].unitCells).size()):
  *                 nodeIDs = (c_channels[i].ucNodes).at(j)             # <<<<<<<<<<<<<<
- *                 disp = (c_channels[i].unitCells).at(j)
- *                 for k in range(nodeIDs.size()):
- */
-      try {
-        __pyx_t_29 = (__pyx_v_c_channels[__pyx_v_i]).ucNodes.at(__pyx_v_j);
-      } catch(...) {
-        __Pyx_CppExn2PyErr();
-        __PYX_ERR(0, 162, __pyx_L1_error)
-      }
-      __pyx_v_nodeIDs = __pyx_t_29;
-
-      /* "cavd/channel.pyx":163
- *             for j in range((c_channels[i].unitCells).size()):
- *                 nodeIDs = (c_channels[i].ucNodes).at(j)
- *                 disp = (c_channels[i].unitCells).at(j)             # <<<<<<<<<<<<<<
  *                 for k in range(nodeIDs.size()):
  *                     curNode = (c_channels[i].nodes).at(nodeIDs.at(k))
  */
       try {
-        __pyx_t_30 = (__pyx_v_c_channels[__pyx_v_i]).unitCells.at(__pyx_v_j);
+        __pyx_t_24 = (__pyx_v_c_channels[__pyx_v_i]).ucNodes.at(__pyx_v_j);
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        __PYX_ERR(0, 163, __pyx_L1_error)
+        __PYX_ERR(0, 161, __pyx_L1_error)
       }
-      __pyx_v_disp = __pyx_t_30;
+      __pyx_v_nodeIDs = __pyx_t_24;
 
-      /* "cavd/channel.pyx":164
+      /* "cavd/channel.pyx":162
+ *             for j in range((c_channels[i].unitCells).size()):
  *                 nodeIDs = (c_channels[i].ucNodes).at(j)
- *                 disp = (c_channels[i].unitCells).at(j)
  *                 for k in range(nodeIDs.size()):             # <<<<<<<<<<<<<<
  *                     curNode = (c_channels[i].nodes).at(nodeIDs.at(k))
  *                     for l in range((curNode.connections).size()):
@@ -3406,40 +3307,40 @@ static PyObject *__pyx_pf_4cavd_7channel_7Channel_6findChannels(CYTHON_UNUSED Py
       for (__pyx_t_18 = 0; __pyx_t_18 < __pyx_t_17; __pyx_t_18+=1) {
         __pyx_v_k = __pyx_t_18;
 
-        /* "cavd/channel.pyx":165
- *                 disp = (c_channels[i].unitCells).at(j)
+        /* "cavd/channel.pyx":163
+ *                 nodeIDs = (c_channels[i].ucNodes).at(j)
  *                 for k in range(nodeIDs.size()):
  *                     curNode = (c_channels[i].nodes).at(nodeIDs.at(k))             # <<<<<<<<<<<<<<
  *                     for l in range((curNode.connections).size()):
  *                         curConn = curNode.connections.at(l)
  */
         try {
-          __pyx_t_31 = __pyx_v_nodeIDs.at(__pyx_v_k);
+          __pyx_t_25 = __pyx_v_nodeIDs.at(__pyx_v_k);
         } catch(...) {
           __Pyx_CppExn2PyErr();
-          __PYX_ERR(0, 165, __pyx_L1_error)
+          __PYX_ERR(0, 163, __pyx_L1_error)
         }
         try {
-          __pyx_t_32 = (__pyx_v_c_channels[__pyx_v_i]).nodes.at(__pyx_t_31);
+          __pyx_t_26 = (__pyx_v_c_channels[__pyx_v_i]).nodes.at(__pyx_t_25);
         } catch(...) {
           __Pyx_CppExn2PyErr();
-          __PYX_ERR(0, 165, __pyx_L1_error)
+          __PYX_ERR(0, 163, __pyx_L1_error)
         }
-        __pyx_v_curNode = __pyx_t_32;
+        __pyx_v_curNode = __pyx_t_26;
 
-        /* "cavd/channel.pyx":166
+        /* "cavd/channel.pyx":164
  *                 for k in range(nodeIDs.size()):
  *                     curNode = (c_channels[i].nodes).at(nodeIDs.at(k))
  *                     for l in range((curNode.connections).size()):             # <<<<<<<<<<<<<<
  *                         curConn = curNode.connections.at(l)
  *                         otherNode = (c_channels[i].nodes).at(curConn.ending)
  */
-        __pyx_t_33 = __pyx_v_curNode.connections.size();
-        __pyx_t_34 = __pyx_t_33;
-        for (__pyx_t_35 = 0; __pyx_t_35 < __pyx_t_34; __pyx_t_35+=1) {
-          __pyx_v_l = __pyx_t_35;
+        __pyx_t_27 = __pyx_v_curNode.connections.size();
+        __pyx_t_28 = __pyx_t_27;
+        for (__pyx_t_29 = 0; __pyx_t_29 < __pyx_t_28; __pyx_t_29+=1) {
+          __pyx_v_l = __pyx_t_29;
 
-          /* "cavd/channel.pyx":167
+          /* "cavd/channel.pyx":165
  *                     curNode = (c_channels[i].nodes).at(nodeIDs.at(k))
  *                     for l in range((curNode.connections).size()):
  *                         curConn = curNode.connections.at(l)             # <<<<<<<<<<<<<<
@@ -3447,186 +3348,193 @@ static PyObject *__pyx_pf_4cavd_7channel_7Channel_6findChannels(CYTHON_UNUSED Py
  *                         frac_coord = atmnet.absolute_to_relative(curConn.btx, curConn.bty, curConn.btz)
  */
           try {
-            __pyx_t_36 = __pyx_v_curNode.connections.at(__pyx_v_l);
+            __pyx_t_30 = __pyx_v_curNode.connections.at(__pyx_v_l);
           } catch(...) {
             __Pyx_CppExn2PyErr();
-            __PYX_ERR(0, 167, __pyx_L1_error)
+            __PYX_ERR(0, 165, __pyx_L1_error)
           }
-          __pyx_v_curConn = __pyx_t_36;
+          __pyx_v_curConn = __pyx_t_30;
 
-          /* "cavd/channel.pyx":168
+          /* "cavd/channel.pyx":166
  *                     for l in range((curNode.connections).size()):
  *                         curConn = curNode.connections.at(l)
  *                         otherNode = (c_channels[i].nodes).at(curConn.ending)             # <<<<<<<<<<<<<<
  *                         frac_coord = atmnet.absolute_to_relative(curConn.btx, curConn.bty, curConn.btz)
- *                         conns.append([curNode.id, otherNode.id, frac_coord, curConn.max_radius])
+ *                         conns.append([curNode.id, nodes[curNode.id], otherNode.id, nodes[otherNode.id], frac_coord, curConn.max_radius])
  */
           try {
-            __pyx_t_37 = (__pyx_v_c_channels[__pyx_v_i]).nodes.at(__pyx_v_curConn.to);
+            __pyx_t_31 = (__pyx_v_c_channels[__pyx_v_i]).nodes.at(__pyx_v_curConn.to);
           } catch(...) {
             __Pyx_CppExn2PyErr();
-            __PYX_ERR(0, 168, __pyx_L1_error)
+            __PYX_ERR(0, 166, __pyx_L1_error)
           }
-          __pyx_v_otherNode = __pyx_t_37;
+          __pyx_v_otherNode = __pyx_t_31;
 
-          /* "cavd/channel.pyx":169
+          /* "cavd/channel.pyx":167
  *                         curConn = curNode.connections.at(l)
  *                         otherNode = (c_channels[i].nodes).at(curConn.ending)
  *                         frac_coord = atmnet.absolute_to_relative(curConn.btx, curConn.bty, curConn.btz)             # <<<<<<<<<<<<<<
- *                         conns.append([curNode.id, otherNode.id, frac_coord, curConn.max_radius])
+ *                         conns.append([curNode.id, nodes[curNode.id], otherNode.id, nodes[otherNode.id], frac_coord, curConn.max_radius])
  *             channel["id"] = i
  */
-          __pyx_t_25 = __Pyx_PyObject_GetAttrStr(__pyx_v_atmnet, __pyx_n_s_absolute_to_relative); if (unlikely(!__pyx_t_25)) __PYX_ERR(0, 169, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_25);
-          __pyx_t_27 = PyFloat_FromDouble(__pyx_v_curConn.btx); if (unlikely(!__pyx_t_27)) __PYX_ERR(0, 169, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_27);
-          __pyx_t_21 = PyFloat_FromDouble(__pyx_v_curConn.bty); if (unlikely(!__pyx_t_21)) __PYX_ERR(0, 169, __pyx_L1_error)
+          __pyx_t_22 = __Pyx_PyObject_GetAttrStr(__pyx_v_atmnet, __pyx_n_s_absolute_to_relative); if (unlikely(!__pyx_t_22)) __PYX_ERR(0, 167, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_22);
+          __pyx_t_21 = PyFloat_FromDouble(__pyx_v_curConn.btx); if (unlikely(!__pyx_t_21)) __PYX_ERR(0, 167, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_21);
-          __pyx_t_5 = PyFloat_FromDouble(__pyx_v_curConn.btz); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 169, __pyx_L1_error)
+          __pyx_t_5 = PyFloat_FromDouble(__pyx_v_curConn.bty); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 167, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_5);
-          __pyx_t_23 = NULL;
-          __pyx_t_26 = 0;
-          if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_25))) {
-            __pyx_t_23 = PyMethod_GET_SELF(__pyx_t_25);
-            if (likely(__pyx_t_23)) {
-              PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_25);
-              __Pyx_INCREF(__pyx_t_23);
+          __pyx_t_32 = PyFloat_FromDouble(__pyx_v_curConn.btz); if (unlikely(!__pyx_t_32)) __PYX_ERR(0, 167, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_32);
+          __pyx_t_33 = NULL;
+          __pyx_t_34 = 0;
+          if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_22))) {
+            __pyx_t_33 = PyMethod_GET_SELF(__pyx_t_22);
+            if (likely(__pyx_t_33)) {
+              PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_22);
+              __Pyx_INCREF(__pyx_t_33);
               __Pyx_INCREF(function);
-              __Pyx_DECREF_SET(__pyx_t_25, function);
-              __pyx_t_26 = 1;
+              __Pyx_DECREF_SET(__pyx_t_22, function);
+              __pyx_t_34 = 1;
             }
           }
           #if CYTHON_FAST_PYCALL
-          if (PyFunction_Check(__pyx_t_25)) {
-            PyObject *__pyx_temp[4] = {__pyx_t_23, __pyx_t_27, __pyx_t_21, __pyx_t_5};
-            __pyx_t_22 = __Pyx_PyFunction_FastCall(__pyx_t_25, __pyx_temp+1-__pyx_t_26, 3+__pyx_t_26); if (unlikely(!__pyx_t_22)) __PYX_ERR(0, 169, __pyx_L1_error)
-            __Pyx_XDECREF(__pyx_t_23); __pyx_t_23 = 0;
-            __Pyx_GOTREF(__pyx_t_22);
-            __Pyx_DECREF(__pyx_t_27); __pyx_t_27 = 0;
+          if (PyFunction_Check(__pyx_t_22)) {
+            PyObject *__pyx_temp[4] = {__pyx_t_33, __pyx_t_21, __pyx_t_5, __pyx_t_32};
+            __pyx_t_23 = __Pyx_PyFunction_FastCall(__pyx_t_22, __pyx_temp+1-__pyx_t_34, 3+__pyx_t_34); if (unlikely(!__pyx_t_23)) __PYX_ERR(0, 167, __pyx_L1_error)
+            __Pyx_XDECREF(__pyx_t_33); __pyx_t_33 = 0;
+            __Pyx_GOTREF(__pyx_t_23);
             __Pyx_DECREF(__pyx_t_21); __pyx_t_21 = 0;
             __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+            __Pyx_DECREF(__pyx_t_32); __pyx_t_32 = 0;
           } else
           #endif
           #if CYTHON_FAST_PYCCALL
-          if (__Pyx_PyFastCFunction_Check(__pyx_t_25)) {
-            PyObject *__pyx_temp[4] = {__pyx_t_23, __pyx_t_27, __pyx_t_21, __pyx_t_5};
-            __pyx_t_22 = __Pyx_PyCFunction_FastCall(__pyx_t_25, __pyx_temp+1-__pyx_t_26, 3+__pyx_t_26); if (unlikely(!__pyx_t_22)) __PYX_ERR(0, 169, __pyx_L1_error)
-            __Pyx_XDECREF(__pyx_t_23); __pyx_t_23 = 0;
-            __Pyx_GOTREF(__pyx_t_22);
-            __Pyx_DECREF(__pyx_t_27); __pyx_t_27 = 0;
+          if (__Pyx_PyFastCFunction_Check(__pyx_t_22)) {
+            PyObject *__pyx_temp[4] = {__pyx_t_33, __pyx_t_21, __pyx_t_5, __pyx_t_32};
+            __pyx_t_23 = __Pyx_PyCFunction_FastCall(__pyx_t_22, __pyx_temp+1-__pyx_t_34, 3+__pyx_t_34); if (unlikely(!__pyx_t_23)) __PYX_ERR(0, 167, __pyx_L1_error)
+            __Pyx_XDECREF(__pyx_t_33); __pyx_t_33 = 0;
+            __Pyx_GOTREF(__pyx_t_23);
             __Pyx_DECREF(__pyx_t_21); __pyx_t_21 = 0;
             __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+            __Pyx_DECREF(__pyx_t_32); __pyx_t_32 = 0;
           } else
           #endif
           {
-            __pyx_t_24 = PyTuple_New(3+__pyx_t_26); if (unlikely(!__pyx_t_24)) __PYX_ERR(0, 169, __pyx_L1_error)
-            __Pyx_GOTREF(__pyx_t_24);
-            if (__pyx_t_23) {
-              __Pyx_GIVEREF(__pyx_t_23); PyTuple_SET_ITEM(__pyx_t_24, 0, __pyx_t_23); __pyx_t_23 = NULL;
+            __pyx_t_35 = PyTuple_New(3+__pyx_t_34); if (unlikely(!__pyx_t_35)) __PYX_ERR(0, 167, __pyx_L1_error)
+            __Pyx_GOTREF(__pyx_t_35);
+            if (__pyx_t_33) {
+              __Pyx_GIVEREF(__pyx_t_33); PyTuple_SET_ITEM(__pyx_t_35, 0, __pyx_t_33); __pyx_t_33 = NULL;
             }
-            __Pyx_GIVEREF(__pyx_t_27);
-            PyTuple_SET_ITEM(__pyx_t_24, 0+__pyx_t_26, __pyx_t_27);
             __Pyx_GIVEREF(__pyx_t_21);
-            PyTuple_SET_ITEM(__pyx_t_24, 1+__pyx_t_26, __pyx_t_21);
+            PyTuple_SET_ITEM(__pyx_t_35, 0+__pyx_t_34, __pyx_t_21);
             __Pyx_GIVEREF(__pyx_t_5);
-            PyTuple_SET_ITEM(__pyx_t_24, 2+__pyx_t_26, __pyx_t_5);
-            __pyx_t_27 = 0;
+            PyTuple_SET_ITEM(__pyx_t_35, 1+__pyx_t_34, __pyx_t_5);
+            __Pyx_GIVEREF(__pyx_t_32);
+            PyTuple_SET_ITEM(__pyx_t_35, 2+__pyx_t_34, __pyx_t_32);
             __pyx_t_21 = 0;
             __pyx_t_5 = 0;
-            __pyx_t_22 = __Pyx_PyObject_Call(__pyx_t_25, __pyx_t_24, NULL); if (unlikely(!__pyx_t_22)) __PYX_ERR(0, 169, __pyx_L1_error)
-            __Pyx_GOTREF(__pyx_t_22);
-            __Pyx_DECREF(__pyx_t_24); __pyx_t_24 = 0;
+            __pyx_t_32 = 0;
+            __pyx_t_23 = __Pyx_PyObject_Call(__pyx_t_22, __pyx_t_35, NULL); if (unlikely(!__pyx_t_23)) __PYX_ERR(0, 167, __pyx_L1_error)
+            __Pyx_GOTREF(__pyx_t_23);
+            __Pyx_DECREF(__pyx_t_35); __pyx_t_35 = 0;
           }
-          __Pyx_DECREF(__pyx_t_25); __pyx_t_25 = 0;
-          __Pyx_XDECREF_SET(__pyx_v_frac_coord, __pyx_t_22);
-          __pyx_t_22 = 0;
+          __Pyx_DECREF(__pyx_t_22); __pyx_t_22 = 0;
+          __Pyx_XDECREF_SET(__pyx_v_frac_coord, __pyx_t_23);
+          __pyx_t_23 = 0;
 
-          /* "cavd/channel.pyx":170
+          /* "cavd/channel.pyx":168
  *                         otherNode = (c_channels[i].nodes).at(curConn.ending)
  *                         frac_coord = atmnet.absolute_to_relative(curConn.btx, curConn.bty, curConn.btz)
- *                         conns.append([curNode.id, otherNode.id, frac_coord, curConn.max_radius])             # <<<<<<<<<<<<<<
+ *                         conns.append([curNode.id, nodes[curNode.id], otherNode.id, nodes[otherNode.id], frac_coord, curConn.max_radius])             # <<<<<<<<<<<<<<
  *             channel["id"] = i
  *             channel["dim"] = c_channels[i].dimensionality
  */
-          __pyx_t_22 = __Pyx_PyInt_From_int(__pyx_v_curNode.id); if (unlikely(!__pyx_t_22)) __PYX_ERR(0, 170, __pyx_L1_error)
+          __pyx_t_23 = __Pyx_PyInt_From_int(__pyx_v_curNode.id); if (unlikely(!__pyx_t_23)) __PYX_ERR(0, 168, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_23);
+          __pyx_t_22 = __Pyx_PyInt_From_int(__pyx_v_curNode.id); if (unlikely(!__pyx_t_22)) __PYX_ERR(0, 168, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_22);
-          __pyx_t_25 = __Pyx_PyInt_From_int(__pyx_v_otherNode.id); if (unlikely(!__pyx_t_25)) __PYX_ERR(0, 170, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_25);
-          __pyx_t_24 = PyFloat_FromDouble(__pyx_v_curConn.max_radius); if (unlikely(!__pyx_t_24)) __PYX_ERR(0, 170, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_24);
-          __pyx_t_5 = PyList_New(4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 170, __pyx_L1_error)
+          __pyx_t_35 = __Pyx_PyDict_GetItem(__pyx_v_nodes, __pyx_t_22); if (unlikely(!__pyx_t_35)) __PYX_ERR(0, 168, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_35);
+          __Pyx_DECREF(__pyx_t_22); __pyx_t_22 = 0;
+          __pyx_t_22 = __Pyx_PyInt_From_int(__pyx_v_otherNode.id); if (unlikely(!__pyx_t_22)) __PYX_ERR(0, 168, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_22);
+          __pyx_t_32 = __Pyx_PyInt_From_int(__pyx_v_otherNode.id); if (unlikely(!__pyx_t_32)) __PYX_ERR(0, 168, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_32);
+          __pyx_t_5 = __Pyx_PyDict_GetItem(__pyx_v_nodes, __pyx_t_32); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 168, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_5);
+          __Pyx_DECREF(__pyx_t_32); __pyx_t_32 = 0;
+          __pyx_t_32 = PyFloat_FromDouble(__pyx_v_curConn.max_radius); if (unlikely(!__pyx_t_32)) __PYX_ERR(0, 168, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_32);
+          __pyx_t_21 = PyList_New(6); if (unlikely(!__pyx_t_21)) __PYX_ERR(0, 168, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_21);
+          __Pyx_GIVEREF(__pyx_t_23);
+          PyList_SET_ITEM(__pyx_t_21, 0, __pyx_t_23);
+          __Pyx_GIVEREF(__pyx_t_35);
+          PyList_SET_ITEM(__pyx_t_21, 1, __pyx_t_35);
           __Pyx_GIVEREF(__pyx_t_22);
-          PyList_SET_ITEM(__pyx_t_5, 0, __pyx_t_22);
-          __Pyx_GIVEREF(__pyx_t_25);
-          PyList_SET_ITEM(__pyx_t_5, 1, __pyx_t_25);
+          PyList_SET_ITEM(__pyx_t_21, 2, __pyx_t_22);
+          __Pyx_GIVEREF(__pyx_t_5);
+          PyList_SET_ITEM(__pyx_t_21, 3, __pyx_t_5);
           __Pyx_INCREF(__pyx_v_frac_coord);
           __Pyx_GIVEREF(__pyx_v_frac_coord);
-          PyList_SET_ITEM(__pyx_t_5, 2, __pyx_v_frac_coord);
-          __Pyx_GIVEREF(__pyx_t_24);
-          PyList_SET_ITEM(__pyx_t_5, 3, __pyx_t_24);
+          PyList_SET_ITEM(__pyx_t_21, 4, __pyx_v_frac_coord);
+          __Pyx_GIVEREF(__pyx_t_32);
+          PyList_SET_ITEM(__pyx_t_21, 5, __pyx_t_32);
+          __pyx_t_23 = 0;
+          __pyx_t_35 = 0;
           __pyx_t_22 = 0;
-          __pyx_t_25 = 0;
-          __pyx_t_24 = 0;
-          __pyx_t_28 = __Pyx_PyList_Append(__pyx_v_conns, __pyx_t_5); if (unlikely(__pyx_t_28 == ((int)-1))) __PYX_ERR(0, 170, __pyx_L1_error)
-          __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+          __pyx_t_5 = 0;
+          __pyx_t_32 = 0;
+          __pyx_t_36 = __Pyx_PyList_Append(__pyx_v_conns, __pyx_t_21); if (unlikely(__pyx_t_36 == ((int)-1))) __PYX_ERR(0, 168, __pyx_L1_error)
+          __Pyx_DECREF(__pyx_t_21); __pyx_t_21 = 0;
         }
       }
     }
 
-    /* "cavd/channel.pyx":171
+    /* "cavd/channel.pyx":169
  *                         frac_coord = atmnet.absolute_to_relative(curConn.btx, curConn.bty, curConn.btz)
- *                         conns.append([curNode.id, otherNode.id, frac_coord, curConn.max_radius])
+ *                         conns.append([curNode.id, nodes[curNode.id], otherNode.id, nodes[otherNode.id], frac_coord, curConn.max_radius])
  *             channel["id"] = i             # <<<<<<<<<<<<<<
  *             channel["dim"] = c_channels[i].dimensionality
- *             channel["nodes"] = nodes
- */
-    __pyx_t_5 = __Pyx_PyInt_FromSize_t(__pyx_v_i); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 171, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    if (unlikely(PyDict_SetItem(__pyx_v_channel, __pyx_n_s_id, __pyx_t_5) < 0)) __PYX_ERR(0, 171, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-
-    /* "cavd/channel.pyx":172
- *                         conns.append([curNode.id, otherNode.id, frac_coord, curConn.max_radius])
- *             channel["id"] = i
- *             channel["dim"] = c_channels[i].dimensionality             # <<<<<<<<<<<<<<
- *             channel["nodes"] = nodes
  *             channel["conns"] = conns
  */
-    __pyx_t_5 = __Pyx_PyInt_From_int((__pyx_v_c_channels[__pyx_v_i]).dimensionality); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 172, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    if (unlikely(PyDict_SetItem(__pyx_v_channel, __pyx_n_s_dim, __pyx_t_5) < 0)) __PYX_ERR(0, 172, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __pyx_t_21 = __Pyx_PyInt_FromSize_t(__pyx_v_i); if (unlikely(!__pyx_t_21)) __PYX_ERR(0, 169, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_21);
+    if (unlikely(PyDict_SetItem(__pyx_v_channel, __pyx_n_s_id, __pyx_t_21) < 0)) __PYX_ERR(0, 169, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_21); __pyx_t_21 = 0;
 
-    /* "cavd/channel.pyx":173
+    /* "cavd/channel.pyx":170
+ *                         conns.append([curNode.id, nodes[curNode.id], otherNode.id, nodes[otherNode.id], frac_coord, curConn.max_radius])
  *             channel["id"] = i
- *             channel["dim"] = c_channels[i].dimensionality
- *             channel["nodes"] = nodes             # <<<<<<<<<<<<<<
+ *             channel["dim"] = c_channels[i].dimensionality             # <<<<<<<<<<<<<<
  *             channel["conns"] = conns
  *             channels.append(channel)
  */
-    if (unlikely(PyDict_SetItem(__pyx_v_channel, __pyx_n_s_nodes, __pyx_v_nodes) < 0)) __PYX_ERR(0, 173, __pyx_L1_error)
+    __pyx_t_21 = __Pyx_PyInt_From_int((__pyx_v_c_channels[__pyx_v_i]).dimensionality); if (unlikely(!__pyx_t_21)) __PYX_ERR(0, 170, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_21);
+    if (unlikely(PyDict_SetItem(__pyx_v_channel, __pyx_n_s_dim, __pyx_t_21) < 0)) __PYX_ERR(0, 170, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_21); __pyx_t_21 = 0;
 
-    /* "cavd/channel.pyx":174
+    /* "cavd/channel.pyx":171
+ *             channel["id"] = i
  *             channel["dim"] = c_channels[i].dimensionality
- *             channel["nodes"] = nodes
  *             channel["conns"] = conns             # <<<<<<<<<<<<<<
  *             channels.append(channel)
  *         return channels
  */
-    if (unlikely(PyDict_SetItem(__pyx_v_channel, __pyx_n_s_conns, __pyx_v_conns) < 0)) __PYX_ERR(0, 174, __pyx_L1_error)
+    if (unlikely(PyDict_SetItem(__pyx_v_channel, __pyx_n_s_conns, __pyx_v_conns) < 0)) __PYX_ERR(0, 171, __pyx_L1_error)
 
-    /* "cavd/channel.pyx":175
- *             channel["nodes"] = nodes
+    /* "cavd/channel.pyx":172
+ *             channel["dim"] = c_channels[i].dimensionality
  *             channel["conns"] = conns
  *             channels.append(channel)             # <<<<<<<<<<<<<<
  *         return channels
  * 
  */
-    __pyx_t_28 = __Pyx_PyList_Append(__pyx_v_channels, __pyx_v_channel); if (unlikely(__pyx_t_28 == ((int)-1))) __PYX_ERR(0, 175, __pyx_L1_error)
+    __pyx_t_36 = __Pyx_PyList_Append(__pyx_v_channels, __pyx_v_channel); if (unlikely(__pyx_t_36 == ((int)-1))) __PYX_ERR(0, 172, __pyx_L1_error)
   }
 
-  /* "cavd/channel.pyx":176
+  /* "cavd/channel.pyx":173
  *             channel["conns"] = conns
  *             channels.append(channel)
  *         return channels             # <<<<<<<<<<<<<<
@@ -3652,9 +3560,9 @@ static PyObject *__pyx_pf_4cavd_7channel_7Channel_6findChannels(CYTHON_UNUSED Py
   __Pyx_XDECREF(__pyx_t_21);
   __Pyx_XDECREF(__pyx_t_22);
   __Pyx_XDECREF(__pyx_t_23);
-  __Pyx_XDECREF(__pyx_t_24);
-  __Pyx_XDECREF(__pyx_t_25);
-  __Pyx_XDECREF(__pyx_t_27);
+  __Pyx_XDECREF(__pyx_t_32);
+  __Pyx_XDECREF(__pyx_t_33);
+  __Pyx_XDECREF(__pyx_t_35);
   __Pyx_AddTraceback("cavd.channel.Channel.findChannels", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
@@ -3970,7 +3878,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_module, __pyx_k_module, sizeof(__pyx_k_module), 0, 0, 1, 1},
   {&__pyx_n_s_name, __pyx_k_name, sizeof(__pyx_k_name), 0, 0, 1, 1},
   {&__pyx_kp_s_no_default___reduce___due_to_non, __pyx_k_no_default___reduce___due_to_non, sizeof(__pyx_k_no_default___reduce___due_to_non), 0, 0, 1, 0},
-  {&__pyx_n_s_nodes, __pyx_k_nodes, sizeof(__pyx_k_nodes), 0, 0, 1, 1},
   {&__pyx_n_s_prepare, __pyx_k_prepare, sizeof(__pyx_k_prepare), 0, 0, 1, 1},
   {&__pyx_n_s_probe_rad, __pyx_k_probe_rad, sizeof(__pyx_k_probe_rad), 0, 0, 1, 1},
   {&__pyx_n_s_qualname, __pyx_k_qualname, sizeof(__pyx_k_qualname), 0, 0, 1, 1},
@@ -5075,6 +4982,30 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg
             "NULL result without error in PyObject_Call");
     }
     return result;
+}
+#endif
+
+/* DictGetItem */
+#if PY_MAJOR_VERSION >= 3 && !CYTHON_COMPILING_IN_PYPY
+static PyObject *__Pyx_PyDict_GetItem(PyObject *d, PyObject* key) {
+    PyObject *value;
+    value = PyDict_GetItemWithError(d, key);
+    if (unlikely(!value)) {
+        if (!PyErr_Occurred()) {
+            if (unlikely(PyTuple_Check(key))) {
+                PyObject* args = PyTuple_Pack(1, key);
+                if (likely(args)) {
+                    PyErr_SetObject(PyExc_KeyError, args);
+                    Py_DECREF(args);
+                }
+            } else {
+                PyErr_SetObject(PyExc_KeyError, key);
+            }
+        }
+        return NULL;
+    }
+    Py_INCREF(value);
+    return value;
 }
 #endif
 

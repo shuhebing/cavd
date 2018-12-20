@@ -895,6 +895,7 @@ def connection_values_list(filename, vornet):
     calculateConnParameters(vornet_ptr, c_fname, &values)
     conn_values = []
     for i in range(values.size()):
+        # print(values[i])
         conn_values.append(values[i])
     return conn_values
 

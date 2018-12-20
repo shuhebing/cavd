@@ -12565,7 +12565,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_4connection_values_list(CYTHON_UNUS
  *     calculateConnParameters(vornet_ptr, c_fname, &values)
  *     conn_values = []             # <<<<<<<<<<<<<<
  *     for i in range(values.size()):
- *         conn_values.append(values[i])
+ *         # print(values[i])
  */
   __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 896, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -12576,29 +12576,29 @@ static PyObject *__pyx_pf_4cavd_10netstorage_4connection_values_list(CYTHON_UNUS
  *     calculateConnParameters(vornet_ptr, c_fname, &values)
  *     conn_values = []
  *     for i in range(values.size()):             # <<<<<<<<<<<<<<
+ *         # print(values[i])
  *         conn_values.append(values[i])
- *     return conn_values
  */
   __pyx_t_6 = __pyx_v_values.size();
   __pyx_t_7 = __pyx_t_6;
   for (__pyx_t_8 = 0; __pyx_t_8 < __pyx_t_7; __pyx_t_8+=1) {
     __pyx_v_i = __pyx_t_8;
 
-    /* "cavd/netstorage.pyx":898
- *     conn_values = []
+    /* "cavd/netstorage.pyx":899
  *     for i in range(values.size()):
+ *         # print(values[i])
  *         conn_values.append(values[i])             # <<<<<<<<<<<<<<
  *     return conn_values
  * 
  */
-    __pyx_t_1 = PyFloat_FromDouble((__pyx_v_values[__pyx_v_i])); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 898, __pyx_L1_error)
+    __pyx_t_1 = PyFloat_FromDouble((__pyx_v_values[__pyx_v_i])); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 899, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_conn_values, __pyx_t_1); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(1, 898, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_conn_values, __pyx_t_1); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(1, 899, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   }
 
-  /* "cavd/netstorage.pyx":899
- *     for i in range(values.size()):
+  /* "cavd/netstorage.pyx":900
+ *         # print(values[i])
  *         conn_values.append(values[i])
  *     return conn_values             # <<<<<<<<<<<<<<
  * 

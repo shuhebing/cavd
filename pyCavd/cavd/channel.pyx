@@ -132,7 +132,7 @@ cdef class Channel:
         cdef DIJKSTRA_NODE otherNode
         cdef CONN curConn
         for i in range(c_channels.size()):
-            nodes = []
+            nodes = {}
             conns = []
             channel = {}
             # channel = Channel()
@@ -156,21 +156,18 @@ cdef class Channel:
                 disp = (c_channels[i].unitCells).at(j)
                 for k in range(nodeIDs.size()):
                     curNode = (c_channels[i].nodes).at(nodeIDs.at(k))
-                    frac_coord = atmnet.absolute_to_relative(curNode.x, curNode.y, curNode.z)
-                    nodes.append([curNode.id, curNode.label, frac_coord , curNode.max_radius, [disp.x, disp.y, disp.z]])
+                    nodes[curNode.id] = [disp.x, disp.y, disp.z]
             for j in range((c_channels[i].unitCells).size()):
                 nodeIDs = (c_channels[i].ucNodes).at(j)
-                disp = (c_channels[i].unitCells).at(j)
                 for k in range(nodeIDs.size()):
                     curNode = (c_channels[i].nodes).at(nodeIDs.at(k))
                     for l in range((curNode.connections).size()):
                         curConn = curNode.connections.at(l)
                         otherNode = (c_channels[i].nodes).at(curConn.ending)
                         frac_coord = atmnet.absolute_to_relative(curConn.btx, curConn.bty, curConn.btz)
-                        conns.append([curNode.id, otherNode.id, frac_coord, curConn.max_radius])
+                        conns.append([curNode.id, nodes[curNode.id], otherNode.id, nodes[otherNode.id], frac_coord, curConn.max_radius])
             channel["id"] = i
             channel["dim"] = c_channels[i].dimensionality
-            channel["nodes"] = nodes
             channel["conns"] = conns
             channels.append(channel)
         return channels
