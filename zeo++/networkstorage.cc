@@ -623,14 +623,13 @@ VOR_EDGE::VOR_EDGE(const VOR_EDGE& orig):
 // Added at 20180408
 VOR_EDGE::VOR_EDGE(int myFrom, int myTo, double rad, double neck_x, double neck_y, double neck_z, int dx, int dy, int dz, double len):
     from(myFrom), to(myTo), rad_moving_sphere(rad),bottleneck_x(neck_x), bottleneck_y(neck_y), bottleneck_z(neck_z),
-    delta_uc_x(dx), delta_uc_y(dy), delta_uc_z(dz),
-    length(len) {}
+    delta_uc_x(dx), delta_uc_y(dy), delta_uc_z(dz),length(len) {}
 /// Copy constructor
 VOR_EDGE::VOR_EDGE(const VOR_EDGE& orig):
     from(orig.from), to(orig.to), rad_moving_sphere(orig.rad_moving_sphere),
-	 bottleneck_x(orig.bottleneck_x), bottleneck_y(orig.bottleneck_y), bottleneck_z(orig.bottleneck_z),
+	  bottleneck_x(orig.bottleneck_x), bottleneck_y(orig.bottleneck_y), bottleneck_z(orig.bottleneck_z),
     delta_uc_x(orig.delta_uc_x), delta_uc_y(orig.delta_uc_y),
-    delta_uc_z(orig.delta_uc_z) {}
+    delta_uc_z(orig.delta_uc_z),length(orig.length){}
 
 //Default constructor for VOR_NODE
 VOR_NODE::VOR_NODE(){}

@@ -1915,8 +1915,9 @@ bool writeToBI(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, doub
           c = niter->z * cell->invUCVectors[2][2];
           //cout << i << " " << niter->x << " " << niter->y << " " << niter->z << endl;
           // output << i << " " << niter->label << " " << niter->x << " " << niter->y << " " << niter->z << " " 
-          output << niter->id << " " << niter->label << " " << niter->x << " " << niter->y << " " << niter->z << " " 
-			  << a << " " << b << " " << c << " " << niter->rad_stat_sphere;
+          output << niter->id << " " << niter->label << " ";
+          output << "( " << niter->x << ", " << niter->y << ", " << niter->z << " ) ";
+			    output << "( " << a << ", " << b << ", " << c << " ) " << niter->rad_stat_sphere;
           output <<  "\n";
       }
       i++;
@@ -1931,8 +1932,11 @@ bool writeToBI(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, doub
           b = eiter->bottleneck_y * cell->invUCVectors[1][1] + eiter->bottleneck_z * cell->invUCVectors[1][2];
           c = eiter->bottleneck_z * cell->invUCVectors[2][2];
 
-    output << eiter->from << " -> " << eiter->to <<" " << eiter->bottleneck_x << " " << eiter->bottleneck_y << " " << eiter->bottleneck_z << " "
-           << a <<" " << b <<" " << c << " " << eiter->rad_moving_sphere << "\n";
+          output << eiter->from << " -> " << eiter->to <<" ";
+          output << "( " << eiter->delta_uc_x << ", " << eiter->delta_uc_y << ", " << eiter->delta_uc_z << " ) ";
+		      output << "( " << eiter->bottleneck_x << ", " << eiter->bottleneck_y << ", " << eiter->bottleneck_z << " ) ";
+          output << "( " << a <<", " << b << ", " << c << " ) ";
+          output << eiter->length << " " << eiter->rad_moving_sphere << "\n";
       }
       eiter++;
     }

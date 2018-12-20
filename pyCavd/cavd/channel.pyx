@@ -113,17 +113,21 @@ cdef class Channel:
             raise FindChannelError
     
     @classmethod
-    def findChannels(cls, vornet, atmnet, probe_rad, filename):
+    def findChannels(cls, vornet, atmnet, probe_rad, filename=None):
         cdef VORONOI_NETWORK* c_vornet_ptr = (<VoronoiNetwork?>vornet).thisptr
         cdef ATOM_NETWORK* c_atmnet_ptr = (<AtomNetwork?>atmnet).thisptr
+        cdef char* c_filename
+
         if isinstance(filename, unicode):
             filename = (<unicode>filename).encode('utf8')
-        cdef char* c_filename = filename
+
         cdef vector[CHANNEL] c_channels
         if not findChannels_new(c_vornet_ptr, probe_rad, &c_channels):
             raise FindChannelError
-        if not c_writeToNET(c_channels, c_filename, c_atmnet_ptr):
-            raise IOError
+        if filename:
+            c_filename = filename
+            if not c_writeToNET(c_channels, c_filename, c_atmnet_ptr):
+                raise IOError
 
         channels = []
         cdef vector[int] nodeIDs
@@ -151,21 +155,40 @@ cdef class Channel:
             # #print(channel.connections)
             # #print(channel.nodes_deltapos)
 
+            # for j in range((c_channels[i].unitCells).size()):
+            #     nodeIDs = (c_channels[i].ucNodes).at(j)
+            #     disp = (c_channels[i].unitCells).at(j)
+            #     for k in range(nodeIDs.size()):
+            #         curNode = (c_channels[i].nodes).at(nodeIDs.at(k))
+            #         nodes[curNode.id] = [disp.x, disp.y, disp.z]
             for j in range((c_channels[i].unitCells).size()):
                 nodeIDs = (c_channels[i].ucNodes).at(j)
                 disp = (c_channels[i].unitCells).at(j)
                 for k in range(nodeIDs.size()):
                     curNode = (c_channels[i].nodes).at(nodeIDs.at(k))
-                    nodes[curNode.id] = [disp.x, disp.y, disp.z]
-            for j in range((c_channels[i].unitCells).size()):
-                nodeIDs = (c_channels[i].ucNodes).at(j)
-                for k in range(nodeIDs.size()):
-                    curNode = (c_channels[i].nodes).at(nodeIDs.at(k))
+                    xCoord = curNode.x + (&(c_channels[i])).v_a.x*disp.x + (&(c_channels[i])).v_b.x*disp.y + (&(c_channels[i])).v_c.x*disp.z;
+                    yCoord = curNode.y + (&(c_channels[i])).v_a.y*disp.x + (&(c_channels[i])).v_b.y*disp.y + (&(c_channels[i])).v_c.y*disp.z;
+                    zCoord = curNode.z + (&(c_channels[i])).v_a.z*disp.x + (&(c_channels[i])).v_b.z*disp.y + (&(c_channels[i])).v_c.z*disp.z;
+                    
                     for l in range((curNode.connections).size()):
                         curConn = curNode.connections.at(l)
                         otherNode = (c_channels[i].nodes).at(curConn.ending)
-                        frac_coord = atmnet.absolute_to_relative(curConn.btx, curConn.bty, curConn.btz)
-                        conns.append([curNode.id, nodes[curNode.id], otherNode.id, nodes[otherNode.id], frac_coord, curConn.max_radius])
+                        # otherNode_x = otherNode.x + (&(c_channels[i])).v_a.x*disp.x + (&(c_channels[i])).v_b.x*disp.y + (&(c_channels[i])).v_c.x*disp.z;
+                        # otherNode_y = otherNode.y + (&(c_channels[i])).v_a.y*disp.x + (&(c_channels[i])).v_b.y*disp.y + (&(c_channels[i])).v_c.y*disp.z;
+                        # otherNode_z = otherNode.z + (&(c_channels[i])).v_a.z*disp.x + (&(c_channels[i])).v_b.z*disp.y + (&(c_channels[i])).v_c.z*disp.z;
+
+                        # otherNode_xCoord = otherNode_x + (&(c_channels[i])).v_a.x*curConn.deltaPos.x + (&(c_channels[i])).v_b.x*curConn.deltaPos.y + (&(c_channels[i])).v_c.x*curConn.deltaPos.z;
+                        # otherNode_yCoord = otherNode_y + (&(c_channels[i])).v_a.y*curConn.deltaPos.x + (&(c_channels[i])).v_b.y*curConn.deltaPos.y + (&(c_channels[i])).v_c.y*curConn.deltaPos.z;
+                        # otherNode_zCoord = otherNode_z + (&(c_channels[i])).v_a.z*curConn.deltaPos.x + (&(c_channels[i])).v_b.z*curConn.deltaPos.y + (&(c_channels[i])).v_c.z*curConn.deltaPos.z;
+                        
+                        btxCoord = curConn.btx + (&(c_channels[i])).v_a.x*disp.x + (&(c_channels[i])).v_b.x*disp.y + (&(c_channels[i])).v_c.x*disp.z;
+                        btyCoord = curConn.bty + (&(c_channels[i])).v_a.y*disp.x + (&(c_channels[i])).v_b.y*disp.y + (&(c_channels[i])).v_c.y*disp.z;
+                        btzCoord = curConn.btz + (&(c_channels[i])).v_a.z*disp.x + (&(c_channels[i])).v_b.z*disp.y + (&(c_channels[i])).v_c.z*disp.z;
+                        frac_coord = atmnet.absolute_to_relative(btxCoord, btyCoord, btzCoord)
+
+                        # conns.append([curNode.id, [disp.x, disp.y, disp.z], otherNode.id, frac_coord, curConn.max_radius])
+                        # conns.append([curNode.id, [disp.x, disp.y, disp.z], [xCoord, yCoord, zCoord], otherNode.id, [otherNode_xCoord, otherNode_yCoord, otherNode_zCoord], [btxCoord, btyCoord, btzCoord], [curConn.deltaPos.x, curConn.deltaPos.y, curConn.deltaPos.z], curConn.length, curConn.max_radius])
+                        conns.append([curNode.id, [disp.x, disp.y, disp.z], otherNode.id, [curConn.deltaPos.x+disp.x, curConn.deltaPos.y+disp.y, curConn.deltaPos.z+disp.z], frac_coord , curConn.length, curConn.max_radius])
             channel["id"] = i
             channel["dim"] = c_channels[i].dimensionality
             channel["conns"] = conns

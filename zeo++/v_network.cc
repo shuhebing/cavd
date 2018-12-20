@@ -258,6 +258,15 @@ void voronoi_network::store_network(vector<VOR_NODE> &nodes, vector <VOR_EDGE> &
       x2=ptsp[j]+ai*bx+aj*bxy+ak*bxz-x;
       y2=ptsp[j+1]+aj*by+ak*byz-y;
       z2=ptsp[j+2]+ak*bz-z;
+
+	  // Add Those Code to understand ai,aj,ak. by yaj 20181220
+	//   cout << "Soruce: " << x << " " << y << " " << z << endl;
+	//   cout << "ai: " << ai << " aj: " << aj << " ak: " << ak << endl;
+	//   cout << "bx: " << bx << " bxy: " << bxy << " bxz: " << bxz << " by: " << by << " byz: " << byz << " bz: " << bz << endl;
+	//   cout  << "Sink: " << ptsp[j] << " " << ptsp[j+1] << " " << ptsp[j+2] << endl; 
+	//   cout << "Sink_Periodic: " << ptsp[j]+ai*bx+aj*bxy+ak*bxz << " " << ptsp[j+1]+aj*by+ak*byz << " " << ptsp[j+2]+ak*bz << endl;
+	//   cout << "Bottleneck_Site: " << raded[l][q].neckx << " " << raded[l][q].necky << " " << raded[l][q].neckz << endl;
+	//   cout << "Bottleneck length: " << sqrt(x2*x2+y2*y2+z2*z2) << endl;
       // edited at 20180408
       //edges.push_back(VOR_EDGE(l, ed[l][q], raded[l][q].e, ai, aj, ak, sqrt(x2*x2+y2*y2+z2*z2)));
       //cout<< raded[l][q].e<<" "<<raded[l][q].neckx<<" "<<raded[l][q].necky<<" "<<raded[l][q].neckz<<endl;
@@ -420,11 +429,8 @@ void voronoi_network::add_edges_to_network(v_cell &c,double x,double y,double z,
 	int i,j,ai,aj,ak,bi,bj,bk,k,l,q,*vmp;unsigned int cper;
 	double vx,vy,vz,wx,wy,wz,dx,dy,dz,dis;double *pp;
 	
-	//真实坐标
-	//Added at 20180408
-
-	double *cp(c.pts);double vtx,vty,vtz;
-	//double mx,my,mz;
+	double *cp(c.pts);
+	double mx,my,mz;
 
 	for(l=0;l<c.p;l++) {
 		vmp=cmap+4*l;k=*(vmp++);ai=*(vmp++);aj=*(vmp++);ak=*vmp;
@@ -432,10 +438,12 @@ void voronoi_network::add_edges_to_network(v_cell &c,double x,double y,double z,
 		vx=pp[0]+ai*bx+aj*bxy+ak*bxz;
 		vy=pp[1]+aj*by+ak*byz;
 		vz=pp[2]+ak*bz;
-		
-		// Added at 20180408
 
-		vtx=x+cp[4*l]*0.5;vty=y+cp[4*l+1]*0.5;vtz=z+cp[4*l+2]*0.5;
+		// cout << endl;
+		// cout << "Source: " << "( " << pp[0] << ", " << pp[1] << ", " << pp[2] << " )" << endl;
+		// cout << "ai: " << ai << " aj: " << aj << " ak: " << ak << endl;
+		// cout << "bx: " << bx << " bxy: " << bxy << " bxz: " << bxz << " by: " << by << " byz: " << byz << " bz: " << bz << endl;
+		// cout << "Source_periodic: " << "( " << vx << ", " << vy << ", " << vz << " )" << endl;
 
 		for(q=0;q<c.nu[l];q++) {
 			i=c.ed[l][q];
@@ -459,15 +467,28 @@ void voronoi_network::add_edges_to_network(v_cell &c,double x,double y,double z,
 				dis=0;
 			else if(dis>1)
 				dis=1;
-			wx=vx-x+dis*dx;wy=vy-y+dis*dy;wz=vz-z+dis*dz;
-			//cout<< "wx = " << wx << "wy = " << wy << "wz = " << wz << endl;
 
 			//added at 20180408
+			// bottlenck site
+			mx=vx+dis*dx;
+			my=vy+dis*dy;
+			mz=vz+dis*dz;
 
-			double mx=vtx+dis*dx;
-			double my=vty+dis*dy;
-			double mz=vtz+dis*dz;
-			//cout<< "mx = " << mx << "my = " << my << "mz = " << mz << endl;
+			mx=mx-ai*bx-aj*bxy-ak*bxz;
+			my=my-aj*by-ak*byz;
+			mz=mz-ak*bz;
+
+			// cout << endl;
+			// cout << "Source_periodic_inter: " << "( " << vx << ", " << vy << ", " << vz << " )" << endl;
+			// cout << "Sink: " << "( " << pp[0] << ", " << pp[1] << ", " << pp[2] << " )" << endl;
+			// cout << "bi: " << bi << " bj: " << bj << " bk: " << bk << endl;
+			// cout << "Sink_periodic: " << "( " << wx << ", " << wy << ", " << wz << " )" << endl;
+			// cout << "dis: " << dis << endl;
+			// cout << "Bottleneck: " << "( " << mx << ", " << my << ", " << mz << " )" << endl;
+
+			wx=vx-x+dis*dx;wy=vy-y+dis*dy;wz=vz-z+dis*dz;
+
+			// cout << "Boeeleneck " << sqrt(wx*wx + wy * wy + wz * wz) - rad << endl;
 
 			int nat=not_already_there(k,j,cper);
 			if(nat==nu[k]) {

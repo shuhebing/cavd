@@ -29,7 +29,7 @@ struct block {
 	}
 	inline void add(double v,double d,double x,double y,double z) {
 		if(v<0) e=0;
-		else if(v<e) {
+		else if(v<=e) {
 			e=v;
 			dis=d;
 			neckx=x;

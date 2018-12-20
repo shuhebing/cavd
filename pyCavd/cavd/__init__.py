@@ -140,7 +140,7 @@ def AllCom(filename, probe_rad, num_sample, migrant=None, rad_flag=True, effecti
 def BIComputation(filename, migrant=None, rad_flag=True, effective_rad=True, rad_file=None, rad_store_in_vasp=True,  minRad=0.0, maxRad=0.0):
     radii = {}
     if rad_flag and effective_rad:
-        radii = LocalEnvirCom(filename)
+        radii,migrant_radius,migrant_alpha, nei_dises = LocalEnvirCom(filename,migrant)
     if migrant:
         remove_filename = getRemoveMigrantFilename(filename,migrant)
     else:

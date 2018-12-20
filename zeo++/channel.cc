@@ -1833,7 +1833,7 @@ void CHANNEL::writeToNET(int n, fstream &output, ATOM_NETWORK *atmNet){
                 // output << pt[0] << "\t" << pt[1] << "\t" << pt[2] << "\t";
 
                 // Translate the coordinate by unit cell increments so that it lies within the 0 to 1 range.
-                pt = atmNet->shiftABCInUC(pt);
+                // pt = atmNet->shiftABCInUC(pt);
                 //output << xCoord <<  "\t" << yCoord << "\t" << zCoord << "\t" << disp.x << "\t" << disp.y << "\t" << disp.z << "\t";
 				output << pt[0] << "\t" << pt[1] << "\t" << pt[2] << "\t" << disp.x << "\t" << disp.y << "\t" << disp.z << "\t";
                 output << curNode.max_radius << endl;
@@ -1853,13 +1853,32 @@ void CHANNEL::writeToNET(int n, fstream &output, ATOM_NETWORK *atmNet){
 				// Iterate over all connections stemming from the current node
                 for(unsigned int k = 0; k < curNode.connections.size(); k++){
                     CONN curConn = curNode.connections.at(k);
+                    double xCoord = curNode.x + v_a.x*disp.x + v_b.x*disp.y + v_c.x*disp.z;
+                    double yCoord = curNode.y + v_a.y*disp.x + v_b.y*disp.y + v_c.y*disp.z;
+                    double zCoord = curNode.z + v_a.z*disp.x + v_b.z*disp.y + v_c.z*disp.z;
+
                     DIJKSTRA_NODE otherNode = nodes.at(curConn.to);
-					output << curNode.id << "\t" << otherNode.id << "\t";
-                    output << curConn.btx << "\t" << curConn.bty << "\t" << curConn.btz << "\t";
+
+                    double otherNode_x = otherNode.x + v_a.x*disp.x + v_b.x*disp.y + v_c.x*disp.z;
+                    double otherNode_y = otherNode.y + v_a.y*disp.x + v_b.y*disp.y + v_c.y*disp.z;
+                    double otherNode_z = otherNode.z + v_a.z*disp.x + v_b.z*disp.y + v_c.z*disp.z;
+
+                    double otherNode_xCoord = otherNode_x + v_a.x*curConn.deltaPos.x + v_b.x*curConn.deltaPos.y + v_c.x*curConn.deltaPos.z;
+                    double otherNode_yCoord = otherNode_y + v_a.y*curConn.deltaPos.x + v_b.y*curConn.deltaPos.y + v_c.y*curConn.deltaPos.z;
+                    double otherNode_zCoord = otherNode_z + v_a.z*curConn.deltaPos.x + v_b.z*curConn.deltaPos.y + v_c.z*curConn.deltaPos.z;
+
+                    output << curNode.id << "\t" << disp.x << " " << disp.y << " " << disp.z << "\t" << otherNode.id << "\t";
+                    // output << curConn.btx << "\t" << curConn.bty << "\t" << curConn.btz << "\t";
+
+                    double btxCoord = curConn.btx + v_a.x*disp.x + v_b.x*disp.y + v_c.x*disp.z;
+                    double btyCoord = curConn.bty + v_a.y*disp.x + v_b.y*disp.y + v_c.y*disp.z;
+                    double btzCoord = curConn.btz + v_a.z*disp.x + v_b.z*disp.y + v_c.z*disp.z;
+                    output << btxCoord << "\t" << btyCoord << "\t" << btzCoord << "\t";
 
                     //分数坐标
-                    Point pt = atmNet->xyz_to_abc(curConn.btx, curConn.bty, curConn.btz);
+                    Point pt = atmNet->xyz_to_abc(btxCoord, btyCoord, btzCoord);
                     output << pt[0] << "\t" << pt[1] << "\t" << pt[2] << "\t";
+                    output << btxCoord << "\t" << btyCoord << "\t" << btzCoord << "\t";
                     output << curConn.max_radius << "\t" << curConn.deltaPos.x << "\t" << curConn.deltaPos.y << "\t" << curConn.deltaPos.z << endl;
                 }
 			}

@@ -306,8 +306,8 @@ bool storeVoronoiNetwork(c_option &con, ATOM_NETWORK *atmnet, VORONOI_NETWORK *v
   vector<int> cellIDs;
   int **cellInfo;
   cellInfo = new int*[atmnet->numAtoms];
-    if(vl.start()) {
-      do { 
+  if(vl.start()) {
+    do { 
     if(con.compute_cell(c,vl)) {
       vvol+=c.volume();
       vl.pos(id,x,y,z,r);
@@ -365,10 +365,14 @@ bool storeVoronoiNetwork(c_option &con, ATOM_NETWORK *atmnet, VORONOI_NETWORK *v
     
     cout << "Voronoi decomposition finished. Rerouting Voronoi network information." << "\n";
     
+    // If this option is enabled, then the code will not
+    // print edges from i to j for j<i.
+    // vnet.store_network(vornet->nodes, vornet->edges, true);
     vnet.store_network(vornet->nodes, vornet->edges, false);
+
     for(int i = 0; i < atmnet->numAtoms; i++){
       if(numNodes[i] == 0){
-    continue;
+        continue;
       }
       
       vector<int> nodeIDs;
@@ -382,8 +386,8 @@ bool storeVoronoiNetwork(c_option &con, ATOM_NETWORK *atmnet, VORONOI_NETWORK *v
       }
 
       for(int j = 0; j < numNodes[i]; j++){
-    nodeLocations.push_back(Point(vertices[i][3*j], vertices[i][3*j+1], vertices[i][3*j+2])) ;
-    nodeIDs.push_back(cellInfo[i][j*4]);
+        nodeLocations.push_back(Point(vertices[i][3*j], vertices[i][3*j+1], vertices[i][3*j+2])) ;
+        nodeIDs.push_back(cellInfo[i][j*4]);
       }
       
       basCells[cellIDs[i]] = BASIC_VCELL(nodeLocations, nodeIDs);
