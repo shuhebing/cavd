@@ -368,7 +368,8 @@ bool storeVoronoiNetwork(c_option &con, ATOM_NETWORK *atmnet, VORONOI_NETWORK *v
     // If this option is enabled, then the code will not
     // print edges from i to j for j<i.
     // vnet.store_network(vornet->nodes, vornet->edges, true);
-    vnet.store_network(vornet->nodes, vornet->edges, false);
+    // vnet.store_network(vornet->nodes, vornet->edges, false);
+    vnet.store_network(vornet->nodes, vornet->edges, atmnet, false);
 
     for(int i = 0; i < atmnet->numAtoms; i++){
       if(numNodes[i] == 0){

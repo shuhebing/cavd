@@ -83,6 +83,8 @@ class voronoi_network {
 		~voronoi_network();
 		void print_network(FILE *fp=stdout,bool reverse_remove=false);
         void store_network(std::vector<VOR_NODE> &nodes, std::vector <VOR_EDGE> &edges, bool reverse_remove=false);
+		void store_network(std::vector<VOR_NODE> &nodes, std::vector <VOR_EDGE> &edges, ATOM_NETWORK *atmnet, bool reverse_remove=false);
+
 		inline void print_network(const char* filename,bool reverse_remove=false) {
 			FILE *fp(safe_fopen(filename,"w"));
 			print_network(fp);

@@ -608,6 +608,19 @@ cdef class VoronoiNode:
             self.thisptr.y = coords[1]
             self.thisptr.z = coords[2]
     
+    property frac_coords:
+        def __get__(self):
+            coords = [self.thisptr.frac_a, self.thisptr.frac_b, self.thisptr.frac_c]
+            return coords
+        def __set__(self, coords):      # Don't set this
+            """
+            This variable is not supposed to be modified manually
+            """
+            print ("This value is not supposed to be modified")
+            self.thisptr.frac_a = coords[0]
+            self.thisptr.frac_b = coords[1]
+            self.thisptr.frac_c = coords[2]
+    
     property label:
         def __get__(self): return self.thisptr.label
         def __set__(self, label):
@@ -707,7 +720,7 @@ cdef class VoronoiNetwork:
             nodes = []
             cdef vector[VOR_NODE] c_nodes = self.thisptr.nodes
             for i in range(c_nodes.size()):
-                node_coords = [c_nodes[i].x,c_nodes[i].y,c_nodes[i].z]
+                node_coords = [c_nodes[i].frac_a,c_nodes[i].frac_b,c_nodes[i].frac_c]
                 node_radius = c_nodes[i].rad_stat_sphere
                 node_label = c_nodes[i].label
                 nodes.append([i, node_label, node_coords, node_radius])
@@ -722,8 +735,8 @@ cdef class VoronoiNetwork:
                 edge_ending = c_edges[i].ending
                 edge_radius = c_edges[i].rad_moving_sphere
                 edge_length = c_edges[i].length
-                edge_boltpos = [c_edges[i].bottleneck_x,c_edges[i].bottleneck_y,c_edges[i].bottleneck_z]
-                edges.append([edge_origin, edge_ending, edge_radius, edge_length, edge_boltpos])
+                edge_boltpos = [c_edges[i].bottleneck_a,c_edges[i].bottleneck_b,c_edges[i].bottleneck_c]
+                edges.append([edge_origin, edge_ending, edge_boltpos, edge_radius, edge_length])
             return edges
 
     def prune(self, radius):

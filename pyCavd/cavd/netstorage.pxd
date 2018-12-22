@@ -47,6 +47,7 @@ cdef extern from "../../zeo++/networkstorage.h":
         double x, y, z
         double rad_stat_sphere
         int label
+        double frac_a,frac_b,frac_c
 
     cdef cppclass VOR_EDGE:
         VOR_EDGE() except +
@@ -63,6 +64,7 @@ cdef extern from "../../zeo++/networkstorage.h":
 
         #added at 20180408
         double bottleneck_x,bottleneck_y,bottleneck_z;
+        double bottleneck_a,bottleneck_b,bottleneck_c;
 
 
     cdef cppclass VORONOI_NETWORK:

@@ -1835,7 +1835,7 @@ void CHANNEL::writeToNET(int n, fstream &output, ATOM_NETWORK *atmNet){
                 // Translate the coordinate by unit cell increments so that it lies within the 0 to 1 range.
                 // pt = atmNet->shiftABCInUC(pt);
                 //output << xCoord <<  "\t" << yCoord << "\t" << zCoord << "\t" << disp.x << "\t" << disp.y << "\t" << disp.z << "\t";
-				output << pt[0] << "\t" << pt[1] << "\t" << pt[2] << "\t";
+				output << pt[0] << "\t" << pt[1] << "\t" << pt[2] << endl;
                 // output << disp.x << "\t" << disp.y << "\t" << disp.z << "\t";
                 // output << curNode.max_radius << endl;
 				
@@ -1859,10 +1859,9 @@ void CHANNEL::writeToNET(int n, fstream &output, ATOM_NETWORK *atmNet){
                     double zCoord = curNode.z + v_a.z*disp.x + v_b.z*disp.y + v_c.z*disp.z;
                     Point pt = atmNet->xyz_to_abc(xCoord, yCoord, zCoord);
 
-					output << curNode.id << "\t" << disp.x << " " << disp.y << " " << disp.z << "endl";
+					output << curNode.id << "\t" << disp.x << " " << disp.y << " " << disp.z << "\t";
                     output << xCoord << " " << yCoord << " " << zCoord << "\t";
 				    output << pt[0] << " " << pt[1] << " " << pt[2] << endl;
-                    output << endl;
 
                     DIJKSTRA_NODE otherNode = nodes.at(curConn.to);
 
@@ -1875,10 +1874,9 @@ void CHANNEL::writeToNET(int n, fstream &output, ATOM_NETWORK *atmNet){
                     double otherNode_zCoord = otherNode_z + v_a.z*curConn.deltaPos.x + v_b.z*curConn.deltaPos.y + v_c.z*curConn.deltaPos.z;
                     Point pt_other = atmNet->xyz_to_abc(otherNode_xCoord, otherNode_yCoord, otherNode_zCoord);
 
-                    output << otherNode.id << "\t" << curConn.deltaPos.x << "\t" << curConn.deltaPos.y << "\t" << curConn.deltaPos.z << endl;
+                    output << otherNode.id << "\t" << curConn.deltaPos.x << " " << curConn.deltaPos.y << " " << curConn.deltaPos.z << "\t";
                     output << otherNode_xCoord << " " << otherNode_yCoord << " " << otherNode_zCoord << "\t";
                     output << pt_other[0] << " " << pt_other[1] << " " << pt_other[2] << endl;
-                    output << endl;
 
                     // output << curConn.btx << "\t" << curConn.bty << "\t" << curConn.btz << "\t";
 
@@ -1889,7 +1887,6 @@ void CHANNEL::writeToNET(int n, fstream &output, ATOM_NETWORK *atmNet){
 
                     output << btxCoord << "\t" << btyCoord << "\t" << btzCoord << "\t";
                     output << pt_bt[0] << " " << pt_bt[1] << " " << pt_bt[2] << endl;
-                    output << endl;
                     output << endl;
 
                     // //分数坐标

@@ -1,6 +1,7 @@
 //#include "../network.h"
 #include <voro++.hh>
 #include "v_network.h"
+#include "geometry.h"
 
 using namespace std;
 using namespace voro;
@@ -221,9 +222,10 @@ void voronoi_network::draw_network(FILE *fp) {
 }
 
 
-void voronoi_network::store_network(vector<VOR_NODE> &nodes, vector <VOR_EDGE> &edges, bool reverse_remove) {
+void voronoi_network::store_network(vector<VOR_NODE> &nodes, vector <VOR_EDGE> &edges, ATOM_NETWORK *atmnet, bool reverse_remove) {
   int ai,aj,ak,j,l,ll,q;
   double x,y,z,x2,y2,z2,*ptsp;
+  Point pt,pt_bt;
   
   nodes.clear(); edges.clear();
 
@@ -233,8 +235,9 @@ void voronoi_network::store_network(vector<VOR_NODE> &nodes, vector <VOR_EDGE> &
 
     vector<int> atomIDs;
     for(ll=0;ll<nec[l];ll++) atomIDs.push_back(ne[l][ll]);
+	pt = atmnet->xyz_to_abc(ptsp[j], ptsp[j+1], ptsp[j+2]);
 
-    nodes.push_back(VOR_NODE(ptsp[j], ptsp[j+1], ptsp[j+2], ptsp[j+3], atomIDs));
+    nodes.push_back(VOR_NODE(ptsp[j], ptsp[j+1], ptsp[j+2], pt[0],  pt[1],  pt[2], ptsp[j+3], atomIDs));
   }
   
   // Print out the edge table, loop over vertices
@@ -270,7 +273,8 @@ void voronoi_network::store_network(vector<VOR_NODE> &nodes, vector <VOR_EDGE> &
       // edited at 20180408
       //edges.push_back(VOR_EDGE(l, ed[l][q], raded[l][q].e, ai, aj, ak, sqrt(x2*x2+y2*y2+z2*z2)));
       //cout<< raded[l][q].e<<" "<<raded[l][q].neckx<<" "<<raded[l][q].necky<<" "<<raded[l][q].neckz<<endl;
-      edges.push_back(VOR_EDGE(l, ed[l][q], raded[l][q].e,raded[l][q].neckx,raded[l][q].necky,raded[l][q].neckz,ai, aj, ak, sqrt(x2*x2+y2*y2+z2*z2)));
+	  pt_bt = atmnet->xyz_to_abc(raded[l][q].neckx,raded[l][q].necky,raded[l][q].neckz);
+      edges.push_back(VOR_EDGE(l, ed[l][q], raded[l][q].e,raded[l][q].neckx,raded[l][q].necky,raded[l][q].neckz,pt_bt[0], pt_bt[1],pt_bt[2], ai, aj, ak, sqrt(x2*x2+y2*y2+z2*z2)));
     }
   }
 }

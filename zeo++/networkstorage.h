@@ -285,6 +285,7 @@ public:
 
   //20180117修改
   double bottleneck_x,bottleneck_y,bottleneck_z;
+  double bottleneck_a,bottleneck_b,bottleneck_c;  
 
   VOR_EDGE();
   VOR_EDGE(const VOR_EDGE&);
@@ -292,6 +293,7 @@ public:
 
   // added at 20180408
   VOR_EDGE(int myFrom, int myTo, double rad, double bottleneck_x, double bottleneck_y, double bottleneck_z, int dx, int dy, int dz, double len);
+  VOR_EDGE(int myFrom, int myTo, double rad, double bottleneck_x, double bottleneck_y, double bottleneck_z, double bottleneck_a, double bottleneck_b, double bottleneck_c, int dx, int dy, int dz, double len);
 };
   
 
@@ -301,6 +303,7 @@ public:
   VOR_NODE();
   //VOR_NODE(const VOR_NODE&);
   VOR_NODE(double myX, double myY, double myZ, double rad, std::vector<int> ids);
+  VOR_NODE(double myX, double myY, double myZ, double fracA, double fracB, double fracC, double rad, std::vector<int> ids);
   double x,y,z;
   double rad_stat_sphere;
   //neighbor atom's ID of voronoi node
@@ -312,6 +315,7 @@ public:
   //add id and label
   int id;
   int label = -1;
+  double frac_a,frac_b,frac_c;
 
 };
 

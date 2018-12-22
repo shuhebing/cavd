@@ -166,9 +166,9 @@ cdef class Channel:
                 disp = (c_channels[i].unitCells).at(j)
                 for k in range(nodeIDs.size()):
                     curNode = (c_channels[i].nodes).at(nodeIDs.at(k))
-                    xCoord = curNode.x + (&(c_channels[i])).v_a.x*disp.x + (&(c_channels[i])).v_b.x*disp.y + (&(c_channels[i])).v_c.x*disp.z;
-                    yCoord = curNode.y + (&(c_channels[i])).v_a.y*disp.x + (&(c_channels[i])).v_b.y*disp.y + (&(c_channels[i])).v_c.y*disp.z;
-                    zCoord = curNode.z + (&(c_channels[i])).v_a.z*disp.x + (&(c_channels[i])).v_b.z*disp.y + (&(c_channels[i])).v_c.z*disp.z;
+                    # xCoord = curNode.x + (&(c_channels[i])).v_a.x*disp.x + (&(c_channels[i])).v_b.x*disp.y + (&(c_channels[i])).v_c.x*disp.z;
+                    # yCoord = curNode.y + (&(c_channels[i])).v_a.y*disp.x + (&(c_channels[i])).v_b.y*disp.y + (&(c_channels[i])).v_c.y*disp.z;
+                    # zCoord = curNode.z + (&(c_channels[i])).v_a.z*disp.x + (&(c_channels[i])).v_b.z*disp.y + (&(c_channels[i])).v_c.z*disp.z;
                     
                     for l in range((curNode.connections).size()):
                         curConn = curNode.connections.at(l)
@@ -181,14 +181,16 @@ cdef class Channel:
                         # otherNode_yCoord = otherNode_y + (&(c_channels[i])).v_a.y*curConn.deltaPos.x + (&(c_channels[i])).v_b.y*curConn.deltaPos.y + (&(c_channels[i])).v_c.y*curConn.deltaPos.z;
                         # otherNode_zCoord = otherNode_z + (&(c_channels[i])).v_a.z*curConn.deltaPos.x + (&(c_channels[i])).v_b.z*curConn.deltaPos.y + (&(c_channels[i])).v_c.z*curConn.deltaPos.z;
                         
-                        btxCoord = curConn.btx + (&(c_channels[i])).v_a.x*disp.x + (&(c_channels[i])).v_b.x*disp.y + (&(c_channels[i])).v_c.x*disp.z;
-                        btyCoord = curConn.bty + (&(c_channels[i])).v_a.y*disp.x + (&(c_channels[i])).v_b.y*disp.y + (&(c_channels[i])).v_c.y*disp.z;
-                        btzCoord = curConn.btz + (&(c_channels[i])).v_a.z*disp.x + (&(c_channels[i])).v_b.z*disp.y + (&(c_channels[i])).v_c.z*disp.z;
-                        frac_coord = atmnet.absolute_to_relative(btxCoord, btyCoord, btzCoord)
+                        # btxCoord = curConn.btx + (&(c_channels[i])).v_a.x*disp.x + (&(c_channels[i])).v_b.x*disp.y + (&(c_channels[i])).v_c.x*disp.z;
+                        # btyCoord = curConn.bty + (&(c_channels[i])).v_a.y*disp.x + (&(c_channels[i])).v_b.y*disp.y + (&(c_channels[i])).v_c.y*disp.z;
+                        # btzCoord = curConn.btz + (&(c_channels[i])).v_a.z*disp.x + (&(c_channels[i])).v_b.z*disp.y + (&(c_channels[i])).v_c.z*disp.z;
+                        # frac_coord = atmnet.absolute_to_relative(btxCoord, btyCoord, btzCoord)
+                        frac_coord = atmnet.absolute_to_relative(curConn.btx, curConn.bty, curConn.btz)
 
                         # conns.append([curNode.id, [disp.x, disp.y, disp.z], otherNode.id, frac_coord, curConn.max_radius])
                         # conns.append([curNode.id, [disp.x, disp.y, disp.z], [xCoord, yCoord, zCoord], otherNode.id, [otherNode_xCoord, otherNode_yCoord, otherNode_zCoord], [btxCoord, btyCoord, btzCoord], [curConn.deltaPos.x, curConn.deltaPos.y, curConn.deltaPos.z], curConn.length, curConn.max_radius])
-                        conns.append([curNode.id, [disp.x, disp.y, disp.z], otherNode.id, [curConn.deltaPos.x+disp.x, curConn.deltaPos.y+disp.y, curConn.deltaPos.z+disp.z], frac_coord , curConn.length, curConn.max_radius])
+                        # conns.append([curNode.id, [disp.x, disp.y, disp.z], otherNode.id, [curConn.deltaPos.x+disp.x, curConn.deltaPos.y+disp.y, curConn.deltaPos.z+disp.z], frac_coord , curConn.length, curConn.max_radius])
+                        conns.append([curNode.id, [0, 0, 0], otherNode.id, [curConn.deltaPos.x, curConn.deltaPos.y, curConn.deltaPos.z], frac_coord , curConn.length, curConn.max_radius])
             channel["id"] = i
             channel["dim"] = c_channels[i].dimensionality
             channel["conns"] = conns

@@ -271,7 +271,7 @@ def get_Symmetry(atmnt, vornet):
     #print(positions)
     lattice = atmnt.lattice
     for i in vornet.nodes:
-        positions.append(atmnt.absolute_to_relative(i[2][0],i[2][1],i[2][2]))
+        positions.append(i[2])
     numbers = [1,]*len(vornet.nodes)
     
     # print(numbers)

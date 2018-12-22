@@ -624,10 +624,18 @@ VOR_EDGE::VOR_EDGE(const VOR_EDGE& orig):
 VOR_EDGE::VOR_EDGE(int myFrom, int myTo, double rad, double neck_x, double neck_y, double neck_z, int dx, int dy, int dz, double len):
     from(myFrom), to(myTo), rad_moving_sphere(rad),bottleneck_x(neck_x), bottleneck_y(neck_y), bottleneck_z(neck_z),
     delta_uc_x(dx), delta_uc_y(dy), delta_uc_z(dz),length(len) {}
+
+VOR_EDGE::VOR_EDGE(int myFrom, int myTo, double rad, double neck_x, double neck_y, double neck_z, double neck_a, double neck_b, double neck_c, int dx, int dy, int dz, double len):
+    from(myFrom), to(myTo), rad_moving_sphere(rad),
+    bottleneck_x(neck_x), bottleneck_y(neck_y), bottleneck_z(neck_z),
+    bottleneck_a(neck_a), bottleneck_b(neck_b), bottleneck_c(neck_c),
+    delta_uc_x(dx), delta_uc_y(dy), delta_uc_z(dz),length(len) {}
+
 /// Copy constructor
 VOR_EDGE::VOR_EDGE(const VOR_EDGE& orig):
     from(orig.from), to(orig.to), rad_moving_sphere(orig.rad_moving_sphere),
 	  bottleneck_x(orig.bottleneck_x), bottleneck_y(orig.bottleneck_y), bottleneck_z(orig.bottleneck_z),
+    bottleneck_a(orig.bottleneck_a), bottleneck_b(orig.bottleneck_b), bottleneck_c(orig.bottleneck_c),
     delta_uc_x(orig.delta_uc_x), delta_uc_y(orig.delta_uc_y),
     delta_uc_z(orig.delta_uc_z),length(orig.length){}
 
@@ -637,6 +645,16 @@ VOR_NODE::VOR_NODE(){}
 VOR_NODE::VOR_NODE(double myX, double myY, double myZ,
                    double rad, vector<int> ids){
     x = myX; y = myY; z = myZ;
+    rad_stat_sphere = rad;
+    atomIDs = ids;
+}
+
+VOR_NODE::VOR_NODE(double myX, double myY, double myZ, double fracA, double fracB, double fracC, 
+                   double rad, vector<int> ids){
+    x = myX; y = myY; z = myZ;
+    frac_a = fracA;
+    frac_b = fracB;
+    frac_c = fracC;
     rad_stat_sphere = rad;
     atomIDs = ids;
 }

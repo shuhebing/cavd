@@ -927,7 +927,7 @@ struct __pyx_obj_4cavd_11voronoicell_BasicVCell {
 };
 
 
-/* "cavd/netstorage.pxd":145
+/* "cavd/netstorage.pxd":147
  *             VORONOI_NETWORK* vornet, ATOM_NETWORK* atmnet)
  * 
  * cdef class Atom:             # <<<<<<<<<<<<<<
@@ -940,7 +940,7 @@ struct __pyx_obj_4cavd_10netstorage_Atom {
 };
 
 
-/* "cavd/netstorage.pxd":151
+/* "cavd/netstorage.pxd":153
  *     cdef ATOM* thisptr
  * 
  * cdef class AtomNetwork:             # <<<<<<<<<<<<<<
@@ -954,7 +954,7 @@ struct __pyx_obj_4cavd_10netstorage_AtomNetwork {
 };
 
 
-/* "cavd/netstorage.pxd":160
+/* "cavd/netstorage.pxd":162
  *     cdef bint rad_flag
  * 
  * cdef class VoronoiNode:             # <<<<<<<<<<<<<<
@@ -967,7 +967,7 @@ struct __pyx_obj_4cavd_10netstorage_VoronoiNode {
 };
 
 
-/* "cavd/netstorage.pxd":166
+/* "cavd/netstorage.pxd":168
  *     cdef VOR_NODE* thisptr
  * 
  * cdef class VoronoiNetwork:             # <<<<<<<<<<<<<<
@@ -980,7 +980,7 @@ struct __pyx_obj_4cavd_10netstorage_VoronoiNetwork {
 };
 
 
-/* "cavd/netstorage.pxd":172
+/* "cavd/netstorage.pxd":174
  *     cdef VORONOI_NETWORK* thisptr
  * 
  * cdef class VoronoiEdge:             # <<<<<<<<<<<<<<
@@ -1905,6 +1905,8 @@ static int __pyx_pf_4cavd_10netstorage_11VoronoiNode_2__init__(CYTHON_UNUSED str
 static void __pyx_pf_4cavd_10netstorage_11VoronoiNode_4__dealloc__(struct __pyx_obj_4cavd_10netstorage_VoronoiNode *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_4cavd_10netstorage_11VoronoiNode_6coords___get__(struct __pyx_obj_4cavd_10netstorage_VoronoiNode *__pyx_v_self); /* proto */
 static int __pyx_pf_4cavd_10netstorage_11VoronoiNode_6coords_2__set__(struct __pyx_obj_4cavd_10netstorage_VoronoiNode *__pyx_v_self, PyObject *__pyx_v_coords); /* proto */
+static PyObject *__pyx_pf_4cavd_10netstorage_11VoronoiNode_11frac_coords___get__(struct __pyx_obj_4cavd_10netstorage_VoronoiNode *__pyx_v_self); /* proto */
+static int __pyx_pf_4cavd_10netstorage_11VoronoiNode_11frac_coords_2__set__(struct __pyx_obj_4cavd_10netstorage_VoronoiNode *__pyx_v_self, PyObject *__pyx_v_coords); /* proto */
 static PyObject *__pyx_pf_4cavd_10netstorage_11VoronoiNode_5label___get__(struct __pyx_obj_4cavd_10netstorage_VoronoiNode *__pyx_v_self); /* proto */
 static int __pyx_pf_4cavd_10netstorage_11VoronoiNode_5label_2__set__(struct __pyx_obj_4cavd_10netstorage_VoronoiNode *__pyx_v_self, PyObject *__pyx_v_label); /* proto */
 static PyObject *__pyx_pf_4cavd_10netstorage_11VoronoiNode_6radius___get__(struct __pyx_obj_4cavd_10netstorage_VoronoiNode *__pyx_v_self); /* proto */
@@ -8954,7 +8956,7 @@ static int __pyx_pf_4cavd_10netstorage_11VoronoiNode_6coords_2__set__(struct __p
  *             self.thisptr.y = coords[1]
  *             self.thisptr.z = coords[2]             # <<<<<<<<<<<<<<
  * 
- *     property label:
+ *     property frac_coords:
  */
   __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_coords, 2, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 609, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -8984,6 +8986,195 @@ static int __pyx_pf_4cavd_10netstorage_11VoronoiNode_6coords_2__set__(struct __p
 
 /* "cavd/netstorage.pyx":612
  * 
+ *     property frac_coords:
+ *         def __get__(self):             # <<<<<<<<<<<<<<
+ *             coords = [self.thisptr.frac_a, self.thisptr.frac_b, self.thisptr.frac_c]
+ *             return coords
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_4cavd_10netstorage_11VoronoiNode_11frac_coords_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_4cavd_10netstorage_11VoronoiNode_11frac_coords_1__get__(PyObject *__pyx_v_self) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_4cavd_10netstorage_11VoronoiNode_11frac_coords___get__(((struct __pyx_obj_4cavd_10netstorage_VoronoiNode *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_4cavd_10netstorage_11VoronoiNode_11frac_coords___get__(struct __pyx_obj_4cavd_10netstorage_VoronoiNode *__pyx_v_self) {
+  PyObject *__pyx_v_coords = NULL;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  PyObject *__pyx_t_4 = NULL;
+  __Pyx_RefNannySetupContext("__get__", 0);
+
+  /* "cavd/netstorage.pyx":613
+ *     property frac_coords:
+ *         def __get__(self):
+ *             coords = [self.thisptr.frac_a, self.thisptr.frac_b, self.thisptr.frac_c]             # <<<<<<<<<<<<<<
+ *             return coords
+ *         def __set__(self, coords):      # Don't set this
+ */
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->frac_a); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 613, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_self->thisptr->frac_b); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 613, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_self->thisptr->frac_c); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 613, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_4 = PyList_New(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 613, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_GIVEREF(__pyx_t_1);
+  PyList_SET_ITEM(__pyx_t_4, 0, __pyx_t_1);
+  __Pyx_GIVEREF(__pyx_t_2);
+  PyList_SET_ITEM(__pyx_t_4, 1, __pyx_t_2);
+  __Pyx_GIVEREF(__pyx_t_3);
+  PyList_SET_ITEM(__pyx_t_4, 2, __pyx_t_3);
+  __pyx_t_1 = 0;
+  __pyx_t_2 = 0;
+  __pyx_t_3 = 0;
+  __pyx_v_coords = ((PyObject*)__pyx_t_4);
+  __pyx_t_4 = 0;
+
+  /* "cavd/netstorage.pyx":614
+ *         def __get__(self):
+ *             coords = [self.thisptr.frac_a, self.thisptr.frac_b, self.thisptr.frac_c]
+ *             return coords             # <<<<<<<<<<<<<<
+ *         def __set__(self, coords):      # Don't set this
+ *             """
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __Pyx_INCREF(__pyx_v_coords);
+  __pyx_r = __pyx_v_coords;
+  goto __pyx_L0;
+
+  /* "cavd/netstorage.pyx":612
+ * 
+ *     property frac_coords:
+ *         def __get__(self):             # <<<<<<<<<<<<<<
+ *             coords = [self.thisptr.frac_a, self.thisptr.frac_b, self.thisptr.frac_c]
+ *             return coords
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_AddTraceback("cavd.netstorage.VoronoiNode.frac_coords.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_coords);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "cavd/netstorage.pyx":615
+ *             coords = [self.thisptr.frac_a, self.thisptr.frac_b, self.thisptr.frac_c]
+ *             return coords
+ *         def __set__(self, coords):      # Don't set this             # <<<<<<<<<<<<<<
+ *             """
+ *             This variable is not supposed to be modified manually
+ */
+
+/* Python wrapper */
+static int __pyx_pw_4cavd_10netstorage_11VoronoiNode_11frac_coords_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_coords); /*proto*/
+static int __pyx_pw_4cavd_10netstorage_11VoronoiNode_11frac_coords_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_coords) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__set__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_4cavd_10netstorage_11VoronoiNode_11frac_coords_2__set__(((struct __pyx_obj_4cavd_10netstorage_VoronoiNode *)__pyx_v_self), ((PyObject *)__pyx_v_coords));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static int __pyx_pf_4cavd_10netstorage_11VoronoiNode_11frac_coords_2__set__(struct __pyx_obj_4cavd_10netstorage_VoronoiNode *__pyx_v_self, PyObject *__pyx_v_coords) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  double __pyx_t_2;
+  __Pyx_RefNannySetupContext("__set__", 0);
+
+  /* "cavd/netstorage.pyx":619
+ *             This variable is not supposed to be modified manually
+ *             """
+ *             print ("This value is not supposed to be modified")             # <<<<<<<<<<<<<<
+ *             self.thisptr.frac_a = coords[0]
+ *             self.thisptr.frac_b = coords[1]
+ */
+  if (__Pyx_PrintOne(0, __pyx_kp_s_This_value_is_not_supposed_to_be) < 0) __PYX_ERR(1, 619, __pyx_L1_error)
+
+  /* "cavd/netstorage.pyx":620
+ *             """
+ *             print ("This value is not supposed to be modified")
+ *             self.thisptr.frac_a = coords[0]             # <<<<<<<<<<<<<<
+ *             self.thisptr.frac_b = coords[1]
+ *             self.thisptr.frac_c = coords[2]
+ */
+  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_coords, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 620, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) __PYX_ERR(1, 620, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_v_self->thisptr->frac_a = __pyx_t_2;
+
+  /* "cavd/netstorage.pyx":621
+ *             print ("This value is not supposed to be modified")
+ *             self.thisptr.frac_a = coords[0]
+ *             self.thisptr.frac_b = coords[1]             # <<<<<<<<<<<<<<
+ *             self.thisptr.frac_c = coords[2]
+ * 
+ */
+  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_coords, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 621, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) __PYX_ERR(1, 621, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_v_self->thisptr->frac_b = __pyx_t_2;
+
+  /* "cavd/netstorage.pyx":622
+ *             self.thisptr.frac_a = coords[0]
+ *             self.thisptr.frac_b = coords[1]
+ *             self.thisptr.frac_c = coords[2]             # <<<<<<<<<<<<<<
+ * 
+ *     property label:
+ */
+  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_coords, 2, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 622, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) __PYX_ERR(1, 622, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_v_self->thisptr->frac_c = __pyx_t_2;
+
+  /* "cavd/netstorage.pyx":615
+ *             coords = [self.thisptr.frac_a, self.thisptr.frac_b, self.thisptr.frac_c]
+ *             return coords
+ *         def __set__(self, coords):      # Don't set this             # <<<<<<<<<<<<<<
+ *             """
+ *             This variable is not supposed to be modified manually
+ */
+
+  /* function exit code */
+  __pyx_r = 0;
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("cavd.netstorage.VoronoiNode.frac_coords.__set__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = -1;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "cavd/netstorage.pyx":625
+ * 
  *     property label:
  *         def __get__(self): return self.thisptr.label             # <<<<<<<<<<<<<<
  *         def __set__(self, label):
@@ -9009,7 +9200,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_11VoronoiNode_5label___get__(struct
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->label); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 612, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->label); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 625, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -9026,7 +9217,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_11VoronoiNode_5label___get__(struct
   return __pyx_r;
 }
 
-/* "cavd/netstorage.pyx":613
+/* "cavd/netstorage.pyx":626
  *     property label:
  *         def __get__(self): return self.thisptr.label
  *         def __set__(self, label):             # <<<<<<<<<<<<<<
@@ -9053,17 +9244,17 @@ static int __pyx_pf_4cavd_10netstorage_11VoronoiNode_5label_2__set__(struct __py
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("__set__", 0);
 
-  /* "cavd/netstorage.pyx":614
+  /* "cavd/netstorage.pyx":627
  *         def __get__(self): return self.thisptr.label
  *         def __set__(self, label):
  *             self.thisptr.label = label             # <<<<<<<<<<<<<<
  * 
  *     property radius:
  */
-  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_label); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 614, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_label); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 627, __pyx_L1_error)
   __pyx_v_self->thisptr->label = __pyx_t_1;
 
-  /* "cavd/netstorage.pyx":613
+  /* "cavd/netstorage.pyx":626
  *     property label:
  *         def __get__(self): return self.thisptr.label
  *         def __set__(self, label):             # <<<<<<<<<<<<<<
@@ -9082,7 +9273,7 @@ static int __pyx_pf_4cavd_10netstorage_11VoronoiNode_5label_2__set__(struct __py
   return __pyx_r;
 }
 
-/* "cavd/netstorage.pyx":617
+/* "cavd/netstorage.pyx":630
  * 
  *     property radius:
  *         def __get__(self): return self.thisptr.rad_stat_sphere             # <<<<<<<<<<<<<<
@@ -9109,7 +9300,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_11VoronoiNode_6radius___get__(struc
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->rad_stat_sphere); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 617, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->rad_stat_sphere); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 630, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -9126,7 +9317,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_11VoronoiNode_6radius___get__(struc
   return __pyx_r;
 }
 
-/* "cavd/netstorage.pyx":618
+/* "cavd/netstorage.pyx":631
  *     property radius:
  *         def __get__(self): return self.thisptr.rad_stat_sphere
  *         def __set__(self, rad):             # <<<<<<<<<<<<<<
@@ -9153,26 +9344,26 @@ static int __pyx_pf_4cavd_10netstorage_11VoronoiNode_6radius_2__set__(struct __p
   double __pyx_t_1;
   __Pyx_RefNannySetupContext("__set__", 0);
 
-  /* "cavd/netstorage.pyx":619
+  /* "cavd/netstorage.pyx":632
  *         def __get__(self): return self.thisptr.rad_stat_sphere
  *         def __set__(self, rad):
  *             print ("This value is not supposed to be modified")             # <<<<<<<<<<<<<<
  *             self.thisptr.rad_stat_sphere = rad
  * 
  */
-  if (__Pyx_PrintOne(0, __pyx_kp_s_This_value_is_not_supposed_to_be) < 0) __PYX_ERR(1, 619, __pyx_L1_error)
+  if (__Pyx_PrintOne(0, __pyx_kp_s_This_value_is_not_supposed_to_be) < 0) __PYX_ERR(1, 632, __pyx_L1_error)
 
-  /* "cavd/netstorage.pyx":620
+  /* "cavd/netstorage.pyx":633
  *         def __set__(self, rad):
  *             print ("This value is not supposed to be modified")
  *             self.thisptr.rad_stat_sphere = rad             # <<<<<<<<<<<<<<
  * 
  * cdef class VoronoiEdge:
  */
-  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_rad); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(1, 620, __pyx_L1_error)
+  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_rad); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(1, 633, __pyx_L1_error)
   __pyx_v_self->thisptr->rad_stat_sphere = __pyx_t_1;
 
-  /* "cavd/netstorage.pyx":618
+  /* "cavd/netstorage.pyx":631
  *     property radius:
  *         def __get__(self): return self.thisptr.rad_stat_sphere
  *         def __set__(self, rad):             # <<<<<<<<<<<<<<
@@ -9298,7 +9489,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_11VoronoiNode_8__setstate_cython__(
   return __pyx_r;
 }
 
-/* "cavd/netstorage.pyx":626
+/* "cavd/netstorage.pyx":639
  *     Class to store the voronoi edges with some atrribute
  *     """
  *     def __cinit__(self):             # <<<<<<<<<<<<<<
@@ -9328,7 +9519,7 @@ static int __pyx_pf_4cavd_10netstorage_11VoronoiEdge___cinit__(struct __pyx_obj_
   VOR_EDGE *__pyx_t_1;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "cavd/netstorage.pyx":627
+  /* "cavd/netstorage.pyx":640
  *     """
  *     def __cinit__(self):
  *         self.thisptr = new VOR_EDGE()             # <<<<<<<<<<<<<<
@@ -9339,11 +9530,11 @@ static int __pyx_pf_4cavd_10netstorage_11VoronoiEdge___cinit__(struct __pyx_obj_
     __pyx_t_1 = new VOR_EDGE();
   } catch(...) {
     __Pyx_CppExn2PyErr();
-    __PYX_ERR(1, 627, __pyx_L1_error)
+    __PYX_ERR(1, 640, __pyx_L1_error)
   }
   __pyx_v_self->thisptr = __pyx_t_1;
 
-  /* "cavd/netstorage.pyx":626
+  /* "cavd/netstorage.pyx":639
  *     Class to store the voronoi edges with some atrribute
  *     """
  *     def __cinit__(self):             # <<<<<<<<<<<<<<
@@ -9362,7 +9553,7 @@ static int __pyx_pf_4cavd_10netstorage_11VoronoiEdge___cinit__(struct __pyx_obj_
   return __pyx_r;
 }
 
-/* "cavd/netstorage.pyx":629
+/* "cavd/netstorage.pyx":642
  *         self.thisptr = new VOR_EDGE()
  * 
  *     def __init__(self):             # <<<<<<<<<<<<<<
@@ -9397,7 +9588,7 @@ static int __pyx_pf_4cavd_10netstorage_11VoronoiEdge_2__init__(CYTHON_UNUSED str
   return __pyx_r;
 }
 
-/* "cavd/netstorage.pyx":632
+/* "cavd/netstorage.pyx":645
  *         pass
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -9420,7 +9611,7 @@ static void __pyx_pf_4cavd_10netstorage_11VoronoiEdge_4__dealloc__(struct __pyx_
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__dealloc__", 0);
 
-  /* "cavd/netstorage.pyx":633
+  /* "cavd/netstorage.pyx":646
  * 
  *     def __dealloc__(self):
  *         del self.thisptr             # <<<<<<<<<<<<<<
@@ -9429,7 +9620,7 @@ static void __pyx_pf_4cavd_10netstorage_11VoronoiEdge_4__dealloc__(struct __pyx_
  */
   delete __pyx_v_self->thisptr;
 
-  /* "cavd/netstorage.pyx":632
+  /* "cavd/netstorage.pyx":645
  *         pass
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -9441,7 +9632,7 @@ static void __pyx_pf_4cavd_10netstorage_11VoronoiEdge_4__dealloc__(struct __pyx_
   __Pyx_RefNannyFinishContext();
 }
 
-/* "cavd/netstorage.pyx":636
+/* "cavd/netstorage.pyx":649
  * 
  *     property origin:
  *         def __get__(self): return self.thisptr.origin             # <<<<<<<<<<<<<<
@@ -9468,7 +9659,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_11VoronoiEdge_6origin___get__(struc
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->from); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 636, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->from); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 649, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -9485,7 +9676,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_11VoronoiEdge_6origin___get__(struc
   return __pyx_r;
 }
 
-/* "cavd/netstorage.pyx":637
+/* "cavd/netstorage.pyx":650
  *     property origin:
  *         def __get__(self): return self.thisptr.origin
  *         def __set__(self, origin):             # <<<<<<<<<<<<<<
@@ -9512,26 +9703,26 @@ static int __pyx_pf_4cavd_10netstorage_11VoronoiEdge_6origin_2__set__(struct __p
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("__set__", 0);
 
-  /* "cavd/netstorage.pyx":638
+  /* "cavd/netstorage.pyx":651
  *         def __get__(self): return self.thisptr.origin
  *         def __set__(self, origin):
  *             print ("This value is not supposed to be modified")             # <<<<<<<<<<<<<<
  *             self.thisptr.origin = origin
  * 
  */
-  if (__Pyx_PrintOne(0, __pyx_kp_s_This_value_is_not_supposed_to_be) < 0) __PYX_ERR(1, 638, __pyx_L1_error)
+  if (__Pyx_PrintOne(0, __pyx_kp_s_This_value_is_not_supposed_to_be) < 0) __PYX_ERR(1, 651, __pyx_L1_error)
 
-  /* "cavd/netstorage.pyx":639
+  /* "cavd/netstorage.pyx":652
  *         def __set__(self, origin):
  *             print ("This value is not supposed to be modified")
  *             self.thisptr.origin = origin             # <<<<<<<<<<<<<<
  * 
  *     property ending:
  */
-  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_origin); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 639, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_origin); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 652, __pyx_L1_error)
   __pyx_v_self->thisptr->from = __pyx_t_1;
 
-  /* "cavd/netstorage.pyx":637
+  /* "cavd/netstorage.pyx":650
  *     property origin:
  *         def __get__(self): return self.thisptr.origin
  *         def __set__(self, origin):             # <<<<<<<<<<<<<<
@@ -9550,7 +9741,7 @@ static int __pyx_pf_4cavd_10netstorage_11VoronoiEdge_6origin_2__set__(struct __p
   return __pyx_r;
 }
 
-/* "cavd/netstorage.pyx":642
+/* "cavd/netstorage.pyx":655
  * 
  *     property ending:
  *         def __get__(self): return self.thisptr.ending             # <<<<<<<<<<<<<<
@@ -9577,7 +9768,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_11VoronoiEdge_6ending___get__(struc
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->to); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 642, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->to); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 655, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -9594,7 +9785,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_11VoronoiEdge_6ending___get__(struc
   return __pyx_r;
 }
 
-/* "cavd/netstorage.pyx":643
+/* "cavd/netstorage.pyx":656
  *     property ending:
  *         def __get__(self): return self.thisptr.ending
  *         def __set__(self, ending):             # <<<<<<<<<<<<<<
@@ -9621,26 +9812,26 @@ static int __pyx_pf_4cavd_10netstorage_11VoronoiEdge_6ending_2__set__(struct __p
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("__set__", 0);
 
-  /* "cavd/netstorage.pyx":644
+  /* "cavd/netstorage.pyx":657
  *         def __get__(self): return self.thisptr.ending
  *         def __set__(self, ending):
  *             print ("This value is not supposed to be modified")             # <<<<<<<<<<<<<<
  *             self.thisptr.ending = ending
  * 
  */
-  if (__Pyx_PrintOne(0, __pyx_kp_s_This_value_is_not_supposed_to_be) < 0) __PYX_ERR(1, 644, __pyx_L1_error)
+  if (__Pyx_PrintOne(0, __pyx_kp_s_This_value_is_not_supposed_to_be) < 0) __PYX_ERR(1, 657, __pyx_L1_error)
 
-  /* "cavd/netstorage.pyx":645
+  /* "cavd/netstorage.pyx":658
  *         def __set__(self, ending):
  *             print ("This value is not supposed to be modified")
  *             self.thisptr.ending = ending             # <<<<<<<<<<<<<<
  * 
  *     property radius:
  */
-  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_ending); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 645, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_ending); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 658, __pyx_L1_error)
   __pyx_v_self->thisptr->to = __pyx_t_1;
 
-  /* "cavd/netstorage.pyx":643
+  /* "cavd/netstorage.pyx":656
  *     property ending:
  *         def __get__(self): return self.thisptr.ending
  *         def __set__(self, ending):             # <<<<<<<<<<<<<<
@@ -9659,7 +9850,7 @@ static int __pyx_pf_4cavd_10netstorage_11VoronoiEdge_6ending_2__set__(struct __p
   return __pyx_r;
 }
 
-/* "cavd/netstorage.pyx":648
+/* "cavd/netstorage.pyx":661
  * 
  *     property radius:
  *         def __get__(self): return self.thisptr.rad_moving_sphere             # <<<<<<<<<<<<<<
@@ -9686,7 +9877,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_11VoronoiEdge_6radius___get__(struc
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->rad_moving_sphere); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 648, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->rad_moving_sphere); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 661, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -9703,7 +9894,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_11VoronoiEdge_6radius___get__(struc
   return __pyx_r;
 }
 
-/* "cavd/netstorage.pyx":649
+/* "cavd/netstorage.pyx":662
  *     property radius:
  *         def __get__(self): return self.thisptr.rad_moving_sphere
  *         def __set__(self, rad):             # <<<<<<<<<<<<<<
@@ -9730,26 +9921,26 @@ static int __pyx_pf_4cavd_10netstorage_11VoronoiEdge_6radius_2__set__(struct __p
   double __pyx_t_1;
   __Pyx_RefNannySetupContext("__set__", 0);
 
-  /* "cavd/netstorage.pyx":650
+  /* "cavd/netstorage.pyx":663
  *         def __get__(self): return self.thisptr.rad_moving_sphere
  *         def __set__(self, rad):
  *             print ("This value is not supposed to be modified")             # <<<<<<<<<<<<<<
  *             self.thisptr.rad_moving_sphere = rad
  * 
  */
-  if (__Pyx_PrintOne(0, __pyx_kp_s_This_value_is_not_supposed_to_be) < 0) __PYX_ERR(1, 650, __pyx_L1_error)
+  if (__Pyx_PrintOne(0, __pyx_kp_s_This_value_is_not_supposed_to_be) < 0) __PYX_ERR(1, 663, __pyx_L1_error)
 
-  /* "cavd/netstorage.pyx":651
+  /* "cavd/netstorage.pyx":664
  *         def __set__(self, rad):
  *             print ("This value is not supposed to be modified")
  *             self.thisptr.rad_moving_sphere = rad             # <<<<<<<<<<<<<<
  * 
  *     property leng:
  */
-  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_rad); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(1, 651, __pyx_L1_error)
+  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_rad); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(1, 664, __pyx_L1_error)
   __pyx_v_self->thisptr->rad_moving_sphere = __pyx_t_1;
 
-  /* "cavd/netstorage.pyx":649
+  /* "cavd/netstorage.pyx":662
  *     property radius:
  *         def __get__(self): return self.thisptr.rad_moving_sphere
  *         def __set__(self, rad):             # <<<<<<<<<<<<<<
@@ -9768,7 +9959,7 @@ static int __pyx_pf_4cavd_10netstorage_11VoronoiEdge_6radius_2__set__(struct __p
   return __pyx_r;
 }
 
-/* "cavd/netstorage.pyx":654
+/* "cavd/netstorage.pyx":667
  * 
  *     property leng:
  *         def __get__(self): return self.thisptr.length             # <<<<<<<<<<<<<<
@@ -9795,7 +9986,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_11VoronoiEdge_4leng___get__(struct 
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->length); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 654, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->length); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 667, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -9812,7 +10003,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_11VoronoiEdge_4leng___get__(struct 
   return __pyx_r;
 }
 
-/* "cavd/netstorage.pyx":655
+/* "cavd/netstorage.pyx":668
  *     property leng:
  *         def __get__(self): return self.thisptr.length
  *         def __set__(self, length):             # <<<<<<<<<<<<<<
@@ -9839,26 +10030,26 @@ static int __pyx_pf_4cavd_10netstorage_11VoronoiEdge_4leng_2__set__(struct __pyx
   double __pyx_t_1;
   __Pyx_RefNannySetupContext("__set__", 0);
 
-  /* "cavd/netstorage.pyx":656
+  /* "cavd/netstorage.pyx":669
  *         def __get__(self): return self.thisptr.length
  *         def __set__(self, length):
  *             print ("This value is not supposed to be modified")             # <<<<<<<<<<<<<<
  *             self.thisptr.length = length
  * 
  */
-  if (__Pyx_PrintOne(0, __pyx_kp_s_This_value_is_not_supposed_to_be) < 0) __PYX_ERR(1, 656, __pyx_L1_error)
+  if (__Pyx_PrintOne(0, __pyx_kp_s_This_value_is_not_supposed_to_be) < 0) __PYX_ERR(1, 669, __pyx_L1_error)
 
-  /* "cavd/netstorage.pyx":657
+  /* "cavd/netstorage.pyx":670
  *         def __set__(self, length):
  *             print ("This value is not supposed to be modified")
  *             self.thisptr.length = length             # <<<<<<<<<<<<<<
  * 
  *     property delta_uc:
  */
-  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_length); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(1, 657, __pyx_L1_error)
+  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_length); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(1, 670, __pyx_L1_error)
   __pyx_v_self->thisptr->length = __pyx_t_1;
 
-  /* "cavd/netstorage.pyx":655
+  /* "cavd/netstorage.pyx":668
  *     property leng:
  *         def __get__(self): return self.thisptr.length
  *         def __set__(self, length):             # <<<<<<<<<<<<<<
@@ -9877,7 +10068,7 @@ static int __pyx_pf_4cavd_10netstorage_11VoronoiEdge_4leng_2__set__(struct __pyx
   return __pyx_r;
 }
 
-/* "cavd/netstorage.pyx":660
+/* "cavd/netstorage.pyx":673
  * 
  *     property delta_uc:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -9908,20 +10099,20 @@ static PyObject *__pyx_pf_4cavd_10netstorage_11VoronoiEdge_8delta_uc___get__(str
   PyObject *__pyx_t_4 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "cavd/netstorage.pyx":661
+  /* "cavd/netstorage.pyx":674
  *     property delta_uc:
  *         def __get__(self):
  *             delta_uc = [self.thisptr.delta_uc_x, self.thisptr.delta_uc_y, self.thisptr.delta_uc_z]             # <<<<<<<<<<<<<<
  *             return delta_uc
  *         def __set__(self, delta_uc):      # Don't set this
  */
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->delta_uc_x); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 661, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->delta_uc_x); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 674, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->delta_uc_y); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 661, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->delta_uc_y); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 674, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->delta_uc_z); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 661, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_self->thisptr->delta_uc_z); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 674, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = PyList_New(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 661, __pyx_L1_error)
+  __pyx_t_4 = PyList_New(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 674, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_GIVEREF(__pyx_t_1);
   PyList_SET_ITEM(__pyx_t_4, 0, __pyx_t_1);
@@ -9935,7 +10126,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_11VoronoiEdge_8delta_uc___get__(str
   __pyx_v_delta_uc = ((PyObject*)__pyx_t_4);
   __pyx_t_4 = 0;
 
-  /* "cavd/netstorage.pyx":662
+  /* "cavd/netstorage.pyx":675
  *         def __get__(self):
  *             delta_uc = [self.thisptr.delta_uc_x, self.thisptr.delta_uc_y, self.thisptr.delta_uc_z]
  *             return delta_uc             # <<<<<<<<<<<<<<
@@ -9947,7 +10138,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_11VoronoiEdge_8delta_uc___get__(str
   __pyx_r = __pyx_v_delta_uc;
   goto __pyx_L0;
 
-  /* "cavd/netstorage.pyx":660
+  /* "cavd/netstorage.pyx":673
  * 
  *     property delta_uc:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -9970,7 +10161,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_11VoronoiEdge_8delta_uc___get__(str
   return __pyx_r;
 }
 
-/* "cavd/netstorage.pyx":663
+/* "cavd/netstorage.pyx":676
  *             delta_uc = [self.thisptr.delta_uc_x, self.thisptr.delta_uc_y, self.thisptr.delta_uc_z]
  *             return delta_uc
  *         def __set__(self, delta_uc):      # Don't set this             # <<<<<<<<<<<<<<
@@ -9998,55 +10189,55 @@ static int __pyx_pf_4cavd_10netstorage_11VoronoiEdge_8delta_uc_2__set__(struct _
   int __pyx_t_2;
   __Pyx_RefNannySetupContext("__set__", 0);
 
-  /* "cavd/netstorage.pyx":667
+  /* "cavd/netstorage.pyx":680
  *             This variable is not supposed to be modified manually
  *             """
  *             print ("This value is not supposed to be modified")             # <<<<<<<<<<<<<<
  *             self.thisptr.delta_uc_x = delta_uc[0]
  *             self.thisptr.delta_uc_y = delta_uc[1]
  */
-  if (__Pyx_PrintOne(0, __pyx_kp_s_This_value_is_not_supposed_to_be) < 0) __PYX_ERR(1, 667, __pyx_L1_error)
+  if (__Pyx_PrintOne(0, __pyx_kp_s_This_value_is_not_supposed_to_be) < 0) __PYX_ERR(1, 680, __pyx_L1_error)
 
-  /* "cavd/netstorage.pyx":668
+  /* "cavd/netstorage.pyx":681
  *             """
  *             print ("This value is not supposed to be modified")
  *             self.thisptr.delta_uc_x = delta_uc[0]             # <<<<<<<<<<<<<<
  *             self.thisptr.delta_uc_y = delta_uc[1]
  *             self.thisptr.delta_uc_z = delta_uc[2]
  */
-  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_delta_uc, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 668, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_delta_uc, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 681, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 668, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 681, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_self->thisptr->delta_uc_x = __pyx_t_2;
 
-  /* "cavd/netstorage.pyx":669
+  /* "cavd/netstorage.pyx":682
  *             print ("This value is not supposed to be modified")
  *             self.thisptr.delta_uc_x = delta_uc[0]
  *             self.thisptr.delta_uc_y = delta_uc[1]             # <<<<<<<<<<<<<<
  *             self.thisptr.delta_uc_z = delta_uc[2]
  * 
  */
-  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_delta_uc, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 669, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_delta_uc, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 682, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 669, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 682, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_self->thisptr->delta_uc_y = __pyx_t_2;
 
-  /* "cavd/netstorage.pyx":670
+  /* "cavd/netstorage.pyx":683
  *             self.thisptr.delta_uc_x = delta_uc[0]
  *             self.thisptr.delta_uc_y = delta_uc[1]
  *             self.thisptr.delta_uc_z = delta_uc[2]             # <<<<<<<<<<<<<<
  * 
  *     property bot_coords:
  */
-  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_delta_uc, 2, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 670, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_delta_uc, 2, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 683, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 670, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 683, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_self->thisptr->delta_uc_z = __pyx_t_2;
 
-  /* "cavd/netstorage.pyx":663
+  /* "cavd/netstorage.pyx":676
  *             delta_uc = [self.thisptr.delta_uc_x, self.thisptr.delta_uc_y, self.thisptr.delta_uc_z]
  *             return delta_uc
  *         def __set__(self, delta_uc):      # Don't set this             # <<<<<<<<<<<<<<
@@ -10066,7 +10257,7 @@ static int __pyx_pf_4cavd_10netstorage_11VoronoiEdge_8delta_uc_2__set__(struct _
   return __pyx_r;
 }
 
-/* "cavd/netstorage.pyx":673
+/* "cavd/netstorage.pyx":686
  * 
  *     property bot_coords:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -10097,20 +10288,20 @@ static PyObject *__pyx_pf_4cavd_10netstorage_11VoronoiEdge_10bot_coords___get__(
   PyObject *__pyx_t_4 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "cavd/netstorage.pyx":674
+  /* "cavd/netstorage.pyx":687
  *     property bot_coords:
  *         def __get__(self):
  *             bot_coords = [self.thisptr.bottleneck_x, self.thisptr.bottleneck_y, self.thisptr.bottleneck_z]             # <<<<<<<<<<<<<<
  *             return bot_coords
  *         def __set__(self, coords):      # Don't set this
  */
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->bottleneck_x); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 674, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->bottleneck_x); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 687, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_self->thisptr->bottleneck_y); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 674, __pyx_L1_error)
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_self->thisptr->bottleneck_y); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 687, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_self->thisptr->bottleneck_z); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 674, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_self->thisptr->bottleneck_z); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 687, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = PyList_New(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 674, __pyx_L1_error)
+  __pyx_t_4 = PyList_New(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 687, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_GIVEREF(__pyx_t_1);
   PyList_SET_ITEM(__pyx_t_4, 0, __pyx_t_1);
@@ -10124,7 +10315,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_11VoronoiEdge_10bot_coords___get__(
   __pyx_v_bot_coords = ((PyObject*)__pyx_t_4);
   __pyx_t_4 = 0;
 
-  /* "cavd/netstorage.pyx":675
+  /* "cavd/netstorage.pyx":688
  *         def __get__(self):
  *             bot_coords = [self.thisptr.bottleneck_x, self.thisptr.bottleneck_y, self.thisptr.bottleneck_z]
  *             return bot_coords             # <<<<<<<<<<<<<<
@@ -10136,7 +10327,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_11VoronoiEdge_10bot_coords___get__(
   __pyx_r = __pyx_v_bot_coords;
   goto __pyx_L0;
 
-  /* "cavd/netstorage.pyx":673
+  /* "cavd/netstorage.pyx":686
  * 
  *     property bot_coords:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -10159,7 +10350,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_11VoronoiEdge_10bot_coords___get__(
   return __pyx_r;
 }
 
-/* "cavd/netstorage.pyx":676
+/* "cavd/netstorage.pyx":689
  *             bot_coords = [self.thisptr.bottleneck_x, self.thisptr.bottleneck_y, self.thisptr.bottleneck_z]
  *             return bot_coords
  *         def __set__(self, coords):      # Don't set this             # <<<<<<<<<<<<<<
@@ -10187,55 +10378,55 @@ static int __pyx_pf_4cavd_10netstorage_11VoronoiEdge_10bot_coords_2__set__(struc
   double __pyx_t_2;
   __Pyx_RefNannySetupContext("__set__", 0);
 
-  /* "cavd/netstorage.pyx":680
+  /* "cavd/netstorage.pyx":693
  *             This variable is not supposed to be modified manually
  *             """
  *             print ("This value is not supposed to be modified")             # <<<<<<<<<<<<<<
  *             self.thisptr.bottleneck_x = coords[0]
  *             self.thisptr.bottleneck_y = coords[1]
  */
-  if (__Pyx_PrintOne(0, __pyx_kp_s_This_value_is_not_supposed_to_be) < 0) __PYX_ERR(1, 680, __pyx_L1_error)
+  if (__Pyx_PrintOne(0, __pyx_kp_s_This_value_is_not_supposed_to_be) < 0) __PYX_ERR(1, 693, __pyx_L1_error)
 
-  /* "cavd/netstorage.pyx":681
+  /* "cavd/netstorage.pyx":694
  *             """
  *             print ("This value is not supposed to be modified")
  *             self.thisptr.bottleneck_x = coords[0]             # <<<<<<<<<<<<<<
  *             self.thisptr.bottleneck_y = coords[1]
  *             self.thisptr.bottleneck_z = coords[2]
  */
-  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_coords, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 681, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_coords, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 694, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) __PYX_ERR(1, 681, __pyx_L1_error)
+  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) __PYX_ERR(1, 694, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_self->thisptr->bottleneck_x = __pyx_t_2;
 
-  /* "cavd/netstorage.pyx":682
+  /* "cavd/netstorage.pyx":695
  *             print ("This value is not supposed to be modified")
  *             self.thisptr.bottleneck_x = coords[0]
  *             self.thisptr.bottleneck_y = coords[1]             # <<<<<<<<<<<<<<
  *             self.thisptr.bottleneck_z = coords[2]
  * 
  */
-  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_coords, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 682, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_coords, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 695, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) __PYX_ERR(1, 682, __pyx_L1_error)
+  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) __PYX_ERR(1, 695, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_self->thisptr->bottleneck_y = __pyx_t_2;
 
-  /* "cavd/netstorage.pyx":683
+  /* "cavd/netstorage.pyx":696
  *             self.thisptr.bottleneck_x = coords[0]
  *             self.thisptr.bottleneck_y = coords[1]
  *             self.thisptr.bottleneck_z = coords[2]             # <<<<<<<<<<<<<<
  * 
  * cdef class VoronoiNetwork:
  */
-  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_coords, 2, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 683, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_coords, 2, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 696, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) __PYX_ERR(1, 683, __pyx_L1_error)
+  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) __PYX_ERR(1, 696, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_self->thisptr->bottleneck_z = __pyx_t_2;
 
-  /* "cavd/netstorage.pyx":676
+  /* "cavd/netstorage.pyx":689
  *             bot_coords = [self.thisptr.bottleneck_x, self.thisptr.bottleneck_y, self.thisptr.bottleneck_z]
  *             return bot_coords
  *         def __set__(self, coords):      # Don't set this             # <<<<<<<<<<<<<<
@@ -10362,7 +10553,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_11VoronoiEdge_8__setstate_cython__(
   return __pyx_r;
 }
 
-/* "cavd/netstorage.pyx":693
+/* "cavd/netstorage.pyx":706
  *     #Contains a pointer to ATOM_NETWORK and a flag denoting whether radisu
  *     #for each atomic species is non-zero.
  *     def __cinit__(self):             # <<<<<<<<<<<<<<
@@ -10392,7 +10583,7 @@ static int __pyx_pf_4cavd_10netstorage_14VoronoiNetwork___cinit__(struct __pyx_o
   VORONOI_NETWORK *__pyx_t_1;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "cavd/netstorage.pyx":694
+  /* "cavd/netstorage.pyx":707
  *     #for each atomic species is non-zero.
  *     def __cinit__(self):
  *         self.thisptr = new VORONOI_NETWORK()             # <<<<<<<<<<<<<<
@@ -10403,11 +10594,11 @@ static int __pyx_pf_4cavd_10netstorage_14VoronoiNetwork___cinit__(struct __pyx_o
     __pyx_t_1 = new VORONOI_NETWORK();
   } catch(...) {
     __Pyx_CppExn2PyErr();
-    __PYX_ERR(1, 694, __pyx_L1_error)
+    __PYX_ERR(1, 707, __pyx_L1_error)
   }
   __pyx_v_self->thisptr = __pyx_t_1;
 
-  /* "cavd/netstorage.pyx":693
+  /* "cavd/netstorage.pyx":706
  *     #Contains a pointer to ATOM_NETWORK and a flag denoting whether radisu
  *     #for each atomic species is non-zero.
  *     def __cinit__(self):             # <<<<<<<<<<<<<<
@@ -10426,7 +10617,7 @@ static int __pyx_pf_4cavd_10netstorage_14VoronoiNetwork___cinit__(struct __pyx_o
   return __pyx_r;
 }
 
-/* "cavd/netstorage.pyx":696
+/* "cavd/netstorage.pyx":709
  *         self.thisptr = new VORONOI_NETWORK()
  * 
  *     def __init__(self):             # <<<<<<<<<<<<<<
@@ -10461,7 +10652,7 @@ static int __pyx_pf_4cavd_10netstorage_14VoronoiNetwork_2__init__(CYTHON_UNUSED 
   return __pyx_r;
 }
 
-/* "cavd/netstorage.pyx":699
+/* "cavd/netstorage.pyx":712
  *         pass
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -10484,7 +10675,7 @@ static void __pyx_pf_4cavd_10netstorage_14VoronoiNetwork_4__dealloc__(struct __p
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__dealloc__", 0);
 
-  /* "cavd/netstorage.pyx":700
+  /* "cavd/netstorage.pyx":713
  * 
  *     def __dealloc__(self):
  *         del self.thisptr             # <<<<<<<<<<<<<<
@@ -10493,7 +10684,7 @@ static void __pyx_pf_4cavd_10netstorage_14VoronoiNetwork_4__dealloc__(struct __p
  */
   delete __pyx_v_self->thisptr;
 
-  /* "cavd/netstorage.pyx":699
+  /* "cavd/netstorage.pyx":712
  *         pass
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -10505,7 +10696,7 @@ static void __pyx_pf_4cavd_10netstorage_14VoronoiNetwork_4__dealloc__(struct __p
   __Pyx_RefNannyFinishContext();
 }
 
-/* "cavd/netstorage.pyx":702
+/* "cavd/netstorage.pyx":715
  *         del self.thisptr
  * 
  *     def size(self):             # <<<<<<<<<<<<<<
@@ -10532,7 +10723,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_6size(struct __pyx
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("size", 0);
 
-  /* "cavd/netstorage.pyx":703
+  /* "cavd/netstorage.pyx":716
  * 
  *     def size(self):
  *         return self.thisptr.nodes.size()             # <<<<<<<<<<<<<<
@@ -10540,13 +10731,13 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_6size(struct __pyx
  *     property nodes:
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_FromSize_t(__pyx_v_self->thisptr->nodes.size()); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 703, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_FromSize_t(__pyx_v_self->thisptr->nodes.size()); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 716, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "cavd/netstorage.pyx":702
+  /* "cavd/netstorage.pyx":715
  *         del self.thisptr
  * 
  *     def size(self):             # <<<<<<<<<<<<<<
@@ -10565,7 +10756,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_6size(struct __pyx
   return __pyx_r;
 }
 
-/* "cavd/netstorage.pyx":706
+/* "cavd/netstorage.pyx":719
  * 
  *     property nodes:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -10608,33 +10799,33 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_5nodes___get__(str
   int __pyx_t_11;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "cavd/netstorage.pyx":707
+  /* "cavd/netstorage.pyx":720
  *     property nodes:
  *         def __get__(self):
  *             nodes = []             # <<<<<<<<<<<<<<
  *             cdef vector[VOR_NODE] c_nodes = self.thisptr.nodes
  *             for i in range(c_nodes.size()):
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 707, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 720, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_nodes = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "cavd/netstorage.pyx":708
+  /* "cavd/netstorage.pyx":721
  *         def __get__(self):
  *             nodes = []
  *             cdef vector[VOR_NODE] c_nodes = self.thisptr.nodes             # <<<<<<<<<<<<<<
  *             for i in range(c_nodes.size()):
- *                 node_coords = [c_nodes[i].x,c_nodes[i].y,c_nodes[i].z]
+ *                 node_coords = [c_nodes[i].frac_a,c_nodes[i].frac_b,c_nodes[i].frac_c]
  */
   __pyx_t_2 = __pyx_v_self->thisptr->nodes;
   __pyx_v_c_nodes = __pyx_t_2;
 
-  /* "cavd/netstorage.pyx":709
+  /* "cavd/netstorage.pyx":722
  *             nodes = []
  *             cdef vector[VOR_NODE] c_nodes = self.thisptr.nodes
  *             for i in range(c_nodes.size()):             # <<<<<<<<<<<<<<
- *                 node_coords = [c_nodes[i].x,c_nodes[i].y,c_nodes[i].z]
+ *                 node_coords = [c_nodes[i].frac_a,c_nodes[i].frac_b,c_nodes[i].frac_c]
  *                 node_radius = c_nodes[i].rad_stat_sphere
  */
   __pyx_t_3 = __pyx_v_c_nodes.size();
@@ -10642,20 +10833,20 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_5nodes___get__(str
   for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
     __pyx_v_i = __pyx_t_5;
 
-    /* "cavd/netstorage.pyx":710
+    /* "cavd/netstorage.pyx":723
  *             cdef vector[VOR_NODE] c_nodes = self.thisptr.nodes
  *             for i in range(c_nodes.size()):
- *                 node_coords = [c_nodes[i].x,c_nodes[i].y,c_nodes[i].z]             # <<<<<<<<<<<<<<
+ *                 node_coords = [c_nodes[i].frac_a,c_nodes[i].frac_b,c_nodes[i].frac_c]             # <<<<<<<<<<<<<<
  *                 node_radius = c_nodes[i].rad_stat_sphere
  *                 node_label = c_nodes[i].label
  */
-    __pyx_t_1 = PyFloat_FromDouble((__pyx_v_c_nodes[__pyx_v_i]).x); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 710, __pyx_L1_error)
+    __pyx_t_1 = PyFloat_FromDouble((__pyx_v_c_nodes[__pyx_v_i]).frac_a); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 723, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_6 = PyFloat_FromDouble((__pyx_v_c_nodes[__pyx_v_i]).y); if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 710, __pyx_L1_error)
+    __pyx_t_6 = PyFloat_FromDouble((__pyx_v_c_nodes[__pyx_v_i]).frac_b); if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 723, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_7 = PyFloat_FromDouble((__pyx_v_c_nodes[__pyx_v_i]).z); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 710, __pyx_L1_error)
+    __pyx_t_7 = PyFloat_FromDouble((__pyx_v_c_nodes[__pyx_v_i]).frac_c); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 723, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_8 = PyList_New(3); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 710, __pyx_L1_error)
+    __pyx_t_8 = PyList_New(3); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 723, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_GIVEREF(__pyx_t_1);
     PyList_SET_ITEM(__pyx_t_8, 0, __pyx_t_1);
@@ -10669,9 +10860,9 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_5nodes___get__(str
     __Pyx_XDECREF_SET(__pyx_v_node_coords, ((PyObject*)__pyx_t_8));
     __pyx_t_8 = 0;
 
-    /* "cavd/netstorage.pyx":711
+    /* "cavd/netstorage.pyx":724
  *             for i in range(c_nodes.size()):
- *                 node_coords = [c_nodes[i].x,c_nodes[i].y,c_nodes[i].z]
+ *                 node_coords = [c_nodes[i].frac_a,c_nodes[i].frac_b,c_nodes[i].frac_c]
  *                 node_radius = c_nodes[i].rad_stat_sphere             # <<<<<<<<<<<<<<
  *                 node_label = c_nodes[i].label
  *                 nodes.append([i, node_label, node_coords, node_radius])
@@ -10679,8 +10870,8 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_5nodes___get__(str
     __pyx_t_9 = (__pyx_v_c_nodes[__pyx_v_i]).rad_stat_sphere;
     __pyx_v_node_radius = __pyx_t_9;
 
-    /* "cavd/netstorage.pyx":712
- *                 node_coords = [c_nodes[i].x,c_nodes[i].y,c_nodes[i].z]
+    /* "cavd/netstorage.pyx":725
+ *                 node_coords = [c_nodes[i].frac_a,c_nodes[i].frac_b,c_nodes[i].frac_c]
  *                 node_radius = c_nodes[i].rad_stat_sphere
  *                 node_label = c_nodes[i].label             # <<<<<<<<<<<<<<
  *                 nodes.append([i, node_label, node_coords, node_radius])
@@ -10689,20 +10880,20 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_5nodes___get__(str
     __pyx_t_10 = (__pyx_v_c_nodes[__pyx_v_i]).label;
     __pyx_v_node_label = __pyx_t_10;
 
-    /* "cavd/netstorage.pyx":713
+    /* "cavd/netstorage.pyx":726
  *                 node_radius = c_nodes[i].rad_stat_sphere
  *                 node_label = c_nodes[i].label
  *                 nodes.append([i, node_label, node_coords, node_radius])             # <<<<<<<<<<<<<<
  *             return nodes
  * 
  */
-    __pyx_t_8 = __Pyx_PyInt_FromSize_t(__pyx_v_i); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 713, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyInt_FromSize_t(__pyx_v_i); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 726, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    __pyx_t_7 = __Pyx_PyInt_From_int(__pyx_v_node_label); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 713, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyInt_From_int(__pyx_v_node_label); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 726, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_6 = PyFloat_FromDouble(__pyx_v_node_radius); if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 713, __pyx_L1_error)
+    __pyx_t_6 = PyFloat_FromDouble(__pyx_v_node_radius); if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 726, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_1 = PyList_New(4); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 713, __pyx_L1_error)
+    __pyx_t_1 = PyList_New(4); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 726, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_GIVEREF(__pyx_t_8);
     PyList_SET_ITEM(__pyx_t_1, 0, __pyx_t_8);
@@ -10716,11 +10907,11 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_5nodes___get__(str
     __pyx_t_8 = 0;
     __pyx_t_7 = 0;
     __pyx_t_6 = 0;
-    __pyx_t_11 = __Pyx_PyList_Append(__pyx_v_nodes, __pyx_t_1); if (unlikely(__pyx_t_11 == ((int)-1))) __PYX_ERR(1, 713, __pyx_L1_error)
+    __pyx_t_11 = __Pyx_PyList_Append(__pyx_v_nodes, __pyx_t_1); if (unlikely(__pyx_t_11 == ((int)-1))) __PYX_ERR(1, 726, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   }
 
-  /* "cavd/netstorage.pyx":714
+  /* "cavd/netstorage.pyx":727
  *                 node_label = c_nodes[i].label
  *                 nodes.append([i, node_label, node_coords, node_radius])
  *             return nodes             # <<<<<<<<<<<<<<
@@ -10732,7 +10923,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_5nodes___get__(str
   __pyx_r = __pyx_v_nodes;
   goto __pyx_L0;
 
-  /* "cavd/netstorage.pyx":706
+  /* "cavd/netstorage.pyx":719
  * 
  *     property nodes:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -10756,7 +10947,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_5nodes___get__(str
   return __pyx_r;
 }
 
-/* "cavd/netstorage.pyx":717
+/* "cavd/netstorage.pyx":730
  * 
  *     property edges:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -10802,19 +10993,19 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_5edges___get__(str
   int __pyx_t_12;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "cavd/netstorage.pyx":718
+  /* "cavd/netstorage.pyx":731
  *     property edges:
  *         def __get__(self):
  *             edges = []             # <<<<<<<<<<<<<<
  *             cdef vector[VOR_EDGE] c_edges = self.thisptr.edges
  *             for i in range(c_edges.size()):
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 718, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 731, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_edges = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "cavd/netstorage.pyx":719
+  /* "cavd/netstorage.pyx":732
  *         def __get__(self):
  *             edges = []
  *             cdef vector[VOR_EDGE] c_edges = self.thisptr.edges             # <<<<<<<<<<<<<<
@@ -10824,7 +11015,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_5edges___get__(str
   __pyx_t_2 = __pyx_v_self->thisptr->edges;
   __pyx_v_c_edges = __pyx_t_2;
 
-  /* "cavd/netstorage.pyx":720
+  /* "cavd/netstorage.pyx":733
  *             edges = []
  *             cdef vector[VOR_EDGE] c_edges = self.thisptr.edges
  *             for i in range(c_edges.size()):             # <<<<<<<<<<<<<<
@@ -10836,7 +11027,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_5edges___get__(str
   for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
     __pyx_v_i = __pyx_t_5;
 
-    /* "cavd/netstorage.pyx":721
+    /* "cavd/netstorage.pyx":734
  *             cdef vector[VOR_EDGE] c_edges = self.thisptr.edges
  *             for i in range(c_edges.size()):
  *                 edge_origin = c_edges[i].origin             # <<<<<<<<<<<<<<
@@ -10846,7 +11037,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_5edges___get__(str
     __pyx_t_6 = (__pyx_v_c_edges[__pyx_v_i]).from;
     __pyx_v_edge_origin = __pyx_t_6;
 
-    /* "cavd/netstorage.pyx":722
+    /* "cavd/netstorage.pyx":735
  *             for i in range(c_edges.size()):
  *                 edge_origin = c_edges[i].origin
  *                 edge_ending = c_edges[i].ending             # <<<<<<<<<<<<<<
@@ -10856,40 +11047,40 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_5edges___get__(str
     __pyx_t_6 = (__pyx_v_c_edges[__pyx_v_i]).to;
     __pyx_v_edge_ending = __pyx_t_6;
 
-    /* "cavd/netstorage.pyx":723
+    /* "cavd/netstorage.pyx":736
  *                 edge_origin = c_edges[i].origin
  *                 edge_ending = c_edges[i].ending
  *                 edge_radius = c_edges[i].rad_moving_sphere             # <<<<<<<<<<<<<<
  *                 edge_length = c_edges[i].length
- *                 edge_boltpos = [c_edges[i].bottleneck_x,c_edges[i].bottleneck_y,c_edges[i].bottleneck_z]
+ *                 edge_boltpos = [c_edges[i].bottleneck_a,c_edges[i].bottleneck_b,c_edges[i].bottleneck_c]
  */
     __pyx_t_7 = (__pyx_v_c_edges[__pyx_v_i]).rad_moving_sphere;
     __pyx_v_edge_radius = __pyx_t_7;
 
-    /* "cavd/netstorage.pyx":724
+    /* "cavd/netstorage.pyx":737
  *                 edge_ending = c_edges[i].ending
  *                 edge_radius = c_edges[i].rad_moving_sphere
  *                 edge_length = c_edges[i].length             # <<<<<<<<<<<<<<
- *                 edge_boltpos = [c_edges[i].bottleneck_x,c_edges[i].bottleneck_y,c_edges[i].bottleneck_z]
- *                 edges.append([edge_origin, edge_ending, edge_radius, edge_length, edge_boltpos])
+ *                 edge_boltpos = [c_edges[i].bottleneck_a,c_edges[i].bottleneck_b,c_edges[i].bottleneck_c]
+ *                 edges.append([edge_origin, edge_ending, edge_boltpos, edge_radius, edge_length])
  */
     __pyx_t_7 = (__pyx_v_c_edges[__pyx_v_i]).length;
     __pyx_v_edge_length = __pyx_t_7;
 
-    /* "cavd/netstorage.pyx":725
+    /* "cavd/netstorage.pyx":738
  *                 edge_radius = c_edges[i].rad_moving_sphere
  *                 edge_length = c_edges[i].length
- *                 edge_boltpos = [c_edges[i].bottleneck_x,c_edges[i].bottleneck_y,c_edges[i].bottleneck_z]             # <<<<<<<<<<<<<<
- *                 edges.append([edge_origin, edge_ending, edge_radius, edge_length, edge_boltpos])
+ *                 edge_boltpos = [c_edges[i].bottleneck_a,c_edges[i].bottleneck_b,c_edges[i].bottleneck_c]             # <<<<<<<<<<<<<<
+ *                 edges.append([edge_origin, edge_ending, edge_boltpos, edge_radius, edge_length])
  *             return edges
  */
-    __pyx_t_1 = PyFloat_FromDouble((__pyx_v_c_edges[__pyx_v_i]).bottleneck_x); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 725, __pyx_L1_error)
+    __pyx_t_1 = PyFloat_FromDouble((__pyx_v_c_edges[__pyx_v_i]).bottleneck_a); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 738, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_8 = PyFloat_FromDouble((__pyx_v_c_edges[__pyx_v_i]).bottleneck_y); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 725, __pyx_L1_error)
+    __pyx_t_8 = PyFloat_FromDouble((__pyx_v_c_edges[__pyx_v_i]).bottleneck_b); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 738, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    __pyx_t_9 = PyFloat_FromDouble((__pyx_v_c_edges[__pyx_v_i]).bottleneck_z); if (unlikely(!__pyx_t_9)) __PYX_ERR(1, 725, __pyx_L1_error)
+    __pyx_t_9 = PyFloat_FromDouble((__pyx_v_c_edges[__pyx_v_i]).bottleneck_c); if (unlikely(!__pyx_t_9)) __PYX_ERR(1, 738, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_10 = PyList_New(3); if (unlikely(!__pyx_t_10)) __PYX_ERR(1, 725, __pyx_L1_error)
+    __pyx_t_10 = PyList_New(3); if (unlikely(!__pyx_t_10)) __PYX_ERR(1, 738, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
     __Pyx_GIVEREF(__pyx_t_1);
     PyList_SET_ITEM(__pyx_t_10, 0, __pyx_t_1);
@@ -10903,45 +11094,45 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_5edges___get__(str
     __Pyx_XDECREF_SET(__pyx_v_edge_boltpos, ((PyObject*)__pyx_t_10));
     __pyx_t_10 = 0;
 
-    /* "cavd/netstorage.pyx":726
+    /* "cavd/netstorage.pyx":739
  *                 edge_length = c_edges[i].length
- *                 edge_boltpos = [c_edges[i].bottleneck_x,c_edges[i].bottleneck_y,c_edges[i].bottleneck_z]
- *                 edges.append([edge_origin, edge_ending, edge_radius, edge_length, edge_boltpos])             # <<<<<<<<<<<<<<
+ *                 edge_boltpos = [c_edges[i].bottleneck_a,c_edges[i].bottleneck_b,c_edges[i].bottleneck_c]
+ *                 edges.append([edge_origin, edge_ending, edge_boltpos, edge_radius, edge_length])             # <<<<<<<<<<<<<<
  *             return edges
  * 
  */
-    __pyx_t_10 = __Pyx_PyInt_From_int(__pyx_v_edge_origin); if (unlikely(!__pyx_t_10)) __PYX_ERR(1, 726, __pyx_L1_error)
+    __pyx_t_10 = __Pyx_PyInt_From_int(__pyx_v_edge_origin); if (unlikely(!__pyx_t_10)) __PYX_ERR(1, 739, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
-    __pyx_t_9 = __Pyx_PyInt_From_int(__pyx_v_edge_ending); if (unlikely(!__pyx_t_9)) __PYX_ERR(1, 726, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyInt_From_int(__pyx_v_edge_ending); if (unlikely(!__pyx_t_9)) __PYX_ERR(1, 739, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_8 = PyFloat_FromDouble(__pyx_v_edge_radius); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 726, __pyx_L1_error)
+    __pyx_t_8 = PyFloat_FromDouble(__pyx_v_edge_radius); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 739, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    __pyx_t_1 = PyFloat_FromDouble(__pyx_v_edge_length); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 726, __pyx_L1_error)
+    __pyx_t_1 = PyFloat_FromDouble(__pyx_v_edge_length); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 739, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_11 = PyList_New(5); if (unlikely(!__pyx_t_11)) __PYX_ERR(1, 726, __pyx_L1_error)
+    __pyx_t_11 = PyList_New(5); if (unlikely(!__pyx_t_11)) __PYX_ERR(1, 739, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_11);
     __Pyx_GIVEREF(__pyx_t_10);
     PyList_SET_ITEM(__pyx_t_11, 0, __pyx_t_10);
     __Pyx_GIVEREF(__pyx_t_9);
     PyList_SET_ITEM(__pyx_t_11, 1, __pyx_t_9);
-    __Pyx_GIVEREF(__pyx_t_8);
-    PyList_SET_ITEM(__pyx_t_11, 2, __pyx_t_8);
-    __Pyx_GIVEREF(__pyx_t_1);
-    PyList_SET_ITEM(__pyx_t_11, 3, __pyx_t_1);
     __Pyx_INCREF(__pyx_v_edge_boltpos);
     __Pyx_GIVEREF(__pyx_v_edge_boltpos);
-    PyList_SET_ITEM(__pyx_t_11, 4, __pyx_v_edge_boltpos);
+    PyList_SET_ITEM(__pyx_t_11, 2, __pyx_v_edge_boltpos);
+    __Pyx_GIVEREF(__pyx_t_8);
+    PyList_SET_ITEM(__pyx_t_11, 3, __pyx_t_8);
+    __Pyx_GIVEREF(__pyx_t_1);
+    PyList_SET_ITEM(__pyx_t_11, 4, __pyx_t_1);
     __pyx_t_10 = 0;
     __pyx_t_9 = 0;
     __pyx_t_8 = 0;
     __pyx_t_1 = 0;
-    __pyx_t_12 = __Pyx_PyList_Append(__pyx_v_edges, __pyx_t_11); if (unlikely(__pyx_t_12 == ((int)-1))) __PYX_ERR(1, 726, __pyx_L1_error)
+    __pyx_t_12 = __Pyx_PyList_Append(__pyx_v_edges, __pyx_t_11); if (unlikely(__pyx_t_12 == ((int)-1))) __PYX_ERR(1, 739, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
   }
 
-  /* "cavd/netstorage.pyx":727
- *                 edge_boltpos = [c_edges[i].bottleneck_x,c_edges[i].bottleneck_y,c_edges[i].bottleneck_z]
- *                 edges.append([edge_origin, edge_ending, edge_radius, edge_length, edge_boltpos])
+  /* "cavd/netstorage.pyx":740
+ *                 edge_boltpos = [c_edges[i].bottleneck_a,c_edges[i].bottleneck_b,c_edges[i].bottleneck_c]
+ *                 edges.append([edge_origin, edge_ending, edge_boltpos, edge_radius, edge_length])
  *             return edges             # <<<<<<<<<<<<<<
  * 
  *     def prune(self, radius):
@@ -10951,7 +11142,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_5edges___get__(str
   __pyx_r = __pyx_v_edges;
   goto __pyx_L0;
 
-  /* "cavd/netstorage.pyx":717
+  /* "cavd/netstorage.pyx":730
  * 
  *     property edges:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -10976,7 +11167,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_5edges___get__(str
   return __pyx_r;
 }
 
-/* "cavd/netstorage.pyx":729
+/* "cavd/netstorage.pyx":742
  *             return edges
  * 
  *     def prune(self, radius):             # <<<<<<<<<<<<<<
@@ -11007,29 +11198,29 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_8prune(struct __py
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("prune", 0);
 
-  /* "cavd/netstorage.pyx":738
+  /* "cavd/netstorage.pyx":751
  *             Instance of VoronoiNetwork with edges pruned.
  *         """
  *         cdef VORONOI_NETWORK newcvornet = self.thisptr.prune(radius)             # <<<<<<<<<<<<<<
  *         newvornet = VoronoiNetwork()
  *         newvornet.thisptr = &newcvornet
  */
-  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_radius); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(1, 738, __pyx_L1_error)
+  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_radius); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(1, 751, __pyx_L1_error)
   __pyx_v_newcvornet = __pyx_v_self->thisptr->prune(__pyx_t_1);
 
-  /* "cavd/netstorage.pyx":739
+  /* "cavd/netstorage.pyx":752
  *         """
  *         cdef VORONOI_NETWORK newcvornet = self.thisptr.prune(radius)
  *         newvornet = VoronoiNetwork()             # <<<<<<<<<<<<<<
  *         newvornet.thisptr = &newcvornet
  *         return newvornet
  */
-  __pyx_t_2 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_4cavd_10netstorage_VoronoiNetwork)); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 739, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_4cavd_10netstorage_VoronoiNetwork)); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 752, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_v_newvornet = ((struct __pyx_obj_4cavd_10netstorage_VoronoiNetwork *)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "cavd/netstorage.pyx":740
+  /* "cavd/netstorage.pyx":753
  *         cdef VORONOI_NETWORK newcvornet = self.thisptr.prune(radius)
  *         newvornet = VoronoiNetwork()
  *         newvornet.thisptr = &newcvornet             # <<<<<<<<<<<<<<
@@ -11038,7 +11229,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_8prune(struct __py
  */
   __pyx_v_newvornet->thisptr = (&__pyx_v_newcvornet);
 
-  /* "cavd/netstorage.pyx":741
+  /* "cavd/netstorage.pyx":754
  *         newvornet = VoronoiNetwork()
  *         newvornet.thisptr = &newcvornet
  *         return newvornet             # <<<<<<<<<<<<<<
@@ -11050,7 +11241,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_8prune(struct __py
   __pyx_r = ((PyObject *)__pyx_v_newvornet);
   goto __pyx_L0;
 
-  /* "cavd/netstorage.pyx":729
+  /* "cavd/netstorage.pyx":742
  *             return edges
  * 
  *     def prune(self, radius):             # <<<<<<<<<<<<<<
@@ -11070,7 +11261,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_8prune(struct __py
   return __pyx_r;
 }
 
-/* "cavd/netstorage.pyx":743
+/* "cavd/netstorage.pyx":756
  *         return newvornet
  * 
  *     def analyze_writeto_XYZ(self, name, double probeRad, atmnet,             # <<<<<<<<<<<<<<
@@ -11122,13 +11313,13 @@ static PyObject *__pyx_pw_4cavd_10netstorage_14VoronoiNetwork_11analyze_writeto_
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_probeRad)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("analyze_writeto_XYZ", 0, 3, 6, 1); __PYX_ERR(1, 743, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("analyze_writeto_XYZ", 0, 3, 6, 1); __PYX_ERR(1, 756, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_atmnet)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("analyze_writeto_XYZ", 0, 3, 6, 2); __PYX_ERR(1, 743, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("analyze_writeto_XYZ", 0, 3, 6, 2); __PYX_ERR(1, 756, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
@@ -11150,7 +11341,7 @@ static PyObject *__pyx_pw_4cavd_10netstorage_14VoronoiNetwork_11analyze_writeto_
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "analyze_writeto_XYZ") < 0)) __PYX_ERR(1, 743, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "analyze_writeto_XYZ") < 0)) __PYX_ERR(1, 756, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -11168,27 +11359,27 @@ static PyObject *__pyx_pw_4cavd_10netstorage_14VoronoiNetwork_11analyze_writeto_
       }
     }
     __pyx_v_name = values[0];
-    __pyx_v_probeRad = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_probeRad == (double)-1) && PyErr_Occurred())) __PYX_ERR(1, 743, __pyx_L3_error)
+    __pyx_v_probeRad = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_probeRad == (double)-1) && PyErr_Occurred())) __PYX_ERR(1, 756, __pyx_L3_error)
     __pyx_v_atmnet = values[2];
     if (values[3]) {
-      __pyx_v_shift_x = __Pyx_PyInt_As_int(values[3]); if (unlikely((__pyx_v_shift_x == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 744, __pyx_L3_error)
+      __pyx_v_shift_x = __Pyx_PyInt_As_int(values[3]); if (unlikely((__pyx_v_shift_x == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 757, __pyx_L3_error)
     } else {
       __pyx_v_shift_x = ((int)0);
     }
     if (values[4]) {
-      __pyx_v_shift_y = __Pyx_PyInt_As_int(values[4]); if (unlikely((__pyx_v_shift_y == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 744, __pyx_L3_error)
+      __pyx_v_shift_y = __Pyx_PyInt_As_int(values[4]); if (unlikely((__pyx_v_shift_y == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 757, __pyx_L3_error)
     } else {
       __pyx_v_shift_y = ((int)0);
     }
     if (values[5]) {
-      __pyx_v_shift_z = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_shift_z == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 744, __pyx_L3_error)
+      __pyx_v_shift_z = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_shift_z == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 757, __pyx_L3_error)
     } else {
       __pyx_v_shift_z = ((int)0);
     }
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("analyze_writeto_XYZ", 0, 3, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 743, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("analyze_writeto_XYZ", 0, 3, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 756, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("cavd.netstorage.VoronoiNetwork.analyze_writeto_XYZ", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -11214,7 +11405,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_10analyze_writeto_
   __Pyx_RefNannySetupContext("analyze_writeto_XYZ", 0);
   __Pyx_INCREF(__pyx_v_name);
 
-  /* "cavd/netstorage.pyx":763
+  /* "cavd/netstorage.pyx":776
  *                 Shift the accessible Voronoi network along z-axis
  *         """
  *         if isinstance(name, unicode):             # <<<<<<<<<<<<<<
@@ -11225,7 +11416,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_10analyze_writeto_
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "cavd/netstorage.pyx":764
+    /* "cavd/netstorage.pyx":777
  *         """
  *         if isinstance(name, unicode):
  *             name = (<unicode>name).encode('utf8')             # <<<<<<<<<<<<<<
@@ -11234,14 +11425,14 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_10analyze_writeto_
  */
     if (unlikely(__pyx_v_name == Py_None)) {
       PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "encode");
-      __PYX_ERR(1, 764, __pyx_L1_error)
+      __PYX_ERR(1, 777, __pyx_L1_error)
     }
-    __pyx_t_3 = PyUnicode_AsUTF8String(((PyObject*)__pyx_v_name)); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 764, __pyx_L1_error)
+    __pyx_t_3 = PyUnicode_AsUTF8String(((PyObject*)__pyx_v_name)); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 777, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF_SET(__pyx_v_name, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "cavd/netstorage.pyx":763
+    /* "cavd/netstorage.pyx":776
  *                 Shift the accessible Voronoi network along z-axis
  *         """
  *         if isinstance(name, unicode):             # <<<<<<<<<<<<<<
@@ -11250,37 +11441,37 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_10analyze_writeto_
  */
   }
 
-  /* "cavd/netstorage.pyx":766
+  /* "cavd/netstorage.pyx":779
  *             name = (<unicode>name).encode('utf8')
  * 
  *         cdef ATOM_NETWORK* c_atmnetptr = (<AtomNetwork?>atmnet).thisptr             # <<<<<<<<<<<<<<
  *         cdef char* cname = name
  *         visVoro(name, probeRad, shift_x, shift_y, shift_z, self.thisptr,
  */
-  if (!(likely(__Pyx_TypeTest(__pyx_v_atmnet, __pyx_ptype_4cavd_10netstorage_AtomNetwork)))) __PYX_ERR(1, 766, __pyx_L1_error)
+  if (!(likely(__Pyx_TypeTest(__pyx_v_atmnet, __pyx_ptype_4cavd_10netstorage_AtomNetwork)))) __PYX_ERR(1, 779, __pyx_L1_error)
   __pyx_t_4 = ((struct __pyx_obj_4cavd_10netstorage_AtomNetwork *)__pyx_v_atmnet)->thisptr;
   __pyx_v_c_atmnetptr = __pyx_t_4;
 
-  /* "cavd/netstorage.pyx":767
+  /* "cavd/netstorage.pyx":780
  * 
  *         cdef ATOM_NETWORK* c_atmnetptr = (<AtomNetwork?>atmnet).thisptr
  *         cdef char* cname = name             # <<<<<<<<<<<<<<
  *         visVoro(name, probeRad, shift_x, shift_y, shift_z, self.thisptr,
  *                 c_atmnetptr)
  */
-  __pyx_t_5 = __Pyx_PyObject_AsWritableString(__pyx_v_name); if (unlikely((!__pyx_t_5) && PyErr_Occurred())) __PYX_ERR(1, 767, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_AsWritableString(__pyx_v_name); if (unlikely((!__pyx_t_5) && PyErr_Occurred())) __PYX_ERR(1, 780, __pyx_L1_error)
   __pyx_v_cname = __pyx_t_5;
 
-  /* "cavd/netstorage.pyx":768
+  /* "cavd/netstorage.pyx":781
  *         cdef ATOM_NETWORK* c_atmnetptr = (<AtomNetwork?>atmnet).thisptr
  *         cdef char* cname = name
  *         visVoro(name, probeRad, shift_x, shift_y, shift_z, self.thisptr,             # <<<<<<<<<<<<<<
  *                 c_atmnetptr)
  * 
  */
-  __pyx_t_5 = __Pyx_PyObject_AsWritableString(__pyx_v_name); if (unlikely((!__pyx_t_5) && PyErr_Occurred())) __PYX_ERR(1, 768, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_AsWritableString(__pyx_v_name); if (unlikely((!__pyx_t_5) && PyErr_Occurred())) __PYX_ERR(1, 781, __pyx_L1_error)
 
-  /* "cavd/netstorage.pyx":769
+  /* "cavd/netstorage.pyx":782
  *         cdef char* cname = name
  *         visVoro(name, probeRad, shift_x, shift_y, shift_z, self.thisptr,
  *                 c_atmnetptr)             # <<<<<<<<<<<<<<
@@ -11289,7 +11480,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_10analyze_writeto_
  */
   visVoro(__pyx_t_5, __pyx_v_probeRad, __pyx_v_shift_x, __pyx_v_shift_y, __pyx_v_shift_z, __pyx_v_self->thisptr, __pyx_v_c_atmnetptr);
 
-  /* "cavd/netstorage.pyx":743
+  /* "cavd/netstorage.pyx":756
  *         return newvornet
  * 
  *     def analyze_writeto_XYZ(self, name, double probeRad, atmnet,             # <<<<<<<<<<<<<<
@@ -11311,7 +11502,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_10analyze_writeto_
   return __pyx_r;
 }
 
-/* "cavd/netstorage.pyx":771
+/* "cavd/netstorage.pyx":784
  *                 c_atmnetptr)
  * 
  *     def write_to_XYZ(self, filename, double cutoff_radius=0):             # <<<<<<<<<<<<<<
@@ -11355,7 +11546,7 @@ static PyObject *__pyx_pw_4cavd_10netstorage_14VoronoiNetwork_13write_to_XYZ(PyO
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "write_to_XYZ") < 0)) __PYX_ERR(1, 771, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "write_to_XYZ") < 0)) __PYX_ERR(1, 784, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -11368,14 +11559,14 @@ static PyObject *__pyx_pw_4cavd_10netstorage_14VoronoiNetwork_13write_to_XYZ(PyO
     }
     __pyx_v_filename = values[0];
     if (values[1]) {
-      __pyx_v_cutoff_radius = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_cutoff_radius == (double)-1) && PyErr_Occurred())) __PYX_ERR(1, 771, __pyx_L3_error)
+      __pyx_v_cutoff_radius = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_cutoff_radius == (double)-1) && PyErr_Occurred())) __PYX_ERR(1, 784, __pyx_L3_error)
     } else {
       __pyx_v_cutoff_radius = ((double)0.0);
     }
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("write_to_XYZ", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 771, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("write_to_XYZ", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 784, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("cavd.netstorage.VoronoiNetwork.write_to_XYZ", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -11399,7 +11590,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_12write_to_XYZ(str
   __Pyx_RefNannySetupContext("write_to_XYZ", 0);
   __Pyx_INCREF(__pyx_v_filename);
 
-  /* "cavd/netstorage.pyx":782
+  /* "cavd/netstorage.pyx":795
  *                 Threshold radius (default=0)
  *         """
  *         if isinstance(filename, unicode):             # <<<<<<<<<<<<<<
@@ -11410,7 +11601,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_12write_to_XYZ(str
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "cavd/netstorage.pyx":783
+    /* "cavd/netstorage.pyx":796
  *         """
  *         if isinstance(filename, unicode):
  *             filename = (<unicode>filename).encode('utf8')             # <<<<<<<<<<<<<<
@@ -11419,14 +11610,14 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_12write_to_XYZ(str
  */
     if (unlikely(__pyx_v_filename == Py_None)) {
       PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "encode");
-      __PYX_ERR(1, 783, __pyx_L1_error)
+      __PYX_ERR(1, 796, __pyx_L1_error)
     }
-    __pyx_t_3 = PyUnicode_AsUTF8String(((PyObject*)__pyx_v_filename)); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 783, __pyx_L1_error)
+    __pyx_t_3 = PyUnicode_AsUTF8String(((PyObject*)__pyx_v_filename)); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 796, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF_SET(__pyx_v_filename, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "cavd/netstorage.pyx":782
+    /* "cavd/netstorage.pyx":795
  *                 Threshold radius (default=0)
  *         """
  *         if isinstance(filename, unicode):             # <<<<<<<<<<<<<<
@@ -11435,17 +11626,17 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_12write_to_XYZ(str
  */
   }
 
-  /* "cavd/netstorage.pyx":785
+  /* "cavd/netstorage.pyx":798
  *             filename = (<unicode>filename).encode('utf8')
  * 
  *         cdef char* c_filename = filename             # <<<<<<<<<<<<<<
  *         if not writeVornetToXYZ(c_filename, self.thisptr,
  *                 cutoff_radius):
  */
-  __pyx_t_4 = __Pyx_PyObject_AsWritableString(__pyx_v_filename); if (unlikely((!__pyx_t_4) && PyErr_Occurred())) __PYX_ERR(1, 785, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_AsWritableString(__pyx_v_filename); if (unlikely((!__pyx_t_4) && PyErr_Occurred())) __PYX_ERR(1, 798, __pyx_L1_error)
   __pyx_v_c_filename = __pyx_t_4;
 
-  /* "cavd/netstorage.pyx":786
+  /* "cavd/netstorage.pyx":799
  * 
  *         cdef char* c_filename = filename
  *         if not writeVornetToXYZ(c_filename, self.thisptr,             # <<<<<<<<<<<<<<
@@ -11455,7 +11646,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_12write_to_XYZ(str
   __pyx_t_2 = ((!(writeToXYZ(__pyx_v_c_filename, __pyx_v_self->thisptr, __pyx_v_cutoff_radius) != 0)) != 0);
   if (unlikely(__pyx_t_2)) {
 
-    /* "cavd/netstorage.pyx":788
+    /* "cavd/netstorage.pyx":801
  *         if not writeVornetToXYZ(c_filename, self.thisptr,
  *                 cutoff_radius):
  *             raise ValueError             # <<<<<<<<<<<<<<
@@ -11463,9 +11654,9 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_12write_to_XYZ(str
  *     @classmethod
  */
     __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
-    __PYX_ERR(1, 788, __pyx_L1_error)
+    __PYX_ERR(1, 801, __pyx_L1_error)
 
-    /* "cavd/netstorage.pyx":786
+    /* "cavd/netstorage.pyx":799
  * 
  *         cdef char* c_filename = filename
  *         if not writeVornetToXYZ(c_filename, self.thisptr,             # <<<<<<<<<<<<<<
@@ -11474,7 +11665,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_12write_to_XYZ(str
  */
   }
 
-  /* "cavd/netstorage.pyx":771
+  /* "cavd/netstorage.pyx":784
  *                 c_atmnetptr)
  * 
  *     def write_to_XYZ(self, filename, double cutoff_radius=0):             # <<<<<<<<<<<<<<
@@ -11496,7 +11687,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_12write_to_XYZ(str
   return __pyx_r;
 }
 
-/* "cavd/netstorage.pyx":791
+/* "cavd/netstorage.pyx":804
  * 
  *     @classmethod
  *     def perform_voronoi_decomposition(cls, atmnet, saveVorCells=False):             # <<<<<<<<<<<<<<
@@ -11541,7 +11732,7 @@ static PyObject *__pyx_pw_4cavd_10netstorage_14VoronoiNetwork_15perform_voronoi_
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "perform_voronoi_decomposition") < 0)) __PYX_ERR(1, 791, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "perform_voronoi_decomposition") < 0)) __PYX_ERR(1, 804, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -11557,7 +11748,7 @@ static PyObject *__pyx_pw_4cavd_10netstorage_14VoronoiNetwork_15perform_voronoi_
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("perform_voronoi_decomposition", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 791, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("perform_voronoi_decomposition", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 804, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("cavd.netstorage.VoronoiNetwork.perform_voronoi_decomposition", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -11584,51 +11775,51 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_14perform_voronoi_
   int __pyx_t_5;
   __Pyx_RefNannySetupContext("perform_voronoi_decomposition", 0);
 
-  /* "cavd/netstorage.pyx":803
+  /* "cavd/netstorage.pyx":816
  *         """
  *         #Calls Zeo++ performVoronoiDecomp function defined in network.cc.
  *         vornet = VoronoiNetwork()             # <<<<<<<<<<<<<<
  *         cdef ATOM_NETWORK* c_atmnetptr = (<AtomNetwork?>atmnet).thisptr
  *         cdef vector[VOR_CELL] vcells
  */
-  __pyx_t_1 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_4cavd_10netstorage_VoronoiNetwork)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 803, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_4cavd_10netstorage_VoronoiNetwork)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 816, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_vornet = ((struct __pyx_obj_4cavd_10netstorage_VoronoiNetwork *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "cavd/netstorage.pyx":804
+  /* "cavd/netstorage.pyx":817
  *         #Calls Zeo++ performVoronoiDecomp function defined in network.cc.
  *         vornet = VoronoiNetwork()
  *         cdef ATOM_NETWORK* c_atmnetptr = (<AtomNetwork?>atmnet).thisptr             # <<<<<<<<<<<<<<
  *         cdef vector[VOR_CELL] vcells
  *         cdef vector[BASIC_VCELL] bvcells
  */
-  if (!(likely(__Pyx_TypeTest(__pyx_v_atmnet, __pyx_ptype_4cavd_10netstorage_AtomNetwork)))) __PYX_ERR(1, 804, __pyx_L1_error)
+  if (!(likely(__Pyx_TypeTest(__pyx_v_atmnet, __pyx_ptype_4cavd_10netstorage_AtomNetwork)))) __PYX_ERR(1, 817, __pyx_L1_error)
   __pyx_t_2 = ((struct __pyx_obj_4cavd_10netstorage_AtomNetwork *)__pyx_v_atmnet)->thisptr;
   __pyx_v_c_atmnetptr = __pyx_t_2;
 
-  /* "cavd/netstorage.pyx":808
+  /* "cavd/netstorage.pyx":821
  *         cdef vector[BASIC_VCELL] bvcells
  *         #print self.rad_flag
  *         if not performVoronoiDecomp(atmnet.rad_flag, c_atmnetptr,             # <<<<<<<<<<<<<<
  *                 vornet.thisptr, &vcells, saveVorCells, &bvcells):
  *             #raise ValueError # Change it to appropriate error
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_atmnet, __pyx_n_s_rad_flag); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 808, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_atmnet, __pyx_n_s_rad_flag); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 821, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 808, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 821, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "cavd/netstorage.pyx":809
+  /* "cavd/netstorage.pyx":822
  *         #print self.rad_flag
  *         if not performVoronoiDecomp(atmnet.rad_flag, c_atmnetptr,
  *                 vornet.thisptr, &vcells, saveVorCells, &bvcells):             # <<<<<<<<<<<<<<
  *             #raise ValueError # Change it to appropriate error
  *             raise PerformVDError
  */
-  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_v_saveVorCells); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 809, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_v_saveVorCells); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 822, __pyx_L1_error)
 
-  /* "cavd/netstorage.pyx":808
+  /* "cavd/netstorage.pyx":821
  *         cdef vector[BASIC_VCELL] bvcells
  *         #print self.rad_flag
  *         if not performVoronoiDecomp(atmnet.rad_flag, c_atmnetptr,             # <<<<<<<<<<<<<<
@@ -11638,20 +11829,20 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_14perform_voronoi_
   __pyx_t_5 = ((!(performVoronoiDecomp(__pyx_t_3, __pyx_v_c_atmnetptr, __pyx_v_vornet->thisptr, (&__pyx_v_vcells), __pyx_t_4, (&__pyx_v_bvcells)) != 0)) != 0);
   if (unlikely(__pyx_t_5)) {
 
-    /* "cavd/netstorage.pyx":811
+    /* "cavd/netstorage.pyx":824
  *                 vornet.thisptr, &vcells, saveVorCells, &bvcells):
  *             #raise ValueError # Change it to appropriate error
  *             raise PerformVDError             # <<<<<<<<<<<<<<
  *         #cdef int N
  *         #vorcelllist = []
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_PerformVDError); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 811, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_PerformVDError); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 824, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(1, 811, __pyx_L1_error)
+    __PYX_ERR(1, 824, __pyx_L1_error)
 
-    /* "cavd/netstorage.pyx":808
+    /* "cavd/netstorage.pyx":821
  *         cdef vector[BASIC_VCELL] bvcells
  *         #print self.rad_flag
  *         if not performVoronoiDecomp(atmnet.rad_flag, c_atmnetptr,             # <<<<<<<<<<<<<<
@@ -11660,7 +11851,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_14perform_voronoi_
  */
   }
 
-  /* "cavd/netstorage.pyx":826
+  /* "cavd/netstorage.pyx":839
  *             #basicvcell.thisptr = &(bvcells[i])
  *             #bvcelllist.append(bvcells[i])
  *         return vornet             # <<<<<<<<<<<<<<
@@ -11672,7 +11863,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_14perform_voronoi_
   __pyx_r = ((PyObject *)__pyx_v_vornet);
   goto __pyx_L0;
 
-  /* "cavd/netstorage.pyx":791
+  /* "cavd/netstorage.pyx":804
  * 
  *     @classmethod
  *     def perform_voronoi_decomposition(cls, atmnet, saveVorCells=False):             # <<<<<<<<<<<<<<
@@ -11692,7 +11883,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_14perform_voronoi_
   return __pyx_r;
 }
 
-/* "cavd/netstorage.pyx":828
+/* "cavd/netstorage.pyx":841
  *         return vornet
  * 
  *     def parse_symmetry(self,symm_label):             # <<<<<<<<<<<<<<
@@ -11725,38 +11916,38 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_16parse_symmetry(s
   int __pyx_t_5;
   __Pyx_RefNannySetupContext("parse_symmetry", 0);
 
-  /* "cavd/netstorage.pyx":830
+  /* "cavd/netstorage.pyx":843
  *     def parse_symmetry(self,symm_label):
  *         cdef vector[int] c_symm_label
  *         for i in range(len(symm_label)):             # <<<<<<<<<<<<<<
  *             c_symm_label.push_back(symm_label[i])
  *         parseNetworkSymmetry(c_symm_label, self.thisptr)
  */
-  __pyx_t_1 = PyObject_Length(__pyx_v_symm_label); if (unlikely(__pyx_t_1 == ((Py_ssize_t)-1))) __PYX_ERR(1, 830, __pyx_L1_error)
+  __pyx_t_1 = PyObject_Length(__pyx_v_symm_label); if (unlikely(__pyx_t_1 == ((Py_ssize_t)-1))) __PYX_ERR(1, 843, __pyx_L1_error)
   __pyx_t_2 = __pyx_t_1;
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_i = __pyx_t_3;
 
-    /* "cavd/netstorage.pyx":831
+    /* "cavd/netstorage.pyx":844
  *         cdef vector[int] c_symm_label
  *         for i in range(len(symm_label)):
  *             c_symm_label.push_back(symm_label[i])             # <<<<<<<<<<<<<<
  *         parseNetworkSymmetry(c_symm_label, self.thisptr)
  *         return self
  */
-    __pyx_t_4 = __Pyx_GetItemInt(__pyx_v_symm_label, __pyx_v_i, Py_ssize_t, 1, PyInt_FromSsize_t, 0, 1, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 831, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_GetItemInt(__pyx_v_symm_label, __pyx_v_i, Py_ssize_t, 1, PyInt_FromSsize_t, 0, 1, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 844, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_t_4); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 831, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_t_4); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 844, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     try {
       __pyx_v_c_symm_label.push_back(__pyx_t_5);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      __PYX_ERR(1, 831, __pyx_L1_error)
+      __PYX_ERR(1, 844, __pyx_L1_error)
     }
   }
 
-  /* "cavd/netstorage.pyx":832
+  /* "cavd/netstorage.pyx":845
  *         for i in range(len(symm_label)):
  *             c_symm_label.push_back(symm_label[i])
  *         parseNetworkSymmetry(c_symm_label, self.thisptr)             # <<<<<<<<<<<<<<
@@ -11765,7 +11956,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_16parse_symmetry(s
  */
   parseNetworkSymmetry(__pyx_v_c_symm_label, __pyx_v_self->thisptr);
 
-  /* "cavd/netstorage.pyx":833
+  /* "cavd/netstorage.pyx":846
  *             c_symm_label.push_back(symm_label[i])
  *         parseNetworkSymmetry(c_symm_label, self.thisptr)
  *         return self             # <<<<<<<<<<<<<<
@@ -11777,7 +11968,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_16parse_symmetry(s
   __pyx_r = ((PyObject *)__pyx_v_self);
   goto __pyx_L0;
 
-  /* "cavd/netstorage.pyx":828
+  /* "cavd/netstorage.pyx":841
  *         return vornet
  * 
  *     def parse_symmetry(self,symm_label):             # <<<<<<<<<<<<<<
@@ -11796,7 +11987,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_16parse_symmetry(s
   return __pyx_r;
 }
 
-/* "cavd/netstorage.pyx":835
+/* "cavd/netstorage.pyx":848
  *         return self
  * 
  *     def add_vornet_id(self):             # <<<<<<<<<<<<<<
@@ -11822,7 +12013,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_18add_vornet_id(st
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("add_vornet_id", 0);
 
-  /* "cavd/netstorage.pyx":836
+  /* "cavd/netstorage.pyx":849
  * 
  *     def add_vornet_id(self):
  *         addVorNetId(self.thisptr)             # <<<<<<<<<<<<<<
@@ -11831,7 +12022,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_18add_vornet_id(st
  */
   addVorNetId(__pyx_v_self->thisptr);
 
-  /* "cavd/netstorage.pyx":837
+  /* "cavd/netstorage.pyx":850
  *     def add_vornet_id(self):
  *         addVorNetId(self.thisptr)
  *         return self             # <<<<<<<<<<<<<<
@@ -11843,7 +12034,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_18add_vornet_id(st
   __pyx_r = ((PyObject *)__pyx_v_self);
   goto __pyx_L0;
 
-  /* "cavd/netstorage.pyx":835
+  /* "cavd/netstorage.pyx":848
  *         return self
  * 
  *     def add_vornet_id(self):             # <<<<<<<<<<<<<<
@@ -11965,7 +12156,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_14VoronoiNetwork_22__setstate_cytho
   return __pyx_r;
 }
 
-/* "cavd/netstorage.pyx":840
+/* "cavd/netstorage.pyx":853
  * 
  * 
  * def substitute_atoms(atmnet, substituteSeed, radialFlag):             # <<<<<<<<<<<<<<
@@ -12009,17 +12200,17 @@ static PyObject *__pyx_pw_4cavd_10netstorage_1substitute_atoms(PyObject *__pyx_s
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_substituteSeed)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("substitute_atoms", 1, 3, 3, 1); __PYX_ERR(1, 840, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("substitute_atoms", 1, 3, 3, 1); __PYX_ERR(1, 853, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_radialFlag)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("substitute_atoms", 1, 3, 3, 2); __PYX_ERR(1, 840, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("substitute_atoms", 1, 3, 3, 2); __PYX_ERR(1, 853, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "substitute_atoms") < 0)) __PYX_ERR(1, 840, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "substitute_atoms") < 0)) __PYX_ERR(1, 853, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -12034,7 +12225,7 @@ static PyObject *__pyx_pw_4cavd_10netstorage_1substitute_atoms(PyObject *__pyx_s
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("substitute_atoms", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 840, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("substitute_atoms", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 853, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("cavd.netstorage.substitute_atoms", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -12062,48 +12253,48 @@ static PyObject *__pyx_pf_4cavd_10netstorage_substitute_atoms(CYTHON_UNUSED PyOb
   PyObject *__pyx_t_6 = NULL;
   __Pyx_RefNannySetupContext("substitute_atoms", 0);
 
-  /* "cavd/netstorage.pyx":862
+  /* "cavd/netstorage.pyx":875
  *     """
  *     cdef int substitutionNo[1]
  *     atmnet_copy = AtomNetwork()             # <<<<<<<<<<<<<<
  *     c_atmnet_ptr = (<AtomNetwork?>atmnet).thisptr
  *     if not c_substituteAtoms(c_atmnet_ptr, atmnet_copy.thisptr, substituteSeed,
  */
-  __pyx_t_1 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_4cavd_10netstorage_AtomNetwork)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 862, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_4cavd_10netstorage_AtomNetwork)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 875, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_atmnet_copy = ((struct __pyx_obj_4cavd_10netstorage_AtomNetwork *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "cavd/netstorage.pyx":863
+  /* "cavd/netstorage.pyx":876
  *     cdef int substitutionNo[1]
  *     atmnet_copy = AtomNetwork()
  *     c_atmnet_ptr = (<AtomNetwork?>atmnet).thisptr             # <<<<<<<<<<<<<<
  *     if not c_substituteAtoms(c_atmnet_ptr, atmnet_copy.thisptr, substituteSeed,
  *             substitutionNo, radialFlag):
  */
-  if (!(likely(__Pyx_TypeTest(__pyx_v_atmnet, __pyx_ptype_4cavd_10netstorage_AtomNetwork)))) __PYX_ERR(1, 863, __pyx_L1_error)
+  if (!(likely(__Pyx_TypeTest(__pyx_v_atmnet, __pyx_ptype_4cavd_10netstorage_AtomNetwork)))) __PYX_ERR(1, 876, __pyx_L1_error)
   __pyx_t_2 = ((struct __pyx_obj_4cavd_10netstorage_AtomNetwork *)__pyx_v_atmnet)->thisptr;
   __pyx_v_c_atmnet_ptr = __pyx_t_2;
 
-  /* "cavd/netstorage.pyx":864
+  /* "cavd/netstorage.pyx":877
  *     atmnet_copy = AtomNetwork()
  *     c_atmnet_ptr = (<AtomNetwork?>atmnet).thisptr
  *     if not c_substituteAtoms(c_atmnet_ptr, atmnet_copy.thisptr, substituteSeed,             # <<<<<<<<<<<<<<
  *             substitutionNo, radialFlag):
  *         raise ValueError
  */
-  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_v_substituteSeed); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 864, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_v_substituteSeed); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 877, __pyx_L1_error)
 
-  /* "cavd/netstorage.pyx":865
+  /* "cavd/netstorage.pyx":878
  *     c_atmnet_ptr = (<AtomNetwork?>atmnet).thisptr
  *     if not c_substituteAtoms(c_atmnet_ptr, atmnet_copy.thisptr, substituteSeed,
  *             substitutionNo, radialFlag):             # <<<<<<<<<<<<<<
  *         raise ValueError
  *     subNo = substitutionNo[0]
  */
-  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_v_radialFlag); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 865, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_v_radialFlag); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 878, __pyx_L1_error)
 
-  /* "cavd/netstorage.pyx":864
+  /* "cavd/netstorage.pyx":877
  *     atmnet_copy = AtomNetwork()
  *     c_atmnet_ptr = (<AtomNetwork?>atmnet).thisptr
  *     if not c_substituteAtoms(c_atmnet_ptr, atmnet_copy.thisptr, substituteSeed,             # <<<<<<<<<<<<<<
@@ -12113,7 +12304,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_substitute_atoms(CYTHON_UNUSED PyOb
   __pyx_t_5 = ((!(substituteAtoms(__pyx_v_c_atmnet_ptr, __pyx_v_atmnet_copy->thisptr, __pyx_t_3, __pyx_v_substitutionNo, __pyx_t_4) != 0)) != 0);
   if (unlikely(__pyx_t_5)) {
 
-    /* "cavd/netstorage.pyx":866
+    /* "cavd/netstorage.pyx":879
  *     if not c_substituteAtoms(c_atmnet_ptr, atmnet_copy.thisptr, substituteSeed,
  *             substitutionNo, radialFlag):
  *         raise ValueError             # <<<<<<<<<<<<<<
@@ -12121,9 +12312,9 @@ static PyObject *__pyx_pf_4cavd_10netstorage_substitute_atoms(CYTHON_UNUSED PyOb
  *     return atmnet_copy, subNo
  */
     __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
-    __PYX_ERR(1, 866, __pyx_L1_error)
+    __PYX_ERR(1, 879, __pyx_L1_error)
 
-    /* "cavd/netstorage.pyx":864
+    /* "cavd/netstorage.pyx":877
  *     atmnet_copy = AtomNetwork()
  *     c_atmnet_ptr = (<AtomNetwork?>atmnet).thisptr
  *     if not c_substituteAtoms(c_atmnet_ptr, atmnet_copy.thisptr, substituteSeed,             # <<<<<<<<<<<<<<
@@ -12132,7 +12323,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_substitute_atoms(CYTHON_UNUSED PyOb
  */
   }
 
-  /* "cavd/netstorage.pyx":867
+  /* "cavd/netstorage.pyx":880
  *             substitutionNo, radialFlag):
  *         raise ValueError
  *     subNo = substitutionNo[0]             # <<<<<<<<<<<<<<
@@ -12141,7 +12332,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_substitute_atoms(CYTHON_UNUSED PyOb
  */
   __pyx_v_subNo = (__pyx_v_substitutionNo[0]);
 
-  /* "cavd/netstorage.pyx":868
+  /* "cavd/netstorage.pyx":881
  *         raise ValueError
  *     subNo = substitutionNo[0]
  *     return atmnet_copy, subNo             # <<<<<<<<<<<<<<
@@ -12149,9 +12340,9 @@ static PyObject *__pyx_pf_4cavd_10netstorage_substitute_atoms(CYTHON_UNUSED PyOb
  * def connection_values(filename, vornet):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_subNo); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 868, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_subNo); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 881, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_6 = PyTuple_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 868, __pyx_L1_error)
+  __pyx_t_6 = PyTuple_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 881, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_INCREF(((PyObject *)__pyx_v_atmnet_copy));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_atmnet_copy));
@@ -12163,7 +12354,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_substitute_atoms(CYTHON_UNUSED PyOb
   __pyx_t_6 = 0;
   goto __pyx_L0;
 
-  /* "cavd/netstorage.pyx":840
+  /* "cavd/netstorage.pyx":853
  * 
  * 
  * def substitute_atoms(atmnet, substituteSeed, radialFlag):             # <<<<<<<<<<<<<<
@@ -12184,7 +12375,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_substitute_atoms(CYTHON_UNUSED PyOb
   return __pyx_r;
 }
 
-/* "cavd/netstorage.pyx":870
+/* "cavd/netstorage.pyx":883
  *     return atmnet_copy, subNo
  * 
  * def connection_values(filename, vornet):             # <<<<<<<<<<<<<<
@@ -12225,11 +12416,11 @@ static PyObject *__pyx_pw_4cavd_10netstorage_3connection_values(PyObject *__pyx_
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_vornet)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("connection_values", 1, 2, 2, 1); __PYX_ERR(1, 870, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("connection_values", 1, 2, 2, 1); __PYX_ERR(1, 883, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "connection_values") < 0)) __PYX_ERR(1, 870, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "connection_values") < 0)) __PYX_ERR(1, 883, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -12242,7 +12433,7 @@ static PyObject *__pyx_pw_4cavd_10netstorage_3connection_values(PyObject *__pyx_
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("connection_values", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 870, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("connection_values", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 883, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("cavd.netstorage.connection_values", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -12274,7 +12465,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_2connection_values(CYTHON_UNUSED Py
   __Pyx_RefNannySetupContext("connection_values", 0);
   __Pyx_INCREF(__pyx_v_filename);
 
-  /* "cavd/netstorage.pyx":879
+  /* "cavd/netstorage.pyx":892
  *     """
  * 
  *     if isinstance(filename, unicode):             # <<<<<<<<<<<<<<
@@ -12285,7 +12476,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_2connection_values(CYTHON_UNUSED Py
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "cavd/netstorage.pyx":880
+    /* "cavd/netstorage.pyx":893
  * 
  *     if isinstance(filename, unicode):
  *         filename = (<unicode>filename).encode('utf8')             # <<<<<<<<<<<<<<
@@ -12294,14 +12485,14 @@ static PyObject *__pyx_pf_4cavd_10netstorage_2connection_values(CYTHON_UNUSED Py
  */
     if (unlikely(__pyx_v_filename == Py_None)) {
       PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "encode");
-      __PYX_ERR(1, 880, __pyx_L1_error)
+      __PYX_ERR(1, 893, __pyx_L1_error)
     }
-    __pyx_t_3 = PyUnicode_AsUTF8String(((PyObject*)__pyx_v_filename)); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 880, __pyx_L1_error)
+    __pyx_t_3 = PyUnicode_AsUTF8String(((PyObject*)__pyx_v_filename)); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 893, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF_SET(__pyx_v_filename, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "cavd/netstorage.pyx":879
+    /* "cavd/netstorage.pyx":892
  *     """
  * 
  *     if isinstance(filename, unicode):             # <<<<<<<<<<<<<<
@@ -12310,28 +12501,28 @@ static PyObject *__pyx_pf_4cavd_10netstorage_2connection_values(CYTHON_UNUSED Py
  */
   }
 
-  /* "cavd/netstorage.pyx":882
+  /* "cavd/netstorage.pyx":895
  *         filename = (<unicode>filename).encode('utf8')
  * 
  *     vornet_ptr = (<VoronoiNetwork?>vornet).thisptr             # <<<<<<<<<<<<<<
  *     cdef char* c_fname = filename
  *     cdef double c_Ri,c_Rf,c_Rif
  */
-  if (!(likely(__Pyx_TypeTest(__pyx_v_vornet, __pyx_ptype_4cavd_10netstorage_VoronoiNetwork)))) __PYX_ERR(1, 882, __pyx_L1_error)
+  if (!(likely(__Pyx_TypeTest(__pyx_v_vornet, __pyx_ptype_4cavd_10netstorage_VoronoiNetwork)))) __PYX_ERR(1, 895, __pyx_L1_error)
   __pyx_t_4 = ((struct __pyx_obj_4cavd_10netstorage_VoronoiNetwork *)__pyx_v_vornet)->thisptr;
   __pyx_v_vornet_ptr = __pyx_t_4;
 
-  /* "cavd/netstorage.pyx":883
+  /* "cavd/netstorage.pyx":896
  * 
  *     vornet_ptr = (<VoronoiNetwork?>vornet).thisptr
  *     cdef char* c_fname = filename             # <<<<<<<<<<<<<<
  *     cdef double c_Ri,c_Rf,c_Rif
  *     throughVorNet(vornet_ptr, c_fname, &c_Ri, &c_Rf, &c_Rif)
  */
-  __pyx_t_5 = __Pyx_PyObject_AsWritableString(__pyx_v_filename); if (unlikely((!__pyx_t_5) && PyErr_Occurred())) __PYX_ERR(1, 883, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_AsWritableString(__pyx_v_filename); if (unlikely((!__pyx_t_5) && PyErr_Occurred())) __PYX_ERR(1, 896, __pyx_L1_error)
   __pyx_v_c_fname = __pyx_t_5;
 
-  /* "cavd/netstorage.pyx":885
+  /* "cavd/netstorage.pyx":898
  *     cdef char* c_fname = filename
  *     cdef double c_Ri,c_Rf,c_Rif
  *     throughVorNet(vornet_ptr, c_fname, &c_Ri, &c_Rf, &c_Rif)             # <<<<<<<<<<<<<<
@@ -12340,7 +12531,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_2connection_values(CYTHON_UNUSED Py
  */
   (void)(throughVorNet(__pyx_v_vornet_ptr, __pyx_v_c_fname, (&__pyx_v_c_Ri), (&__pyx_v_c_Rf), (&__pyx_v_c_Rif)));
 
-  /* "cavd/netstorage.pyx":886
+  /* "cavd/netstorage.pyx":899
  *     cdef double c_Ri,c_Rf,c_Rif
  *     throughVorNet(vornet_ptr, c_fname, &c_Ri, &c_Rf, &c_Rif)
  *     return c_Ri,c_Rf,c_Rif             # <<<<<<<<<<<<<<
@@ -12348,13 +12539,13 @@ static PyObject *__pyx_pf_4cavd_10netstorage_2connection_values(CYTHON_UNUSED Py
  * def connection_values_list(filename, vornet):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_c_Ri); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 886, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_c_Ri); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 899, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_6 = PyFloat_FromDouble(__pyx_v_c_Rf); if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 886, __pyx_L1_error)
+  __pyx_t_6 = PyFloat_FromDouble(__pyx_v_c_Rf); if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 899, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_7 = PyFloat_FromDouble(__pyx_v_c_Rif); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 886, __pyx_L1_error)
+  __pyx_t_7 = PyFloat_FromDouble(__pyx_v_c_Rif); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 899, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_8 = PyTuple_New(3); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 886, __pyx_L1_error)
+  __pyx_t_8 = PyTuple_New(3); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 899, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_GIVEREF(__pyx_t_3);
   PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_3);
@@ -12369,7 +12560,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_2connection_values(CYTHON_UNUSED Py
   __pyx_t_8 = 0;
   goto __pyx_L0;
 
-  /* "cavd/netstorage.pyx":870
+  /* "cavd/netstorage.pyx":883
  *     return atmnet_copy, subNo
  * 
  * def connection_values(filename, vornet):             # <<<<<<<<<<<<<<
@@ -12392,7 +12583,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_2connection_values(CYTHON_UNUSED Py
   return __pyx_r;
 }
 
-/* "cavd/netstorage.pyx":888
+/* "cavd/netstorage.pyx":901
  *     return c_Ri,c_Rf,c_Rif
  * 
  * def connection_values_list(filename, vornet):             # <<<<<<<<<<<<<<
@@ -12432,11 +12623,11 @@ static PyObject *__pyx_pw_4cavd_10netstorage_5connection_values_list(PyObject *_
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_vornet)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("connection_values_list", 1, 2, 2, 1); __PYX_ERR(1, 888, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("connection_values_list", 1, 2, 2, 1); __PYX_ERR(1, 901, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "connection_values_list") < 0)) __PYX_ERR(1, 888, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "connection_values_list") < 0)) __PYX_ERR(1, 901, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -12449,7 +12640,7 @@ static PyObject *__pyx_pw_4cavd_10netstorage_5connection_values_list(PyObject *_
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("connection_values_list", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 888, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("connection_values_list", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 901, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("cavd.netstorage.connection_values_list", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -12482,19 +12673,19 @@ static PyObject *__pyx_pf_4cavd_10netstorage_4connection_values_list(CYTHON_UNUS
   __Pyx_RefNannySetupContext("connection_values_list", 0);
   __Pyx_INCREF(__pyx_v_filename);
 
-  /* "cavd/netstorage.pyx":889
+  /* "cavd/netstorage.pyx":902
  * 
  * def connection_values_list(filename, vornet):
  *     conn_values = []             # <<<<<<<<<<<<<<
  *     if isinstance(filename, unicode):
  *         filename = (<unicode>filename).encode('utf8')
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 889, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 902, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_conn_values = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "cavd/netstorage.pyx":890
+  /* "cavd/netstorage.pyx":903
  * def connection_values_list(filename, vornet):
  *     conn_values = []
  *     if isinstance(filename, unicode):             # <<<<<<<<<<<<<<
@@ -12505,7 +12696,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_4connection_values_list(CYTHON_UNUS
   __pyx_t_3 = (__pyx_t_2 != 0);
   if (__pyx_t_3) {
 
-    /* "cavd/netstorage.pyx":891
+    /* "cavd/netstorage.pyx":904
  *     conn_values = []
  *     if isinstance(filename, unicode):
  *         filename = (<unicode>filename).encode('utf8')             # <<<<<<<<<<<<<<
@@ -12514,14 +12705,14 @@ static PyObject *__pyx_pf_4cavd_10netstorage_4connection_values_list(CYTHON_UNUS
  */
     if (unlikely(__pyx_v_filename == Py_None)) {
       PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "encode");
-      __PYX_ERR(1, 891, __pyx_L1_error)
+      __PYX_ERR(1, 904, __pyx_L1_error)
     }
-    __pyx_t_1 = PyUnicode_AsUTF8String(((PyObject*)__pyx_v_filename)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 891, __pyx_L1_error)
+    __pyx_t_1 = PyUnicode_AsUTF8String(((PyObject*)__pyx_v_filename)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 904, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF_SET(__pyx_v_filename, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "cavd/netstorage.pyx":890
+    /* "cavd/netstorage.pyx":903
  * def connection_values_list(filename, vornet):
  *     conn_values = []
  *     if isinstance(filename, unicode):             # <<<<<<<<<<<<<<
@@ -12530,28 +12721,28 @@ static PyObject *__pyx_pf_4cavd_10netstorage_4connection_values_list(CYTHON_UNUS
  */
   }
 
-  /* "cavd/netstorage.pyx":892
+  /* "cavd/netstorage.pyx":905
  *     if isinstance(filename, unicode):
  *         filename = (<unicode>filename).encode('utf8')
  *     vornet_ptr = (<VoronoiNetwork?>vornet).thisptr             # <<<<<<<<<<<<<<
  *     cdef char* c_fname = filename
  *     cdef vector[double] values
  */
-  if (!(likely(__Pyx_TypeTest(__pyx_v_vornet, __pyx_ptype_4cavd_10netstorage_VoronoiNetwork)))) __PYX_ERR(1, 892, __pyx_L1_error)
+  if (!(likely(__Pyx_TypeTest(__pyx_v_vornet, __pyx_ptype_4cavd_10netstorage_VoronoiNetwork)))) __PYX_ERR(1, 905, __pyx_L1_error)
   __pyx_t_4 = ((struct __pyx_obj_4cavd_10netstorage_VoronoiNetwork *)__pyx_v_vornet)->thisptr;
   __pyx_v_vornet_ptr = __pyx_t_4;
 
-  /* "cavd/netstorage.pyx":893
+  /* "cavd/netstorage.pyx":906
  *         filename = (<unicode>filename).encode('utf8')
  *     vornet_ptr = (<VoronoiNetwork?>vornet).thisptr
  *     cdef char* c_fname = filename             # <<<<<<<<<<<<<<
  *     cdef vector[double] values
  *     calculateConnParameters(vornet_ptr, c_fname, &values)
  */
-  __pyx_t_5 = __Pyx_PyObject_AsWritableString(__pyx_v_filename); if (unlikely((!__pyx_t_5) && PyErr_Occurred())) __PYX_ERR(1, 893, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_AsWritableString(__pyx_v_filename); if (unlikely((!__pyx_t_5) && PyErr_Occurred())) __PYX_ERR(1, 906, __pyx_L1_error)
   __pyx_v_c_fname = __pyx_t_5;
 
-  /* "cavd/netstorage.pyx":895
+  /* "cavd/netstorage.pyx":908
  *     cdef char* c_fname = filename
  *     cdef vector[double] values
  *     calculateConnParameters(vornet_ptr, c_fname, &values)             # <<<<<<<<<<<<<<
@@ -12560,19 +12751,19 @@ static PyObject *__pyx_pf_4cavd_10netstorage_4connection_values_list(CYTHON_UNUS
  */
   calculateConnParameters(__pyx_v_vornet_ptr, __pyx_v_c_fname, (&__pyx_v_values));
 
-  /* "cavd/netstorage.pyx":896
+  /* "cavd/netstorage.pyx":909
  *     cdef vector[double] values
  *     calculateConnParameters(vornet_ptr, c_fname, &values)
  *     conn_values = []             # <<<<<<<<<<<<<<
  *     for i in range(values.size()):
  *         # print(values[i])
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 896, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 909, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF_SET(__pyx_v_conn_values, ((PyObject*)__pyx_t_1));
   __pyx_t_1 = 0;
 
-  /* "cavd/netstorage.pyx":897
+  /* "cavd/netstorage.pyx":910
  *     calculateConnParameters(vornet_ptr, c_fname, &values)
  *     conn_values = []
  *     for i in range(values.size()):             # <<<<<<<<<<<<<<
@@ -12584,20 +12775,20 @@ static PyObject *__pyx_pf_4cavd_10netstorage_4connection_values_list(CYTHON_UNUS
   for (__pyx_t_8 = 0; __pyx_t_8 < __pyx_t_7; __pyx_t_8+=1) {
     __pyx_v_i = __pyx_t_8;
 
-    /* "cavd/netstorage.pyx":899
+    /* "cavd/netstorage.pyx":912
  *     for i in range(values.size()):
  *         # print(values[i])
  *         conn_values.append(values[i])             # <<<<<<<<<<<<<<
  *     return conn_values
  * 
  */
-    __pyx_t_1 = PyFloat_FromDouble((__pyx_v_values[__pyx_v_i])); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 899, __pyx_L1_error)
+    __pyx_t_1 = PyFloat_FromDouble((__pyx_v_values[__pyx_v_i])); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 912, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_conn_values, __pyx_t_1); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(1, 899, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_conn_values, __pyx_t_1); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(1, 912, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   }
 
-  /* "cavd/netstorage.pyx":900
+  /* "cavd/netstorage.pyx":913
  *         # print(values[i])
  *         conn_values.append(values[i])
  *     return conn_values             # <<<<<<<<<<<<<<
@@ -12608,7 +12799,7 @@ static PyObject *__pyx_pf_4cavd_10netstorage_4connection_values_list(CYTHON_UNUS
   __pyx_r = __pyx_v_conn_values;
   goto __pyx_L0;
 
-  /* "cavd/netstorage.pyx":888
+  /* "cavd/netstorage.pyx":901
  *     return c_Ri,c_Rf,c_Rif
  * 
  * def connection_values_list(filename, vornet):             # <<<<<<<<<<<<<<
@@ -13334,6 +13525,20 @@ static int __pyx_setprop_4cavd_10netstorage_11VoronoiNode_coords(PyObject *o, Py
   }
 }
 
+static PyObject *__pyx_getprop_4cavd_10netstorage_11VoronoiNode_frac_coords(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_4cavd_10netstorage_11VoronoiNode_11frac_coords_1__get__(o);
+}
+
+static int __pyx_setprop_4cavd_10netstorage_11VoronoiNode_frac_coords(PyObject *o, PyObject *v, CYTHON_UNUSED void *x) {
+  if (v) {
+    return __pyx_pw_4cavd_10netstorage_11VoronoiNode_11frac_coords_3__set__(o, v);
+  }
+  else {
+    PyErr_SetString(PyExc_NotImplementedError, "__del__");
+    return -1;
+  }
+}
+
 static PyObject *__pyx_getprop_4cavd_10netstorage_11VoronoiNode_label(PyObject *o, CYTHON_UNUSED void *x) {
   return __pyx_pw_4cavd_10netstorage_11VoronoiNode_5label_1__get__(o);
 }
@@ -13370,6 +13575,7 @@ static PyMethodDef __pyx_methods_4cavd_10netstorage_VoronoiNode[] = {
 
 static struct PyGetSetDef __pyx_getsets_4cavd_10netstorage_VoronoiNode[] = {
   {(char *)"coords", __pyx_getprop_4cavd_10netstorage_11VoronoiNode_coords, __pyx_setprop_4cavd_10netstorage_11VoronoiNode_coords, (char *)0, 0},
+  {(char *)"frac_coords", __pyx_getprop_4cavd_10netstorage_11VoronoiNode_frac_coords, __pyx_setprop_4cavd_10netstorage_11VoronoiNode_frac_coords, (char *)0, 0},
   {(char *)"label", __pyx_getprop_4cavd_10netstorage_11VoronoiNode_label, __pyx_setprop_4cavd_10netstorage_11VoronoiNode_label, (char *)0, 0},
   {(char *)"radius", __pyx_getprop_4cavd_10netstorage_11VoronoiNode_radius, __pyx_setprop_4cavd_10netstorage_11VoronoiNode_radius, (char *)0, 0},
   {0, 0, 0, 0, 0}
@@ -14088,7 +14294,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
   __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) __PYX_ERR(0, 2, __pyx_L1_error)
   __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(1, 149, __pyx_L1_error)
   __pyx_builtin_IOError = __Pyx_GetBuiltinName(__pyx_n_s_IOError); if (!__pyx_builtin_IOError) __PYX_ERR(1, 221, __pyx_L1_error)
-  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(1, 788, __pyx_L1_error)
+  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(1, 801, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -14193,41 +14399,41 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__10);
   __Pyx_GIVEREF(__pyx_tuple__10);
 
-  /* "cavd/netstorage.pyx":840
+  /* "cavd/netstorage.pyx":853
  * 
  * 
  * def substitute_atoms(atmnet, substituteSeed, radialFlag):             # <<<<<<<<<<<<<<
  *     """
  *     Attempt to substitute every other Si atom with Al atom.
  */
-  __pyx_tuple__11 = PyTuple_Pack(7, __pyx_n_s_atmnet, __pyx_n_s_substituteSeed, __pyx_n_s_radialFlag, __pyx_n_s_substitutionNo, __pyx_n_s_atmnet_copy, __pyx_n_s_c_atmnet_ptr, __pyx_n_s_subNo); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(1, 840, __pyx_L1_error)
+  __pyx_tuple__11 = PyTuple_Pack(7, __pyx_n_s_atmnet, __pyx_n_s_substituteSeed, __pyx_n_s_radialFlag, __pyx_n_s_substitutionNo, __pyx_n_s_atmnet_copy, __pyx_n_s_c_atmnet_ptr, __pyx_n_s_subNo); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(1, 853, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__11);
   __Pyx_GIVEREF(__pyx_tuple__11);
-  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(3, 0, 7, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__11, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_cavd_netstorage_pyx, __pyx_n_s_substitute_atoms, 840, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) __PYX_ERR(1, 840, __pyx_L1_error)
+  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(3, 0, 7, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__11, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_cavd_netstorage_pyx, __pyx_n_s_substitute_atoms, 853, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) __PYX_ERR(1, 853, __pyx_L1_error)
 
-  /* "cavd/netstorage.pyx":870
+  /* "cavd/netstorage.pyx":883
  *     return atmnet_copy, subNo
  * 
  * def connection_values(filename, vornet):             # <<<<<<<<<<<<<<
  *     """
  * 	Computes the Radius of the largest included sphere, free sphere
  */
-  __pyx_tuple__13 = PyTuple_Pack(7, __pyx_n_s_filename, __pyx_n_s_vornet, __pyx_n_s_vornet_ptr, __pyx_n_s_c_fname, __pyx_n_s_c_Ri, __pyx_n_s_c_Rf, __pyx_n_s_c_Rif); if (unlikely(!__pyx_tuple__13)) __PYX_ERR(1, 870, __pyx_L1_error)
+  __pyx_tuple__13 = PyTuple_Pack(7, __pyx_n_s_filename, __pyx_n_s_vornet, __pyx_n_s_vornet_ptr, __pyx_n_s_c_fname, __pyx_n_s_c_Ri, __pyx_n_s_c_Rf, __pyx_n_s_c_Rif); if (unlikely(!__pyx_tuple__13)) __PYX_ERR(1, 883, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__13);
   __Pyx_GIVEREF(__pyx_tuple__13);
-  __pyx_codeobj__14 = (PyObject*)__Pyx_PyCode_New(2, 0, 7, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__13, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_cavd_netstorage_pyx, __pyx_n_s_connection_values, 870, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__14)) __PYX_ERR(1, 870, __pyx_L1_error)
+  __pyx_codeobj__14 = (PyObject*)__Pyx_PyCode_New(2, 0, 7, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__13, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_cavd_netstorage_pyx, __pyx_n_s_connection_values, 883, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__14)) __PYX_ERR(1, 883, __pyx_L1_error)
 
-  /* "cavd/netstorage.pyx":888
+  /* "cavd/netstorage.pyx":901
  *     return c_Ri,c_Rf,c_Rif
  * 
  * def connection_values_list(filename, vornet):             # <<<<<<<<<<<<<<
  *     conn_values = []
  *     if isinstance(filename, unicode):
  */
-  __pyx_tuple__15 = PyTuple_Pack(7, __pyx_n_s_filename, __pyx_n_s_vornet, __pyx_n_s_conn_values, __pyx_n_s_vornet_ptr, __pyx_n_s_c_fname, __pyx_n_s_values, __pyx_n_s_i); if (unlikely(!__pyx_tuple__15)) __PYX_ERR(1, 888, __pyx_L1_error)
+  __pyx_tuple__15 = PyTuple_Pack(7, __pyx_n_s_filename, __pyx_n_s_vornet, __pyx_n_s_conn_values, __pyx_n_s_vornet_ptr, __pyx_n_s_c_fname, __pyx_n_s_values, __pyx_n_s_i); if (unlikely(!__pyx_tuple__15)) __PYX_ERR(1, 901, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__15);
   __Pyx_GIVEREF(__pyx_tuple__15);
-  __pyx_codeobj__16 = (PyObject*)__Pyx_PyCode_New(2, 0, 7, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__15, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_cavd_netstorage_pyx, __pyx_n_s_connection_values_list, 888, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__16)) __PYX_ERR(1, 888, __pyx_L1_error)
+  __pyx_codeobj__16 = (PyObject*)__Pyx_PyCode_New(2, 0, 7, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__15, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_cavd_netstorage_pyx, __pyx_n_s_connection_values_list, 901, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__16)) __PYX_ERR(1, 901, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -14303,21 +14509,21 @@ static int __Pyx_modinit_type_init_code(void) {
   if (PyObject_SetAttr(__pyx_m, __pyx_n_s_VoronoiNode, (PyObject *)&__pyx_type_4cavd_10netstorage_VoronoiNode) < 0) __PYX_ERR(1, 585, __pyx_L1_error)
   if (__Pyx_setup_reduce((PyObject*)&__pyx_type_4cavd_10netstorage_VoronoiNode) < 0) __PYX_ERR(1, 585, __pyx_L1_error)
   __pyx_ptype_4cavd_10netstorage_VoronoiNode = &__pyx_type_4cavd_10netstorage_VoronoiNode;
-  if (PyType_Ready(&__pyx_type_4cavd_10netstorage_VoronoiNetwork) < 0) __PYX_ERR(1, 685, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_4cavd_10netstorage_VoronoiNetwork) < 0) __PYX_ERR(1, 698, __pyx_L1_error)
   __pyx_type_4cavd_10netstorage_VoronoiNetwork.tp_print = 0;
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_4cavd_10netstorage_VoronoiNetwork.tp_dictoffset && __pyx_type_4cavd_10netstorage_VoronoiNetwork.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_4cavd_10netstorage_VoronoiNetwork.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_VoronoiNetwork, (PyObject *)&__pyx_type_4cavd_10netstorage_VoronoiNetwork) < 0) __PYX_ERR(1, 685, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_4cavd_10netstorage_VoronoiNetwork) < 0) __PYX_ERR(1, 685, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_VoronoiNetwork, (PyObject *)&__pyx_type_4cavd_10netstorage_VoronoiNetwork) < 0) __PYX_ERR(1, 698, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_4cavd_10netstorage_VoronoiNetwork) < 0) __PYX_ERR(1, 698, __pyx_L1_error)
   __pyx_ptype_4cavd_10netstorage_VoronoiNetwork = &__pyx_type_4cavd_10netstorage_VoronoiNetwork;
-  if (PyType_Ready(&__pyx_type_4cavd_10netstorage_VoronoiEdge) < 0) __PYX_ERR(1, 622, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_4cavd_10netstorage_VoronoiEdge) < 0) __PYX_ERR(1, 635, __pyx_L1_error)
   __pyx_type_4cavd_10netstorage_VoronoiEdge.tp_print = 0;
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_4cavd_10netstorage_VoronoiEdge.tp_dictoffset && __pyx_type_4cavd_10netstorage_VoronoiEdge.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_4cavd_10netstorage_VoronoiEdge.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_VoronoiEdge, (PyObject *)&__pyx_type_4cavd_10netstorage_VoronoiEdge) < 0) __PYX_ERR(1, 622, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_4cavd_10netstorage_VoronoiEdge) < 0) __PYX_ERR(1, 622, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_VoronoiEdge, (PyObject *)&__pyx_type_4cavd_10netstorage_VoronoiEdge) < 0) __PYX_ERR(1, 635, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_4cavd_10netstorage_VoronoiEdge) < 0) __PYX_ERR(1, 635, __pyx_L1_error)
   __pyx_ptype_4cavd_10netstorage_VoronoiEdge = &__pyx_type_4cavd_10netstorage_VoronoiEdge;
   if (PyType_Ready(&__pyx_type_4cavd_10netstorage___pyx_scope_struct__perform_voronoi_decomposition) < 0) __PYX_ERR(1, 491, __pyx_L1_error)
   __pyx_type_4cavd_10netstorage___pyx_scope_struct__perform_voronoi_decomposition.tp_print = 0;
@@ -14738,64 +14944,64 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   PyType_Modified(__pyx_ptype_4cavd_10netstorage_AtomNetwork);
 
-  /* "cavd/netstorage.pyx":791
+  /* "cavd/netstorage.pyx":804
  * 
  *     @classmethod
  *     def perform_voronoi_decomposition(cls, atmnet, saveVorCells=False):             # <<<<<<<<<<<<<<
  *         """
  *         Performs weighted voronoi decomposition of atoms in the AtomNetwork
  */
-  __Pyx_GetNameInClass(__pyx_t_1, (PyObject *)__pyx_ptype_4cavd_10netstorage_VoronoiNetwork, __pyx_n_s_perform_voronoi_decomposition); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 791, __pyx_L1_error)
+  __Pyx_GetNameInClass(__pyx_t_1, (PyObject *)__pyx_ptype_4cavd_10netstorage_VoronoiNetwork, __pyx_n_s_perform_voronoi_decomposition); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 804, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
 
-  /* "cavd/netstorage.pyx":790
+  /* "cavd/netstorage.pyx":803
  *             raise ValueError
  * 
  *     @classmethod             # <<<<<<<<<<<<<<
  *     def perform_voronoi_decomposition(cls, atmnet, saveVorCells=False):
  *         """
  */
-  __pyx_t_2 = __Pyx_Method_ClassMethod(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 790, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_Method_ClassMethod(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 803, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_4cavd_10netstorage_VoronoiNetwork->tp_dict, __pyx_n_s_perform_voronoi_decomposition, __pyx_t_2) < 0) __PYX_ERR(1, 791, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_4cavd_10netstorage_VoronoiNetwork->tp_dict, __pyx_n_s_perform_voronoi_decomposition, __pyx_t_2) < 0) __PYX_ERR(1, 804, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   PyType_Modified(__pyx_ptype_4cavd_10netstorage_VoronoiNetwork);
 
-  /* "cavd/netstorage.pyx":840
+  /* "cavd/netstorage.pyx":853
  * 
  * 
  * def substitute_atoms(atmnet, substituteSeed, radialFlag):             # <<<<<<<<<<<<<<
  *     """
  *     Attempt to substitute every other Si atom with Al atom.
  */
-  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_4cavd_10netstorage_1substitute_atoms, NULL, __pyx_n_s_cavd_netstorage); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 840, __pyx_L1_error)
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_4cavd_10netstorage_1substitute_atoms, NULL, __pyx_n_s_cavd_netstorage); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 853, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_substitute_atoms, __pyx_t_2) < 0) __PYX_ERR(1, 840, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_substitute_atoms, __pyx_t_2) < 0) __PYX_ERR(1, 853, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "cavd/netstorage.pyx":870
+  /* "cavd/netstorage.pyx":883
  *     return atmnet_copy, subNo
  * 
  * def connection_values(filename, vornet):             # <<<<<<<<<<<<<<
  *     """
  * 	Computes the Radius of the largest included sphere, free sphere
  */
-  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_4cavd_10netstorage_3connection_values, NULL, __pyx_n_s_cavd_netstorage); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 870, __pyx_L1_error)
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_4cavd_10netstorage_3connection_values, NULL, __pyx_n_s_cavd_netstorage); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 883, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_connection_values, __pyx_t_2) < 0) __PYX_ERR(1, 870, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_connection_values, __pyx_t_2) < 0) __PYX_ERR(1, 883, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "cavd/netstorage.pyx":888
+  /* "cavd/netstorage.pyx":901
  *     return c_Ri,c_Rf,c_Rif
  * 
  * def connection_values_list(filename, vornet):             # <<<<<<<<<<<<<<
  *     conn_values = []
  *     if isinstance(filename, unicode):
  */
-  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_4cavd_10netstorage_5connection_values_list, NULL, __pyx_n_s_cavd_netstorage); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 888, __pyx_L1_error)
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_4cavd_10netstorage_5connection_values_list, NULL, __pyx_n_s_cavd_netstorage); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 901, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_connection_values_list, __pyx_t_2) < 0) __PYX_ERR(1, 888, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_connection_values_list, __pyx_t_2) < 0) __PYX_ERR(1, 901, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "cavd/netstorage.pyx":1
