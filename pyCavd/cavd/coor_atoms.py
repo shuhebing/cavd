@@ -46,6 +46,14 @@ from pymatgen.core.operations import MagSymmOp
 from collections import OrderedDict
 from pymatgen.core.periodic_table import Element, Specie, get_el_sp, DummySpecie
 
+
+file_dir = os.path.dirname(__file__)
+#file_dir = os.path.abspath("/home/yeanjiang/yaj/CAVD/pyCavd/zeo/")
+rad_file = os.path.join(file_dir, 'ionic_radii.json')
+with open(rad_file, 'r') as fp:
+    _ion_radii = json.load(fp)
+
+
 # pymtgen实现的求离子半径
 def get_ionic_radii_pymatgen(filename):
     stru = Structure.from_file(filename)
@@ -102,7 +110,7 @@ class VoronoiNN_self(VoronoiNN):
                 if "-" in neighbors[i].species_string:
                     break
             neighbors = new_neighbors
-        return neighbors
+        return len(neighbors)
     
 
 # 自定义的Cif文件解析类
@@ -440,6 +448,7 @@ class CifParser_new(CifParser):
 if __name__ == "__main__":
     labels2 = []
     els2 = []
+    radii = []
     cns2 = []
     Migrant_para = []
     vnn = VoronoiNN_self(cutoff = 10.0)
@@ -447,24 +456,79 @@ if __name__ == "__main__":
         input_string = f.read()
     parser = CifParser_new.from_string(input_string)
     stru = parser.get_structures(primitive=False)[0]
+    def nearest_key(sorted_vals, key):
+        i = bisect_left(sorted_vals, key)
+        if i == len(sorted_vals):
+            return sorted_vals[-1]
+        if i == 0:
+            return sorted_vals[0]
+        before = sorted_vals[i-1]
+        after = sorted_vals[i]
+        if after-key < key-before:
+            return after
+        else:
+            return before
     for i in range(len(stru.sites)):
         site = stru.sites[i]
+        if isinstance(site.specie, Element):
+            radius = site.specie.atomic_radius
+            # Handle elements with no atomic_radius
+            # by using calculated values instead.
+            if radius is None:
+                radius = site.specie.atomic_radius_calculated
+            if radius is None:
+                raise ValueError(
+                        "cannot assign radius to element {}".format(
+                        site.specie))
+            radii.append(radius)
+            continue
+            
         label = site._atom_site_label
         coord_no = vnn.get_cn(stru, i)
+        el = site.specie.symbol
+        oxi_state = int(round(site.specie.oxi_state))
+        try:
+            tab_oxi_states = sorted(map(int, _ion_radii[el].keys()))
+            oxi_state = nearest_key(tab_oxi_states, oxi_state)
+            radius = _ion_radii[el][str(oxi_state)][str(coord_no)]
+        except KeyError:
+            coord_num = vnn.get_cn(stru, i)
+            if coord_num - coord_no > 0:
+                new_coord_no = coord_no + 1
+            else:
+                new_coord_no = coord_no - 1
+            try:
+                radius = _ion_radii[el][str(oxi_state)][str(new_coord_no)]
+                coord_no = new_coord_no
+            except:
+                tab_coords = sorted(map(int, _ion_radii[el][str(oxi_state)].keys()))
+                new_coord_no = nearest_key(tab_coords, coord_no)
+                i = 0
+                for val in tab_coords:
+                    if  val > coord_no:
+                        break
+                    i = i + 1
+                if i == len(tab_coords):
+                    key = str(tab_coords[-1])
+                    radius = _ion_radii[el][str(oxi_state)][key]
+                elif i == 0:
+                    key = str(tab_coords[0])
+                    radius = _ion_radii[el][str(oxi_state)][key]
+                else:
+                    key = str(tab_coords[i-1])
+                    radius1 = _ion_radii[el][str(oxi_state)][key]
+                    key = str(tab_coords[i])
+                    radius2 = _ion_radii[el][str(oxi_state)][key]
+                    radius = (radius1+radius2)/2
         #print(site)
         #print(coord_no)
 
-        # if label in labels2:
-        #     continue
+        if label in labels2:
+            continue
         
-        if "Li" in site.species_string:
-            # print(site)
-            # print(coord_no[0])
-            Migrant_para.append([label,site.distance(coord_no[0])])
-
         labels2.append(label)
-        els2.append(site)
         cns2.append(coord_no)
-        coor_atom_list = list(zip(labels2, els2, cns2))
+        radii.append(radius)
+        coor_atom_list = list(zip(labels2, cns2, radii))
     print(coor_atom_list)
-    print(Migrant_para)
+    #print(Migrant_para)

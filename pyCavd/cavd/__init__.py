@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 import os
 import sys
 import re
@@ -91,6 +92,12 @@ def LocalEnvirCom(filename, migrant):
 
     return radii,migrant_radius,migrant_alpha,nei_dises
 
+# 获取特定结构中
+# 所有离子的有效半径
+def getIonicRadii(filename):
+    coordination_list, radii = get_local_envir(filename)
+    print(radii)
+    return radii
 
 def AllCom(filename, probe_rad, num_sample, migrant=None, rad_flag=True, effective_rad=True, rad_file=None, rad_store_in_vasp=True, minRad=0.0, maxRad=0.0):
     radii = {}
@@ -135,6 +142,44 @@ def AllCom(filename, probe_rad, num_sample, migrant=None, rad_flag=True, effecti
     for i in channels:
         dims.append(i["dim"])
     return conn,oneD,twoD,threeD,nei_dises,dims,voids
+
+#AllCom
+def AllCom2(filename, probe_rad, num_sample, migrant=None, rad_flag=True, effective_rad=True, rad_file=None, rad_store_in_vasp=True, minRad=0.0, maxRad=0.0):
+    radii = {}
+    if rad_flag and effective_rad:
+        radii = getIonicRadii(filename)
+    if migrant:
+        remove_filename = getRemoveMigrantFilename(filename,migrant)
+    else:
+        remove_filename = filename
+    atmnet = AtomNetwork.read_from_CIF(remove_filename, radii, rad_flag, rad_file)
+    # high_accur_atmnet = atmnet.copy()
+    # high_accuracy_atmnet(high_accur_atmnet, "S50")
+
+    if migrant:
+        os.remove(remove_filename)
+
+    prefixname = filename.replace(".cif","")
+    # vornet,edge_centers,fcs = high_accur_atmnet.perform_voronoi_decomposition(False)
+    vornet,edge_centers,fcs = atmnet.perform_voronoi_decomposition(False)
+
+    writeBIFile(prefixname+".bi",atmnet,vornet)
+
+    sym_vornet,voids = get_Symmetry(atmnet, vornet)
+
+    writeBIFile(prefixname+"_orgin.bi",atmnet,sym_vornet)
+    writeVaspFile(prefixname+"_orgin.vasp",atmnet,sym_vornet,rad_store_in_vasp)
+
+    writeVaspFile(prefixname+"_selected.vasp",atmnet,sym_vornet,rad_store_in_vasp,minRad,maxRad)
+    conn = connection_values_list(prefixname+".resex", sym_vornet)
+
+    channels = Channel.findChannels(sym_vornet,atmnet,minRad,prefixname+".net")
+    oneD,twoD,threeD = ConnStatus(minRad, conn)
+    
+    dims = []
+    for i in channels:
+        dims.append(i["dim"])
+    return conn,oneD,twoD,threeD,dims,voids
 
 #计算指定结构的瓶颈和间隙
 def BIComputation(filename, migrant=None, rad_flag=True, effective_rad=True, rad_file=None, rad_store_in_vasp=True,  minRad=0.0, maxRad=0.0):
