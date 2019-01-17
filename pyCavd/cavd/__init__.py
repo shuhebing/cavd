@@ -143,6 +143,107 @@ def AllCom(filename, probe_rad, num_sample, migrant=None, rad_flag=True, effecti
         dims.append(i["dim"])
     return conn,oneD,twoD,threeD,nei_dises,dims,voids
 
+# 使用带半径的公式进行计算
+def AllCom5(filename, standard, migrant=None, rad_flag=True, effective_rad=True, rad_file=None, rad_store_in_vasp=True):
+    radii = {}
+    if rad_flag and effective_rad:
+        #考虑如何利用migrant_radius与migrant_alpha
+        radii, migrant_radius, migrant_alpha, nei_dises = LocalEnvirCom(filename,migrant)
+    if migrant:
+        remove_filename = getRemoveMigrantFilename(filename,migrant)
+    else:
+        remove_filename = filename
+    atmnet = AtomNetwork.read_from_CIF(remove_filename, radii, rad_flag, rad_file)
+    # high_accur_atmnet = atmnet.copy()
+    # high_accuracy_atmnet(high_accur_atmnet, "S50")
+    if migrant:
+        os.remove(remove_filename)
+
+    prefixname = filename.replace(".cif","")
+    # vornet,edge_centers,fcs = high_accur_atmnet.perform_voronoi_decomposition(False)
+    vornet,edge_centers,fcs = atmnet.perform_voronoi_decomposition(False)
+    sym_vornet,voids = get_Symmetry(atmnet, vornet)
+
+    writeBIFile(prefixname+"_orgin.bi",atmnet,sym_vornet)
+    writeVaspFile(prefixname+"_orgin.vasp",atmnet,sym_vornet,rad_store_in_vasp)
+
+    minRad = standard*migrant_alpha*0.85
+    print(minRad)
+
+    channels = Channel.findChannels(sym_vornet,atmnet,minRad,prefixname+".net")
+    
+    dims = []
+    for i in channels:
+        dims.append(i["dim"])
+    return nei_dises,dims,voids
+
+# 使用簇替换的方法进行计算
+def AllCom4(filename, standard, migrant=None, rad_flag=True, effective_rad=True, rad_file=None, rad_store_in_vasp=True):
+    radii = {}
+    if rad_flag and effective_rad:
+        #考虑如何利用migrant_radius与migrant_alpha
+        radii, migrant_radius, migrant_alpha, nei_dises = LocalEnvirCom(filename,migrant)
+    if migrant:
+        remove_filename = getRemoveMigrantFilename(filename,migrant)
+    else:
+        remove_filename = filename
+    atmnet = AtomNetwork.read_from_CIF(remove_filename, radii, rad_flag, rad_file)
+    high_accur_atmnet = atmnet.copy()
+    high_accuracy_atmnet(high_accur_atmnet, "S50")
+    if migrant:
+        os.remove(remove_filename)
+
+    prefixname = filename.replace(".cif","")
+    vornet,edge_centers,fcs = high_accur_atmnet.perform_voronoi_decomposition(False)
+    sym_vornet,voids = get_Symmetry(high_accur_atmnet, vornet)
+
+    writeBIFile(prefixname+"_orgin.bi",atmnet,sym_vornet)
+    writeVaspFile(prefixname+"_orgin.vasp",atmnet,sym_vornet,rad_store_in_vasp)
+
+    minRad = standard*migrant_alpha*0.85
+    print(minRad)
+
+    channels = Channel.findChannels(sym_vornet,atmnet,minRad,prefixname+".net")
+    dims = []
+    for i in channels:
+        dims.append(i["dim"])
+    return nei_dises,dims,voids
+
+# 使用不带半径的公式进行计算
+def AllCom3(filename, standard, migrant=None, rad_flag=True, effective_rad=True, rad_file=None, rad_store_in_vasp=True):
+    radii = {}
+    if rad_flag and effective_rad:
+        #考虑如何利用migrant_radius与migrant_alpha
+        radii, migrant_radius, migrant_alpha, nei_dises = LocalEnvirCom(filename,migrant)
+    if migrant:
+        remove_filename = getRemoveMigrantFilename(filename,migrant)
+    else:
+        remove_filename = filename
+    rad_flag = False
+    atmnet = AtomNetwork.read_from_CIF(remove_filename, radii, rad_flag, rad_file)
+    # high_accur_atmnet = atmnet.copy()
+    # high_accuracy_atmnet(high_accur_atmnet, "S50")
+    if migrant:
+        os.remove(remove_filename)
+
+    prefixname = filename.replace(".cif","")
+    # vornet,edge_centers,fcs = high_accur_atmnet.perform_voronoi_decomposition(False)
+    vornet,edge_centers,fcs = atmnet.perform_voronoi_decomposition(False)
+    sym_vornet,voids = get_Symmetry(atmnet, vornet)
+
+    writeBIFile(prefixname+"_orgin.bi",atmnet,sym_vornet)
+    writeVaspFile(prefixname+"_orgin.vasp",atmnet,sym_vornet,rad_store_in_vasp)
+
+    minRad = standard*migrant_alpha*0.85
+    print(minRad)
+
+    channels = Channel.findChannels(sym_vornet,atmnet,minRad,prefixname+".net")
+    
+    dims = []
+    for i in channels:
+        dims.append(i["dim"])
+    return nei_dises,dims,voids
+
 #AllCom
 def AllCom2(filename, probe_rad, num_sample, migrant=None, rad_flag=True, effective_rad=True, rad_file=None, rad_store_in_vasp=True, minRad=0.0, maxRad=0.0):
     radii = {}
@@ -163,23 +264,19 @@ def AllCom2(filename, probe_rad, num_sample, migrant=None, rad_flag=True, effect
     # vornet,edge_centers,fcs = high_accur_atmnet.perform_voronoi_decomposition(False)
     vornet,edge_centers,fcs = atmnet.perform_voronoi_decomposition(False)
 
-    writeBIFile(prefixname+".bi",atmnet,vornet)
-
     sym_vornet,voids = get_Symmetry(atmnet, vornet)
 
     writeBIFile(prefixname+"_orgin.bi",atmnet,sym_vornet)
     writeVaspFile(prefixname+"_orgin.vasp",atmnet,sym_vornet,rad_store_in_vasp)
 
     writeVaspFile(prefixname+"_selected.vasp",atmnet,sym_vornet,rad_store_in_vasp,minRad,maxRad)
-    conn = connection_values_list(prefixname+".resex", sym_vornet)
 
     channels = Channel.findChannels(sym_vornet,atmnet,minRad,prefixname+".net")
-    oneD,twoD,threeD = ConnStatus(minRad, conn)
     
     dims = []
     for i in channels:
         dims.append(i["dim"])
-    return conn,oneD,twoD,threeD,dims,voids
+    return dims,voids
 
 #计算指定结构的瓶颈和间隙
 def BIComputation(filename, migrant=None, rad_flag=True, effective_rad=True, rad_file=None, rad_store_in_vasp=True,  minRad=0.0, maxRad=0.0):
