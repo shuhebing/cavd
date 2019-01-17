@@ -1835,7 +1835,7 @@ void CHANNEL::writeToNET(int n, fstream &output, ATOM_NETWORK *atmNet){
                 // Translate the coordinate by unit cell increments so that it lies within the 0 to 1 range.
                 // pt = atmNet->shiftABCInUC(pt);
                 //output << xCoord <<  "\t" << yCoord << "\t" << zCoord << "\t" << disp.x << "\t" << disp.y << "\t" << disp.z << "\t";
-				output << pt[0] << " " << pt[1] << " " << pt[2] << endl;
+				output << pt[0] << " " << pt[1] << " " << pt[2] << "\t";
                 // output << disp.x << "\t" << disp.y << "\t" << disp.z << "\t";
 				output << curNode.max_radius << endl;
 				
