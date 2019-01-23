@@ -26,7 +26,7 @@ def LocalEnvirCom(filename, migrant):
     # radii = val_eval.radii
     coordination_list, radii = get_local_envir(filename)
     
-    # 为了防止保存的半径信息无法匹配此处对半径信息做特殊处理，如Ag+的半径会保存为Ag、Ag+、Ag1+1
+    # 为了防止保存的半径信息无法匹配此处对半径信息做特殊处理，如Ag+的半径会保存为Ag、Ag+、Ag1+
     # radii_keys = list(radii.keys())
     # for key in radii_keys:
     #     radii[re.sub('[^a-zA-Z]','',key)] = radii[key]
@@ -42,7 +42,7 @@ def LocalEnvirCom(filename, migrant):
     #             minRad = radii[label]
     #         elif radii[label] < minRad:
     #             minRad = radii[label]
-
+    
     migrant_labels = []
     coord_tmp = []
     nei_dis_tmp = []
@@ -51,46 +51,46 @@ def LocalEnvirCom(filename, migrant):
     migrant_paras_tmp = []
     for i in coordination_list:
         if migrant in i["label"]:
-            nei = i["coord_nei"][0]
-            nei_dis = nei[1]
+            if len(i["coord_nei"]) == 0:
+                nei = i["coord_nei"][0]
+                nei_dis = nei[1]
 
-            nei_label = nei[0]
-            nei_radius = radii[nei_label]
+                nei_label = nei[0]
+                nei_radius = radii[nei_label]
 
-            migrant_radius = i["radius"]
-            migrant_label = i["label"]
+                migrant_radius = i["radius"]
+                migrant_label = i["label"]
 
-            alpha = (nei_dis - nei_radius)/migrant_radius
+                alpha = (nei_dis - nei_radius)/migrant_radius
 
-            migrant_labels.append(migrant_label)
-            migrant_radii_tmp.append(migrant_radius)
-            migrant_paras_tmp.append(alpha)
-            coord_tmp.append(i["coord_num"])
-            nei_dis_tmp.append(nei_dis)
-            min_nei_dis_tmp.append(nei_dis - nei_radius)
+                migrant_labels.append(migrant_label)
+                migrant_radii_tmp.append(migrant_radius)
+                migrant_paras_tmp.append(alpha)
+                coord_tmp.append(i["coord_num"])
+                nei_dis_tmp.append(nei_dis)
+                min_nei_dis_tmp.append(nei_dis - nei_radius)
 
+    if len(migrant_labels) != 0 and len(migrant_paras) != 0 and len(nei_dises) != 0:
+        migrant_radii = dict(zip(migrant_labels, migrant_radii_tmp))
+        migrant_paras = dict(zip(migrant_labels, migrant_paras_tmp))
+        nei_dises = dict(zip(coord_tmp, zip(nei_dis_tmp, min_nei_dis_tmp)))
 
-    migrant_radii = dict(zip(migrant_labels, migrant_radii_tmp))
-    migrant_paras = dict(zip(migrant_labels, migrant_paras_tmp))
-
-    nei_dises = dict(zip(coord_tmp, zip(nei_dis_tmp, min_nei_dis_tmp)))
-
-    rad_sum = 0
-    alpha_sum = 0
-    for value in migrant_radii.values():
-        rad_sum += value
-    for value in migrant_paras.values():
-        alpha_sum += value
-    migrant_radius = rad_sum/len(migrant_radii)
-    migrant_alpha = alpha_sum/len(migrant_paras)
-    
-    print(radii)
-    # print(migrant_radii)
-    # print(migrant_paras)
-    print(migrant_radius)
-    print(migrant_alpha)
-
-    return radii,migrant_radius,migrant_alpha,nei_dises
+        rad_sum = 0
+        alpha_sum = 0
+        for value in migrant_radii.values():
+            rad_sum += value
+        for value in migrant_paras.values():
+            alpha_sum += value
+        migrant_radius = rad_sum/len(migrant_radii)
+        migrant_alpha = alpha_sum/len(migrant_paras)
+        # print(migrant_radii)
+        # print(migrant_paras)
+        print(migrant_radius)
+        print(migrant_alpha)
+        print(migrant+" radii: ",radii)
+        return radii,migrant_radius,migrant_alpha,nei_dises
+    else:
+        return radii,migrant_radius,migrant_alpha,nei_dises
 
 # 获取特定结构中
 # 所有离子的有效半径

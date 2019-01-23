@@ -1,32 +1,54 @@
 '''
 离子局部环境分析程序。
-更新日期：20180710
+更新日期：20190123
 作者：YAJ
+School of Computer Engineering and Science ShangHai University 
+
 配位数计算原理：
-    以目标离子为中心，10A为半径画球形区域，得到区域内的离子坐标。之后，按照距离目标离子中心的距离排序并存入一个列表中。
-    从前往后遍历列表，判断每个离子的正负，直到出现第一个同号离子为止，此时记录下的异号离子数目即为配位数。（计算第一配位球壳层）
+    1.按距离与正负号计算配位：
+        以目标原子为中心，10A为半径画球形区域，得到区域内所有原子。按照距离目标离子中心的距离排序从小到大排序，存入列表中。
+        从前往后遍历列表，判断每个原子的正负，直到出现第一个同号原子为止，记录下的异号原子的数目即为配位数。（计算第一配位球壳层）
+    2.按O'Keefee 提供的方法计算配位。
+        原始文献为：
+            [1]	M. O’Keeffe, “A proposed rigorous definition of coordination number,” Acta Crystallogr. Sect. A, vol. 35, no. 5, pp. 772–775, 1979.
+        下列文献对该方法做了介绍：
+            [2]	L. Yang, S. Dacek, and G. Ceder, “Proposed definition of crystal substructure and substructural similarity,” Phys. Rev. B - Condens. Matter Mater. Phys., vol. 90, no. 5, pp. 1–9, 2014.
+
 离子半径计算原理：
     计算给定结构文件中对应位点的配位数后，依据元素、价态和配位数三者的信息查香农1976年有效离子半径表，得到对应的半径。
-    注意：若香农表中无法找到结构中离子对应的价态或配位数，则会返回香农表中最接近的价态或配位数对应的半径，作为当前结构中对应离子的半径。
-alpha计算原理：
-    计算出迁移离子到配位离子表面距离减去配位离子的半径，再除以迁移离子半径。max_alpha、min_alpha分别对应最远与最近配位离子。
+    ！！！----------注意----------！！！
+    若香农表中无法找到结构文件中离子对应的价态或配位数，则会返回香农表中最接近文件中的价态或配位数所对应的半径，作为离子半径。
+    若结构文件中为给定价态，使用原子半径作为替代。
+
 输入：
     结构文件、迁移离子元素符号
     离子半径表：香农1976年离子半径。(ionic_radii.json)
 输出：
     格式：
-    自定义数据结构Coordination组成的列表。Coordination的数据结构为:label element coord frac_coord radius coord_num(配位数) coord_nei
-        coord_nei为列表，列表中的每一项为(label,distance)，其中label为配位原子的label，distance为中心原子到配位原子的距离
+    Coordination组成的列表、(label,radius)组成的列表。
+    Coordination定义为:
+        Coordination：
+            label element coord frac_coord radius coord_num(配位数) coord_nei
+    分别指：
+        label：cif文件中的的“_atom_site_label”字段对应的值，表征不同环境下的原子
+        element：中心原子元素符号
+        coord：中心原子的直角坐标
+        frac_coord：中心原子的直角坐标
+        radius：中心原子的离子半径（在结构文件中未给出价态时，使用原子半径替代）
+        coord_num：中心原子的配位数
+        coord_nei：中心原子的配位原子列表。列表中的每一项为(PeriodicSite,distance)，表示一个配位原子：
+            PeriodicSite为Pymatgen中表示位点的数据结构；
+            distance为中心原子到配位原子的距离，单位为A。
     label: radius 组成的列表。
 环境要求：
     需安装pymatgen包
-    需将ionic_radii.json文件放置到同与该文件（ionic_radii.py）同一文件目录下。
+    需将ionic_radii.json文件与该文件（ionic_radii.py）放置在同一目录下。
 使用方法：
     更改“if __name__ == "__main__":”模块中调用的“get_ionic_radii()”中的参数为需要计算的cif文件，并加上迁移离子。
 程序目前的缺陷：
     无法计算具有部分占据/混占的结构文件。
-    无法计算香农1976年有效离子半径表中不包含的离子半径（含H元素等）。
-    仅适用离子晶体计算。
+    对于香农1976年有效离子半径表中不存在的价态（小数价态）、元素（H与H的同位素等）和配位数组合，会采用近似值的方法查表。
+    仅保证针对对离子晶体计算有效。
 '''
 
 import os
@@ -52,76 +74,20 @@ from pymatgen.core.operations import MagSymmOp
 from collections import OrderedDict
 from pymatgen.core.periodic_table import Element, Specie, get_el_sp, DummySpecie
 
-class CoordComError(Exception):
-    #print("Computer Coord Failed!")
-    pass
+class CoordEnviroComError(Exception):
+    def __init__(self, message = "Coordination Environment Compute Error!"):
+        self.message = message
+
+class RadiusComError(Exception):
+    def __init__(self, message = "Cannot assign radius!"):
+        self.message = message
 
 file_dir = os.path.dirname(__file__)
-#file_dir = os.path.abspath("/home/yeanjiang/yaj/CAVD/pyCavd/zeo/")
 rad_file = os.path.join(file_dir, 'ionic_radii.json')
 with open(rad_file, 'r') as fp:
     _ion_radii = json.load(fp)
 
-# pymtgen实现的求离子半径
-def get_ionic_radii_pymatgen(filename):
-    stru = Structure.from_file(filename)
-    val_eval = ValenceIonicRadiusEvaluator(stru)
-    radii = val_eval.radii
-    print("pymatgen radii:",radii)
-
-class VoronoiNN_self(VoronoiNN):
-    def __init__(self, tol=0, targets=None, cutoff=10.0,
-                 allow_pathological=False, weight='solid_angle',
-                 extra_nn_info=True):
-        super(VoronoiNN_self, self).__init__()
-        self.tol = tol
-        self.cutoff = cutoff
-        self.allow_pathological = allow_pathological
-        self.targets = targets
-        self.weight = weight
-        self.extra_nn_info = extra_nn_info
-    #根据目标离子设定范围球形区域内的异号离子数量确定配位数，考虑周期性情况
-    def get_cn(self, structure, n):
-        #print(structure)
-        center = structure[n]
-        neighbors = structure.get_sites_in_sphere(center.coords, self.cutoff)
-        neighbors = [i[0] for i in sorted(neighbors, key=lambda s: s[1])]
-        #print(center)
-        #print(neighbors)
-        # 选择异号离子
-        if '+' in center.species_string:
-            new_neighbors = []
-            # 判断方式一：找到邻居内所有异号离子
-#             for i in neighbors:
-#                 if "-" in i.species_string:
-#                     new_neighbors.append(i)
-            # 判断方式二：找到排序后（从小到大排）的邻居内的离子，直到出现同号离子为止
-            for i in range(len(neighbors)):
-                if i is 0:
-                    continue
-                if "-" in neighbors[i].species_string:
-                    new_neighbors.append(neighbors[i])
-                if "+" in neighbors[i].species_string:
-                    break
-            neighbors = new_neighbors
-               
-        if "-" in center.species_string:
-            new_neighbors = []
-#             for i in neighbors:
-#                 if "+" in i.species_string:
-#                     new_neighbors.append(i)
-            for i in range(len(neighbors)):
-                if i is 0:
-                    continue
-                if "+" in neighbors[i].species_string:
-                    new_neighbors.append(neighbors[i])
-                if "-" in neighbors[i].species_string:
-                    break
-            neighbors = new_neighbors
-        return len(neighbors),neighbors
-    
-
-# 自定义的Cif文件解析类
+# 自定义的Cif文件解析类,实现获取cif结构中的label
 class CifParser_new(CifParser):
     """
     Parses a cif file
@@ -451,6 +417,50 @@ class CifParser_new(CifParser):
             struct.add_site_property("_atom_site_label", alllabels)
             return struct
 
+# pymtgen实现的求离子半径
+def get_ionic_radii_pymatgen(filename):
+    stru = Structure.from_file(filename)
+    val_eval = ValenceIonicRadiusEvaluator(stru)
+    return val_eval.radii
+
+class VoronoiNN_self(VoronoiNN):
+    def __init__(self, tol=0.5, targets=None, cutoff=10.0,
+                 allow_pathological=False, weight='solid_angle',
+                 extra_nn_info=True):
+        super(VoronoiNN_self, self).__init__()
+        self.tol = tol
+        self.cutoff = cutoff
+        self.allow_pathological = allow_pathological
+        self.targets = targets
+        self.weight = weight
+        self.extra_nn_info = extra_nn_info
+
+    #使用solid angle计算配位数
+    def get_cn_solidangle(self, structure, n, use_weights=False):
+        siw = self.get_nn_info(structure, n)
+        return sum([e['weight'] for e in siw]) if use_weights else len(siw)
+
+    #根据距离与异号原则计算配位数
+    def get_cn_dis(self, structure, n):
+        cn = 0
+        center = structure[n]
+        neighbors = structure.get_neighbors(center, self.cutoff)
+        neighbors = [i for i in sorted(neighbors, key=lambda s: s[1])]
+
+        if '+' in center.species_string:
+            for i in range(len(neighbors)):
+                if "-" in neighbors[i][0].species_string:
+                   cn = cn + 1
+                if "+" in neighbors[i][0].species_string:
+                    break
+        if "-" in center.species_string:
+            for i in range(len(neighbors)):
+                if "+" in neighbors[i][0].species_string:
+                    cn = cn + 1
+                if "-" in neighbors[i][0].species_string:
+                    break
+        return cn
+    
 #自定义数据结构 
 class Coordination():
     def __init__(self, label, coord, frac_coord, element, radius=None, coord_neighbors=None):
@@ -463,18 +473,19 @@ class Coordination():
         self._coord_nei = coord_neighbors
     #列表labels, elements, coord_nums, radii必须具有相同的大小
     @staticmethod
-    def get_coor_list(labels, sites, elements, radii, distances, coord_neighbors):
+    def get_coor_list(sites, radii, coord_neighbors):
         coordination_list = []
-        if len(labels) != len(sites) != len(elements) != len(coord_neighbors) != len(radii) != len(distances):
-            raise ValueError("labels, sites, elements, coord_neighbors, radii, distances must be have same length!")
-        for i in range(len(labels)):
-            coord_nei = []
-            for j in range(len(coord_neighbors[i])):
-                coord_nei.append((coord_neighbors[i][j]._atom_site_label, distances[i][j]))
-            if coord_nei ==0:
-                raise CoordComError
-            coordination_list.append(Coordination(labels[i], sites[i].coords, sites[i].frac_coords, elements[i], radii[i], coord_nei).as_dict())
-        return coordination_list
+        if len(sites) == len(radii) == len(coord_neighbors):
+            if len(coord_neighbors) == 0:
+                raise CoordEnviroComError("Coordination Number is 0!")
+            else:
+                for i in range(len(sites)):
+                    site = sites[i]
+                    label = site._atom_site_label
+                    coordination_list.append(Coordination(label, site.coords, site.frac_coords, site.specie.symbol, radii[label], coord_neighbors[label]).as_dict())
+                return coordination_list
+        else:
+            raise CoordEnviroComError("labels, sites, elements, coord_neighbors, radii must be have same length!")
     
     #根据label从coordination列表中查找Coordination
     def get_coordination(coordination_list,label):
@@ -484,7 +495,7 @@ class Coordination():
 
     def as_dict(self):
         """
-        Dict representation of Radius.
+        Dict representation of Coordination.
         Returns:
             JSON serializable dict representation.
         """
@@ -504,129 +515,168 @@ class Coordination():
 #         d["coord_num"] = self._coord_num
 #         d["radius"] =  self._radius
         return d
-       
-def get_local_envir(filename):
-    """
-    Computes ionic radii of elements for all sites in the structure.
-    If valence is zero, atomic radius is used.
-    """
+
+def nearest_key(sorted_vals, key):
+    i = bisect_left(sorted_vals, key)
+    if i == len(sorted_vals):
+        return sorted_vals[-1]
+    if i == 0:
+        return sorted_vals[0]
+    before = sorted_vals[i-1]
+    after = sorted_vals[i]
+    if after-key < key-before:
+        return after
+    else:
+        return before
+
+# 计算原子半径
+# 注意：仅在结构文件中不含任何价态信息时调用
+# If valence is zero, atomic radius is used.
+def get_atomic_radius(site):
+    radius = site.specie.atomic_radius
+    # Handle elements with no atomic_radius
+    # by using calculated values instead.
+    if radius is None:
+        radius = site.specie.atomic_radius_calculated
+    return radius
+
+#根据元素、价态、配位数查询香农表获取离子半径
+def ger_ionic_radius(elem,oxi_state,coord_no):
+    try:
+        tab_oxi_states = sorted(map(int, _ion_radii[elem].keys()))
+        oxi_state = nearest_key(tab_oxi_states, oxi_state)
+        tab_coord_noes = sorted(map(int, _ion_radii[elem][str(oxi_state)].keys()))
+        radius = _ion_radii[elem][str(oxi_state)][str(coord_no)]
+    except KeyError:
+        coord_num = coord_no
+        if coord_num - coord_no > 0:
+            new_coord_no = coord_no + 1
+        else:
+            new_coord_no = coord_no - 1
+        try:
+            radius = _ion_radii[elem][str(oxi_state)][str(new_coord_no)]
+            coord_no = new_coord_no
+        except:
+            tab_coords = sorted(map(int, _ion_radii[elem][str(oxi_state)].keys()))
+            new_coord_no = nearest_key(tab_coords, coord_no)
+            i = 0
+            for val in tab_coords:
+                if  val > coord_no:
+                    break
+                i = i + 1
+            if i == len(tab_coords):
+                key = str(tab_coords[-1])
+                radius = _ion_radii[elem][str(oxi_state)][key]
+            elif i == 0:
+                key = str(tab_coords[0])
+                radius = _ion_radii[elem][str(oxi_state)][key]
+            else:
+                key = str(tab_coords[i-1])
+                radius1 = _ion_radii[elem][str(oxi_state)][key]
+                key = str(tab_coords[i])
+                radius2 = _ion_radii[elem][str(oxi_state)][key]
+                radius = (radius1+radius2)/2
+    return radius
+
+#获取指定位点半径值
+def get_radius_value(site,coord_no):
+    el = site.specie.symbol
+    oxi_state = int(round(site.specie.oxi_state))
+    if isinstance(site.specie, Element):
+        radius = get_atomic_radius(site)
+    else:
+        radius = ger_ionic_radius(el,oxi_state,coord_no)
+    return radius
+
+#从结构中获取半径
+def get_radii_stru(stru):       
     radii = []
-    labels = []
-    cnatoms = []
-    els = []
-    distances = []
-    sites=[]
-    
-    vnn = VoronoiNN_self(cutoff = 10.0)
+    labels = [] 
+    vnn = VoronoiNN_self(tol=0.5, cutoff=10.0)
+    for i in range(len(stru.sites)):
+        site = stru.sites[i]
+        label = site._atom_site_label
+        #按label获取数据
+        if label in labels:
+            continue
+        coord_no= vnn.get_cn_solidangle(stru, i)
+        labels.append(label)
+        radius = get_radius_value(site,coord_no)
+        if  radius is None:
+            raduis = 0
+        radii.append(radius)
+    label_radii_dict = dict(zip(labels, radii))
+    return label_radii_dict
+
+"""
+Computes ionic radii of elements for all sites in the structure.
+If valence is zero, atomic radius is used.
+"""
+def get_radii(filename):
     with zopen(filename, "rt") as f:
         input_string = f.read()
     parser = CifParser_new.from_string(input_string)
     stru = parser.get_structures(primitive=False)[0]
-    def nearest_key(sorted_vals, key):
-        i = bisect_left(sorted_vals, key)
-        if i == len(sorted_vals):
-            return sorted_vals[-1]
-        if i == 0:
-            return sorted_vals[0]
-        before = sorted_vals[i-1]
-        after = sorted_vals[i]
-        if after-key < key-before:
-            return after
-        else:
-            return before
-    
+    return get_radii_stru(stru)
+
+#get coordination number from structure
+def get_cns_stru(stru):
+    labels = []
+    cns = []
+    vnn = VoronoiNN_self(tol=0.5, cutoff=10.0)
     for i in range(len(stru.sites)):
         site = stru.sites[i]
-        
-        if isinstance(site.specie, Element):
-            radius = site.specie.atomic_radius
-            # Handle elements with no atomic_radius
-            # by using calculated values instead.
-            if radius is None:
-                radius = site.specie.atomic_radius_calculated
-            if radius is None:
-                raise ValueError(
-                        "cannot assign radius to element {}".format(
-                        site.specie))
-            radii.append(radius)
-            continue
-            
-        el = site.specie.symbol
-        oxi_state = int(round(site.specie.oxi_state))
-        coord_no, coord_neighbors = vnn.get_cn(stru, i)
         label = site._atom_site_label
-        try:
-            tab_oxi_states = sorted(map(int, _ion_radii[el].keys()))
-            oxi_state = nearest_key(tab_oxi_states, oxi_state)
-            radius = _ion_radii[el][str(oxi_state)][str(coord_no)]
-        except KeyError:
-            coord_num,neig = vnn.get_cn(stru, i)
-            if coord_num - coord_no > 0:
-                new_coord_no = coord_no + 1
-            else:
-                new_coord_no = coord_no - 1
-            try:
-                radius = _ion_radii[el][str(oxi_state)][str(new_coord_no)]
-                coord_no = new_coord_no
-            except:
-                tab_coords = sorted(map(int, _ion_radii[el][str(oxi_state)].keys()))
-                new_coord_no = nearest_key(tab_coords, coord_no)
-                i = 0
-                for val in tab_coords:
-                    if  val > coord_no:
-                        break
-                    i = i + 1
-                if i == len(tab_coords):
-                    key = str(tab_coords[-1])
-                    radius = _ion_radii[el][str(oxi_state)][key]
-                elif i == 0:
-                    key = str(tab_coords[0])
-                    radius = _ion_radii[el][str(oxi_state)][key]
-                else:
-                    key = str(tab_coords[i-1])
-                    radius1 = _ion_radii[el][str(oxi_state)][key]
-                    key = str(tab_coords[i])
-                    radius2 = _ion_radii[el][str(oxi_state)][key]
-                    radius = (radius1+radius2)/2
-        #implement complex checks later
-
-        dis = []
-        for i in range(len(coord_neighbors)):
-            dis.append(site.distance(coord_neighbors[i]))
-
         if label in labels:
             continue
-
-        # if migrant in site.species_string:
-        #     print(site)
-        #     print(coord_neighbors[0])
-        #     mindis = site.distance(coord_neighbors[0])
-        #     maxdis = site.distance(coord_neighbors[len(coord_neighbors)-1])
-        #     migrant_para_tmp.append([label,radius,coord_neighbors[0],mindis,coord_neighbors[len(coord_neighbors)-1],maxdis])
-       
-
+        coord_no= vnn.get_cn_solidangle(stru, i)
         labels.append(label)
-        sites.append(site)
-        els.append(site.species_string)
-        radii.append(radius)
-        distances.append(dis)
-        cnatoms.append(coord_neighbors)
+        cns.append(coord_no)
+    label_radii_dict = dict(zip(labels, cns))
+    return label_radii_dict
 
-        label_radii_list = dict(zip(labels, radii))
+#get coordination number from file
+def get_cns(filename):
+    with zopen(filename, "rt") as f:
+        input_string = f.read()
+    parser = CifParser_new.from_string(input_string)
+    stru = parser.get_structures(primitive=False)[0]
+    return get_cns_stru(stru)  
 
-        # for i in migrant_para_tmp:
-        #     minnei = i[2]._atom_site_label
-        #     maxnei = i[4]._atom_site_label
-        #     minrad = label_radii_list[minnei]
-        #     maxrad = label_radii_list[maxnei]
+#获取离中心原子半径cutoff范围内最近的coordnum个原子
+def get_nearest_atoms(stru, ind, coordnum, cutoff = 10.0):
+    centre = stru.sites[ind]
+    neighbors = stru.get_neighbors(centre, cutoff)
+    neighbors = [i for i in sorted(neighbors, key=lambda s: s[1])]
+    neighbors = neighbors[0:coordnum]
+    return neighbors
 
-        #     minalpa = (i[3]-minrad)/i[1]
-        #     maxalpa = (i[5]-maxrad)/i[1]
-        #     migrant_para.append([i[0],i[1],minnei,i[3],minrad,i[3],minalpa,maxnei,i[5],maxrad,i[5],maxalpa])
-    
-    return Coordination.get_coor_list(labels, sites, els, radii, distances, cnatoms),label_radii_list
+def get_local_envir_fromstru(stru):
+    labels = []
+    sites = []
+    radii = {}
+    cnatoms = {}
+    vnn = VoronoiNN_self(tol=0.5, cutoff=10.0)
+    for i in range(len(stru.sites)):
+        site = stru.sites[i]
+        label = site._atom_site_label
+        if label not in labels:
+            labels.append(label)
+            coord_no= vnn.get_cn_solidangle(stru, i)
+            neighbors = get_nearest_atoms(stru,i,coord_no,cutoff=10.0)
+            sites.append(site)
+            radii[label] = get_radius_value(site,coord_no)
+            cnatoms[label] = neighbors
+    return Coordination.get_coor_list(sites, radii, cnatoms),radii
+
+def get_local_envir(filename):
+    with zopen(filename, "rt") as f:
+        input_string = f.read()
+    parser = CifParser_new.from_string(input_string)
+    stru = parser.get_structures(primitive=False)[0]
+    return get_local_envir_fromstru(stru)
 
 # if __name__ == "__main__":
-#     coord_list = get_local_envir("../../examples/icsd_16713.cif")
-#     a = Coordination.get_coordination(coord_list,"Li1")
+#     a,b= get_local_envir("./Li_Na_Mg_Al_cifs/Li/icsd_281589.cif")
 #     print(a)
+#     print(b)
