@@ -43,54 +43,36 @@ def LocalEnvirCom(filename, migrant):
     #         elif radii[label] < minRad:
     #             minRad = radii[label]
     
-    migrant_labels = []
     coord_tmp = []
     nei_dis_tmp = []
     min_nei_dis_tmp = []
-    migrant_radii_tmp = []
-    migrant_paras_tmp = []
+    migrant_paras = []
+    migrant_radii = []
     for i in coordination_list:
         if migrant in i["label"]:
-            if len(i["coord_nei"]) == 0:
-                nei = i["coord_nei"][0]
-                nei_dis = nei[1]
-
-                nei_label = nei[0]
-                nei_radius = radii[nei_label]
-
-                migrant_radius = i["radius"]
-                migrant_label = i["label"]
-
-                alpha = (nei_dis - nei_radius)/migrant_radius
-
-                migrant_labels.append(migrant_label)
-                migrant_radii_tmp.append(migrant_radius)
-                migrant_paras_tmp.append(alpha)
-                coord_tmp.append(i["coord_num"])
-                nei_dis_tmp.append(nei_dis)
-                min_nei_dis_tmp.append(nei_dis - nei_radius)
-
-    if len(migrant_labels) != 0 and len(migrant_paras) != 0 and len(nei_dises) != 0:
-        migrant_radii = dict(zip(migrant_labels, migrant_radii_tmp))
-        migrant_paras = dict(zip(migrant_labels, migrant_paras_tmp))
-        nei_dises = dict(zip(coord_tmp, zip(nei_dis_tmp, min_nei_dis_tmp)))
-
-        rad_sum = 0
-        alpha_sum = 0
-        for value in migrant_radii.values():
-            rad_sum += value
-        for value in migrant_paras.values():
-            alpha_sum += value
-        migrant_radius = rad_sum/len(migrant_radii)
-        migrant_alpha = alpha_sum/len(migrant_paras)
-        # print(migrant_radii)
-        # print(migrant_paras)
-        print(migrant_radius)
-        print(migrant_alpha)
-        print(migrant+" radii: ",radii)
-        return radii,migrant_radius,migrant_alpha,nei_dises
-    else:
-        return radii,migrant_radius,migrant_alpha,nei_dises
+            #获取最邻近配位
+            nearest_atom = i["coord_nei"][0]
+            #最邻近配位原子的label
+            nei_label = nearest_atom[0]._atom_site_label
+            #到最邻近配位原子中心的距离
+            nei_dis = nearest_atom[1]
+            #最邻近配位原子的半径
+            nei_radius = radii[nei_label]
+            alpha_tmp = (nei_dis - nei_radius)/radii[i["label"]]
+            
+            #获取所有label迁移离子配位数
+            coord_tmp.append(i["coord_num"])
+            #获取不同label迁移离子到最邻近配位原子中心的距离与表面距离
+            nei_dis_tmp.append(nei_dis)
+            #获取所有label迁移离子到最邻近配位原子表面的距离
+            min_nei_dis_tmp.append(nei_dis - nei_radius)
+            migrant_paras.append(alpha_tmp)
+            migrant_radii.append(radii[i["label"]])
+            
+    nei_dises = list(zip(coord_tmp, zip(nei_dis_tmp, min_nei_dis_tmp)))
+    migrant_alpha = float(sum(migrant_paras))/len(migrant_paras)
+    migrant_radius = float(sum(migrant_radii))/len(migrant_radii)
+    return radii,migrant_radius,migrant_alpha,nei_dises
 
 # 获取特定结构中
 # 所有离子的有效半径
@@ -144,8 +126,7 @@ def AllCom(filename, probe_rad, num_sample, migrant=None, rad_flag=True, effecti
     return conn,oneD,twoD,threeD,nei_dises,dims,voids
 
 # 使用带半径的公式进行计算
-def AllCom5(filename, standard, migrant=None, rad_flag=True, effective_rad=True, rad_file=None, rad_store_in_vasp=True):
-    radii = {}
+def AllCom6(filename, migrant=None, rad_flag=True, effective_rad=True, rad_file=None, rad_store_in_vasp=True):
     if rad_flag and effective_rad:
         #考虑如何利用migrant_radius与migrant_alpha
         radii, migrant_radius, migrant_alpha, nei_dises = LocalEnvirCom(filename,migrant)
@@ -154,13 +135,43 @@ def AllCom5(filename, standard, migrant=None, rad_flag=True, effective_rad=True,
     else:
         remove_filename = filename
     atmnet = AtomNetwork.read_from_CIF(remove_filename, radii, rad_flag, rad_file)
-    # high_accur_atmnet = atmnet.copy()
-    # high_accuracy_atmnet(high_accur_atmnet, "S50")
+    
     if migrant:
         os.remove(remove_filename)
 
     prefixname = filename.replace(".cif","")
-    # vornet,edge_centers,fcs = high_accur_atmnet.perform_voronoi_decomposition(False)
+    vornet,edge_centers,fcs = atmnet.perform_voronoi_decomposition(False)
+    sym_vornet,voids = get_Symmetry(atmnet, vornet)
+
+    writeBIFile(prefixname+"_orgin.bi",atmnet,sym_vornet)
+    writeVaspFile(prefixname+"_orgin.vasp",atmnet,sym_vornet,rad_store_in_vasp)
+
+    minRad = migrant_radius*0.85
+
+    channels = Channel.findChannels(sym_vornet,atmnet,minRad,prefixname+".net")
+    dims = []
+    if len(channels):
+        dims.append(0)
+    else:
+        for i in channels:
+            dims.append(i["dim"])
+    return migrant_alpha,radii,minRad,nei_dises,dims,voids
+    
+# 使用带半径的公式进行计算
+def AllCom5(filename, standard, migrant=None, rad_flag=True, effective_rad=True, rad_file=None, rad_store_in_vasp=True):
+    if rad_flag and effective_rad:
+        #考虑如何利用migrant_radius与migrant_alpha
+        radii, migrant_radius, migrant_alpha, nei_dises = LocalEnvirCom(filename,migrant)
+    if migrant:
+        remove_filename = getRemoveMigrantFilename(filename,migrant)
+    else:
+        remove_filename = filename
+    atmnet = AtomNetwork.read_from_CIF(remove_filename, radii, rad_flag, rad_file)
+    
+    if migrant:
+        os.remove(remove_filename)
+
+    prefixname = filename.replace(".cif","")
     vornet,edge_centers,fcs = atmnet.perform_voronoi_decomposition(False)
     sym_vornet,voids = get_Symmetry(atmnet, vornet)
 
@@ -168,14 +179,15 @@ def AllCom5(filename, standard, migrant=None, rad_flag=True, effective_rad=True,
     writeVaspFile(prefixname+"_orgin.vasp",atmnet,sym_vornet,rad_store_in_vasp)
 
     minRad = standard*migrant_alpha*0.85
-    print(minRad)
 
     channels = Channel.findChannels(sym_vornet,atmnet,minRad,prefixname+".net")
-    
     dims = []
-    for i in channels:
-        dims.append(i["dim"])
-    return nei_dises,dims,voids
+    if len(channels)==0:
+        dims.append(0)
+    else:
+        for i in channels:
+            dims.append(i["dim"])
+    return migrant_alpha,radii,minRad,nei_dises,dims,voids
 
 # 使用簇替换的方法进行计算
 def AllCom4(filename, standard, migrant=None, rad_flag=True, effective_rad=True, rad_file=None, rad_store_in_vasp=True):
@@ -221,13 +233,10 @@ def AllCom3(filename, standard, migrant=None, rad_flag=True, effective_rad=True,
         remove_filename = filename
     rad_flag = False
     atmnet = AtomNetwork.read_from_CIF(remove_filename, radii, rad_flag, rad_file)
-    # high_accur_atmnet = atmnet.copy()
-    # high_accuracy_atmnet(high_accur_atmnet, "S50")
     if migrant:
         os.remove(remove_filename)
 
     prefixname = filename.replace(".cif","")
-    # vornet,edge_centers,fcs = high_accur_atmnet.perform_voronoi_decomposition(False)
     vornet,edge_centers,fcs = atmnet.perform_voronoi_decomposition(False)
     sym_vornet,voids = get_Symmetry(atmnet, vornet)
 
@@ -235,14 +244,15 @@ def AllCom3(filename, standard, migrant=None, rad_flag=True, effective_rad=True,
     writeVaspFile(prefixname+"_orgin.vasp",atmnet,sym_vornet,rad_store_in_vasp)
 
     minRad = standard*migrant_alpha*0.85
-    print(minRad)
-
     channels = Channel.findChannels(sym_vornet,atmnet,minRad,prefixname+".net")
     
     dims = []
-    for i in channels:
-        dims.append(i["dim"])
-    return nei_dises,dims,voids
+    if len(channels)==0:
+        dims.append(0)
+    else:
+        for i in channels:
+            dims.append(i["dim"])
+    return migrant_alpha,radii,minRad,nei_dises,dims,voids
 
 #AllCom
 def AllCom2(filename, probe_rad, num_sample, migrant=None, rad_flag=True, effective_rad=True, rad_file=None, rad_store_in_vasp=True, minRad=0.0, maxRad=0.0):
