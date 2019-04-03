@@ -1996,7 +1996,7 @@ bool writeToVasp(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, bo
             }
         }
 
-        //calculate the interstitial numbers numbers
+        //calculate the interstitial numbers 
         vector<VOR_NODE> ::iterator niter = vornet->nodes.begin();
         while(niter != vornet->nodes.end()){
              if((minRad == 0.0 && maxRad == 0.0) || (niter->rad_stat_sphere >= minRad && niter->rad_stat_sphere <= maxRad))
@@ -2011,8 +2011,11 @@ bool writeToVasp(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, bo
         //calculate the bottleneck numbers
         vector<VOR_EDGE> ::iterator eiter = vornet->edges.begin();
         while(eiter != vornet->edges.end()){
-            if((minRad == 0.0 && maxRad == 0.0) ||(eiter->rad_moving_sphere >= minRad && eiter->rad_moving_sphere <= maxRad))
+            // This "if" used to reduce edges repeat
+            if(eiter->from < eiter->to){
+                if((minRad == 0.0 && maxRad == 0.0) ||(eiter->rad_moving_sphere >= minRad && eiter->rad_moving_sphere <= maxRad))
                     atomcount++;
+            }
             eiter++;
         }
         atomtype.push_back("Bn");
@@ -2037,25 +2040,28 @@ bool writeToVasp(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, bo
           //wirte the interstitial informations
           niter = vornet->nodes.begin();
        while(niter != vornet->nodes.end()){
-          if((minRad == 0.0 && maxRad == 0.0) || (niter->rad_stat_sphere >= minRad && niter->rad_stat_sphere <= maxRad)){
-              //cell->initMatrices();
-              a = niter->x * cell->invUCVectors[0][0] + niter->y * cell->invUCVectors[0][1] + niter->z * cell->invUCVectors[0][2];
-              b = niter->y * cell->invUCVectors[1][1] + niter->z * cell->invUCVectors[1][2];
-              c = niter->z * cell->invUCVectors[2][2];
-              output <<"     " << a << "     " << b << "     " << c <<"\n";
-          }
-          niter++;
+            if((minRad == 0.0 && maxRad == 0.0) || (niter->rad_stat_sphere >= minRad && niter->rad_stat_sphere <= maxRad)){
+                //cell->initMatrices();
+                a = niter->x * cell->invUCVectors[0][0] + niter->y * cell->invUCVectors[0][1] + niter->z * cell->invUCVectors[0][2];
+                b = niter->y * cell->invUCVectors[1][1] + niter->z * cell->invUCVectors[1][2];
+                c = niter->z * cell->invUCVectors[2][2];
+                output <<"     " << a << "     " << b << "     " << c <<"\n";
+            }
+            niter++;
         }
 
        // Write botttleneck information
         eiter = vornet->edges.begin();
         while(eiter != vornet->edges.end()){
-          if((minRad == 0.0 && maxRad == 0.0) || (eiter->rad_moving_sphere >= minRad && eiter->rad_moving_sphere <= maxRad)){
-              a = eiter->bottleneck_x * cell->invUCVectors[0][0] + eiter->bottleneck_y * cell->invUCVectors[0][1] + eiter->bottleneck_z * cell->invUCVectors[0][2];
-              b = eiter->bottleneck_y * cell->invUCVectors[1][1] + eiter->bottleneck_z * cell->invUCVectors[1][2];
-              c = eiter->bottleneck_z * cell->invUCVectors[2][2];
-              output <<"     " << a << "     " << b << "     " << c <<"\n";
-          }
+            // This "if" used to reduce edges repeat
+            if (eiter->from < eiter->to) {
+                if ((minRad == 0.0 && maxRad == 0.0) || (eiter->rad_moving_sphere >= minRad && eiter->rad_moving_sphere <= maxRad)) {
+                    a = eiter->bottleneck_x * cell->invUCVectors[0][0] + eiter->bottleneck_y * cell->invUCVectors[0][1] + eiter->bottleneck_z * cell->invUCVectors[0][2];
+                    b = eiter->bottleneck_y * cell->invUCVectors[1][1] + eiter->bottleneck_z * cell->invUCVectors[1][2];
+                    c = eiter->bottleneck_z * cell->invUCVectors[2][2];
+                    output << "     " << a << "     " << b << "     " << c << "\n";
+                }
+            }
           eiter++;
         }
 

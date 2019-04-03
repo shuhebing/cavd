@@ -105,8 +105,8 @@ def AllCom(filename, probe_rad, num_sample, migrant=None, rad_flag=True, effecti
 
     sym_vornet,voids = get_Symmetry(atmnet, vornet)
 
-    writeBIFile(prefixname+"_orgin.bi",atmnet,sym_vornet)
-    writeVaspFile(prefixname+"_orgin.vasp",atmnet,sym_vornet,rad_store_in_vasp)
+    writeBIFile(prefixname+"_origin.bi",atmnet,sym_vornet)
+    writeVaspFile(prefixname+"_origin.vasp",atmnet,sym_vornet,rad_store_in_vasp)
 
     probe_rad = migrant_radius*migrant_alpha
     minRad = migrant_radius*migrant_alpha*0.85
@@ -143,8 +143,8 @@ def AllCom6(filename, migrant=None, rad_flag=True, effective_rad=True, rad_file=
     vornet,edge_centers,fcs = atmnet.perform_voronoi_decomposition(False)
     sym_vornet,voids = get_Symmetry(atmnet, vornet)
 
-    writeBIFile(prefixname+"_orgin.bi",atmnet,sym_vornet)
-    writeVaspFile(prefixname+"_orgin.vasp",atmnet,sym_vornet,rad_store_in_vasp)
+    writeBIFile(prefixname+"_origin.bi",atmnet,sym_vornet)
+    writeVaspFile(prefixname+"_origin.vasp",atmnet,sym_vornet,rad_store_in_vasp)
 
     minRad = migrant_radius*0.85
 
@@ -175,8 +175,8 @@ def AllCom5(filename, standard, migrant=None, rad_flag=True, effective_rad=True,
     vornet,edge_centers,fcs = atmnet.perform_voronoi_decomposition(False)
     sym_vornet,voids = get_Symmetry(atmnet, vornet)
 
-    writeBIFile(prefixname+"_orgin.bi",atmnet,sym_vornet)
-    writeVaspFile(prefixname+"_orgin.vasp",atmnet,sym_vornet,rad_store_in_vasp)
+    writeBIFile(prefixname+"_origin.bi",atmnet,sym_vornet)
+    writeVaspFile(prefixname+"_origin.vasp",atmnet,sym_vornet,rad_store_in_vasp)
 
     minRad = standard*migrant_alpha*0.85
 
@@ -209,8 +209,8 @@ def AllCom4(filename, standard, migrant=None, rad_flag=True, effective_rad=True,
     vornet,edge_centers,fcs = high_accur_atmnet.perform_voronoi_decomposition(False)
     sym_vornet,voids = get_Symmetry(high_accur_atmnet, vornet)
 
-    writeBIFile(prefixname+"_orgin.bi",atmnet,sym_vornet)
-    writeVaspFile(prefixname+"_orgin.vasp",atmnet,sym_vornet,rad_store_in_vasp)
+    writeBIFile(prefixname+"_origin.bi",atmnet,sym_vornet)
+    writeVaspFile(prefixname+"_origin.vasp",atmnet,sym_vornet,rad_store_in_vasp)
 
     minRad = standard*migrant_alpha*0.85
     print(minRad)
@@ -240,8 +240,8 @@ def AllCom3(filename, standard, migrant=None, rad_flag=True, effective_rad=True,
     vornet,edge_centers,fcs = atmnet.perform_voronoi_decomposition(False)
     sym_vornet,voids = get_Symmetry(atmnet, vornet)
 
-    writeBIFile(prefixname+"_orgin.bi",atmnet,sym_vornet)
-    writeVaspFile(prefixname+"_orgin.vasp",atmnet,sym_vornet,rad_store_in_vasp)
+    writeBIFile(prefixname+"_origin.bi",atmnet,sym_vornet)
+    writeVaspFile(prefixname+"_origin.vasp",atmnet,sym_vornet,rad_store_in_vasp)
 
     minRad = standard*migrant_alpha*0.85
     channels = Channel.findChannels(sym_vornet,atmnet,minRad,prefixname+".net")
@@ -276,8 +276,8 @@ def AllCom2(filename, probe_rad, num_sample, migrant=None, rad_flag=True, effect
 
     sym_vornet,voids = get_Symmetry(atmnet, vornet)
 
-    writeBIFile(prefixname+"_orgin.bi",atmnet,sym_vornet)
-    writeVaspFile(prefixname+"_orgin.vasp",atmnet,sym_vornet,rad_store_in_vasp)
+    writeBIFile(prefixname+"_origin.bi",atmnet,sym_vornet)
+    writeVaspFile(prefixname+"_origin.vasp",atmnet,sym_vornet,rad_store_in_vasp)
 
     writeVaspFile(prefixname+"_selected.vasp",atmnet,sym_vornet,rad_store_in_vasp,minRad,maxRad)
 
@@ -303,9 +303,9 @@ def BIComputation(filename, migrant=None, rad_flag=True, effective_rad=True, rad
     if migrant:
         os.remove(remove_filename)
     prefixname = filename.replace(".cif","")
-    writeBIFile(prefixname+"_orgin.bi",atmnet,vornet)
+    writeBIFile(prefixname+"_origin.bi",atmnet,vornet)
     writeBIFile(prefixname+"_selected.bi",atmnet,vornet)
-    writeVaspFile(prefixname+"_orgin.vasp",atmnet,vornet,rad_store_in_vasp)
+    writeVaspFile(prefixname+"_origin.vasp",atmnet,vornet,rad_store_in_vasp)
     writeVaspFile(prefixname+"_selected.vasp",atmnet,vornet,rad_store_in_vasp,minRad,maxRad)
 
 #计算指定结构最大自由球体半径，最大包含球体半径和沿着最大自由球体路径上的最大包含球体半径：Rf Ri Rif
