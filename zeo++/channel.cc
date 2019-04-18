@@ -1894,7 +1894,7 @@ void CHANNEL::writeToNET(int n, fstream &output, ATOM_NETWORK *atmNet){
                     //output << btxCoord << "\t" << btyCoord << "\t" << btzCoord << "\t";
                     
 					output << pt_bt[0] << " " << pt_bt[1] << " " << pt_bt[2] << "\t";
-					output << curConn.max_radius;
+					output << curConn.max_radius << "\t" << curConn.length;
                     output << endl;
 
                     // //分数坐标
