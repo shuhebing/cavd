@@ -1,5 +1,5 @@
 '''
-Created on 2019.4.18
+Created on 2019.5.8
 
 @author: YeAnjiang
 '''
@@ -170,15 +170,20 @@ def get_distict_channels(voidnet,preci=4,duplicate=False):
     return distinct_voids
                 
 #输出本质路径
-def print_net(voidnet):
+def print_net(voidnet,file):
+    out = open(file,"w")
     print("distinct voids:")
+    out.write("distinct voids:\n")
     for void in voidnet:
         print(void["label"],void["fracs"],void["void_radius"])
+        out.write(str(void["label"]) + "\t"+ str(void["fracs"]) + "\t" + str(void["void_radius"])+"\n")
     print()
     print("distinct channels:")
+    out.write("distinct channels:\n")
     for void in voidnet:
         for ck in void["conn"]:
             print(void["label"],ck["to_label"],ck["conn_legth"],ck["bot_frac"],ck["bot_radius"])
+            out.write(str(void["label"])+"\t"+str(ck["to_label"])+"\t"+str(ck["conn_legth"])+"\t"+str(ck["bot_frac"])+"\t"+str(ck["bot_radius"])+"\n")
 
 
 #根据空隙尺寸分类空隙
@@ -221,7 +226,11 @@ def get_distinc(filename,preci=4,duplicate=False):
         return dist_revoidnet
 
 if __name__ == "__main__":
-    dist_net = get_distinc("./icsd_050785.net")
-    print_net(dist_net)
+    filename = "icsd_060635"
+    preci = 2
+    duplicate=False
+    dist_net = get_distinc(filename+".net",preci,duplicate)
+    file = filename+"_DistintChannels_" + str(preci)+"_"+str(duplicate)+".txt"
+    print_net(dist_net,file)
 
     
