@@ -38,7 +38,6 @@
 #include "graphstorage.h"
 #include "string_additions.h"
 #include "material.h"
-
 template<class c_option>
 bool storeVoronoiNetwork(c_option &con, ATOM_NETWORK *atmnet, VORONOI_NETWORK *vornet, double bx, double by, double bz,
 			 std::vector<BASIC_VCELL> &basCells, std::vector<int> &atomShifts, bool storeAdvCells, std::vector<VOR_CELL> &advCells);

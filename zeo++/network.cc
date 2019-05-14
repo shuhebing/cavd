@@ -481,10 +481,21 @@ void extendVorNet(VORONOI_NETWORK *vornet, VORONOI_NETWORK *newNet, DELTA_POS di
       newNode.y = oldNode.y + i*direction.x*vornet->v_a.y + i*direction.y*vornet->v_b.y + i*direction.z*vornet->v_c.y; 
       newNode.z = oldNode.z + i*direction.x*vornet->v_a.z + i*direction.y*vornet->v_b.z + i*direction.z*vornet->v_c.z; 
       newNode.rad_stat_sphere = oldNode.rad_stat_sphere;
+
+      //Add code used to set id and label for newNode
+      //Add by YAJ in 20190513
+      newNode.id = oldNode.id + i*numIDs;
+      newNode.label = oldNode.label;
+
       newNet->nodes.push_back(newNode);
       if(sourceNodes->find(j) != sourceNodes->end()){
-    sourceNodes->insert(idCount);
-    idAliases->insert(pair<int,int> (idCount,j));
+        //sourceNodes->insert(idCount);
+        //idAliases->insert(pair<int,int> (idCount,j));
+
+      //Add code used to set id and label for newNode
+      //Add by YAJ in 20190513
+      sourceNodes->insert(newNode.id);
+      idAliases->insert(pair<int,int> (newNode.id,oldNode.id));
       }
       idCount++;
     }
@@ -498,20 +509,20 @@ void extendVorNet(VORONOI_NETWORK *vornet, VORONOI_NETWORK *newNet, DELTA_POS di
 
       int changeInTo;
       if(dirComp.isZero())
-    changeInTo = 0;
+        changeInTo = 0;
       else if ((dirComp.x < 0) || (dirComp.y < 0) || (dirComp.z < 0))
-    changeInTo = -1;
+        changeInTo = -1;
       else
-    changeInTo = 1;
+        changeInTo = 1;
      
       int newTo = i + changeInTo;
       if(newTo < 0){
-    newDirection = newDirection + (direction*(-1));
-    newTo = factor;
+        newDirection = newDirection + (direction*(-1));
+        newTo = factor;
       }
       else if (newTo > factor){
-    newDirection = newDirection + direction;
-    newTo = 0;
+       newDirection = newDirection + direction;
+       newTo = 0;
       }
  
       VOR_EDGE newEdge;
@@ -523,6 +534,13 @@ void extendVorNet(VORONOI_NETWORK *vornet, VORONOI_NETWORK *newNet, DELTA_POS di
       newEdge.delta_uc_y = newDirection.y; 
       newEdge.delta_uc_z = newDirection.z;
       newEdge.length = oldEdge.length;
+
+      //Add code used to set id and label for newNode
+      //Add by YAJ in 20190513
+      newEdge.bottleneck_x = oldEdge.bottleneck_x + i*direction.x*vornet->v_a.x + i*direction.y*vornet->v_b.x + i*direction.z*vornet->v_c.x; 
+      newEdge.bottleneck_y = oldEdge.bottleneck_y + i*direction.x*vornet->v_a.y + i*direction.y*vornet->v_b.y + i*direction.z*vornet->v_c.y; 
+      newEdge.bottleneck_z = oldEdge.bottleneck_z + i*direction.x*vornet->v_a.z + i*direction.y*vornet->v_b.z + i*direction.z*vornet->v_c.z; 
+
       newNet->edges.push_back(newEdge);
     }
   }
@@ -608,16 +626,13 @@ void calculateConnParameters(VORONOI_NETWORK *vornet, char *filename, vector<dou
     set<int> sourceNodes;
     map<int,int> idAliases;
     extendVorNet(vornet, &newNet, directions[i], &idAliases, &sourceNodes);
-   
+
     DIJKSTRA_NETWORK dnet;
     DIJKSTRA_NETWORK::buildDijkstraNetwork(&newNet,&dnet);
-
-    TRAVERSAL_NETWORK analyzeNet = TRAVERSAL_NETWORK(directions[i].x,directions[i].y,directions[i].z, &dnet);    
+    TRAVERSAL_NETWORK analyzeNet = TRAVERSAL_NETWORK(directions[i].x,directions[i].y,directions[i].z, &dnet);
     pair<bool,PATH> results = analyzeNet.findMaxFreeSphere(&idAliases, &sourceNodes);
-    
-    //freeRadResults.push_back(2*results.second.max_radius);
-    //incRadResults.push_back(2*results.second.max_inc_radius);
-    // cout << " max_radius " << results.second.max_radius << " " << "max_inc_radius " << results.second.max_inc_radius << endl;
+
+    cout << " max_radius " << results.second.max_radius << " " << "max_inc_radius " << results.second.max_inc_radius << endl;
     freeRadResults.push_back(results.second.max_radius);
     incRadResults.push_back(results.second.max_inc_radius);
     NtoN.push_back(results.first);
@@ -628,7 +643,6 @@ void calculateConnParameters(VORONOI_NETWORK *vornet, char *filename, vector<dou
   output.precision(5);
   output.width(12);
   output.open(filename, fstream::out);
-  //output << filename << "    " << 2 * findMaxIncludedSphere(vornet) << " ";
   output << filename << "    " <<findMaxIncludedSphere(vornet) << " ";
 
   double maxd=0.0; int maxdir=0;
@@ -660,16 +674,14 @@ void calculateConnParameters(VORONOI_NETWORK *vornet, char *filename, vector<dou
   for(unsigned int i = 0; i < incRadResults.size(); i++)
     output << incRadResults[i] << "  ";
 
-
  /* 
   for(unsigned int i = 0; i < NtoN.size(); i++)
     output << (NtoN[i] ? "t" : "f") << "  ";
  */
+
   output << "\n";
+  output.close();
 }
-
-
-
 
 /* New calculateFreeSphere function that works with MATERIAL class 
  * added by M Haranczyk / Feb 2014 

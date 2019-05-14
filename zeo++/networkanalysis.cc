@@ -99,6 +99,7 @@ TRAVERSAL_NETWORK::TRAVERSAL_NETWORK(int dx, int dy, int dz, DIJKSTRA_NETWORK * 
   // Iterate over all nodes
   for(unsigned int i = 0; i < dnet->nodes.size(); i++){
     DIJKSTRA_NODE currentNode = dnet->nodes.at(i);
+
     vector<CONN> regConns = vector <CONN> ();
     vector<CONN> srcConns = vector <CONN> ();
     vector<CONN> drainConns = vector<CONN> ();
@@ -192,26 +193,26 @@ void TRAVERSAL_NETWORK::print(ostream &out){
       continue;
     out << "From #"<< i << "   To:";
     for(unsigned int j = 0; j< nodeConns.size(); j++){
-      cout << nodeConns.at(j).to << "  ";
+      out << nodeConns.at(j).to << "  ";
     }
-    cout << "\n";
+    out << "\n";
   }
-    cout << "Connections to sink node:" << "\n";
+    out << "Connections to sink node:" << "\n";
     for(unsigned int i = 0; i <connectToSink.size();i++){
       vector<CONN> nodeConns = connectToSink.at(i);
       if(nodeConns.size() == 0)
-	continue;
-      cout << "From #"<<i << "   To:";
+		continue;
+      out << "From #"<<i << "   To:";
       for(unsigned int j = 0; j< nodeConns.size(); j++){
-	cout << nodeConns.at(j).to << "  ";
+		out << nodeConns.at(j).to << "  ";
       }
-      cout << "\n";
+      out << "\n";
     }
-    cout << "\n" << "\n";
+    out << "\n" << "\n";
 }
 
 /* Returns a pair containing a bool and the maximum sized PATH a particle
- * can take to traverse this portion of the network. The bool is true iff the PATH is 
+ * can take to traverse this portion of the network. The bool is true if the PATH is 
  * periodically viable (node #N to node #N).*/
 pair<bool,PATH> TRAVERSAL_NETWORK::findMaxFreeSphere(map<int,int> *idAliases, set<int> *sourceNodes){
   PATH bestPath; bestPath.max_radius = -1;
@@ -235,7 +236,7 @@ pair<bool,PATH> TRAVERSAL_NETWORK::findMaxFreeSphere(map<int,int> *idAliases, se
   
   while(heap.size() != 0){
     PATH best = heap.pop();
-    
+
     //Done searching if max radius path leads to sink node
     if(best.toSink){
       best.visitedIDs.push_back(best.currentNode.id);
@@ -253,13 +254,13 @@ pair<bool,PATH> TRAVERSAL_NETWORK::findMaxFreeSphere(map<int,int> *idAliases, se
     if(sourceNodes->find(best.currentNode.id) != sourceNodes->end()){
       int origID = idAliases->find(best.currentNode.id)->second;
       if(best.visitedSourceIDs.find(origID) != best.visitedSourceIDs.end()){
-	best.visitedIDs.push_back(best.currentNode.id);
-	bestPath = best;
-	NtoN = true;
-	break;
+        best.visitedIDs.push_back(best.currentNode.id);
+        bestPath = best;
+        NtoN = true;
+        break;
       }
       else{
-	best.visitedSourceIDs.insert(origID);
+	      best.visitedSourceIDs.insert(origID);
       }	
     }
     best.visitedIDs.push_back(best.currentNode.id);
@@ -269,11 +270,11 @@ pair<bool,PATH> TRAVERSAL_NETWORK::findMaxFreeSphere(map<int,int> *idAliases, se
     for(unsigned int i = 0; i < regConns.size(); i++){
       CONN nextConn = regConns.at(i);
       if(!haveVisited.at(nextConn.to)){
-	DIJKSTRA_NODE nextNode = dnet->nodes[nextConn.to];
-	PATH nextPath = PATH(nextNode,min(best.max_radius,nextConn.max_radius), max(best.max_inc_radius, nextNode.max_radius), best.length + nextConn.length);
-	nextPath.visitedSourceIDs = best.visitedSourceIDs;
-	nextPath.visitedIDs = best.visitedIDs;
-	heap.insert(nextPath);
+        DIJKSTRA_NODE nextNode = dnet->nodes[nextConn.to];
+        PATH nextPath = PATH(nextNode,min(best.max_radius,nextConn.max_radius), max(best.max_inc_radius, nextNode.max_radius), best.length + nextConn.length);
+        nextPath.visitedSourceIDs = best.visitedSourceIDs;
+        nextPath.visitedIDs = best.visitedIDs;
+        heap.insert(nextPath);
       }
     }
 
