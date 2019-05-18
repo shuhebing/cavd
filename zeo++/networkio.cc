@@ -2167,33 +2167,40 @@ bool writeAtmntToVasp(char *filename, ATOM_NETWORK *cell, bool storeRadius){
       return true;
 }
 
-bool writeToNet(char *filename, VORONOI_NETWORK *vornet, double minRad){
+
+
+// Add at 20190518
+bool writeToNET(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, double minRad, double maxRad){
   fstream output;
-  double a,b,c;
+  double it_a,it_b,it_c,bn_a,bn_b,bn_c;
   output.open(filename, fstream::out);
   if(!output.is_open()){
     cerr << "Error: Failed to open .net output file " << filename << "\n";
-    //cerr << "Exiting ..." << "\n";
-    //exit(1);
     return false;
   }
   else{
-    cout << "Writing Bottleneck and Interstitial network information to " << filename << "\n";
 
+    // Write unit cell information
+    output << cell->name << "\n";
+    output << "        " << cell->v_a.x << "        " << cell->v_a.y << "        " << cell->v_a.z << "\n";
+    output << "        " << cell->v_b.x << "        " << cell->v_b.y << "        " << cell->v_b.z << "\n";
+    output << "        " << cell->v_c.x << "        " << cell->v_c.y << "        " << cell->v_c.z << "\n";
+
+    cout << "Writing interstitial network to " << filename << "\n";
     // Write Voronoi node information
     output << "Interstitial table:" << "\n";
     vector<VOR_NODE> ::iterator niter = vornet->nodes.begin();
-    int i = 0;
     while(niter != vornet->nodes.end()){
-      if(niter->rad_stat_sphere > minRad){
-          //cout << i << " " << niter->x << " " << niter->y << " " << niter->z << endl;
-          // output << i << " " << niter->label << " " << niter->x << " " << niter->y << " " << niter->z << " " 
+      if((minRad == 0.0 && maxRad == 0.0) || (niter->rad_stat_sphere >= minRad && niter->rad_stat_sphere <= maxRad)){
           output << niter->id << "\t" << niter->label << "\t";
-          output << niter->x << " " << niter->y << " " << niter->z << "\t";
+          // output << niter->x << " " << niter->y << " " << niter->z << "\t";
+          it_a = niter->x * cell->invUCVectors[0][0] + niter->y * cell->invUCVectors[0][1] + niter->z * cell->invUCVectors[0][2];
+          it_b = niter->y * cell->invUCVectors[1][1] + niter->z * cell->invUCVectors[1][2];
+          it_c = niter->z * cell->invUCVectors[2][2];
+          output << it_a << " " << it_b << " " << it_c << "\t";
 			    output << niter->rad_stat_sphere;
           output <<  "\n";
       }
-      i++;
       niter++;
     }
     // Write Voronoi edge information
@@ -2201,14 +2208,18 @@ bool writeToNet(char *filename, VORONOI_NETWORK *vornet, double minRad){
     vector<VOR_EDGE> ::iterator eiter = vornet->edges.begin();
     while(eiter != vornet->edges.end()){
       if(eiter->rad_moving_sphere > minRad){
-          output << eiter->from << " " << eiter->to <<"\t";
+          output << eiter->from << "\t" << eiter->to <<"\t";
           output << eiter->delta_uc_x << " " << eiter->delta_uc_y << " " << eiter->delta_uc_z << "\t";
-		      output << eiter->bottleneck_x << " " << eiter->bottleneck_y << " " << eiter->bottleneck_z << "\t";
-          output << eiter->length << "\t" << eiter->rad_moving_sphere << "\n";
+		      // output << eiter->bottleneck_x << " " << eiter->bottleneck_y << " " << eiter->bottleneck_z << "\t";
+          bn_a = eiter->bottleneck_x * cell->invUCVectors[0][0] + eiter->bottleneck_y * cell->invUCVectors[0][1] + eiter->bottleneck_z * cell->invUCVectors[0][2];
+          bn_b = eiter->bottleneck_y * cell->invUCVectors[1][1] + eiter->bottleneck_z * cell->invUCVectors[1][2];
+          bn_c = eiter->bottleneck_z * cell->invUCVectors[2][2];
+          output << bn_a << " " << bn_b << " " << bn_c << "\t";
+          output << eiter->rad_moving_sphere << "\t" << eiter->length << "\n";
       }
       eiter++;
     }
-  }
   output.close();
   return true;
+  }
 }

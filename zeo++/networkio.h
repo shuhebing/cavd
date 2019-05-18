@@ -143,5 +143,5 @@ bool writeToBI(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, doub
 //bool writeToVasp(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, bool storeRadius = false, double minRad = 0);
 bool writeToVasp(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, bool storeRadius = false, double minRad = 0.0, double maxRad = 0.0);
 bool writeAtmntToVasp(char *filename, ATOM_NETWORK *cell, bool storeRadius);
-bool writeToNet(char *filename, VORONOI_NETWORK *vornet, double minRad);
+bool writeToNET(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, double minRad = 0.0, double maxRad = 0.0);
 #endif

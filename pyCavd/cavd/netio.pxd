@@ -54,6 +54,11 @@ cdef extern from '../../zeo++/networkio.h':
     cdef bint writeToVasp(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, bint storeRadius, double minRad, double maxRad)
     cdef bint writeToVasp(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, bint storeRadius)
     cdef bint writeAtmntToVasp(char *filename, ATOM_NETWORK *cell, bint storeRadius)
+
+    #add at 20190518
+    cdef bint writeToNET(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, double minRad, double maxRad)
+    cdef bint writeToNET(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet)
+
 # Added at 20180704
 cdef extern from '../../zeo++/voronoicell.h':
     cdef bint writeZVis(char *filename, vector[VOR_CELL] *cells, ATOM_NETWORK *atmnet, VORONOI_NETWORK *vornet)
@@ -63,8 +68,3 @@ cdef extern from '../../zeo++/voronoicell.h':
 cdef extern from "../../zeo++/network.h":
     cdef bint performVoronoiDecomp(bint, ATOM_NETWORK*, VORONOI_NETWORK*, 
             vector[VOR_CELL]*, bint, vector[BASIC_VCELL]*)
-
-# Add at 20180826
-cdef extern from "../../zeo++/channel.h":
-    cdef bint c_writeToVMD "writeToVMD_new"(vector[CHANNEL] channels, char *filename)
-    cdef bint c_writeToNET "writeToNET_new"(vector[CHANNEL] channels, char *filename)
