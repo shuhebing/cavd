@@ -115,7 +115,7 @@ cdef extern from '../../zeo++/networkio.h':
 
     cdef bint writeVornetToXYZ "writeToXYZ"(char *filename, VORONOI_NETWORK*, double)
     
-    cdef bint writeAtmntToVasp(char *filename, ATOM_NETWORK *cell, bint storeRadius)
+    cdef bint writeAtmntToVasp(char *filename, ATOM_NETWORK *cell)
     
 # At present  the return value of performVoronoiDecomp is void*
 # Compile it after void* is changed to bool in the original source file

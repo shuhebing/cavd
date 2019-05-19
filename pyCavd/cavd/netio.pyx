@@ -157,34 +157,27 @@ def getRemoveMigrantFilename(filename,migrant):
         return pretreatedFilename
 
 # write to .vasp file. Added at 20180426
-def writeVaspFile(filename, atmnet, vornet, storeRadius = False, minRad = None, maxRad = None):
+def writeVaspFile(filename, atmnet, vornet, minRad = None, maxRad = None):
     if isinstance(filename, unicode):
          filename = (<unicode>filename).encode('utf8')
     cdef char* c_filename = filename
     cdef ATOM_NETWORK* c_atmnet = (<AtomNetwork?>atmnet).thisptr
     cdef VORONOI_NETWORK* c_vornet_ptr = (<VoronoiNetwork?>vornet).thisptr
-    if storeRadius:
-        if minRad and maxRad:
-            if not writeToVasp(c_filename, c_atmnet, c_vornet_ptr, True, minRad, maxRad):
-                raise IOError
-        else:
-            if not writeToVasp(c_filename, c_atmnet, c_vornet_ptr, True):
-                raise IOError
+
+    if minRad and maxRad:
+        if not writeToVasp(c_filename, c_atmnet, c_vornet_ptr, minRad, maxRad):
+            raise IOError
     else:
-        if minRad and maxRad:
-            if not writeToVasp(c_filename, c_atmnet, c_vornet_ptr, False, minRad, maxRad):
-                raise IOError
-        else:
-            if not writeToVasp(c_filename, c_atmnet, c_vornet_ptr, False):
-                raise IOError
+        if not writeToVasp(c_filename, c_atmnet, c_vornet_ptr):
+            raise IOError
 
 # write to atomnetwork to .vasp file. Added at 20180827
-def writeAtomNetVaspFile(filename, atmnet, storeRadius = False):
+def writeAtomNetVaspFile(filename, atmnet):
     if isinstance(filename, unicode):
         filename = (<unicode>filename).encode('utf8')
     cdef char* c_filename = filename
     cdef ATOM_NETWORK* c_atmnet = (<AtomNetwork?>atmnet).thisptr
-    if not writeAtmntToVasp(c_filename, c_atmnet, storeRadius):
+    if not writeAtmntToVasp(c_filename, c_atmnet):
         raise IOError
 
 

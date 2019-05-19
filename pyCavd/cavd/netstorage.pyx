@@ -435,11 +435,11 @@ cdef class AtomNetwork:
              raise IOError
 
 # write to atomnetwork to .vasp file. Added at 20180827
-    def writeAtomNetVaspFile(self, filename, storeRadius = False):
+    def writeAtomNetVaspFile(self, filename):
         if isinstance(filename, unicode):
             filename = (<unicode>filename).encode('utf8')
         cdef char* c_filename = filename
-        if not writeAtmntToVasp(c_filename, self.thisptr, storeRadius):
+        if not writeAtmntToVasp(c_filename, self.thisptr):
             raise IOError
       
 

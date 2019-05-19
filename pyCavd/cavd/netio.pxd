@@ -51,9 +51,9 @@ cdef extern from '../../zeo++/networkio.h':
 # writeToVasp
     #cdef bint writeToVasp(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, bint storeRadius, double minRad)
     #edited at 20180530
-    cdef bint writeToVasp(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, bint storeRadius, double minRad, double maxRad)
-    cdef bint writeToVasp(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, bint storeRadius)
-    cdef bint writeAtmntToVasp(char *filename, ATOM_NETWORK *cell, bint storeRadius)
+    cdef bint writeToVasp(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, double minRad, double maxRad)
+    cdef bint writeToVasp(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet)
+    cdef bint writeAtmntToVasp(char *filename, ATOM_NETWORK *cell)
 
     #add at 20190518
     cdef bint writeToNET(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, double minRad, double maxRad)

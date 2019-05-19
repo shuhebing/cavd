@@ -72,7 +72,7 @@ def LocalEnvirCom(filename, migrant):
     nei_dises = list(zip(coord_tmp, zip(nei_dis_tmp, min_nei_dis_tmp)))
     migrant_alpha = float(sum(migrant_paras))/len(migrant_paras)
     migrant_radius = float(sum(migrant_radii))/len(migrant_radii)
-    return radii,migrant_radius,migrant_alpha,nei_dises
+    return radii,migrant_radius,migrant_alpha,nei_dises,coordination_list
 
 # 获取特定结构中
 # 所有离子的有效半径
@@ -81,11 +81,11 @@ def getIonicRadii(filename):
     print(radii)
     return radii
 
-def AllCom(filename, probe_rad, num_sample, migrant=None, rad_flag=True, effective_rad=True, rad_file=None, rad_store_in_vasp=True, minRad=0.0, maxRad=0.0):
+def AllCom(filename, probe_rad, num_sample, migrant=None, rad_flag=True, effective_rad=True, rad_file=None, minRad=0.0, maxRad=0.0):
     radii = {}
     if rad_flag and effective_rad:
         #考虑如何利用migrant_radius与migrant_alpha
-        radii,migrant_radius,migrant_alpha, nei_dises = LocalEnvirCom(filename,migrant)
+        radii,migrant_radius,migrant_alpha, nei_dises,coordination_list = LocalEnvirCom(filename,migrant)
     if migrant:
         remove_filename = getRemoveMigrantFilename(filename,migrant)
     else:
@@ -104,7 +104,7 @@ def AllCom(filename, probe_rad, num_sample, migrant=None, rad_flag=True, effecti
     sym_vornet,voids = get_Symmetry(atmnet, vornet)
 
     writeNETFile(prefixname+"_origin.net",atmnet,sym_vornet)
-    writeVaspFile(prefixname+"_origin.vasp",atmnet,sym_vornet,rad_store_in_vasp)
+    writeVaspFile(prefixname+"_origin.vasp",atmnet,sym_vornet)
 
     probe_rad = migrant_radius*migrant_alpha
     minRad = migrant_radius*migrant_alpha*0.85
@@ -113,7 +113,7 @@ def AllCom(filename, probe_rad, num_sample, migrant=None, rad_flag=True, effecti
     print(maxRad)
 
     writeNETFile(prefixname+"_origin.net",atmnet,sym_vornet,minRad,maxRad)
-    writeVaspFile(prefixname+"_selected.vasp",atmnet,sym_vornet,rad_store_in_vasp,minRad,maxRad)
+    writeVaspFile(prefixname+"_selected.vasp",atmnet,sym_vornet,minRad,maxRad)
     
     channels = Channel.findChannels(sym_vornet,atmnet,0.60,prefixname+".net")
     conn = connection_values_list(prefixname+".resex", sym_vornet)
@@ -122,13 +122,13 @@ def AllCom(filename, probe_rad, num_sample, migrant=None, rad_flag=True, effecti
     dims = []
     for i in channels:
         dims.append(i["dim"])
-    return conn,oneD,twoD,threeD,nei_dises,dims,voids
+    return conn,oneD,twoD,threeD,nei_dises,dims,voids,coordination_list
 
 # 使用带半径的公式进行计算
-def AllCom6(filename, migrant=None, rad_flag=True, effective_rad=True, rad_file=None, rad_store_in_vasp=True):
+def AllCom6(filename, migrant=None, rad_flag=True, effective_rad=True, rad_file=None):
     if rad_flag and effective_rad:
         #考虑如何利用migrant_radius与migrant_alpha
-        radii, migrant_radius, migrant_alpha, nei_dises = LocalEnvirCom(filename,migrant)
+        radii,migrant_radius,migrant_alpha, nei_dises,coordination_list = LocalEnvirCom(filename,migrant)
     if migrant:
         remove_filename = getRemoveMigrantFilename(filename,migrant)
     else:
@@ -142,8 +142,8 @@ def AllCom6(filename, migrant=None, rad_flag=True, effective_rad=True, rad_file=
     vornet,edge_centers,fcs = atmnet.perform_voronoi_decomposition(False)
     sym_vornet,voids = get_Symmetry(atmnet, vornet)
 
-    writeBIFile(prefixname+"_origin.bi",atmnet,sym_vornet)
-    writeVaspFile(prefixname+"_origin.vasp",atmnet,sym_vornet,rad_store_in_vasp)
+    writeNETFile(prefixname+"_origin.net",atmnet,sym_vornet)
+    writeVaspFile(prefixname+"_origin.vasp",atmnet,sym_vornet)
 
     minRad = migrant_radius*0.85
 
@@ -154,13 +154,13 @@ def AllCom6(filename, migrant=None, rad_flag=True, effective_rad=True, rad_file=
     else:
         for i in channels:
             dims.append(i["dim"])
-    return migrant_alpha,radii,minRad,nei_dises,dims,voids
+    return migrant_alpha,radii,minRad,nei_dises,dims,voids,coordination_list
     
 # 使用带半径的公式进行计算
-def AllCom5(filename, standard, migrant=None, rad_flag=True, effective_rad=True, rad_file=None, rad_store_in_vasp=True):
+def AllCom5(filename, standard, migrant=None, rad_flag=True, effective_rad=True, rad_file=None):
     if rad_flag and effective_rad:
         #考虑如何利用migrant_radius与migrant_alpha
-        radii, migrant_radius, migrant_alpha, nei_dises = LocalEnvirCom(filename,migrant)
+        radii,migrant_radius,migrant_alpha, nei_dises,coordination_list = LocalEnvirCom(filename,migrant)
     if migrant:
         remove_filename = getRemoveMigrantFilename(filename,migrant)
     else:
@@ -175,7 +175,7 @@ def AllCom5(filename, standard, migrant=None, rad_flag=True, effective_rad=True,
     sym_vornet,voids = get_Symmetry(atmnet, vornet)
 
     writeBIFile(prefixname+"_origin.bi",atmnet,sym_vornet)
-    writeVaspFile(prefixname+"_origin.vasp",atmnet,sym_vornet,rad_store_in_vasp)
+    writeVaspFile(prefixname+"_origin.vasp",atmnet,sym_vornet)
 
     minRad = standard*migrant_alpha*0.85
 
@@ -186,7 +186,7 @@ def AllCom5(filename, standard, migrant=None, rad_flag=True, effective_rad=True,
     else:
         for i in channels:
             dims.append(i["dim"])
-    return migrant_alpha,radii,minRad,nei_dises,dims,voids
+    return migrant_alpha,radii,minRad,nei_dises,dims,voids,coordination_list
 
 # 使用簇替换的方法进行计算
 def AllCom4(filename, standard, migrant=None, rad_flag=True, effective_rad=True, rad_file=None, rad_store_in_vasp=True):
