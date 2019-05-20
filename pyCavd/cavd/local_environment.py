@@ -171,6 +171,35 @@ class CifParser_new(CifParser):
         """
         stream = cStringIO(cif_string)
         return CifParser_new(stream, occupancy_tolerance)
+    
+    
+    def get_symme(self):
+        for d in self._cif.data.values():
+            data = d
+            # Try to parse International number
+            for symmetry_label in ["_space_group_IT_number",
+                                    "_space_group_IT_number_",
+                                    "_symmetry_Int_Tables_number",
+                                    "_symmetry_Int_Tables_number_"]:
+                if data.data.get(symmetry_label):
+                    symm_number = int(str2float(data.data.get(symmetry_label)))
+                    break
+            for symmetry_label in ["_symmetry_space_group_name_H-M",
+                                   "_symmetry_space_group_name_H_M",
+                                   "_symmetry_space_group_name_H-M_",
+                                   "_symmetry_space_group_name_H_M_",
+                                   "_space_group_name_Hall",
+                                   "_space_group_name_Hall_",
+                                   "_space_group_name_H-M_alt",
+                                   "_space_group_name_H-M_alt_",
+                                   "_symmetry_space_group_name_hall",
+                                   "_symmetry_space_group_name_hall_",
+                                   "_symmetry_space_group_name_h-m",
+                                   "_symmetry_space_group_name_h-m_"]:
+                if data.data.get(symmetry_label):
+                    sg = data.data.get(symmetry_label)
+                    break
+        return symm_number,sg
 
     def _unique_coords(self, coords_in, magmoms_in=None, lattice=None):
         """
@@ -674,7 +703,9 @@ def get_local_envir(filename):
         input_string = f.read()
     parser = CifParser_new.from_string(input_string)
     stru = parser.get_structures(primitive=False)[0]
-    return get_local_envir_fromstru(stru)
+    symm_number,symm_sybol = parser.get_symme()
+    coord_list,radii = get_local_envir_fromstru(stru)
+    return symm_number,symm_sybol, coord_list, radii
 
 # if __name__ == "__main__":
 #     a,b= get_local_envir("./Li_Na_Mg_Al_cifs/Li/icsd_281589.cif")

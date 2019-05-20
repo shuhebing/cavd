@@ -632,7 +632,6 @@ void calculateConnParameters(VORONOI_NETWORK *vornet, char *filename, vector<dou
     TRAVERSAL_NETWORK analyzeNet = TRAVERSAL_NETWORK(directions[i].x,directions[i].y,directions[i].z, &dnet);
     pair<bool,PATH> results = analyzeNet.findMaxFreeSphere(&idAliases, &sourceNodes);
 
-    cout << " max_radius " << results.second.max_radius << " " << "max_inc_radius " << results.second.max_inc_radius << endl;
     freeRadResults.push_back(results.second.max_radius);
     incRadResults.push_back(results.second.max_inc_radius);
     NtoN.push_back(results.first);

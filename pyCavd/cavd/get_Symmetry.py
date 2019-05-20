@@ -219,20 +219,14 @@ class Poscar_new():
 
         return Poscar_new(atomic_symbols, coords, lattice, comment, selective_dynamics, vasp5_symbols,velocities=velocities, predictor_corrector=predictor_corrector,predictor_corrector_preamble=predictor_corrector_preamble)
 
-
-def get_Symmetry(filename):
+#判断Vasp文件中的结构对称性信息
+def get_Symmetry(filename,symprec=0.01,angle_tolerance=5):
     with zopen(filename, "rt") as f:
         contents = f.read()
     poscar = Poscar_new.from_string(contents, False, read_velocities=False)
     positions = poscar.coords
-    #positions = []
-    print(positions)
     lattice = poscar.lattice
-    print(lattice)
-    #for i in s2.sites:
-    #    positions.append(i._fcoords)
     atomic_symbols = poscar.atomic_symbols
-    #print(atomic_symbols)
     
     numbers = [] 
     a = ""
@@ -243,85 +237,73 @@ def get_Symmetry(filename):
             j= j+1
         numbers.append(j)
 
-    #numbers = s2.atomic_numbers
-    
-    # print(numbers)
-    # print(len(positions))
-    # print(len(numbers))
     cell = (lattice, positions, numbers)
-
-    spacegroup = spglib.get_spacegroup(cell, symprec=0.01, angle_tolerance=5)
-    print(spacegroup)  
-    #symmetry = spglib.get_symmetry(cell, symprec=1e-5)
-    #print(symmetry)
-    dataset = spglib.get_symmetry_dataset(cell, symprec=0.01, angle_tolerance=5)
-    # print(len(dataset['equivalent_atoms']))
-    #print(dataset['rotations'])
-    #print(dataset['translations'])
-    # print(dataset['equivalent_atoms'])
+ 
+    dataset = spglib.get_symmetry_dataset(cell, symprec, angle_tolerance)
+    print(dataset['international'],dataset['number'])
     sym_independ = np.unique(dataset['equivalent_atoms'])
-    # print(len(sym_independ))
+    print(len(sym_independ))
     print(sym_independ)
     for i in sym_independ:
         print(positions[i])
-        #print((s2.sites[i])._fcoords)
 
-def get_Symmetry(atmnt, vornet):
+"""
+    Function:
+        Analyzing the symmetry of Voronoi Network.
+    return:
+        1. the label list of viods
+        2. the fractional coordinates list of voids
+"""
+def get_equivalent_vornet(vornet, symprec=0.01, angle_tolerance=5):
     positions = []
-    #print(positions)
-    lattice = atmnt.lattice
+    lattice = vornet.lattice
     for i in vornet.nodes:
         positions.append(i[2])
     numbers = [1,]*len(vornet.nodes)
     
-    # print(numbers)
-    # print(positions)
-    # print(len(positions))
-    # print(len(numbers))
     cell = (lattice, positions, numbers)
 
-    spacegroup = spglib.get_spacegroup(cell, symprec=0.01, angle_tolerance=5)
-    print(spacegroup)
-    #symmetry = spglib.get_symmetry(cell, symprec=1e-5)
-    #print(symmetry)
-    dataset = spglib.get_symmetry_dataset(cell, symprec=0.01, angle_tolerance=5)
-    symm_label = dataset['equivalent_atoms']
-
-    # print(len(symm_label))
-    #print(dataset['rotations'])
-    #print(dataset['translations'])
-    # print(symm_label)
-    vornet_uni_symm = vornet.parse_symmetry(symm_label)
-
-    sym_independ = np.unique(dataset['equivalent_atoms'])
-    # print(len(sym_independ))
-    # print(sym_independ)
+    dataset = spglib.get_symmetry_dataset(cell, symprec, angle_tolerance)
     voids = []
-    for i in sym_independ:
-        voids.append(positions[i])
-        # print(positions[i])
-        #print((s2.sites[i])._fcoords)
+    if dataset:
+        symm_label = dataset['equivalent_atoms']
+        vornet_uni_symm = vornet.parse_symmetry(symm_label)
+        sym_independ = np.unique(dataset['equivalent_atoms'])
+        print("The number of symmetry distinct voids: ",len(sym_independ))
+        for i in sym_independ:
+            voids.append(positions[i])
+        return vornet_uni_symm,voids
+    else:
+        return vornet,voids
     
-    return vornet_uni_symm,voids
 
-# if __name__ == "__main__":
-# #     #get_Symmetry("../../examples/icsd_246817_orgin_copy.vasp")
-# #     # get_Symmetry("../../examples/Li2CO3-LDA_orgin.vasp")
-# #     #get_Symmetry("../../examples/LPS.vasp")
-# #     #get_Symmetry("../../examples/LPS_orgin.vasp")
-# #     #get_Symmetry("../../examples/icsd_20610.vasp")
-# #     #get_Symmetry("../../examples/icsd_20610_orgin.vasp")
-# #     #get_Symmetry("../../examples/icsd_29225.vasp")
-# #     # get_Symmetry("../../examples/icsd_29225_orgin.vasp")
-# #     #get_Symmetry("../../examples/LLZO-48g-180721_orgin.vasp")
-# #     #get_Symmetry("../../examples/custom_300001.vasp")
-# #     #get_Symmetry("../../examples/custom_300001_orgin.vasp")
+def get_Symmetry_vornet(vornet, symprec=0.01, angle_tolerance=5):
+    positions = []
+    lattice = vornet.lattice
+    for i in vornet.nodes:
+        positions.append(i[2])
+    numbers = [1,]*len(vornet.nodes)
+    
+    cell = (lattice, positions, numbers)
 
-#     radii = {}
-#     remove_filename = getRemoveMigrantFilename("../../examples/Li2CO3-LDA.cif","Li")
-#     radii,migrant_radius,migrant_alpha = LocalEnvirCom("../../examples/Li2CO3-LDA.cif","Li")
-#     atmnet = AtomNetwork.read_from_CIF(remove_filename, radii, True, None)
-#     vornet,edge_centers,fcs = atmnet.perform_voronoi_decomposition(False)
-#     writeVaspFile("../../examples/Li2CO3-LDA"+"_orgin.vasp",atmnet,vornet,True)
-#     sym_vornet = get_Symmetry(atmnet, vornet)
-#     writeBIFile("../../examples/Li2CO3-LDA"+"_orgin.bitest",atmnet,sym_vornet)
+    dataset = spglib.get_symmetry_dataset(cell, symprec, angle_tolerance)
+    if dataset:
+        return dataset['number']
+    else:
+        return 0
+
+#return the Symmetry number of Atom network
+def get_Symmetry_atmnt(atmnt, symprec=0.01, angle_tolerance=5):
+    positions = []
+    lattice = atmnt.lattice
+    for i in atmnt.atoms:
+        positions.append(i[4])
+    numbers = [1,]*len(atmnt.atoms_num)
+    
+    cell = (lattice, positions, numbers)
+
+    dataset = spglib.get_symmetry_dataset(cell, symprec, angle_tolerance)
+    if dataset:
+        return dataset['number']
+    else:
+        return 0

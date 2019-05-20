@@ -150,9 +150,9 @@ cdef class AtomNetwork:
                 atom_type = c_atoms[i].atom_type.decode('utf-8')
                 atom_label = c_atoms[i].label.decode('utf-8')
                 radius = c_atoms[i].radius
-                #atom_coords = [c_atoms[i].a_coord,c_atoms[i].b_coord,c_atoms[i].c_coord]
+                atom_fracs = [c_atoms[i].a_coord,c_atoms[i].b_coord,c_atoms[i].c_coord]
                 atom_coords = [c_atoms[i].x,c_atoms[i].y,c_atoms[i].z]
-                atoms.append([atom_label, atom_type, radius, atom_coords])
+                atoms.append([atom_label, atom_type, radius, atom_coords, atom_fracs])
             return atoms
 
     def copy(self):
@@ -714,6 +714,15 @@ cdef class VoronoiNetwork:
 
     def size(self):
         return self.thisptr.nodes.size()
+    
+
+    property lattice:
+        def __get__(self):
+            la = [self.thisptr.v_a.x, self.thisptr.v_a.y, self.thisptr.v_a.z]
+            lb = [self.thisptr.v_b.x, self.thisptr.v_b.y, self.thisptr.v_b.z]
+            lc = [self.thisptr.v_c.x, self.thisptr.v_c.y, self.thisptr.v_c.z]
+            lattice = [la, lb, lc]
+            return lattice
 
     property nodes:
         def __get__(self):

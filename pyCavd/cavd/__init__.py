@@ -7,24 +7,72 @@ from cavd.netstorage import connection_values_list
 from cavd.channel import Channel
 from cavd.area_volume import asa_new
 from cavd.netio import *
-from cavd.local_environment import get_local_envir
-from cavd.get_Symmetry import get_Symmetry
+from cavd.local_environment import get_local_envir_fromstru
+from cavd.get_Symmetry import get_Symmetry_vornet, get_Symmetry_atmnt, get_equivalent_vornet
 from cavd.high_accuracy import high_accuracy_atmnet
+from cavd.local_environment import CifParser_new
 from pymatgen.core.structure import Structure
 from pymatgen.analysis.local_env import ValenceIonicRadiusEvaluator
+from pymatgen.core.sites import PeriodicSite
+from monty.io import zopen
 
 #from local_environment import get_local_envir,Coordination
+
+
+# 计算迁移离子晶格位的复原率
+def rediscovery(migrate,voids,stru):
+    labels = []
+    recover_labels = []
+    recover_state = {}
+    true_recover_dis = {}
+
+    for k in range(len(stru.sites)):
+        site = stru.sites[k]
+        label = site._atom_site_label
+        if migrate not in label:
+            continue
+        #labels记录所有的label
+        if label not in labels:
+            labels.append(label)
+        #recover_labels记录已恢复的label
+        if label in recover_labels:
+            continue
+        for void in voids:
+            #以Ar作为临时当前空隙的表示符号
+            tmp_site = PeriodicSite("Ar",void,stru.lattice)
+
+            if site.distance(tmp_site) < 0.5:
+                #当某空隙位已与结构中的晶格位配对时，将该空隙位以及与该空隙位0.25A半径范围内的所有空隙位移除，后续不再判断。
+                recover_labels.append(label)
+                true_recover_dis[str(label)] = site.distance(tmp_site)
+                voids.remove(void)
+                
+                for void_tmp in voids:
+                    tmp_site2 = PeriodicSite("Ar",list(void_tmp),stru.lattice)
+                    if tmp_site.distance(tmp_site2) < 0.25:
+                        voids.remove(void_tmp)
+                break
+
+    #统计当前结构的恢复率
+    recover_rate = len(recover_labels)/len(labels)
+    for la in labels:
+        if la in recover_labels:
+            recover_state[str(la)] = True
+        else:
+            recover_state[str(la)] = False
+
+    return recover_rate, recover_state, true_recover_dis
 
 
 # 获取特定结构中
 # 所有离子的有效半径，
 # 迁移离子到最邻近离子表面距离与迁移离子半径的比值alpha，
 # 迁移离子半径
-def LocalEnvirCom(filename, migrant):
+def LocalEnvirCom(stru, migrant):
     # stru = Structure.from_file(filename)
     # val_eval = ValenceIonicRadiusEvaluator(stru)
     # radii = val_eval.radii
-    coordination_list, radii = get_local_envir(filename)
+    coordination_list, radii = get_local_envir_fromstru(stru)
     
     # 为了防止保存的半径信息无法匹配此处对半径信息做特殊处理，如Ag+的半径会保存为Ag、Ag+、Ag1+
     # radii_keys = list(radii.keys())
@@ -71,6 +119,8 @@ def LocalEnvirCom(filename, migrant):
             
     nei_dises = list(zip(coord_tmp, zip(nei_dis_tmp, min_nei_dis_tmp)))
     migrant_alpha = float(sum(migrant_paras))/len(migrant_paras)
+    if migrant_alpha > 1.0:
+        migrant_alpha = 1.0
     migrant_radius = float(sum(migrant_radii))/len(migrant_radii)
     return radii,migrant_radius,migrant_alpha,nei_dises,coordination_list
 
@@ -85,7 +135,7 @@ def AllCom(filename, probe_rad, num_sample, migrant=None, rad_flag=True, effecti
     radii = {}
     if rad_flag and effective_rad:
         #考虑如何利用migrant_radius与migrant_alpha
-        radii,migrant_radius,migrant_alpha, nei_dises,coordination_list = LocalEnvirCom(filename,migrant)
+        symm_number, radii,migrant_radius,migrant_alpha, nei_dises,coordination_list = LocalEnvirCom(filename,migrant)
     if migrant:
         remove_filename = getRemoveMigrantFilename(filename,migrant)
     else:
@@ -158,9 +208,17 @@ def AllCom6(filename, migrant=None, rad_flag=True, effective_rad=True, rad_file=
     
 # 使用带半径的公式进行计算
 def AllCom5(filename, standard, migrant=None, rad_flag=True, effective_rad=True, rad_file=None):
+    with zopen(filename, "rt") as f:
+        input_string = f.read()
+    parser = CifParser_new.from_string(input_string)
+    stru = parser.get_structures(primitive=False)[0]
+    
+    #获取空间群号与符号
+    symm_number,symm_sybol = parser.get_symme()
+
     if rad_flag and effective_rad:
         #考虑如何利用migrant_radius与migrant_alpha
-        radii,migrant_radius,migrant_alpha, nei_dises,coordination_list = LocalEnvirCom(filename,migrant)
+        radii,migrant_radius,migrant_alpha,nei_dises,coordination_list = LocalEnvirCom(stru,migrant)
     if migrant:
         remove_filename = getRemoveMigrantFilename(filename,migrant)
     else:
@@ -172,22 +230,46 @@ def AllCom5(filename, standard, migrant=None, rad_flag=True, effective_rad=True,
 
     prefixname = filename.replace(".cif","")
     vornet,edge_centers,fcs = atmnet.perform_voronoi_decomposition(False)
-    sym_vornet,voids = get_Symmetry(atmnet, vornet)
 
-    writeBIFile(prefixname+"_origin.bi",atmnet,sym_vornet)
+    print("\nSymmetry number from cif: ", symm_number)
+    for j in range(10):
+        symprec = 0.01 + j*0.01
+        symm_num_vornet = get_Symmetry_vornet(vornet,symprec)
+        if symm_num_vornet == symm_number:
+            print("Distance tolerance in Cartesian coordinates to find crystal symmetry: ",symprec)
+            print("Symmetry number from Voronoi network: ", symm_num_vornet)
+            print("\n")
+            sym_vornet, voids = get_equivalent_vornet(vornet,symprec)
+            break
+
+        #无法寻找到对称性后使用0.01作为参数计算
+        if j == 9 and symm_num_vornet == 0:
+            print("Symmetry is not normally obtained using spglib with symprec from 0.01-0.1. Using symprec=0.01 instead.")
+            symprec = 0.01
+            symm_num_vornet = get_Symmetry_vornet(vornet,symprec)
+            print("Distance tolerance in Cartesian coordinates to find crystal symmetry: ",symprec)
+            print("Symmetry number from Voronoi network: ", symm_num_vornet)
+            print("\n")
+            sym_vornet, voids = get_equivalent_vornet(vornet,symprec)
+
+    recover_rate, recover_state, true_recover_dis = rediscovery(migrant,voids,stru)
+
+    writeNETFile(prefixname+"_origin.net",atmnet,sym_vornet)
     writeVaspFile(prefixname+"_origin.vasp",atmnet,sym_vornet)
 
+    conn_val = connection_values_list(prefixname+".resex", sym_vornet)
     minRad = standard*migrant_alpha*0.85
+    dim_network,connect = ConnStatus(minRad, conn_val)
+    writeVaspFile(prefixname+"_"+str(round(minRad,4))+".vasp",atmnet,sym_vornet,minRad,5.0)
 
-    channels = Channel.findChannels(sym_vornet,atmnet,minRad,prefixname+".net")
-    dims = []
+    channels = Channel.findChannels(sym_vornet,atmnet,minRad,prefixname+"_"+str(round(minRad,4))+".net")
+    dims_channel = []
     if len(channels)==0:
-        dims.append(0)
+        dims_channel.append(0)
     else:
         for i in channels:
-            dims.append(i["dim"])
-    return migrant_alpha,radii,minRad,nei_dises,dims,voids,coordination_list
-
+            dims_channel.append(i["dim"])
+    return symm_sybol,symm_number,symm_num_vornet,symprec,conn_val,connect,dim_network,dims_channel,migrant_alpha,radii,minRad,nei_dises,recover_rate, recover_state, true_recover_dis,coordination_list
 # 使用簇替换的方法进行计算
 def AllCom4(filename, standard, migrant=None, rad_flag=True, effective_rad=True, rad_file=None, rad_store_in_vasp=True):
     radii = {}
@@ -372,40 +454,18 @@ def ConnStatusCom(filename, radius, migrant=None, rad_flag=True, effective_rad=T
         twoD = True
     if aconn or bconn or cconn:
         oneD = True
-    return oneD,twoD,threeD
+    return [oneD,twoD,threeD]
 
 #根据连通数值列表，判断某个结构的连通性。给定一个原子的半径，判断它是否是1D，2D，3D导通
 def ConnStatus(radius,connlist):
-    oneD = False
-    twoD = False
-    threeD = False
-
-    af = connlist[0]
-    bf = connlist[1]
-    cf = connlist[2]
-    
-    if radius <= af:
-        aconn = True
-    else:
-        aconn = False
-    
-    if radius <= bf:
-        bconn = True
-    else:
-        bconn = False
-    
-    if radius <= cf:
-        cconn = True
-    else:
-        cconn = False
-    
-    if aconn and bconn and cconn:
-        threeD = True
-    if (aconn and bconn) or (aconn and cconn) or (bconn and cconn):
-        twoD = True
-    if aconn or bconn or cconn:
-        oneD = True
-    return oneD,twoD,threeD
+    connects = []
+    for i in connlist:
+        if radius > i:
+            connects.append(False)
+        else:
+            connects.append(True)
+    dim_net = connects.count(True)
+    return dim_net,connects
     
 #计算通道
 def ChannelCom(filename, probe_rad, migrant=None, rad_flag=True, effective_rad=True, rad_file=None):
