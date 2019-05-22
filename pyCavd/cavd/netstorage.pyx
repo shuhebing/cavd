@@ -223,6 +223,61 @@ cdef class AtomNetwork:
         return atmnet
 
     @classmethod
+    def read_from_RemoveMigrantCif(cls, filename, migrant, radii, rad_flag=True, rad_file=None):
+        """
+        Static method to create and populate the AtomNetwork with 
+        atom data from a CIF file.
+        Arguments:
+            filename: 
+                Input CIF file name.
+            rad_flag (optional):
+                Flag denoting whether atomic radii are non-zero.
+                Default is True
+            rad_file (optional):
+                Input file containing atomic radii
+                Works only when rad_flag is True.
+                If rad_file is not specified, Zeo++ default values are used.
+        Returns:
+            Instance of AtomNetwork
+        """
+        #Calls Zeo++ readCIFFile function defined in networkio.cc.
+        if isinstance(rad_file, unicode):
+            rad_file = (<unicode>rad_file).encode('utf8')
+        if isinstance(filename, unicode):
+            filename = (<unicode>filename).encode('utf8')
+        if isinstance(migrant, unicode):
+            migrant = (<unicode>migrant).encode('utf8')
+        
+        cdef char* c_rad_file
+        if rad_flag:
+            if not rad_file:
+                #edited at 20180526
+                #cavd.netinfo.zeo_initializeRadTable()
+                cavd.netinfo.zeo_initializeIonRadTable()
+            else:       # rad_file is defined
+                c_rad_file = rad_file
+                cavd.netinfo.zeo_readIonRadTableFile(c_rad_file)
+
+		#Added at 20180606
+        cdef map[string, double] ionRadMap
+        cdef string c_key
+        cdef double c_value
+        if radii:
+            for key in radii:
+                c_key = (<unicode>key).encode('utf8')
+                c_value = radii[key]
+                ionRadMap.insert(pair[string,double](c_key,c_value))       
+            cavd.netinfo.zeo_readIonRadTable(ionRadMap)
+    
+        atmnet = AtomNetwork()
+        cdef char* c_filename = filename
+        cdef const char* c_migrant = migrant
+        if not readRemoveMigrantCif(c_filename, atmnet.thisptr, c_migrant, rad_flag):
+            raise IOError
+        atmnet.rad_flag = rad_flag
+        return atmnet
+
+    @classmethod
     def read_from_ARC(cls, filename, rad_flag=True, rad_file=None):
         """
         Static method to create and populate the AtomNetwork with 

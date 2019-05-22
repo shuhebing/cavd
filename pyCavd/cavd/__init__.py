@@ -220,14 +220,10 @@ def AllCom5(filename, standard, migrant=None, rad_flag=True, effective_rad=True,
         #考虑如何利用migrant_radius与migrant_alpha
         radii,migrant_radius,migrant_alpha,nei_dises,coordination_list = LocalEnvirCom(stru,migrant)
     if migrant:
-        remove_filename = getRemoveMigrantFilename(filename,migrant)
+        atmnet = AtomNetwork.read_from_RemoveMigrantCif(filename, migrant, radii, rad_flag, rad_file)
     else:
-        remove_filename = filename
-    atmnet = AtomNetwork.read_from_CIF(remove_filename, radii, rad_flag, rad_file)
+        atmnet = AtomNetwork.read_from_CIF(filename, radii, rad_flag, rad_file)
     
-    if migrant:
-        os.remove(remove_filename)
-
     prefixname = filename.replace(".cif","")
     vornet,edge_centers,fcs = atmnet.perform_voronoi_decomposition(False)
 
@@ -235,6 +231,7 @@ def AllCom5(filename, standard, migrant=None, rad_flag=True, effective_rad=True,
     for j in range(10):
         symprec = 0.01 + j*0.01
         symm_num_vornet = get_Symmetry_vornet(vornet,symprec)
+        print(symm_num_vornet)
         if symm_num_vornet == symm_number:
             print("Distance tolerance in Cartesian coordinates to find crystal symmetry: ",symprec)
             print("Symmetry number from Voronoi network: ", symm_num_vornet)

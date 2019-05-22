@@ -107,65 +107,70 @@ bool readCIFFile(char *filename, ATOM_NETWORK *cell, bool radial){
   bool read_a = false, read_b = false, read_c = false, read_alpha = false, read_beta = false, read_gamma = false, initialized_cell = false; //keep track of when all cell params are parsed, so the cell can be created
   if(ciffile.is_open()) {
     while(!ciffile.eof()) {
-      if(read_a && read_b && read_c && read_alpha && read_beta && read_gamma && !initialized_cell) {cell->initialize(); initialized_cell=true;}
+      if(read_a && read_b && read_c && read_alpha && read_beta && read_gamma && !initialized_cell) {
+        cell->initialize(); 
+        initialized_cell=true;
+      }
       getline(ciffile,line);
-//printf("DEBUG: read line %s\n", line.c_str());
+      //printf("DEBUG: read line %s\n", line.c_str());
       token = split(line," ()\r\t");
       exception: //I needed an easy way to jump out of the _loop command if an unknown command was found
       if (token.size() > 0) {
-          //Where all non-loop commands should be added
-          if(token[0].substr(0,5).compare(list[0]) == 0){ //name of unit cell
-            cell->name=token[0].substr(5);
-          }
-          else if (token[0].compare(list[1]) == 0){ //length a
-            cell->a=convertToDouble(token[1]);
+        //Where all non-loop commands should be added
+        if(token[0].substr(0,5).compare(list[0]) == 0){ //name of unit cell
+          cell->name=token[0].substr(5);
+        }
+        else if (token[0].compare(list[1]) == 0){ //length a
+          cell->a=convertToDouble(token[1]);
           read_a = true;
-          }
-          else if (token[0].compare(list[2]) == 0){ //length b
-            cell->b=convertToDouble(token[1]);
+        }
+        else if (token[0].compare(list[2]) == 0){ //length b
+          cell->b=convertToDouble(token[1]);
           read_b = true;
-          }
-          else if (token[0].compare(list[3]) == 0){ //length c
-            cell->c=convertToDouble(token[1]);
+        }
+        else if (token[0].compare(list[3]) == 0){ //length c
+          cell->c=convertToDouble(token[1]);
           read_c = true;
-          }
-          else if (token[0].compare(list[4]) == 0){ //alpha
-            cell->alpha=convertToDouble(token[1]);
+        }
+        else if (token[0].compare(list[4]) == 0){ //alpha
+          cell->alpha=convertToDouble(token[1]);
           read_alpha = true;
-          }
-          else if (token[0].compare(list[5]) == 0){ //beta
-            cell->beta=convertToDouble(token[1]);
+        }
+        else if (token[0].compare(list[5]) == 0){ //beta
+          cell->beta=convertToDouble(token[1]);
           read_beta = true;
-          }
-          else if (token[0].compare(list[6]) == 0){ //gamma
-            cell->gamma=convertToDouble(token[1]);
+        }
+        else if (token[0].compare(list[6]) == 0){ //gamma
+          cell->gamma=convertToDouble(token[1]);
           read_gamma = true;
-          }
+        }
         else if (token[0].compare(list[16]) == 0){ //_symmetry_Int_Tables_number
-            symmetry_Int_Table_number = convertToInt(token[1]);
-          }
-          else if (token[0].compare(list[7]) == 0){ //loop_
-//printf("DEBUG: inside a \"loop_\" section\n");
-            vector<string> column_labels;
-            getline(ciffile,line);
-            token = split(line," \r\t");
+          symmetry_Int_Table_number = convertToInt(token[1]);
+        }
+        else if (token[0].compare(list[7]) == 0){ //loop_
+          //printf("DEBUG: inside a \"loop_\" section\n");
+          vector<string> column_labels;
+          getline(ciffile,line);
+          token = split(line," \r\t");
           bool tokenized = false, in_loop = true;
           if(token.size()>0) tokenized=true;
-//            while (token[0].at(0)=='_') { //collect all of the collumn labels
-            while (tokenized && in_loop) { //collect all of the collumn labels
+          // while (token[0].at(0)=='_') { //collect all of the collumn labels
+          while (tokenized && in_loop) { //collect all of the collumn labels
             if(token[0].at(0)=='_') {
-                column_labels.push_back(token[0]);
-//printf("DEBUG: within loop, parsed a column header \"%s\"\n", token[0].c_str());
-                getline(ciffile,line);
-//printf("DEBUG: read line \"%s\" - tokenizing ...\n", line.c_str());
-                token = split(line," \r\t");
+              column_labels.push_back(token[0]);
+              //printf("DEBUG: within loop, parsed a column header \"%s\"\n", token[0].c_str());
+              getline(ciffile,line);
+              //printf("DEBUG: read line \"%s\" - tokenizing ...\n", line.c_str());
+              token = split(line," \r\t");
               if(token.size()<=0) tokenized=false;
-            } else in_loop = false;
-            }
+            } 
+            else in_loop = false;
+          }
           if(!tokenized) {
-printf("\n#####\n##### WARNING: parsed a loop in cif file, but data was not present\n#####\n\n");
-          } else {
-//printf("DEBUG: exited loop successfully, having read data line \"%s\"\n", line.c_str());
+            printf("\n#####\n##### WARNING: parsed a loop in cif file, but data was not present\n#####\n\n");
+          } 
+          else {
+            //printf("DEBUG: exited loop successfully, having read data line \"%s\"\n", line.c_str());
             //collecting the data associated with each column and put
             // in correct place
             token = split(line," ,'\r\t"); //This is needed to split data
@@ -179,69 +184,71 @@ printf("\n#####\n##### WARNING: parsed a loop in cif file, but data was not pres
               }
               for (unsigned int i=0; i<column_labels.size(); i++){
                 switch (strCmpList(list,column_labels[i])){
-  //printf("SYM DEBUG: checking for symmetry section ...\n");
-                  //Where all loop commands should be added
-                case 8: //_symmetry_equiv_pos_as_xyz and
-                case 9: //_space_group_symop_operation_xyz have the same meaning
-  //printf("SYM DEBUG: symmetry section found!\n");
-                  if (!((token.size()==3&&symmetry_equiv_pos_site_id_Flag==false)||(token.size()==4&&symmetry_equiv_pos_site_id_Flag==true))){
-                    cout << "Error: Expected 3 strings for _symmetry_equiv_pos_as_xyz (or 4 if _symmetry_equiv_pos_site_id is present)" << endl;
-  //                  abort();
-                  ciffile.close();
-                  return false;
-                  }
-                      if(token.size()==3) {
-                    sym_x.push_back(token[0]);
-                    sym_y.push_back(token[1]);
-                    sym_z.push_back(token[2]);}
-                        else {
-                        sym_x.push_back(token[1]);
-                        sym_y.push_back(token[2]);
-                        sym_z.push_back(token[3]);
-                        };
-  //printf("SYM DEBUG: pushing back %s %s %s\n", token[0].c_str(), token[1].c_str(), token[2].c_str());
-                  break;
-                case 10:
-                  atom_label.push_back(token[i]);
-                  break;
-                case 11:
-                  atom_type.push_back(token[i]);
-                  break;
-                case 12:
-                  atom_x.push_back(trans_to_origuc(convertToDouble(token[i])));
-                  break;
-                case 13:
-                  atom_y.push_back(trans_to_origuc(convertToDouble(token[i])));
-                  break;
-                case 14:
-                  atom_z.push_back(trans_to_origuc(convertToDouble(token[i])));
-                  break;
-                case 15:
-                  atom_charge.push_back(convertToDouble(token[i]));
-                  break;
-                case 17:
-                  atom_x.push_back(convertToDouble(token[i]));
-                need_to_convert_to_fractional = true;
-                  break;
-                case 18:
-                  atom_y.push_back(convertToDouble(token[i]));
-                need_to_convert_to_fractional = true;
-                  break;
-                case 19:
-                  atom_z.push_back(convertToDouble(token[i]));
-                need_to_convert_to_fractional = true;
-                  break;
-                case 20:
-                      symmetry_equiv_pos_site_id_Flag = true;
-                      break;
+                //printf("SYM DEBUG: checking for symmetry section ...\n");
+                //Where all loop commands should be added
+                  case 8: //_symmetry_equiv_pos_as_xyz and
+                  case 9: //_space_group_symop_operation_xyz have the same meaning
+                   //printf("SYM DEBUG: symmetry section found!\n");
+                    if (!((token.size()==3&&symmetry_equiv_pos_site_id_Flag==false)||(token.size()==4&&symmetry_equiv_pos_site_id_Flag==true))){
+                      cout << "Error: Expected 3 strings for _symmetry_equiv_pos_as_xyz (or 4 if _symmetry_equiv_pos_site_id is present)" << endl;
+                    // abort();
+                      ciffile.close();
+                      return false;
+                    }
+                    if(token.size()==3) {
+                      sym_x.push_back(token[0]);
+                      sym_y.push_back(token[1]);
+                      sym_z.push_back(token[2]);
+                    }
+                    else {
+                      sym_x.push_back(token[1]);
+                      sym_y.push_back(token[2]);
+                      sym_z.push_back(token[3]);
+                    };
+                    //printf("SYM DEBUG: pushing back %s %s %s\n", token[0].c_str(), token[1].c_str(), token[2].c_str());
+                    break;
+                  case 10:
+
+                    atom_label.push_back(token[i]);
+                    break;
+                  case 11:
+                    atom_type.push_back(token[i]);
+                    break;
+                  case 12:
+                    atom_x.push_back(trans_to_origuc(convertToDouble(token[i])));
+                    break;
+                  case 13:
+                    atom_y.push_back(trans_to_origuc(convertToDouble(token[i])));
+                    break;
+                  case 14:
+                    atom_z.push_back(trans_to_origuc(convertToDouble(token[i])));
+                    break;
+                  case 15:
+                    atom_charge.push_back(convertToDouble(token[i]));
+                    break;
+                  case 17:
+                    atom_x.push_back(convertToDouble(token[i]));
+                    need_to_convert_to_fractional = true;
+                    break;
+                  case 18:
+                    atom_y.push_back(convertToDouble(token[i]));
+                    need_to_convert_to_fractional = true;
+                    break;
+                  case 19:
+                    atom_z.push_back(convertToDouble(token[i]));
+                    need_to_convert_to_fractional = true;
+                    break;
+                  case 20:
+                    symmetry_equiv_pos_site_id_Flag = true;
+                    break;
                 }     
               }  
               //now we've finished parsing this line, we might need to convert Cartesian to fractional coords
               if(need_to_convert_to_fractional) {
                 Point tempcoor;
                 int this_ID = atom_x.size()-1;
-                  tempcoor = cell->xyz_to_abc(atom_x.at(this_ID),atom_y.at(this_ID),atom_z.at(this_ID));
-//printf("DEBUG: atom at Cartesian %.3f %.3f %.3f written to fractional %.3f %.3f %.3f\n", atom_x.at(this_ID),atom_y.at(this_ID),atom_z.at(this_ID), tempcoor[0], tempcoor[1], tempcoor[2]);
+                tempcoor = cell->xyz_to_abc(atom_x.at(this_ID),atom_y.at(this_ID),atom_z.at(this_ID));
+                //printf("DEBUG: atom at Cartesian %.3f %.3f %.3f written to fractional %.3f %.3f %.3f\n", atom_x.at(this_ID),atom_y.at(this_ID),atom_z.at(this_ID), tempcoor[0], tempcoor[1], tempcoor[2]);
                 atom_x.at(this_ID) = tempcoor[0];
                 atom_y.at(this_ID) = tempcoor[1];
                 atom_z.at(this_ID) = tempcoor[2];
@@ -263,7 +270,7 @@ printf("\n#####\n##### WARNING: parsed a loop in cif file, but data was not pres
       if (symmetry_Int_Table_number>=0 && symmetry_Int_Table_number!=1) {
         //read a symmetry table number, but it was not 1
         printf("ERROR:\n\tcif file provided no symmetry operations; however, a symmetry_Int_Tables_Number of %d was provided,\n\tindicating symmetry which is not 'P 1' (no symmetry operations);\n\tcannot proceed with insufficient symmetry information\nExiting ...\n", symmetry_Int_Table_number);
-//        exit(EXIT_FAILURE);
+        //exit(EXIT_FAILURE);
         return false;
       } else {
         sym_x.push_back("x");
@@ -281,15 +288,15 @@ printf("\n#####\n##### WARNING: parsed a loop in cif file, but data was not pres
     //Parse out the numbers from atom labels and types, if specified (defined in network.h)
     if (CIF_RMV_NUMS_FROM_ATOM_TYPE){
       if (!CIF_USE_LABEL){
-          for (unsigned int i=0; i<atom_type.size(); i++){
-            atom_type[i] = split(atom_type[i],"0123456789").at(0);
-          }
+        for (unsigned int i=0; i<atom_type.size(); i++){
+          atom_type[i] = split(atom_type[i],"0123456789").at(0);
+        }
       }
       else{
-          for (unsigned int i=0; i<atom_label.size(); i++){
-            atom_label[i] = split(atom_label[i],"0123456789").at(0);
-            atom_type[i] = split(atom_type[i],"0123456789").at(0);
-          }
+        for (unsigned int i=0; i<atom_label.size(); i++){
+          atom_label[i] = split(atom_label[i],"0123456789").at(0);
+          atom_type[i] = split(atom_type[i],"0123456789").at(0);
+        }
       }
     }
     
@@ -298,7 +305,7 @@ printf("\n#####\n##### WARNING: parsed a loop in cif file, but data was not pres
       cout << "Error: No .cif symmetry information given" << endl;
       cout << "DEBUG SHOULDN'T HAPPEN" << endl;
       return false;
-//      abort();
+    //abort();
     }
     if (atom_label.size()==0 && CIF_USE_LABEL == true){
       cout << "Error: No ''_atom_site_label'' or ''_atom_site_type_symbol'' information " << endl;
@@ -309,11 +316,11 @@ printf("\n#####\n##### WARNING: parsed a loop in cif file, but data was not pres
       cout << "Error: No ''_atom_site_type_symbol'' information" << endl;
       cout << "DEBUG SHOULDN'T HAPPEN" << endl;
       return false;
-//      abort();
+      //abort();
     }
     if (atom_x.size()!=atom_y.size() || atom_y.size()!=atom_z.size() || atom_x.size()==0){
       cout << "Error: Atom coordinates not read properly (" << atom_x.size() << " x coords, " << atom_y.size() << " y coords, " << atom_z.size() << " z coords)" << endl;
-//      abort();
+      //abort();
       return false;
     }
 
@@ -323,7 +330,7 @@ printf("\n#####\n##### WARNING: parsed a loop in cif file, but data was not pres
     }
     
     //Now to fully assemble the ATOM_NETWORK initialize constructor
-//    cell->initialize(); //this should now happen much earlier, during parsing
+    //cell->initialize(); //this should now happen much earlier, during parsing
     
     ATOM tempatom;
     Point tempcoor;
@@ -370,7 +377,7 @@ printf("\n#####\n##### WARNING: parsed a loop in cif file, but data was not pres
           for (unsigned int k=0;k<cell->atoms.size(); k++){
                 if(cell->calcDistance(cell->atoms[k],tempatom)<thresholdLarge) { match=0;
 /*
-            if (tempatom.a_coord-thresholdLarge < cell->atoms[k].a_coord && cell->atoms[k].a_coord < tempatom.a_coord+thresholdLarge)
+          if (tempatom.a_coord-thresholdLarge < cell->atoms[k].a_coord && cell->atoms[k].a_coord < tempatom.a_coord+thresholdLarge)
           if (tempatom.b_coord-thresholdLarge < cell->atoms[k].b_coord && cell->atoms[k].b_coord < tempatom.b_coord+thresholdLarge )
           if (tempatom.c_coord-thresholdLarge < cell->atoms[k].c_coord && cell->atoms[k].c_coord < tempatom.c_coord+thresholdLarge ){
             match=0;
@@ -387,7 +394,7 @@ printf("\n#####\n##### WARNING: parsed a loop in cif file, but data was not pres
   else{
     cout << "Failed to open: " << filename << endl;
     ciffile.close();
-//    exit(1);
+    //exit(1);
     return false;
   }
   return true;
@@ -1807,87 +1814,363 @@ void string_replace(string &strBig, const string &strsrc, const string &strdst){
     }
 }
 
-string pretreatCifFilename(char *filename,const char *migrant){
-    string line;
-    int ndx;
-    vector<string> token;
+bool readRemoveMigrantCif(char *filename, ATOM_NETWORK *cell, const char *migrant, bool radial){
+  string line;
+  // Known markers in CIF File if you change the order it will affect the code
+  string descriptor[] = {"data_",
+             "_cell_length_a", //case 1
+             "_cell_length_b", //2
+             "_cell_length_c", //3
+             "_cell_angle_alpha", //4
+             "_cell_angle_beta", //5
+             "_cell_angle_gamma", //6
+             "loop_", //7
+             "_symmetry_equiv_pos_as_xyz", //8
+             "_space_group_symop_operation_xyz", //9
+             "_atom_site_label", //10
+             "_atom_site_type_symbol", //11
+             "_atom_site_fract_x", //12
+             "_atom_site_fract_y", //13
+             "_atom_site_fract_z", //14
+             "_atom_site_charge", //15
+             "_symmetry_Int_Tables_number", //16
+             "_atom_site_Cartn_x", //17
+             "_atom_site_Cartn_y", //18
+             "_atom_site_Cartn_z", //19
+                         "_symmetry_equiv_pos_site_id", // 20 
+             "NULL"};  
+  int ndx;
+  vector<string> list = strAry2StrVec(descriptor);
+  vector<string> token;
 
-    // Try opening the file if it opens proceed with processing
-    ifstream ciffile;
-    cout << "Treat file: " << filename << endl;
-    ciffile.open(filename);
+  vector<string> sym_x;
+  vector<string> sym_y;
+  vector<string> sym_z;
+  vector<string> atom_label;
+  vector<string> atom_type;
+  vector<double> atom_x;
+  vector<double> atom_y;
+  vector<double> atom_z;
+  vector<double> atom_charge;
 
-   if(ciffile.is_open()){
-       //output fstream
-       fstream output;
-       string str = (string)filename;
-       string outfilename = str.replace(str.find_last_of("."),4,"_remove"+(string)migrant+".cif");
-       //outfilename = str.replace(outfilename.find_last_of("/"),1,"/results/");
-       cout << "outfilename = " << outfilename << endl;
-       output.open(outfilename.data(), fstream::out);
-       if(output.is_open()){
-           //cout << "ifstream and fstream open!" << endl;
-           while(!ciffile.eof()){
-               getline(ciffile,line);
-              token = split(line," ()\r\t");
-              exception: //an easy way to jump out of the _loop command if an unknown command was found
-
-              if (token.size() > 0){
-                  //Where all non-loop commands should be added
-                  if (token[0].compare("loop_") == 0){ //loop_
-                      output << line << endl;
-
-                    getline(ciffile,line);
-                    token = split(line," \r\t");
-
-                    bool tokenized = false, in_loop = true;
-                    if(token.size()>0) tokenized=true;
-                    while (tokenized && in_loop){ //check _loop column label
-                    if(token[0].at(0)=='_') {
-                        output << line << endl;
-                        getline(ciffile,line);
-                        token = split(line," \r\t");
-                      if(token.size()<=0) tokenized=false;
-                    }else in_loop = false;
-                     }
-                   //cout<< "break cycle" << endl;
-                  token = split(line," ,'\r\t"); //This is needed to split data
-                  while(token.size()>0){
-                       if (token[0].at(0) =='_' || token[0].compare("loop_")==0 || token[0].at(0) == '#'){
-                        goto exception; // unexpected input
-                        }
-                       string::size_type idx;
-                    idx=line.find(migrant);
+  int symmetry_Int_Table_number = -1; //set to dummy value so we can check if anything was read
+  bool symmetry_equiv_pos_site_id_Flag = false; // this is to read symmetry lines from lines that have sym. id.
+ 
+  // Try opening the file if it opens proceed with processing
+  ifstream ciffile;
+  cout << "Opening File: " << filename << endl;
+  ciffile.open(filename);
+  bool read_a = false, read_b = false, read_c = false, read_alpha = false, read_beta = false, read_gamma = false, initialized_cell = false; //keep track of when all cell params are parsed, so the cell can be created
+  if(ciffile.is_open()) {
+    while(!ciffile.eof()) {
+      if(read_a && read_b && read_c && read_alpha && read_beta && read_gamma && !initialized_cell) {
+        cell->initialize(); 
+        initialized_cell=true;
+      }
+      getline(ciffile,line);
+      //printf("DEBUG: read line %s\n", line.c_str());
+      token = split(line," ()\r\t");
+      exception: //I needed an easy way to jump out of the _loop command if an unknown command was found
+      if (token.size() > 0) {
+        //Where all non-loop commands should be added
+        if(token[0].substr(0,5).compare(list[0]) == 0){ //name of unit cell
+          cell->name=token[0].substr(5);
+        }
+        else if (token[0].compare(list[1]) == 0){ //length a
+          cell->a=convertToDouble(token[1]);
+          read_a = true;
+        }
+        else if (token[0].compare(list[2]) == 0){ //length b
+          cell->b=convertToDouble(token[1]);
+          read_b = true;
+        }
+        else if (token[0].compare(list[3]) == 0){ //length c
+          cell->c=convertToDouble(token[1]);
+          read_c = true;
+        }
+        else if (token[0].compare(list[4]) == 0){ //alpha
+          cell->alpha=convertToDouble(token[1]);
+          read_alpha = true;
+        }
+        else if (token[0].compare(list[5]) == 0){ //beta
+          cell->beta=convertToDouble(token[1]);
+          read_beta = true;
+        }
+        else if (token[0].compare(list[6]) == 0){ //gamma
+          cell->gamma=convertToDouble(token[1]);
+          read_gamma = true;
+        }
+        else if (token[0].compare(list[16]) == 0){ //_symmetry_Int_Tables_number
+          symmetry_Int_Table_number = convertToInt(token[1]);
+        }
+        else if (token[0].compare(list[7]) == 0){ //loop_
+          //printf("DEBUG: inside a \"loop_\" section\n");
+          vector<string> column_labels;
+          getline(ciffile,line);
+          token = split(line," \r\t");
+          bool tokenized = false, in_loop = true;
+          if(token.size()>0) tokenized=true;
+          // while (token[0].at(0)=='_') { //collect all of the collumn labels
+          while (tokenized && in_loop) { //collect all of the collumn labels
+            if(token[0].at(0)=='_') {
+              column_labels.push_back(token[0]);
+              //printf("DEBUG: within loop, parsed a column header \"%s\"\n", token[0].c_str());
+              getline(ciffile,line);
+              //printf("DEBUG: read line \"%s\" - tokenizing ...\n", line.c_str());
+              token = split(line," \r\t");
+              if(token.size()<=0) tokenized=false;
+            } 
+            else in_loop = false;
+          }
+          if(!tokenized) {
+            printf("\n#####\n##### WARNING: parsed a loop in cif file, but data was not present\n#####\n\n");
+          } 
+          else {
+            //printf("DEBUG: exited loop successfully, having read data line \"%s\"\n", line.c_str());
+            //collecting the data associated with each column and put
+            // in correct place
+            token = split(line," ,'\r\t"); //This is needed to split data
+            bool need_to_convert_to_fractional = false;
+            bool line_contain_migrant = false;
+            while(token.size()>0){
+              if (token[0].at(0) =='_' || token[0].compare("loop_")==0 || token[0].at(0) == '#'){
+                goto exception; // unexpected input
+              }
+              if (token.size()!=column_labels.size() && column_labels[0].compare(list[8]) != 0 && column_labels[0].compare(list[9]) != 0 && column_labels[0].compare(list[20]) != 0){
+                goto exception; //unexpected input
+              }
+              for (unsigned int i=0; i<column_labels.size(); i++){
+                switch (strCmpList(list,column_labels[i])){
+                //printf("SYM DEBUG: checking for symmetry section ...\n");
+                //Where all loop commands should be added
+                  case 8: //_symmetry_equiv_pos_as_xyz and
+                  case 9: //_space_group_symop_operation_xyz have the same meaning
+                   //printf("SYM DEBUG: symmetry section found!\n");
+                    if (!((token.size()==3&&symmetry_equiv_pos_site_id_Flag==false)||(token.size()==4&&symmetry_equiv_pos_site_id_Flag==true))){
+                      cout << "Error: Expected 3 strings for _symmetry_equiv_pos_as_xyz (or 4 if _symmetry_equiv_pos_site_id is present)" << endl;
+                    // abort();
+                      ciffile.close();
+                      return false;
+                    }
+                    if(token.size()==3) {
+                      sym_x.push_back(token[0]);
+                      sym_y.push_back(token[1]);
+                      sym_z.push_back(token[2]);
+                    }
+                    else {
+                      sym_x.push_back(token[1]);
+                      sym_y.push_back(token[2]);
+                      sym_z.push_back(token[3]);
+                    };
+                    //printf("SYM DEBUG: pushing back %s %s %s\n", token[0].c_str(), token[1].c_str(), token[2].c_str());
+                    break;
+                  case 10:
+                    string::size_type idx;
+                    // Test code
+                    cout << "token[" << i << "]: " << token[i] << " migrant: " << migrant << endl;
+                    idx=token[i].find(migrant);
                     //check and find migrant ion
-                    if(idx != string::npos){
-                        //cout <<"detect migrant ion " << migrant << " and remove it." << endl;
-                        getline(ciffile,line);
-                        token = split(line," ,'\r\t");
-                    }else {
-                        output << line << endl;
-                        getline(ciffile,line);
-                        token = split(line," ,'\r\t");
-                        }
-                     }
-                  if(token.size()==0) output << line << endl;
-                }else output << line << endl;
-              }else output << line << endl;
-           }
-           ciffile.close();
-           output.close();
-           cout << "Remove migrant ion completed!" << endl;
-           return outfilename;
-       }
-       else{
-           cerr << "Error: Failed to open .cif output file " << outfilename << endl;
-           return "";
-       }
-   }
-   else{
-       cerr << "Error: Failed to open .cif input file " << filename << endl;
-       return "";
-     }
+                    if(idx != string::npos)
+                      line_contain_migrant = true;
+                    else
+                      atom_label.push_back(token[i]);
+                    break;
+                  case 11:
+                    atom_type.push_back(token[i]);
+                    break;
+                  case 12:
+                    atom_x.push_back(trans_to_origuc(convertToDouble(token[i])));
+                    break;
+                  case 13:
+                    atom_y.push_back(trans_to_origuc(convertToDouble(token[i])));
+                    break;
+                  case 14:
+                    atom_z.push_back(trans_to_origuc(convertToDouble(token[i])));
+                    break;
+                  case 15:
+                    atom_charge.push_back(convertToDouble(token[i]));
+                    break;
+                  case 17:
+                    atom_x.push_back(convertToDouble(token[i]));
+                    need_to_convert_to_fractional = true;
+                    break;
+                  case 18:
+                    atom_y.push_back(convertToDouble(token[i]));
+                    need_to_convert_to_fractional = true;
+                    break;
+                  case 19:
+                    atom_z.push_back(convertToDouble(token[i]));
+                    need_to_convert_to_fractional = true;
+                    break;
+                  case 20:
+                    symmetry_equiv_pos_site_id_Flag = true;
+                    break;
+                }
+                //jump the line contain migrant atom
+                if(line_contain_migrant){
+                  line_contain_migrant=false;
+                  cout << "test!" << endl;
+                  break;
+                }
+              }  
+              //now we've finished parsing this line, we might need to convert Cartesian to fractional coords
+              if(need_to_convert_to_fractional) {
+                Point tempcoor;
+                int this_ID = atom_x.size()-1;
+                tempcoor = cell->xyz_to_abc(atom_x.at(this_ID),atom_y.at(this_ID),atom_z.at(this_ID));
+                //printf("DEBUG: atom at Cartesian %.3f %.3f %.3f written to fractional %.3f %.3f %.3f\n", atom_x.at(this_ID),atom_y.at(this_ID),atom_z.at(this_ID), tempcoor[0], tempcoor[1], tempcoor[2]);
+                atom_x.at(this_ID) = tempcoor[0];
+                atom_y.at(this_ID) = tempcoor[1];
+                atom_z.at(this_ID) = tempcoor[2];
+              }
+              getline(ciffile,line);
+              token = split(line," ',\r\t");
+            }
+            column_labels.clear();
+          }
+        }
+        token.clear();
+      }
+    }      
+    ciffile.close();
+    
+    //If no symmetry info was provided, we can assume that none is required (i.e., structure has 'P 1' symmetry), ONLY IF we did not read a symmetry_Int_Tables_Number!=1
+    if (sym_x.size()==0 || sym_y.size()==0 || sym_z.size()==0){
+      //no symmetry provided
+      if (symmetry_Int_Table_number>=0 && symmetry_Int_Table_number!=1) {
+        //read a symmetry table number, but it was not 1
+        printf("ERROR:\n\tcif file provided no symmetry operations; however, a symmetry_Int_Tables_Number of %d was provided,\n\tindicating symmetry which is not 'P 1' (no symmetry operations);\n\tcannot proceed with insufficient symmetry information\nExiting ...\n", symmetry_Int_Table_number);
+        //exit(EXIT_FAILURE);
+        return false;
+      } else {
+        sym_x.push_back("x");
+        sym_y.push_back("y");
+        sym_z.push_back("z");
+      }
+    }
+
+    //Now determine whether it is correct to use atom_label or atom_type (atom_label used only if atom_type has no data)
+    // bool CIF_USE_LABEL = atom_type.size()==0;
+    cout << "atom_label size: " << atom_label.size() << endl;
+    bool CIF_USE_LABEL = atom_label.size()>0;
+    //Now determine whether charges are used - only if they were provided
+    bool CIF_CHARGES = atom_charge.size()>0;
+
+    //Parse out the numbers from atom labels and types, if specified (defined in network.h)
+    if (CIF_RMV_NUMS_FROM_ATOM_TYPE){
+      if (!CIF_USE_LABEL){
+        for (unsigned int i=0; i<atom_type.size(); i++){
+          atom_type[i] = split(atom_type[i],"0123456789").at(0);
+        }
+      }
+      else{
+        for (unsigned int i=0; i<atom_label.size(); i++){
+          atom_label[i] = split(atom_label[i],"0123456789").at(0);
+          atom_type[i] = split(atom_type[i],"0123456789").at(0);
+        }
+      }
+    }
+    
+    //Error checking
+    if (sym_x.size()==0 || sym_y.size()==0 || sym_z.size()==0 ){
+      cout << "Error: No .cif symmetry information given" << endl;
+      cout << "DEBUG SHOULDN'T HAPPEN" << endl;
+      return false;
+    //abort();
+    }
+    if (atom_label.size()==0 && CIF_USE_LABEL == true){
+      cout << "Error: No ''_atom_site_label'' or ''_atom_site_type_symbol'' information " << endl;
+      cout << "This structure appears to be invalid: there are no atom identifying element types or labels - if this is not the case, then this is a bug; please contact the developers." << endl;
+      return false;
+    }
+    if (atom_type.size()==0 && CIF_USE_LABEL == false){
+      cout << "Error: No ''_atom_site_type_symbol'' information" << endl;
+      cout << "DEBUG SHOULDN'T HAPPEN" << endl;
+      return false;
+      //abort();
+    }
+    if (atom_x.size()!=atom_y.size() || atom_y.size()!=atom_z.size() || atom_x.size()==0){
+      cout << "Error: Atom coordinates not read properly (" << atom_x.size() << " x coords, " << atom_y.size() << " y coords, " << atom_z.size() << " z coords)" << endl;
+      //abort();
+      return false;
+    }
+
+    //If no name for the unit cell is given the filename becomes its name
+    if (cell->name.size() == 0){
+      cell->name = *filename;
+    }
+    
+    //Now to fully assemble the ATOM_NETWORK initialize constructor
+    //cell->initialize(); //this should now happen much earlier, during parsing
+    
+    ATOM tempatom;
+    Point tempcoor;
+    for (unsigned int i=0; i<atom_x.size(); i++){ //atoms
+      if (CIF_USE_LABEL){
+          tempatom.label = atom_label[i];
+          tempatom.type = atom_type[i];
+      }
+      else {
+          tempatom.type = atom_type[i];
+      }
+      //edited at 20180526
+      //tempatom.radius = lookupRadius(tempatom.type, radial);
+      //edited at 20180606
+      //tempatom.radius = lookupGoldschmidtIonRadius(tempatom.type, radial);
+      if(CIF_USE_LABEL){
+        if(lookupIonRadius(tempatom.label, radial) == -1)
+          return false;
+        else
+          tempatom.radius = lookupIonRadius(tempatom.label, radial);
+      }
+      else{
+        if(lookupIonRadius(tempatom.type, radial) == -1)
+          return false;
+        else
+          tempatom.radius = lookupIonRadius(tempatom.type, radial);
+      }
+
+      if(CIF_CHARGES) {
+        tempatom.charge = atom_charge[i];
+      } else tempatom.charge = 0;
+      for (unsigned int j=0;j<sym_x.size(); j++){ //symmetries
+          tempatom.a_coord = trans_to_origuc(symbCalc(sym_x[j],atom_x[i],atom_y[i],atom_z[i]));
+          tempatom.b_coord = trans_to_origuc(symbCalc(sym_y[j],atom_x[i],atom_y[i],atom_z[i]));
+          tempatom.c_coord = trans_to_origuc(symbCalc(sym_z[j],atom_x[i],atom_y[i],atom_z[i]));
+          tempcoor = cell->abc_to_xyz (tempatom.a_coord,tempatom.b_coord,tempatom.c_coord);
+          tempatom.x = tempcoor[0]; 
+          tempatom.y = tempcoor[1]; 
+          tempatom.z = tempcoor[2];
+          tempatom.specialID = (i*sym_x.size())+j;
+    
+          //make sure that no duplicate atoms are writen
+          int match=1;
+          for (unsigned int k=0;k<cell->atoms.size(); k++){
+                if(cell->calcDistance(cell->atoms[k],tempatom)<thresholdLarge) { match=0;
+/*
+          if (tempatom.a_coord-thresholdLarge < cell->atoms[k].a_coord && cell->atoms[k].a_coord < tempatom.a_coord+thresholdLarge)
+          if (tempatom.b_coord-thresholdLarge < cell->atoms[k].b_coord && cell->atoms[k].b_coord < tempatom.b_coord+thresholdLarge )
+          if (tempatom.c_coord-thresholdLarge < cell->atoms[k].c_coord && cell->atoms[k].c_coord < tempatom.c_coord+thresholdLarge ){
+            match=0;
+*/
+          }
+        }
+        if (match == 1){
+          cell->atoms.push_back(tempatom);
+        }
+      }
+    }
+    cell->numAtoms = cell->atoms.size();
+  }
+  else{
+    cout << "Failed to open: " << filename << endl;
+    ciffile.close();
+    //exit(1);
+    return false;
+  }
+  return true;
 }
+
 
 /** Write the information stored within the VORONOI_NETWORK in a .BI
     file format to the provided filename. Excludes any nodes or nodes with radii

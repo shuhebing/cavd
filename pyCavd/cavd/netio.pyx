@@ -101,7 +101,6 @@ def writeNt2file(filename, vornet, minRad = None):
         if not writeToNt2(c_filename, c_vornet_ptr):
             raise IOError
 
-
 def writeXyzfile(filename, atmnet, supercell_flag, is_duplicate_perimeter_atoms):
     if isinstance(filename, unicode):
         filename = (<unicode>filename).encode('utf8')
@@ -141,20 +140,17 @@ def writeBIFile(filename, atmnet, vornet, minRad = None):
         if not writeToBI(c_filename, c_atmnet, c_vornet_ptr):
             raise IOError
 
-# remove migrant ion. Added at 20180408
-def getRemoveMigrantFilename(filename,migrant):
+def read_from_RemoveMigrantCif(filename,migrant,radialflag):
+    atmnet = AtomNetwork()
     if isinstance(filename, unicode):
        filename = (<unicode>filename).encode('utf8')
     if isinstance(migrant, unicode):
        migrant = (<unicode>migrant).encode('utf8')
     cdef char* c_filename = filename
     cdef const char* c_migrant = migrant
-    pretreatedFilename = pretreatCifFilename(c_filename,c_migrant)
-    if pretreatedFilename == "":
-        #raise IOError("Can't Open ", filename, " or Can't Write to outputfile.")
-        raise IOError
-    else:
-        return pretreatedFilename
+    if not readRemoveMigrantCif(c_filename, atmnet.thisptr, c_migrant, radialflag):
+        raise ValueError
+    return atmnet
 
 # write to .vasp file. Added at 20180426
 def writeVaspFile(filename, atmnet, vornet, minRad = None, maxRad = None):

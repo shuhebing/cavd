@@ -11,7 +11,7 @@ import numpy as np
 from pymatgen.io.vasp import Poscar
 import spglib
 from cavd.netstorage import AtomNetwork
-from cavd.netio import getRemoveMigrantFilename,writeVaspFile,writeBIFile
+from cavd.netio import writeVaspFile,writeBIFile
 class Poscar_new():
     def __init__(self, atomic_symbols, coords, lattice, comment=None, selective_dynamics=None,
                  true_names=True, velocities=None, predictor_corrector=None,

@@ -116,6 +116,10 @@ cdef extern from '../../zeo++/networkio.h':
     cdef bint writeVornetToXYZ "writeToXYZ"(char *filename, VORONOI_NETWORK*, double)
     
     cdef bint writeAtmntToVasp(char *filename, ATOM_NETWORK *cell)
+
+    #Added at 20190522
+    #used to read the cif after remove migrant atoms
+    cdef bint readRemoveMigrantCif(char *filename, ATOM_NETWORK *cell, const char *migrant, bint radial)
     
 # At present  the return value of performVoronoiDecomp is void*
 # Compile it after void* is changed to bool in the original source file

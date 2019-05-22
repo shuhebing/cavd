@@ -128,7 +128,7 @@ void stripAtomNames(ATOM_NETWORK *cell);
 
 //remove migrant atom
 //added at 2018 04 08
-string pretreatCifFilename(char *filename,const char *migrant);
+bool readRemoveMigrantCif(char *filename, ATOM_NETWORK *cell, const char *migrant, bool radial);
 /** Write the bottleneck and interstitial information stored within the VORONOI_NETWORK in a .BI
     file format to the provided filename. Excludes any nodes or nodes with radii
     less than the provided threshold. For the default 0 minRad value, all nodes

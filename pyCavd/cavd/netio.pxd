@@ -44,7 +44,7 @@ cdef extern from '../../zeo++/networkio.h':
     cdef bint writeVornetToXYZ "writeToXYZ"(char *filename, VORONOI_NETWORK*, double)
 
 # remove migrant ion added at 20180408
-    cdef string pretreatCifFilename(char *filename,const char *migrant)
+    cdef bint readRemoveMigrantCif(char *filename, ATOM_NETWORK *cell, const char *migrant, bint radial)
 # writeToBI
     cdef bint writeToBI(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, double minRad)
     cdef bint writeToBI(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet)
