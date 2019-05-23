@@ -6,7 +6,6 @@
 #include <fstream>
 #include <string>
 #include <sstream>
-#include <regex>
 
 #include "networkio.h"
 #include "string_additions.h"
