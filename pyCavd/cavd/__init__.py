@@ -228,10 +228,15 @@ def AllCom5(filename, standard, migrant=None, rad_flag=True, effective_rad=True,
     vornet,edge_centers,fcs = atmnet.perform_voronoi_decomposition(False)
 
     print("\nSymmetry number from cif: ", symm_number)
+    max_symm = 0
     for j in range(10):
         symprec = 0.01 + j*0.01
         symm_num_vornet = get_Symmetry_vornet(vornet,symprec)
-        print(symm_num_vornet)
+
+        if max_symm < symm_num_vornet:
+            max_symm = symm_num_vornet 
+            max_symm_info = (max_symm, symprec)
+
         if symm_num_vornet == symm_number:
             print("Distance tolerance in Cartesian coordinates to find crystal symmetry: ",symprec)
             print("Symmetry number from Voronoi network: ", symm_num_vornet)
@@ -239,11 +244,12 @@ def AllCom5(filename, standard, migrant=None, rad_flag=True, effective_rad=True,
             sym_vornet, voids = get_equivalent_vornet(vornet,symprec)
             break
 
-        #无法寻找到对称性后使用0.01作为参数计算
-        if j == 9 and symm_num_vornet == 0:
-            print("Symmetry is not normally obtained using spglib with symprec from 0.01-0.1. Using symprec=0.01 instead.")
-            symprec = 0.01
-            symm_num_vornet = get_Symmetry_vornet(vornet,symprec)
+        #在0.01-0.10范围内均无法得到与cif文件中一致的空间群号，使用在此过程中出现的最大值代替
+        elif j == 9:
+            print("The Symmetry calculated from Vornet (with symprec 0.01-0.1) is different from that obtained from cif files.")
+            print("Using the lagest value of symm_num_vornet instead!")
+            symm_num_vornet = max_symm_info[0]
+            symprec = max_symm_info[1]
             print("Distance tolerance in Cartesian coordinates to find crystal symmetry: ",symprec)
             print("Symmetry number from Voronoi network: ", symm_num_vornet)
             print("\n")

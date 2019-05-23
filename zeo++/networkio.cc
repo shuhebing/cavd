@@ -1966,8 +1966,6 @@ bool readRemoveMigrantCif(char *filename, ATOM_NETWORK *cell, const char *migran
                     break;
                   case 10:
                     string::size_type idx;
-                    // Test code
-                    cout << "token[" << i << "]: " << token[i] << " migrant: " << migrant << endl;
                     idx=token[i].find(migrant);
                     //check and find migrant ion
                     if(idx != string::npos)
@@ -2009,7 +2007,6 @@ bool readRemoveMigrantCif(char *filename, ATOM_NETWORK *cell, const char *migran
                 //jump the line contain migrant atom
                 if(line_contain_migrant){
                   line_contain_migrant=false;
-                  cout << "test!" << endl;
                   break;
                 }
               }  
@@ -2051,7 +2048,6 @@ bool readRemoveMigrantCif(char *filename, ATOM_NETWORK *cell, const char *migran
 
     //Now determine whether it is correct to use atom_label or atom_type (atom_label used only if atom_type has no data)
     // bool CIF_USE_LABEL = atom_type.size()==0;
-    cout << "atom_label size: " << atom_label.size() << endl;
     bool CIF_USE_LABEL = atom_label.size()>0;
     //Now determine whether charges are used - only if they were provided
     bool CIF_CHARGES = atom_charge.size()>0;
@@ -2229,6 +2225,23 @@ bool writeToBI(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, doub
   return true;
 }
 
+//Add at 20190523
+//This function use to remove the oxide state from ions
+string stripIonName(string ionName){
+  string number("0123456789");
+  string symbol("+-");
+  string::size_type num_pos;
+  string::size_type symbol_pos;
+  num_pos = ionName.find_first_of(number);
+  symbol_pos = ionName.find_first_of(symbol);
+  if(num_pos != string::npos)
+    ionName = ionName.substr(0,num_pos);
+  else if(symbol_pos != string::npos)
+    ionName = ionName.substr(0,symbol_pos);
+  return ionName;
+}
+
+
 //Added at 20180420
 /**
  * write the bottleneck, interstitial and atomnetwork information to .vasp
@@ -2244,8 +2257,9 @@ bool writeToVasp(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, do
       vector<int> atomnum;
       double a,b,c;
 
-      smatch element_type;
-      regex element_reg("[A-Z][a-z]*");
+      // The code below is for C++11.
+      // smatch element_type;
+      // regex element_reg("[A-Z][a-z]*");
 
       output.open(filename, fstream::out);
       if(!output.is_open()){
@@ -2266,17 +2280,19 @@ bool writeToVasp(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, do
         output << "    " << cell->v_c.x << "    " << cell->v_c.y << "    " << cell->v_c.z << "\n";
 
         //calculate the number of different atoms
-        regex_search(cell->atoms.at(0).type,element_type,element_reg);
-        atomtype.push_back(element_type.str());
+        // regex_search(cell->atoms.at(0).type,element_type,element_reg);
+        // atomtype.push_back(element_type.str());
+        atomtype.push_back(stripIonName(cell->atoms.at(0).type));
         for(int i = 0; i < cell->numAtoms; i++){
-            regex_search(cell->atoms.at(i).type,element_type,element_reg);
-            if(element_type.str().compare(atomtype.at(flag)) == 0){
+            // regex_search(cell->atoms.at(i).type,element_type,element_reg);
+            ;
+            if(stripIonName(cell->atoms.at(i).type).compare(atomtype.at(flag)) == 0){
                 atomcount ++;
             }
             else{
                 atomnum.push_back(atomcount);
                 flag++;
-                atomtype.push_back(element_type.str());
+                atomtype.push_back(stripIonName(cell->atoms.at(i).type));
                 atomcount = 1;
             }
             if(i == cell->numAtoms -1){
@@ -2370,9 +2386,6 @@ bool writeAtmntToVasp(char *filename, ATOM_NETWORK *cell){
   vector<int> atomnum;
   double a,b,c;
 
-  smatch element_type;
-  regex element_reg("[A-Z][a-z]*");
-
   output.open(filename, fstream::out);
   if(!output.is_open()){
     cerr << "Error: Failed to open .vasp output file " << filename << "\n";
@@ -2391,17 +2404,15 @@ bool writeAtmntToVasp(char *filename, ATOM_NETWORK *cell){
     output << "    " << cell->v_c.x << "    " << cell->v_c.y << "    " << cell->v_c.z << "\n";
 
     //calculate the number of different atoms
-    regex_search(cell->atoms.at(0).type,element_type,element_reg);
-    atomtype.push_back(element_type.str());
+    atomtype.push_back(stripIonName(cell->atoms.at(0).type));
     for(int i = 0; i<cell->numAtoms; i++){
-        regex_search(cell->atoms.at(i).type,element_type,element_reg);
-        if(element_type.str().compare(atomtype.at(flag)) == 0){
+        if(stripIonName(cell->atoms.at(i).type).compare(atomtype.at(flag)) == 0){
             atomcount ++;
         }
         else{
             atomnum.push_back(atomcount);
             flag++;
-            atomtype.push_back(element_type.str());
+            atomtype.push_back(stripIonName(cell->atoms.at(i).type));
             atomcount = 1;
         }
         if(i == cell->numAtoms -1){
