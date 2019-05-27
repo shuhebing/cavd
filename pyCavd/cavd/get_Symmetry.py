@@ -12,6 +12,8 @@ from pymatgen.io.vasp import Poscar
 import spglib
 from cavd.netstorage import AtomNetwork
 from cavd.netio import writeVaspFile,writeBIFile
+from ase.spacegroup import Spacegroup
+
 class Poscar_new():
     def __init__(self, atomic_symbols, coords, lattice, comment=None, selective_dynamics=None,
                  true_names=True, velocities=None, predictor_corrector=None,
@@ -307,3 +309,31 @@ def get_Symmetry_atmnt(atmnt, symprec=0.01, angle_tolerance=5):
         return dataset['number']
     else:
         return 0
+
+
+"""
+Function:
+    Analyzing the symmetry of Voronoi nodes by ase.spacegroup.spacegroup.py
+"""
+def get_equivalent_VorNodes(vornet, symm_sybol, symprec=0.01):
+    
+    spgroup = Spacegroup(symm_sybol)
+    positions = []
+    for i in vornet.nodes:
+        positions.append(i[2])
+    sites, kinds = spgroup.equivalent_sites(positions,"keep",symprec)
+    print(sites)
+    print(kinds)
+
+"""
+    Get equivalent sites from .vasp file.
+"""
+def get_equivalent_sites(filename, symm_sybol, symprec=0.01):
+    with zopen(filename, "rt") as f:
+        contents = f.read()
+    poscar = Poscar_new.from_string(contents, False, read_velocities=False)
+    positions = poscar.coords
+    spgroup = Spacegroup(symm_sybol)
+    sites, kinds = spgroup.equivalent_sites(positions,"keep",symprec)
+    print(sites)
+    print(kinds)
