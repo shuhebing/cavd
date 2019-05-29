@@ -26,7 +26,7 @@ cycle_srcfiles = ['cavd/cycle.pyx']
 
 setup(
     name = 'cavd',
-    version = '0.5.8.3',
+    version = '0.5.9',
     language_level = '3',
     description = "Crystal structure Analysis by Voronoi Decomposition",
     url = "ehpc.shu.edu.cn",

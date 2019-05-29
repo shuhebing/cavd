@@ -8,7 +8,7 @@ from cavd.channel import Channel
 from cavd.area_volume import asa_new
 from cavd.netio import *
 from cavd.local_environment import get_local_envir_fromstru
-from cavd.get_Symmetry import get_Symmetry_vornet, get_Symmetry_atmnt, get_equivalent_vornet
+from cavd.get_Symmetry import get_symnum_sites, get_equivalent_vornet,get_labeled_vornet
 from cavd.high_accuracy import high_accuracy_atmnet
 from cavd.local_environment import CifParser_new
 from pymatgen.core.structure import Structure
@@ -175,36 +175,48 @@ def AllCom(filename, probe_rad, num_sample, migrant=None, rad_flag=True, effecti
     return conn,oneD,twoD,threeD,nei_dises,dims,voids,coordination_list
 
 # 使用带半径的公式进行计算
-def AllCom6(filename, migrant=None, rad_flag=True, effective_rad=True, rad_file=None):
+def AllCom6(filename, standard, migrant=None, rad_flag=True, effective_rad=True, rad_file=None):
+    with zopen(filename, "rt") as f:
+        input_string = f.read()
+    parser = CifParser_new.from_string(input_string)
+    stru = parser.get_structures(primitive=False)[0]  
+    #获取空间群号与符号
+    symm_number,symm_sybol = parser.get_symme()
+    #获取icsd cif文件中的对称操作
+    sitesym = parser.get_sym_opt()
+
     if rad_flag and effective_rad:
         #考虑如何利用migrant_radius与migrant_alpha
-        radii,migrant_radius,migrant_alpha, nei_dises,coordination_list = LocalEnvirCom(filename,migrant)
+        radii,migrant_radius,migrant_alpha,nei_dises,coordination_list = LocalEnvirCom(stru,migrant)
     if migrant:
-        remove_filename = getRemoveMigrantFilename(filename,migrant)
+        atmnet = AtomNetwork.read_from_RemoveMigrantCif(filename, migrant, radii, rad_flag, rad_file)
     else:
-        remove_filename = filename
-    atmnet = AtomNetwork.read_from_CIF(remove_filename, radii, rad_flag, rad_file)
+        atmnet = AtomNetwork.read_from_CIF(filename, radii, rad_flag, rad_file)
     
-    if migrant:
-        os.remove(remove_filename)
-
     prefixname = filename.replace(".cif","")
     vornet,edge_centers,fcs = atmnet.perform_voronoi_decomposition(False)
-    sym_vornet,voids = get_Symmetry(atmnet, vornet)
+
+    symprec = 0.0001
+    sym_vornet,voids =  get_labeled_vornet(vornet, sitesym, symprec)
+
+    recover_rate, recover_state, true_recover_dis = rediscovery(migrant,voids,stru)
 
     writeNETFile(prefixname+"_origin.net",atmnet,sym_vornet)
     writeVaspFile(prefixname+"_origin.vasp",atmnet,sym_vornet)
 
-    minRad = migrant_radius*0.85
+    conn_val = connection_values_list(prefixname+".resex", sym_vornet)
+    minRad = standard*migrant_alpha*0.85
+    dim_network,connect = ConnStatus(minRad, conn_val)
+    writeVaspFile(prefixname+"_"+str(round(minRad,4))+".vasp",atmnet,sym_vornet,minRad,5.0)
 
-    channels = Channel.findChannels(sym_vornet,atmnet,minRad,prefixname+".net")
-    dims = []
-    if len(channels):
-        dims.append(0)
+    channels = Channel.findChannels(sym_vornet,atmnet,minRad,prefixname+"_"+str(round(minRad,4))+".net")
+    dims_channel = []
+    if len(channels)==0:
+        dims_channel.append(0)
     else:
         for i in channels:
-            dims.append(i["dim"])
-    return migrant_alpha,radii,minRad,nei_dises,dims,voids,coordination_list
+            dims_channel.append(i["dim"])
+    return symm_sybol,symm_number,symprec,conn_val,connect,dim_network,dims_channel,migrant_alpha,radii,minRad,nei_dises,recover_rate, recover_state, true_recover_dis,coordination_list
     
 # 使用带半径的公式进行计算
 def AllCom5(filename, standard, migrant=None, rad_flag=True, effective_rad=True, rad_file=None):
@@ -229,9 +241,13 @@ def AllCom5(filename, standard, migrant=None, rad_flag=True, effective_rad=True,
 
     print("\nSymmetry number from cif: ", symm_number)
     max_symm = 0
+    positions = []
+    lattice = vornet.lattice
+    for i in vornet.nodes:
+        positions.append(i[2])
     for j in range(10):
         symprec = 0.01 + j*0.01
-        symm_num_vornet = get_Symmetry_vornet(vornet,symprec)
+        symm_num_vornet =  get_symnum_sites(lattice, lattice, symprec)
 
         if max_symm < symm_num_vornet:
             max_symm = symm_num_vornet 

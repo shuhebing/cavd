@@ -56,6 +56,7 @@ import json
 import math
 import six
 import warnings
+import ase
 from pymatgen.core.structure import Structure
 from pymatgen.analysis.local_env import VoronoiNN
 from pymatgen.analysis.local_env import ValenceIonicRadiusEvaluator
@@ -172,6 +173,11 @@ class CifParser_new(CifParser):
         stream = cStringIO(cif_string)
         return CifParser_new(stream, occupancy_tolerance)
     
+    """
+    Read symmery number and symbol from .cif file.
+    
+    Note: Not all .cif files have symmetry number and symbol.
+    """
     
     def get_symme(self):
         for d in self._cif.data.values():
@@ -200,6 +206,23 @@ class CifParser_new(CifParser):
                     sg = data.data.get(symmetry_label)
                     break
         return symm_number,sg
+
+
+    """
+    Read symmery operations from .cif file.
+
+    Note: Not all .cif files have symmetry operations.
+    """
+    def get_sym_opt(self):
+        for d in self._cif.data.values():
+            data = d
+            for symmetry_label in ["_symmetry_equiv_pos_as_xyz",
+                                "_symmetry_equiv_pos_as_xyz_",
+                                "_space_group_symop_operation_xyz",
+                                "_space_group_symop_operation_xyz_"]:
+                if data.data.get(symmetry_label):
+                    symops = data.data.get(symmetry_label)
+        return symops
 
     def _unique_coords(self, coords_in, magmoms_in=None, lattice=None):
         """

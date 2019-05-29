@@ -13,6 +13,11 @@ import spglib
 from cavd.netstorage import AtomNetwork
 from cavd.netio import writeVaspFile,writeBIFile
 from ase.spacegroup import Spacegroup
+import ase.spacegroup as spg
+from ase.io import read
+import pandas as pd
+from scipy.spatial.ckdtree import cKDTree
+from cavd.local_environment import CifParser_new
 
 class Poscar_new():
     def __init__(self, atomic_symbols, coords, lattice, comment=None, selective_dynamics=None,
@@ -221,48 +226,79 @@ class Poscar_new():
 
         return Poscar_new(atomic_symbols, coords, lattice, comment, selective_dynamics, vasp5_symbols,velocities=velocities, predictor_corrector=predictor_corrector,predictor_corrector_preamble=predictor_corrector_preamble)
 
-#判断Vasp文件中的结构对称性信息
-def get_Symmetry(filename,symprec=0.01,angle_tolerance=5):
+# Using spglib to analyze the space group in .vasp file
+def get_symmetry_spglib(filename, symprec=0.00001):
     with zopen(filename, "rt") as f:
         contents = f.read()
     poscar = Poscar_new.from_string(contents, False, read_velocities=False)
     positions = poscar.coords
     lattice = poscar.lattice
     atomic_symbols = poscar.atomic_symbols
-    
     numbers = [] 
     a = ""
     j = 0
     for i in atomic_symbols:
         if i != a:
             a = i
-            j= j+1
+            j = j+1
         numbers.append(j)
 
     cell = (lattice, positions, numbers)
- 
-    dataset = spglib.get_symmetry_dataset(cell, symprec, angle_tolerance)
-    print(dataset['international'],dataset['number'])
+    dataset = spglib.get_symmetry_dataset(cell, symprec)
+    print("space group: ", dataset['international'],dataset['number'])
+    print("rotations: ", dataset['rotations'])
+    print("translations: ", dataset['translations'])
+    print("equivalent atoms: ", dataset['equivalent_atoms'])
+    print("sites wyckoffs: ", dataset['wyckoffs'])
     sym_independ = np.unique(dataset['equivalent_atoms'])
-    print(len(sym_independ))
-    print(sym_independ)
+    print("independent atoms: ", sym_independ)
     for i in sym_independ:
+        print("coordinates of independent atoms")
         print(positions[i])
 
+    old_positions = np.array(positions)
+    rotaions = dataset['rotations']
+    translations = dataset['translations']
+    for opt_index in range(len(translations)):
+        # for old_pos in old_positions:
+        new_pos = rotaions[opt_index].dot(old_positions[2])+translations[opt_index]
+        print(new_pos)
+
 """
-    Function:
-        Analyzing the symmetry of Voronoi Network.
-    return:
-        1. the label list of viods
-        2. the fractional coordinates list of voids
+    Return the symmetry number of input positions in unitcell.
+    Input:
+        lattice
+        positions
+    Output:
+        symmetry number or zero.
 """
-def get_equivalent_vornet(vornet, symprec=0.01, angle_tolerance=5):
+def get_symnum_sites(lattice, positions, symprec=0.01, angle_tolerance=5):
+    numbers = [1,]*len(positions)
+    cell = (lattice, positions, numbers)
+    dataset = spglib.get_symmetry_dataset(cell, symprec, angle_tolerance)
+    if dataset:
+        return dataset['number']
+    else:
+        return 0
+
+"""
+Function:
+    Get the symmetry equivalent sites for input site.
+"""
+def get_equivalent_VorNodes(pos, sitesym):
+    rot, trans = spg.spacegroup.parse_sitesym(sitesym)
+    sympos = np.dot(rot, pos) + trans
+    return sympos
+
+"""
+    Analyzing the symmetry of Voronoi Network by spglib.
+"""
+def get_equivalent_vornet(vornet, symprec=1e-5, angle_tolerance=5):
     positions = []
     lattice = vornet.lattice
     for i in vornet.nodes:
         positions.append(i[2])
     numbers = [1,]*len(vornet.nodes)
-    
     cell = (lattice, positions, numbers)
 
     dataset = spglib.get_symmetry_dataset(cell, symprec, angle_tolerance)
@@ -277,63 +313,76 @@ def get_equivalent_vornet(vornet, symprec=0.01, angle_tolerance=5):
         return vornet_uni_symm,voids
     else:
         return vornet,voids
-    
-
-def get_Symmetry_vornet(vornet, symprec=0.01, angle_tolerance=5):
-    positions = []
-    lattice = vornet.lattice
-    for i in vornet.nodes:
-        positions.append(i[2])
-    numbers = [1,]*len(vornet.nodes)
-    
-    cell = (lattice, positions, numbers)
-
-    dataset = spglib.get_symmetry_dataset(cell, symprec, angle_tolerance)
-    if dataset:
-        return dataset['number']
-    else:
-        return 0
-
-#return the Symmetry number of Atom network
-def get_Symmetry_atmnt(atmnt, symprec=0.01, angle_tolerance=5):
-    positions = []
-    lattice = atmnt.lattice
-    for i in atmnt.atoms:
-        positions.append(i[4])
-    numbers = [1,]*len(atmnt.atoms_num)
-    
-    cell = (lattice, positions, numbers)
-
-    dataset = spglib.get_symmetry_dataset(cell, symprec, angle_tolerance)
-    if dataset:
-        return dataset['number']
-    else:
-        return 0
-
 
 """
-Function:
-    Analyzing the symmetry of Voronoi nodes by ase.spacegroup.spacegroup.py
+    Analyzing the symmetry of Voronoi Network by ourself code.
 """
-def get_equivalent_VorNodes(vornet, symm_sybol, symprec=0.01):
-    
-    spgroup = Spacegroup(symm_sybol)
+def get_labeled_vornet(vornet, sitesym, symprec=1e-5):
     positions = []
     for i in vornet.nodes:
         positions.append(i[2])
-    sites, kinds = spgroup.equivalent_sites(positions,"keep",symprec)
-    print(sites)
-    print(kinds)
+
+    tags,tagdis = tag_sites(sitesym, positions,symprec)
+    voids = []
+
+    vornet_uni_symm = vornet.parse_symmetry(tags)
+    sym_independ = np.unique(tags)
+    print("The number of symmetry distinct voids: ",len(sym_independ))
+    for i in sym_independ:
+         voids.append(positions[i])
+    return vornet_uni_symm,voids
 
 """
-    Get equivalent sites from .vasp file.
+    Get unique sites from .vasp file.
 """
-def get_equivalent_sites(filename, symm_sybol, symprec=0.01):
+def get_unique_sites(filename, sitesym, symprec=1e-5):
     with zopen(filename, "rt") as f:
         contents = f.read()
     poscar = Poscar_new.from_string(contents, False, read_velocities=False)
     positions = poscar.coords
-    spgroup = Spacegroup(symm_sybol)
-    sites, kinds = spgroup.equivalent_sites(positions,"keep",symprec)
-    print(sites)
-    print(kinds)
+    tags,tagdis = tag_sites(sitesym, positions,symprec)
+    print(tags)
+    print(tagdis)
+    print(np.unique(tags))
+
+"""
+    Get symmetry equivalent sites of provided scaled_positions 
+    based on provided symmetry operations. This function will 
+    return a mapping table of sites to symmetrically independent 
+    sites.This is used to find symmetrically equivalent atoms. 
+    The numbers contained are the indices of sites starting from 0, 
+    i.e., the first atom is numbered as 0, and then 1, 2, 3, … 
+    np.unique(equivalent_sites) gives representative symmetrically 
+    independent sites.
+"""
+def tag_sites(sitesym, scaled_positions, symprec=1e-5):
+    scaled = np.around(np.array(scaled_positions, ndmin=2),8)
+    scaled %= 1.0
+    scaled %= 1.0
+    np.set_printoptions(suppress=True)
+    tags = -np.ones((len(scaled), ), dtype=int)
+    tagdis = 100*np.ones((len(scaled), ), dtype=float)
+    rot, trans = spg.spacegroup.parse_sitesym(sitesym)
+
+    siteskdTree = cKDTree(scaled)
+    for i in range(len(scaled)):
+        if tags[i] == -1:
+            curpos = scaled[i]
+            sympos = np.dot(rot, curpos) + trans
+            sympos %= 1.0
+            sympos %= 1.0
+            sympos = np.unique(np.around(sympos,8), axis=0)
+            min_dis,min_ids = siteskdTree.query(sympos,k=1)
+
+            select = min_dis < symprec
+            select_ids = min_ids[select]
+            tags[select_ids] = i
+            tagdis[select_ids] = min_dis[select]
+    return tags,tagdis
+
+# if __name__ == "__main__":
+#     with zopen("F:\paper\paper-yaj\对称性问题思考\icsd_467.cif", "rt") as f:
+#         input_string = f.read()
+#     parser = CifParser_new.from_string(input_string)
+#     sitesym = parser.get_sym_opt()
+#     get_unique_sites("F:\paper\paper-yaj\对称性问题思考\icsd_467_orgin_new.vasp", sitesym)
