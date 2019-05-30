@@ -256,14 +256,6 @@ def get_symmetry_spglib(filename, symprec=0.00001):
         print("coordinates of independent atoms")
         print(positions[i])
 
-    old_positions = np.array(positions)
-    rotaions = dataset['rotations']
-    translations = dataset['translations']
-    for opt_index in range(len(translations)):
-        # for old_pos in old_positions:
-        new_pos = rotaions[opt_index].dot(old_positions[2])+translations[opt_index]
-        print(new_pos)
-
 """
     Return the symmetry number of input positions in unitcell.
     Input:
