@@ -15,7 +15,6 @@ from cavd.netio import writeVaspFile,writeBIFile
 from ase.spacegroup import Spacegroup
 import ase.spacegroup as spg
 from ase.io import read
-import pandas as pd
 from scipy.spatial.ckdtree import cKDTree
 from cavd.local_environment import CifParser_new
 

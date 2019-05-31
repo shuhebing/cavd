@@ -196,8 +196,12 @@ def AllCom6(filename, standard, migrant=None, rad_flag=True, effective_rad=True,
     prefixname = filename.replace(".cif","")
     vornet,edge_centers,fcs = atmnet.perform_voronoi_decomposition(False)
 
-    symprec = 0.0001
+    symprec = 0.01
+    # sym_opt_num = len(sitesym)
+    # voids_num = len(vornet.nodes)
+
     sym_vornet,voids =  get_labeled_vornet(vornet, sitesym, symprec)
+    uni_voids_num = len(voids) 
 
     recover_rate, recover_state, true_recover_dis = rediscovery(migrant,voids,stru)
 
@@ -216,7 +220,7 @@ def AllCom6(filename, standard, migrant=None, rad_flag=True, effective_rad=True,
     else:
         for i in channels:
             dims_channel.append(i["dim"])
-    return symm_sybol,symm_number,symprec,conn_val,connect,dim_network,dims_channel,migrant_alpha,radii,minRad,nei_dises,recover_rate, recover_state, true_recover_dis,coordination_list
+    return symm_sybol,symm_number,symprec,uni_voids_num,conn_val,connect,dim_network,dims_channel,migrant_alpha,radii,minRad,nei_dises,recover_rate, recover_state, true_recover_dis,coordination_list
     
 # 使用带半径的公式进行计算
 def AllCom5(filename, standard, migrant=None, rad_flag=True, effective_rad=True, rad_file=None):
@@ -267,7 +271,7 @@ def AllCom5(filename, standard, migrant=None, rad_flag=True, effective_rad=True,
             symm_num_vornet = max_symm_info[0]
             symprec = max_symm_info[1]
             print("Distance tolerance in Cartesian coordinates to find crystal symmetry: ",symprec)
-            print("Symmetry number from Voronoi network: ", symm_num_vornet)
+            print("Symmetry number of Voronoi network: ", symm_num_vornet)
             print("\n")
             sym_vornet, voids = get_equivalent_vornet(vornet,symprec)
 
@@ -289,6 +293,7 @@ def AllCom5(filename, standard, migrant=None, rad_flag=True, effective_rad=True,
         for i in channels:
             dims_channel.append(i["dim"])
     return symm_sybol,symm_number,symm_num_vornet,symprec,conn_val,connect,dim_network,dims_channel,migrant_alpha,radii,minRad,nei_dises,recover_rate, recover_state, true_recover_dis,coordination_list
+
 # 使用簇替换的方法进行计算
 def AllCom4(filename, standard, migrant=None, rad_flag=True, effective_rad=True, rad_file=None, rad_store_in_vasp=True):
     radii = {}
