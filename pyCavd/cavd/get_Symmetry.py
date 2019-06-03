@@ -4,19 +4,15 @@ Created on 2018年7月12日
 @author: YeAnjiang
 '''
 import re
+import spglib
+import numpy as np
+import pandas as pd
+import ase.spacegroup as spg
+from scipy.spatial.ckdtree import cKDTree
 from pymatgen.util.io_utils import clean_lines
 from pymatgen.core.structure import Structure
 from monty.io import zopen
-import numpy as np
-from pymatgen.io.vasp import Poscar
-import spglib
-from cavd.netstorage import AtomNetwork
-from cavd.netio import writeVaspFile,writeBIFile
-from ase.spacegroup import Spacegroup
-import ase.spacegroup as spg
-from ase.io import read
-from scipy.spatial.ckdtree import cKDTree
-from cavd.local_environment import CifParser_new
+
 
 class Poscar_new():
     def __init__(self, atomic_symbols, coords, lattice, comment=None, selective_dynamics=None,
@@ -308,7 +304,7 @@ def get_equivalent_vornet(vornet, symprec=1e-5, angle_tolerance=5):
 """
     Analyzing the symmetry of Voronoi Network by ourself code.
 """
-def get_labeled_vornet(vornet, sitesym, symprec=1e-5):
+def get_labeled_vornet(vornet, sitesym, symprec=1e-3):
     positions = []
     for i in vornet.nodes:
         positions.append(i[2])
@@ -326,15 +322,17 @@ def get_labeled_vornet(vornet, sitesym, symprec=1e-5):
 """
     Get unique sites from .vasp file.
 """
-def get_unique_sites(filename, sitesym, symprec=1e-5):
+def get_unique_sites(filename, sitesym, symprec=1e-3):
     with zopen(filename, "rt") as f:
         contents = f.read()
     poscar = Poscar_new.from_string(contents, False, read_velocities=False)
     positions = poscar.coords
-    tags,tagdis = tag_sites(sitesym, positions,symprec)
+    tags,tagdis = tag_sites(sitesym, positions, symprec)
     print(tags)
     print(tagdis)
     print(np.unique(tags))
+    # frame = pd.Series(tags)
+    # print(frame.value_counts())   
 
 """
     Get symmetry equivalent sites of provided scaled_positions 
@@ -346,7 +344,7 @@ def get_unique_sites(filename, sitesym, symprec=1e-5):
     np.unique(equivalent_sites) gives representative symmetrically 
     independent sites.
 """
-def tag_sites(sitesym, scaled_positions, symprec=1e-5):
+def tag_sites(sitesym, scaled_positions, symprec=1e-3):
     scaled = np.around(np.array(scaled_positions, ndmin=2),8)
     scaled %= 1.0
     scaled %= 1.0
@@ -364,16 +362,19 @@ def tag_sites(sitesym, scaled_positions, symprec=1e-5):
             sympos %= 1.0
             sympos = np.unique(np.around(sympos,8), axis=0)
             min_dis,min_ids = siteskdTree.query(sympos,k=1)
+            # print(i,len(min_dis))
+            # print(min_dis)
 
-            select = min_dis < symprec
+            select = min_dis <= symprec
             select_ids = min_ids[select]
             tags[select_ids] = i
             tagdis[select_ids] = min_dis[select]
     return tags,tagdis
 
+from cavd.local_environment import CifParser_new
 if __name__ == "__main__":
     with zopen("F:\paper\paper-yaj\对称性问题思考\icsd_467.cif", "rt") as f:
         input_string = f.read()
     parser = CifParser_new.from_string(input_string)
     sitesym = parser.get_sym_opt()
-    get_unique_sites("F:\paper\paper-yaj\对称性问题思考\icsd_000467_origin.vasp", sitesym, 0.001)
+    get_unique_sites("F:\paper\paper-yaj\对称性问题思考\icsd_000467_origin.vasp", sitesym, 0.01)
