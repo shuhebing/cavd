@@ -15,16 +15,21 @@ from pymatgen.core.structure import Structure
 from pymatgen.analysis.local_env import ValenceIonicRadiusEvaluator
 from pymatgen.core.sites import PeriodicSite
 from monty.io import zopen
+import numpy as np
+from scipy.spatial.ckdtree import cKDTree
 
 #from local_environment import get_local_envir,Coordination
 
 
 # 计算迁移离子晶格位的复原率
-def rediscovery(migrate,voids,stru):
+def rediscovery(migrate,vorosites,stru):
     labels = []
     recover_labels = []
     recover_state = {}
     true_recover_dis = {}
+    #点类型，分别表示间隙、瓶颈、面心
+    points_type = ["It","Bn","Fc"]
+
 
     for k in range(len(stru.sites)):
         site = stru.sites[k]
@@ -37,21 +42,29 @@ def rediscovery(migrate,voids,stru):
         #recover_labels记录已恢复的label
         if label in recover_labels:
             continue
-        for void in voids:
-            #以Ar作为临时当前空隙的表示符号
-            tmp_site = PeriodicSite("Ar",void,stru.lattice)
 
-            if site.distance(tmp_site) < 0.5:
-                #当某空隙位已与结构中的晶格位配对时，将该空隙位以及与该空隙位0.25A半径范围内的所有空隙位移除，后续不再判断。
-                recover_labels.append(label)
-                true_recover_dis[str(label)] = site.distance(tmp_site)
-                voids.remove(void)
-                
-                for void_tmp in voids:
-                    tmp_site2 = PeriodicSite("Ar",list(void_tmp),stru.lattice)
-                    if tmp_site.distance(tmp_site2) < 0.25:
-                        voids.remove(void_tmp)
-                break
+        for pts_idx, pts in enumerate (vorosites):
+            cp_tag = np.ones((len(pts), ), dtype=int)
+            for pt_idx, pt in enumerate (pts):
+                if cp_tag[pt_idx] != -1:
+                    print("mobile:",site,"label",label)
+                    print("void:",pt)
+                    #以Ar作为临时当前空隙的表示符号
+                    tmp_site = PeriodicSite("Ar",pt,stru.lattice)
+                    print(site.distance(tmp_site))
+
+                    if site.distance(tmp_site) < 0.5:
+                        #当某空隙位已与结构中的晶格位配对时，将该空隙位以及与该空隙位0.25A半径范围内的所有空隙位移除，后续不再判断。
+                        recover_labels.append(label)
+
+                        true_recover_dis[str(label)] = (points_type[pts_idx]+str(pt_idx),site.distance(tmp_site))
+                        cp_tag[pt_idx] = -1
+                        
+                        for pt_idx2, pt2 in enumerate (pts):
+                            tmp_site2 = PeriodicSite("Ar",list(pt2),stru.lattice)
+                            if tmp_site.distance(tmp_site2) < 0.25:
+                                cp_tag[pt_idx2] = -1
+                        break
 
     #统计当前结构的恢复率
     recover_rate = len(recover_labels)/len(labels)
@@ -63,6 +76,63 @@ def rediscovery(migrate,voids,stru):
 
     return recover_rate, recover_state, true_recover_dis
 
+# 返回点的tag
+def get_point_tag(id, pts_len):
+    vexs_len = pts_len[0]
+    bts_len = pts_len[1]
+    fcs_len = pts_len[2]
+    #点类型，分别表示间隙、瓶颈、面心
+    if id < vexs_len:
+        return "It" + str(id)
+    elif id < vexs_len + bts_len:
+        return "Bn" + str(id - vexs_len)
+    elif id < vexs_len + bts_len + fcs_len:
+        return "Fc" + str(id - vexs_len - bts_len)
+    else:
+        raise IndexError
+
+# 找晶格位
+def rediscovery_kdTree(migrate,vorosites,stru):
+    recover_labels = []
+    recover_state = {}
+    migrate_mindis = {}
+    
+    migrate_pos_frac = np.around(np.array([site.frac_coords for site in stru.sites if migrate in site._atom_site_label], ndmin=2), 3)
+    print(migrate_pos_frac)
+    migrate_pos_frac %= 1.0
+    migrate_pos_frac %= 1.0
+    print(migrate_pos_frac)
+    migrate_pos = [site.coords for site in stru.sites if migrate in site._atom_site_label]
+    print(migrate_pos)
+    labels = [site._atom_site_label for site in stru.sites if migrate in site._atom_site_label]
+
+    points = np.around(np.array(vorosites[0] + vorosites[1] + vorosites[2], ndmin=2), 3)
+    print(points)
+    points %= 1.0
+    points %= 1.0
+    print(points)
+    print(len(points))
+    vorositesKdTree = cKDTree(points)
+    min_dis,min_ids = vorositesKdTree.query(migrate_pos_frac,k=1)
+    print(labels)
+    print(min_dis)
+
+    for idx in range(len(min_ids)):
+        if labels[idx] in recover_labels:
+            continue
+        tmp_site1 = PeriodicSite("Ar", migrate_pos_frac[idx], stru.lattice)
+        tmp_site2 = PeriodicSite("Ar", points[min_ids[idx]], stru.lattice)
+        pts_len = [len(vorosites[0]), len(vorosites[1]), len(vorosites[2])]
+        pt_tag = get_point_tag(min_ids[idx], pts_len)
+        migrate_mindis[str(labels[idx])] = (pt_tag, tmp_site1.distance(tmp_site2))
+        if tmp_site1.distance(tmp_site2) <= 0.5:
+            recover_state[str(labels[idx])] = pt_tag
+            recover_labels.append(labels[idx])
+        else:
+            recover_state[str(labels[idx])] = None
+
+    recover_rate = len(recover_labels) / len(np.unique(labels))
+    return recover_rate, recover_state, migrate_mindis
 
 # 获取特定结构中
 # 所有离子的有效半径，
@@ -131,6 +201,43 @@ def getIonicRadii(filename):
     print(radii)
     return radii
 
+def AllCom8(filename, standard, migrant=None, rad_flag=True, effective_rad=True, rad_file=None):
+    with zopen(filename, "rt") as f:
+        input_string = f.read()
+    parser = CifParser_new.from_string(input_string)
+    stru = parser.get_structures(primitive=False)[0]  
+    #获取空间群号与符号
+    symm_number,symm_sybol = parser.get_symme()
+    #获取icsd cif文件中的对称操作
+    sitesym = parser.get_sym_opt()
+    radii,migrant_radius,migrant_alpha,nei_dises,coordination_list = LocalEnvirCom(stru,migrant)
+    atmnet = AtomNetwork.read_from_RemoveMigrantCif(filename, migrant, radii, True, None)
+    
+    prefixname = filename.replace(".cif","")
+    vornet,edge_centers,fcs = atmnet.perform_voronoi_decomposition(True)
+
+    symprec = 0.01
+    sym_opt_num = len(sitesym)
+    voids_num = len(vornet.nodes)
+
+    sym_vornet,voids =  get_labeled_vornet(vornet, sitesym, symprec)
+    uni_voids_num = len(voids)
+
+    bottlenecks = []
+    for bt in sym_vornet.edges:
+        bottlenecks.append(bt[2])
+
+    voids_abs = []
+    for void in sym_vornet.nodes:
+        voids_abs.append(void[2])
+    
+    facecenters = []
+    for fc in fcs:
+        facecenters.append(atmnet.absolute_to_relative(fc[0], fc[1], fc[2]))
+
+    vorosites = [voids_abs, bottlenecks, facecenters]
+    recover_rate, recover_state, migrate_mindis = rediscovery_kdTree(migrant,vorosites,stru)
+    return symm_sybol,symm_number,symprec,voids_num,sym_opt_num,uni_voids_num,recover_rate,recover_state,migrate_mindis
 
 def AllCom7(filename, standard, migrant=None, rad_flag=True, effective_rad=True, rad_file=None):
     with zopen(filename, "rt") as f:
@@ -151,7 +258,7 @@ def AllCom7(filename, standard, migrant=None, rad_flag=True, effective_rad=True,
         atmnet = AtomNetwork.read_from_CIF(filename, radii, rad_flag, rad_file)
     
     prefixname = filename.replace(".cif","")
-    vornet,edge_centers,fcs = atmnet.perform_voronoi_decomposition(False)
+    vornet,edge_centers,fcs = atmnet.perform_voronoi_decomposition(True)
 
     symprec = 0.01
     sym_opt_num = len(sitesym)
@@ -163,31 +270,21 @@ def AllCom7(filename, standard, migrant=None, rad_flag=True, effective_rad=True,
     # 衡量计算得到的对称性独立的间隙数与 对称性独立间隙最小数 之间的差异
     dif = abs(uni_voids_num - voids_num/sym_opt_num) / (voids_num/sym_opt_num)
 
-    # recover_rate, recover_state, true_recover_dis = rediscovery(migrant,voids,stru)
-    # if recover_rate != 1.0:
-    #     bottlenecks = []
-    #     for bt in sym_vornet.edges:
-    #         bottlenecks.append(bt[2])
-    #     for key,value in recover_state.items():
-    #         if value == False:
-    #             recover_rate_tmp, recover_state_tmp, true_recover_dis_tmp = rediscovery(key,bottlenecks,stru)
-    #     facecenters = []
-    #     for fidx,fc in enumerate(fcs):
-    #         facecenters[idx] = atmnet.absolute_to_relative(fc.x, fc.y, fc.z)
+    # positions = []
+    # for i in vornet.nodes:
+    #     positions.append(i[2])
 
-    recover_rate, recover_state, true_recover_dis = rediscovery(migrant,voids,stru)
-    if recover_rate != 1.0:
-        print("Extend the scale to voids, bottlenecks, and face centers!")
-        print()
-        bottlenecks = []
-        for bt in sym_vornet.edges:
-            bottlenecks.append(bt[2])
-        facecenters = []
-        for fidx,fc in enumerate(fcs):
-            facecenters[idx] = atmnet.absolute_to_relative(fc.x, fc.y, fc.z)
-        
-        vorosites = voids + bottlenecks + facecenters
-        recover_rate, recover_state, true_recover_dis = rediscovery(migrant,vorosites,stru)
+    # print("Extend the scale to voids, bottlenecks, and face centers!")
+    # print()
+    bottlenecks = []
+    for bt in sym_vornet.edges:
+        bottlenecks.append(bt[2])
+    facecenters = []
+    for fidx in range(len(fcs)):
+        facecenters.append(atmnet.absolute_to_relative(fcs[fidx][0], fcs[fidx][1], fcs[fidx][2]))
+    
+    vorosites = [voids, bottlenecks, facecenters]
+    recover_rate, recover_state, true_recover_dis = rediscovery(migrant,vorosites,stru)
         
     writeNETFile(prefixname+"_origin.net",atmnet,sym_vornet)
     writeVaspFile(prefixname+"_origin.vasp",atmnet,sym_vornet)
@@ -619,8 +716,3 @@ def VoidNetCom(filename, migrant=None, rad_flag=True, effective_rad=True, rad_fi
         os.remove(remove_filename)
     prefixname = filename.replace(".cif","")
     writeZVisFile(prefixname+".zvis", False, atmnet, vornet)
-
-
-# if __name__ == "__main__":
-#     # radii = LocalEnvirCom("../../examples/icsd_16713.cif")
-#     conn,oneD,twoD,threeD = AllCom("../../examples/Li2CO3-LDA.cif",0.5,1000,"Li", True,True,None,True,0.5,0.7)

@@ -331,8 +331,8 @@ def get_unique_sites(filename, sitesym, symprec=1e-3):
     print(tags)
     print(tagdis)
     print(np.unique(tags))
-    # frame = pd.Series(tags)
-    # print(frame.value_counts())   
+    frame = pd.Series(tags)
+    print(frame.value_counts())   
 
 """
     Get symmetry equivalent sites of provided scaled_positions 
