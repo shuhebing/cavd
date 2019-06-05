@@ -14,6 +14,7 @@
 #include "symbcalc.h"
 #include "zeo_consts.h"
 #include "network.h"        // Try to eliminate cyclic dependency in future
+#include "graphstorage.h"
 
 using namespace std;
 
@@ -2241,6 +2242,22 @@ string stripIonName(string ionName){
 }
 
 
+//Added at 20190604
+/** 
+ * This function used to check whether the given edge with the same
+ * start id and end id exists in the vector.
+ * 
+ */
+bool is_edge_exist(vector<pair<int,DELTA_POS> > delta_uc, pair<int, DELTA_POS> del){
+  vector<pair<int,DELTA_POS> >::iterator it;
+  for(it = delta_uc.begin(); it != delta_uc.end(); it++){
+    if((it->first == del.first) && (it->second + del.second).isZero())
+      return true;
+  }
+  return false;
+}
+
+
 //Added at 20180420
 /**
  * write the bottleneck, interstitial and atomnetwork information to .vasp
@@ -2248,133 +2265,152 @@ string stripIonName(string ionName){
  * less than the provided threshold. For the default 0 minRad value, all nodes
  * and edges are included.*/
 bool writeToVasp(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, double minRad, double maxRad){
-      fstream output;
-      //string compareatom = cell->atoms.at(0).type;
-      int atomcount = 0;
-      int flag;
-      vector<string> atomtype;
-      vector<int> atomnum;
-      double a,b,c;
+  fstream output;
+  //string compareatom = cell->atoms.at(0).type;
+  int atomcount = 0;
+  int flag;
+  vector<string> atomtype;
+  vector<int> atomnum;
+  double a,b,c;
+  vector<pair<int,DELTA_POS> > delta_uc;
 
-      // The code below is for C++11.
-      // smatch element_type;
-      // regex element_reg("[A-Z][a-z]*");
+  // The code below is for C++11.
+  // smatch element_type;
+  // regex element_reg("[A-Z][a-z]*");
 
-      output.open(filename, fstream::out);
-      if(!output.is_open()){
-        cerr << "Error: Failed to open .vasp output file " << filename << "\n";
-        //cerr << "Exiting ..." << "\n";
-        //exit(1);
-        return false;
-      }
-      else{
-		    flag = 0;
-        cout << "Writing structure information to " << filename << "\n";
+  output.open(filename, fstream::out);
+  if(!output.is_open()){
+    cerr << "Error: Failed to open .vasp output file " << filename << "\n";
+    //cerr << "Exiting ..." << "\n";
+    //exit(1);
+    return false;
+  }
+  else{
+    flag = 0;
+    cout << "Writing structure information to " << filename << "\n";
 
-        // Write unit cell information
-        output << cell->name << "\n";
-        output << "1.0" << "\n";
-        output << "    " << cell->v_a.x << "    " << cell->v_a.y << "    " << cell->v_a.z << "\n";
-        output << "    " << cell->v_b.x << "    " << cell->v_b.y << "    " << cell->v_b.z << "\n";
-        output << "    " << cell->v_c.x << "    " << cell->v_c.y << "    " << cell->v_c.z << "\n";
+    // Write unit cell information
+    output << cell->name << "\n";
+    output << "1.0" << "\n";
+    output << "    " << cell->v_a.x << "    " << cell->v_a.y << "    " << cell->v_a.z << "\n";
+    output << "    " << cell->v_b.x << "    " << cell->v_b.y << "    " << cell->v_b.z << "\n";
+    output << "    " << cell->v_c.x << "    " << cell->v_c.y << "    " << cell->v_c.z << "\n";
 
-        //calculate the number of different atoms
-        // regex_search(cell->atoms.at(0).type,element_type,element_reg);
-        // atomtype.push_back(element_type.str());
-        atomtype.push_back(stripIonName(cell->atoms.at(0).type));
-        for(int i = 0; i < cell->numAtoms; i++){
-            // regex_search(cell->atoms.at(i).type,element_type,element_reg);
-            ;
-            if(stripIonName(cell->atoms.at(i).type).compare(atomtype.at(flag)) == 0){
-                atomcount ++;
-            }
-            else{
-                atomnum.push_back(atomcount);
-                flag++;
-                atomtype.push_back(stripIonName(cell->atoms.at(i).type));
-                atomcount = 1;
-            }
-            if(i == cell->numAtoms -1){
-                atomnum.push_back(atomcount);
-                atomcount = 0;
-            }
+    //calculate the number of different atoms
+    // regex_search(cell->atoms.at(0).type,element_type,element_reg);
+    // atomtype.push_back(element_type.str());
+    atomtype.push_back(stripIonName(cell->atoms.at(0).type));
+    for(int i = 0; i < cell->numAtoms; i++){
+        // regex_search(cell->atoms.at(i).type,element_type,element_reg);
+        if(stripIonName(cell->atoms.at(i).type).compare(atomtype.at(flag)) == 0){
+            atomcount ++;
         }
-
-        //calculate the interstitial numbers 
-        vector<VOR_NODE> ::iterator niter = vornet->nodes.begin();
-        while(niter != vornet->nodes.end()){
-             if((minRad == 0.0 && maxRad == 0.0) || (niter->rad_stat_sphere >= minRad && niter->rad_stat_sphere <= maxRad))
-                 atomcount++;
-             niter++;
+        else{
+            atomnum.push_back(atomcount);
+            flag++;
+            atomtype.push_back(stripIonName(cell->atoms.at(i).type));
+            atomcount = 1;
         }
-        atomtype.push_back("He");
-        atomnum.push_back(atomcount);
-
-        atomcount = 0;
-
-        //calculate the bottleneck numbers
-        vector<VOR_EDGE> ::iterator eiter = vornet->edges.begin();
-        while(eiter != vornet->edges.end()){
-            // This "if" used to reduce edges repeat
-            if(eiter->from < eiter->to){
-                if((minRad == 0.0 && maxRad == 0.0) ||(eiter->rad_moving_sphere >= minRad && eiter->rad_moving_sphere <= maxRad))
-                    atomcount++;
-            }
-            eiter++;
+        if(i == cell->numAtoms -1){
+            atomnum.push_back(atomcount);
+            atomcount = 0;
         }
-        atomtype.push_back("Ne");
-        atomnum.push_back(atomcount);
+    }
 
-        //Write static information
-        for(int i = 0; i< atomtype.size(); i++){
-            output << "   " << atomtype[i];
-        }
-        output << "\n";
-        for(int i = 0; i< atomnum.size(); i++){
-            output << "   " << atomnum[i];
-        }
-        output << "\n";
+    //calculate the interstitial numbers 
+    vector<VOR_NODE> ::iterator niter = vornet->nodes.begin();
+    while(niter != vornet->nodes.end()){
+          if((minRad == 0.0 && maxRad == 0.0) || (niter->rad_stat_sphere >= minRad && niter->rad_stat_sphere <= maxRad))
+              atomcount++;
+          niter++;
+    }
+    atomtype.push_back("He");
+    atomnum.push_back(atomcount);
 
-           //write the unit cell coordinate information
-        output << "Direct" << "\n";
-          for(int i = 0; i<cell->numAtoms; i++){
-              output << "    " << cell->atoms.at(i).a_coord << "    " << cell->atoms.at(i).b_coord << "    " << cell->atoms.at(i).c_coord << "    ";
-              output << "    " << cell->atoms.at(i).radius << "    ";
-              output << cell->atoms.at(i).type << "\n";
-          }
+    atomcount = 0;
 
-          //wirte the interstitial informations
-          niter = vornet->nodes.begin();
-       while(niter != vornet->nodes.end()){
-            if((minRad == 0.0 && maxRad == 0.0) || (niter->rad_stat_sphere >= minRad && niter->rad_stat_sphere <= maxRad)){
-                //cell->initMatrices();
-                a = niter->x * cell->invUCVectors[0][0] + niter->y * cell->invUCVectors[0][1] + niter->z * cell->invUCVectors[0][2];
-                b = niter->y * cell->invUCVectors[1][1] + niter->z * cell->invUCVectors[1][2];
-                c = niter->z * cell->invUCVectors[2][2];
-                output <<"   " << a << "    " << b << "    " << c << "   ";
-                output << niter->rad_stat_sphere << "    " << "He" << "\n";
-            }
-            niter++;
-        }
-
-       // Write botttleneck information
-        eiter = vornet->edges.begin();
-        while(eiter != vornet->edges.end()){
-            // This "if" used to reduce edges repeat
-            if (eiter->from < eiter->to) {
-                if ((minRad == 0.0 && maxRad == 0.0) || (eiter->rad_moving_sphere >= minRad && eiter->rad_moving_sphere <= maxRad)) {
-                    a = eiter->bottleneck_x * cell->invUCVectors[0][0] + eiter->bottleneck_y * cell->invUCVectors[0][1] + eiter->bottleneck_z * cell->invUCVectors[0][2];
-                    b = eiter->bottleneck_y * cell->invUCVectors[1][1] + eiter->bottleneck_z * cell->invUCVectors[1][2];
-                    c = eiter->bottleneck_z * cell->invUCVectors[2][2];
-                    output << "    " << a << "    " << b << "    " << c << "    ";
-                    output << eiter->rad_moving_sphere << "    " << "Ne" << "\n";
+    //calculate the bottleneck numbers
+    vector<VOR_EDGE> ::iterator eiter = vornet->edges.begin();
+    while(eiter != vornet->edges.end()){
+        // This "if" used to reduce edges repeat
+        if(eiter->from <= eiter->to){
+            if(eiter->from == eiter->to){
+                DELTA_POS delta = DELTA_POS(eiter->delta_uc_x, eiter->delta_uc_y, eiter->delta_uc_z);
+                pair<int, DELTA_POS> tmp(eiter->from, delta);
+                if(is_edge_exist(delta_uc, tmp)){
+                    eiter++;
+                    continue;
                 }
+                delta_uc.push_back(tmp);
             }
-          eiter++;
+            if((minRad == 0.0 && maxRad == 0.0) ||(eiter->rad_moving_sphere >= minRad && eiter->rad_moving_sphere <= maxRad))
+                atomcount++;
         }
-      output.close();
-      return true;
+        eiter++;
+    }
+    atomtype.push_back("Ne");
+    atomnum.push_back(atomcount);
+    delta_uc.clear();
+
+    //Write static information
+    for(int i = 0; i< atomtype.size(); i++){
+        output << "   " << atomtype[i];
+    }
+    output << "\n";
+    for(int i = 0; i< atomnum.size(); i++){
+        output << "   " << atomnum[i];
+    }
+    output << "\n";
+
+        //write the unit cell coordinate information
+    output << "Direct" << "\n";
+      for(int i = 0; i<cell->numAtoms; i++){
+          output << "    " << cell->atoms.at(i).a_coord << "    " << cell->atoms.at(i).b_coord << "    " << cell->atoms.at(i).c_coord << "    ";
+          output << "    " << cell->atoms.at(i).radius << "    ";
+          output << cell->atoms.at(i).type << "\n";
       }
+
+      //wirte the interstitial informations
+      niter = vornet->nodes.begin();
+    while(niter != vornet->nodes.end()){
+        if((minRad == 0.0 && maxRad == 0.0) || (niter->rad_stat_sphere >= minRad && niter->rad_stat_sphere <= maxRad)){
+            //cell->initMatrices();
+            a = niter->x * cell->invUCVectors[0][0] + niter->y * cell->invUCVectors[0][1] + niter->z * cell->invUCVectors[0][2];
+            b = niter->y * cell->invUCVectors[1][1] + niter->z * cell->invUCVectors[1][2];
+            c = niter->z * cell->invUCVectors[2][2];
+            output <<"   " << a << "    " << b << "    " << c << "   ";
+            output << niter->rad_stat_sphere << "    " << "He" << "\n";
+        }
+        niter++;
+    }
+
+    // Write botttleneck information
+    eiter = vornet->edges.begin();
+    while(eiter != vornet->edges.end()){
+        // This "if" used to reduce edges repeat
+        if (eiter->from <= eiter->to) {
+            if(eiter->from == eiter->to){
+                DELTA_POS delta = DELTA_POS(eiter->delta_uc_x, eiter->delta_uc_y, eiter->delta_uc_z);
+                pair<int, DELTA_POS> tmp(eiter->from, delta);
+                if(is_edge_exist(delta_uc, tmp)){
+                    eiter++;
+                    continue;
+                }
+                delta_uc.push_back(tmp);
+            }
+            if ((minRad == 0.0 && maxRad == 0.0) || (eiter->rad_moving_sphere >= minRad && eiter->rad_moving_sphere <= maxRad)) {
+                a = eiter->bottleneck_x * cell->invUCVectors[0][0] + eiter->bottleneck_y * cell->invUCVectors[0][1] + eiter->bottleneck_z * cell->invUCVectors[0][2];
+                b = eiter->bottleneck_y * cell->invUCVectors[1][1] + eiter->bottleneck_z * cell->invUCVectors[1][2];
+                c = eiter->bottleneck_z * cell->invUCVectors[2][2];
+                output << "    " << a << "    " << b << "    " << c << "    ";
+                output << eiter->rad_moving_sphere << "    " << "Ne" << "\n";
+            }
+        }
+      eiter++;
+    }
+  output.close();
+  return true;
+  }
 }
 
 bool writeAtmntToVasp(char *filename, ATOM_NETWORK *cell){

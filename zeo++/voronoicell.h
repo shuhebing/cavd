@@ -60,13 +60,13 @@ public:
  */
 class VOR_CELL {
 public:
-    std::vector<VOR_FACE> faces;                             // List of faces in cell
-  int numVertices;                                    // Number of vertices
+  std::vector<VOR_FACE> faces;                             // List of faces in cell
+  int numVertices;                                         // Number of vertices
   std::map<Point, int, bool(*)(Point,Point)> vertexIDs;    // Vertex number associated with coordinate
   std::map<int,int> idMappings;                            // (Vertex ID, Node ID) pairs
-  std::map<int,std::vector<int> > reverseIDMappings;            // (Node ID, List of Vertex IDs) pairs
+  std::map<int,std::vector<int> > reverseIDMappings;       // (Node ID, List of Vertex IDs) pairs
   std::map<int, Point> vertexCoords;                       // Coordinates associated with each vertex ID
-  std::vector< std::set<int> > edgeConnections;                 // List of vertex id's connected to each vertex
+  std::vector< std::set<int> > edgeConnections;            // List of vertex id's connected to each vertex
 
   /*Constructs a VOR_CELL that does not initially have any faces or vertices.*/
   VOR_CELL();

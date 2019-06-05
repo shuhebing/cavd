@@ -585,8 +585,6 @@ cdef class AtomNetwork:
             if edge_center not in edge_centers:
                 edge_centers.append(edge_center)
 
-
-
         # Get the vorcells and obtain the face centers
         face_centers = []
         cdef vector[VOR_FACE] vfaces
@@ -594,7 +592,8 @@ cdef class AtomNetwork:
         cdef CPoint* cpoint_ptr 
         #cdef map[int, int] id_maps
         cdef vector[int] node_ids
-        face_node_ids = set()
+        # face_node_ids = set()
+        face_node_ids = []
         for i in range(vcells.size()):
             vfaces = vcells[i].faces
             for j in range(vfaces.size()):
@@ -602,20 +601,27 @@ cdef class AtomNetwork:
                 node_id_list = []
                 for k in range(node_ids.size()):
                     node_id_list.append(node_ids[k])
-                node_id_set = frozenset(node_id_list)
-                if not node_id_set in face_node_ids:
-                    face_node_ids.add(node_id_set)
-                    centroid = Point()
-                    cpoint_ptr = (<Point?>centroid).thisptr
-                    vertices = vfaces[j].vertices
-                    for k in range(vertices.size()):
-                        centroid.x = centroid.x + vertices[k].vals[0]
-                        centroid.y = centroid.y + vertices[k].vals[1]
-                        centroid.z = centroid.z + vertices[k].vals[2]
-                    centroid.x = centroid.x/vertices.size()
-                    centroid.y = centroid.y/vertices.size()
-                    centroid.z = centroid.z/vertices.size()
-                    face_centers.append(centroid)
+                # print("netstorage node_id_list:", node_id_list)
+                # node_id_set = frozenset(node_id_list)
+                # print("netstorage node_id_set:", node_id_set)
+                # if not node_id_set in face_node_ids:
+                # if not sorted(node_id_list) in face_node_ids:
+                #   print("sorted node_id_list", sorted(node_id_list))
+                # face_node_ids.append(sorted(node_id_list))
+                centroid = Point()
+                cpoint_ptr = (<Point?>centroid).thisptr
+                vertices = vfaces[j].vertices
+                for k in range(vertices.size()):
+                #    print("vertices",k)
+                #    print(vertices[k].vals[0], vertices[k].vals[1], vertices[k].vals[2])
+                    centroid.x = centroid.x + vertices[k].vals[0]
+                    centroid.y = centroid.y + vertices[k].vals[1]
+                    centroid.z = centroid.z + vertices[k].vals[2]
+                centroid.x = centroid.x/vertices.size()
+                centroid.y = centroid.y/vertices.size()
+                centroid.z = centroid.z/vertices.size()
+                # print("centroid", centroid.x, centroid.x, centroid.x)
+                face_centers.append(centroid)
 
         # Convert the Zeo++ Point objects in (x,y,z) tuple objects
         fcs = []

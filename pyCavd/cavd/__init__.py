@@ -98,24 +98,24 @@ def rediscovery_kdTree(migrate,vorosites,stru):
     migrate_mindis = {}
     
     migrate_pos_frac = np.around(np.array([site.frac_coords for site in stru.sites if migrate in site._atom_site_label], ndmin=2), 3)
-    print(migrate_pos_frac)
+    # print(migrate_pos_frac)
     migrate_pos_frac %= 1.0
     migrate_pos_frac %= 1.0
-    print(migrate_pos_frac)
+    # print(migrate_pos_frac)
     migrate_pos = [site.coords for site in stru.sites if migrate in site._atom_site_label]
-    print(migrate_pos)
+    # print(migrate_pos)
     labels = [site._atom_site_label for site in stru.sites if migrate in site._atom_site_label]
 
     points = np.around(np.array(vorosites[0] + vorosites[1] + vorosites[2], ndmin=2), 3)
-    print(points)
+    # print(points)
     points %= 1.0
     points %= 1.0
-    print(points)
-    print(len(points))
+    # print(points)
+    # print(len(points))
     vorositesKdTree = cKDTree(points)
     min_dis,min_ids = vorositesKdTree.query(migrate_pos_frac,k=1)
-    print(labels)
-    print(min_dis)
+    # print(labels)
+    # print(min_dis)
 
     for idx in range(len(min_ids)):
         if labels[idx] in recover_labels:
@@ -205,7 +205,9 @@ def AllCom8(filename, standard, migrant=None, rad_flag=True, effective_rad=True,
     with zopen(filename, "rt") as f:
         input_string = f.read()
     parser = CifParser_new.from_string(input_string)
-    stru = parser.get_structures(primitive=False)[0]  
+    stru = parser.get_structures(primitive=False)[0]
+
+    # print(stru)
     #获取空间群号与符号
     symm_number,symm_sybol = parser.get_symme()
     #获取icsd cif文件中的对称操作
@@ -223,20 +225,37 @@ def AllCom8(filename, standard, migrant=None, rad_flag=True, effective_rad=True,
     sym_vornet,voids =  get_labeled_vornet(vornet, sitesym, symprec)
     uni_voids_num = len(voids)
 
-    bottlenecks = []
-    for bt in sym_vornet.edges:
-        bottlenecks.append(bt[2])
-
     voids_abs = []
     for void in sym_vornet.nodes:
         voids_abs.append(void[2])
+    # print("voids")
+    # print(voids_abs)
+
+    bottlenecks = []
+    for bt in sym_vornet.edges:
+        bottlenecks.append(bt[2])
+    # print("bottlenecks")
+    # print(bottlenecks)
     
+    # print("fcs",fcs)
     facecenters = []
     for fc in fcs:
         facecenters.append(atmnet.absolute_to_relative(fc[0], fc[1], fc[2]))
+    # print("facecenters")
+    # print(facecenters)
 
     vorosites = [voids_abs, bottlenecks, facecenters]
     recover_rate, recover_state, migrate_mindis = rediscovery_kdTree(migrant,vorosites,stru)
+    
+    writeNETFile(prefixname+"_origin.net",atmnet,sym_vornet)
+    writeVaspFile(prefixname+"_origin.vasp",atmnet,sym_vornet)
+
+    conn_val = connection_values_list(prefixname+".resex", sym_vornet)
+    minRad = standard*migrant_alpha*0.85
+    dim_network,connect = ConnStatus(minRad, conn_val)
+    writeVaspFile(prefixname+"_"+str(round(minRad,4))+".vasp",atmnet,sym_vornet,minRad,5.0)
+    channels = Channel.findChannels(sym_vornet,atmnet,minRad,prefixname+"_"+str(round(minRad,4))+".net")
+    
     return symm_sybol,symm_number,symprec,voids_num,sym_opt_num,uni_voids_num,recover_rate,recover_state,migrate_mindis
 
 def AllCom7(filename, standard, migrant=None, rad_flag=True, effective_rad=True, rad_file=None):
