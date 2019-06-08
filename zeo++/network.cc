@@ -339,12 +339,12 @@ bool storeVoronoiNetwork(c_option &con, ATOM_NETWORK *atmnet, VORONOI_NETWORK *v
     }
     cellIndex++;
       } while(vl.inc());
-    }
-    else {
-      fputs("Error: Unable to begin Voronoi decomposition.\nExiting...\n",stderr);
-      throw VoronoiDecompException();
+ }
+  else {
+    fputs("Error: Unable to begin Voronoi decomposition.\nExiting...\n",stderr);
+    throw VoronoiDecompException();
      // exit(1);
-    }
+  }
 
     // Carry out the volume check
     printf("Volume check:\n  Total domain volume  = %f\n",bx*by*bz);

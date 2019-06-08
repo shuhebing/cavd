@@ -118,17 +118,19 @@ void VOR_CELL::addNode(int nodeID, Point coord){
 void VOR_CELL::addEdge(Point from, Point to){
   map<Point,int>::iterator iter1 = vertexIDs.find(from);
   map<Point,int>::iterator iter2 = vertexIDs.find(to);
-  if((iter1 == vertexIDs.end()) || (iter2 == vertexIDs.end())){
-    cerr << "Unable to add edge because nodes have not been added." << "\n"
-	 << "Point 1: (" << from[0] <<  ", " << from[1] << ", " << from[2] << ")" << "\n"
-	 << "Point 2: (" << to[0]   <<  ", " << to[1]   << ", " << to[2]   << ")" << "\n"
-	 << "Exiting..." << "\n";
-	 throw VoronoiDecompException();
-    //exit(1);
-  }
-  
-  if(edgeConnections[iter2->second].find(iter1->second) == edgeConnections[iter2->second].end())
+  // if((iter1 == vertexIDs.end()) || (iter2 == vertexIDs.end())){
+  //   cerr << "Unable to add edge because nodes have not been added." << "\n"
+	//  << "Point 1: (" << from[0] <<  ", " << from[1] << ", " << from[2] << ")" << "\n"
+	//  << "Point 2: (" << to[0]   <<  ", " << to[1]   << ", " << to[2]   << ")" << "\n"
+	//  << "Exiting..." << "\n";
+	//  throw VoronoiDecompException();
+  //   //exit(1);
+  // }
+
+  if((iter1 != vertexIDs.end()) && (iter2 != vertexIDs.end())){
+   if(edgeConnections[iter2->second].find(iter1->second) == edgeConnections[iter2->second].end())
     edgeConnections[iter1->second].insert(iter2->second);
+  }
 }
 
 /* Add the face to the VOR_CELL. Adds all edges and vertices that have not yet been added 

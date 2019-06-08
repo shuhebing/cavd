@@ -595,8 +595,10 @@ cdef class AtomNetwork:
         # face_node_ids = set()
         face_node_ids = []
         for i in range(vcells.size()):
+            # print("cell",i)
             vfaces = vcells[i].faces
             for j in range(vfaces.size()):
+                # print("face",j)
                 node_ids = vfaces[j].node_ids
                 node_id_list = []
                 for k in range(node_ids.size()):
@@ -606,21 +608,21 @@ cdef class AtomNetwork:
                 # print("netstorage node_id_set:", node_id_set)
                 # if not node_id_set in face_node_ids:
                 # if not sorted(node_id_list) in face_node_ids:
-                #   print("sorted node_id_list", sorted(node_id_list))
+                #    print("sorted node_id_list", sorted(node_id_list))
                 # face_node_ids.append(sorted(node_id_list))
                 centroid = Point()
                 cpoint_ptr = (<Point?>centroid).thisptr
                 vertices = vfaces[j].vertices
                 for k in range(vertices.size()):
-                #    print("vertices",k)
-                #    print(vertices[k].vals[0], vertices[k].vals[1], vertices[k].vals[2])
+                    # print("vertices",k)
+                    # print(vertices[k].vals[0], vertices[k].vals[1], vertices[k].vals[2])
                     centroid.x = centroid.x + vertices[k].vals[0]
                     centroid.y = centroid.y + vertices[k].vals[1]
                     centroid.z = centroid.z + vertices[k].vals[2]
                 centroid.x = centroid.x/vertices.size()
                 centroid.y = centroid.y/vertices.size()
                 centroid.z = centroid.z/vertices.size()
-                # print("centroid", centroid.x, centroid.x, centroid.x)
+                # print("centroid", centroid.x, centroid.y, centroid.z)
                 face_centers.append(centroid)
 
         # Convert the Zeo++ Point objects in (x,y,z) tuple objects
