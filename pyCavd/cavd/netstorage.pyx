@@ -625,11 +625,24 @@ cdef class AtomNetwork:
                 # print("centroid", centroid.x, centroid.y, centroid.z)
                 face_centers.append(centroid)
 
+                # Add at 20190609
+                face_center = {"face_center":[centroid.x, centroid.y, centroid.z], "face_vertexes":node_id_list}
+                face_centers.append(face_center)
+
         # Convert the Zeo++ Point objects in (x,y,z) tuple objects
         fcs = []
+        faces = []
+        # fcid_start = vnodes.size()
+        fcidx = vnodes.size()
         for center in face_centers:
-            cntr = (center.x,center.y,center.z)
-            fcs.append(cntr)
+            # Added by YAJ, at 20190609
+            cntr = center["face_center"] 
+            if cntr not in fcs:
+                fcs.append(cntr)
+                face = {"face_id": fcidx, "face_center":[centroid.x, centroid.y, centroid.z], "face_vertexes":node_id_list}
+                fcidx++
+                faces.append(face)
+
 
         #bvcelllist = []
         # define copy methods for BASIC_VCELL and VOR_CELL methods
@@ -643,7 +656,7 @@ cdef class AtomNetwork:
             #basicvcell = BasicVCell()
             #basicvcell.thisptr = &(bvcells[i])
             #bvcelllist.append(bvcells[i])
-        return vornet, edge_centers, fcs
+        return vornet, edge_centers, fcs, faces
 
 cdef class VoronoiNode:
     """
