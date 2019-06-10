@@ -20,6 +20,7 @@ from cavd.geometry cimport CPoint, Point
 from libcpp.map cimport map
 from libcpp.pair cimport pair
 from libcpp.string cimport string
+import numpy as np
 
 #STUFF='Hi'
 
@@ -599,6 +600,9 @@ cdef class AtomNetwork:
             vfaces = vcells[i].faces
             for j in range(vfaces.size()):
                 # print("face",j)
+                neighborAt1 = vfaces[j].neighborAtom1
+                neighborAt2 = vfaces[j].neighborAtom1
+
                 node_ids = vfaces[j].node_ids
                 node_id_list = []
                 for k in range(node_ids.size()):
@@ -623,10 +627,14 @@ cdef class AtomNetwork:
                 centroid.y = centroid.y/vertices.size()
                 centroid.z = centroid.z/vertices.size()
                 # print("centroid", centroid.x, centroid.y, centroid.z)
-                face_centers.append(centroid)
+                # face_centers.append(centroid)
 
                 # Add at 20190609
-                face_center = {"face_center":[centroid.x, centroid.y, centroid.z], "face_vertexes":node_id_list}
+                face_center = {}
+                face_center["neighbor_Atom1"] = neighborAt1
+                face_center["neighbor_Atom2"] = neighborAt2
+                face_center["face_center"] = [centroid.x, centroid.y, centroid.z]
+                face_center["face_vertexes"] = node_id_list
                 face_centers.append(face_center)
 
         # Convert the Zeo++ Point objects in (x,y,z) tuple objects
@@ -639,10 +647,15 @@ cdef class AtomNetwork:
             cntr = center["face_center"] 
             if cntr not in fcs:
                 fcs.append(cntr)
-                face = {"face_id": fcidx, "face_center":[centroid.x, centroid.y, centroid.z], "face_vertexes":node_id_list}
-                fcidx++
+                neighAt1 = np.array(self.atoms[center["neighbor_Atom1"]][3])
+                neighAt2 = np.array(self.atoms[center["neighbor_Atom2"]][3])
+                fc_coord = np.array(cntr)
+                mindis = min(np.sqrt(np.sum(np.square(neighAt1-fc_coord))), np.sqrt(np.sum(np.square(neighAt1-fc_coord))))
+                face = {"fc_id": fcidx, "fc_radii": mindis, "fc_coord": center["face_center"], "face_vertexes": center["face_vertexes"]}
                 faces.append(face)
-
+                fcidx = fcidx + 1
+        
+        print(len(faces), len(face_centers))
 
         #bvcelllist = []
         # define copy methods for BASIC_VCELL and VOR_CELL methods
@@ -934,6 +947,33 @@ cdef class VoronoiNetwork:
         addVorNetId(self.thisptr)
         return self
 
+    # add at 20190610
+    def add_facecenters(self, fcs):
+        cdef vector[int] c_fc_id
+        cdef vector[double] c_fc_radius
+        cdef vector[vector[double]] c_fc_coords
+        cdef vector[double] c_fc_coord
+        cdef vector[vector[int]] c_fc_vertices
+        cdef vector[int] c_fc_verts
+
+        for fc in fcs:
+            c_fc_id.push_back(fc["fc_id"])
+            c_fc_radius.push_back(fc["fc_radii"])
+
+            c_fc_coord.clear()
+            c_fc_coord.push_back(fc["fc_coord"][0])
+            c_fc_coord.push_back(fc["fc_coord"][1])
+            c_fc_coord.push_back(fc["fc_coord"][2])
+            c_fc_coords.push_back(c_fc_coord)
+
+            c_fc_verts.clear()
+            face_vertexes = fc["face_vertexes"]
+            for i in range(len(face_vertexes)):
+                c_fc_verts.push_back(face_vertexes[i])
+            c_fc_vertices.push_back(c_fc_verts)
+        
+        add_net_to_vornet(c_fc_id, c_fc_radius, c_fc_coords, c_fc_vertices, self.thisptr)
+
 
 def substitute_atoms(atmnet, substituteSeed, radialFlag):
     """
@@ -996,4 +1036,5 @@ def connection_values_list(filename, vornet):
         # print(values[i])
         conn_values.append(values[i])
     return conn_values
+
 

@@ -214,9 +214,11 @@ def AllCom8(filename, standard, migrant=None, rad_flag=True, effective_rad=True,
     sitesym = parser.get_sym_opt()
     radii,migrant_radius,migrant_alpha,nei_dises,coordination_list = LocalEnvirCom(stru,migrant)
     atmnet = AtomNetwork.read_from_RemoveMigrantCif(filename, migrant, radii, True, None)
+
+    print(atmnet.atoms)
     
     prefixname = filename.replace(".cif","")
-    vornet,edge_centers,fcs = atmnet.perform_voronoi_decomposition(True)
+    vornet,edge_centers,fcs,faces = atmnet.perform_voronoi_decomposition(True)
 
     symprec = 0.01
     sym_opt_num = len(sitesym)

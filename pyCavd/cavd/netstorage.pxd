@@ -132,6 +132,7 @@ cdef extern from "../../zeo++/network.h":
     
     #added at 20180418
     #Edited at 20180530
+    #Edited at 20190610
     cdef bint throughVorNet(VORONOI_NETWORK*, char*, double*, double*, double*)
 
     cdef void viewVoronoiDecomp(ATOM_NETWORK*, double, string)
@@ -143,6 +144,9 @@ cdef extern from "../../zeo++/network.h":
     cdef void parseNetworkSymmetry(vector[int], VORONOI_NETWORK*)
 
     cdef void addVorNetId(VORONOI_NETWORK*)
+
+    cdef void add_net_to_vornet(vector[int], vector[double], vector[vector[double]], vector[vector[int]], VORONOI_NETWORK*)
+
 
 cdef extern from "../../zeo++/area_and_volume.h":
     cdef void visVoro(char* name, double probeRad, int skel_a, int skel_b, int skel_c,

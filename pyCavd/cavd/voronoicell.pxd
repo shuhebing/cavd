@@ -17,6 +17,10 @@ cdef extern from "../../zeo++/voronoicell.h":
         VOR_FACE(vector[CPoint], ATOM_NETWORK*, VORONOI_NETWORK*) except +
         vector[CPoint] vertices "orderedVertices"
         vector[int] node_ids "nodeIDs"
+        
+        # Add by YAJ 20180609
+        int neighborAtom1;
+        int neighborAtom2;
 
 
     cdef cppclass VOR_CELL:

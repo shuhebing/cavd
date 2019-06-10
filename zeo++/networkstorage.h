@@ -302,8 +302,10 @@ class VOR_NODE{
 public:
   VOR_NODE();
   //VOR_NODE(const VOR_NODE&);
+  VOR_NODE(int myid, double myX, double myY, double myZ, double rad);
   VOR_NODE(double myX, double myY, double myZ, double rad, std::vector<int> ids);
   VOR_NODE(double myX, double myY, double myZ, double fracA, double fracB, double fracC, double rad, std::vector<int> ids);
+  VOR_NODE(int myid, double myX, double myY, double myZ, double fracA, double fracB, double fracC, double rad);
   double x,y,z;
   double rad_stat_sphere;
   //neighbor atom's ID of voronoi node

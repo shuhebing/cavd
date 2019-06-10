@@ -259,16 +259,30 @@ bool performVoronoiDecomp(bool radial, ATOM_NETWORK *atmnet, VORONOI_NETWORK *vo
 }
 
 
-void createAdvCell(voronoicell &cell, vector<double> coords, int *idMap, VOR_CELL &newCell) {
+// void createAdvCell(voronoicell &cell, vector<double> coords, int *idMap, VOR_CELL &newCell) {
+// void createAdvCell(voronoicell_neighbor &cell, vector<double> coords, int *idMap, VOR_CELL &newCell) {
+void createAdvCell(voronoicell_neighbor &cell, vector<double> coords, int *idMap, VOR_CELL &newCell, int centerAtom) {
   int numFaces = cell.number_of_faces();
   vector<int> faceVertices;
   cell.face_vertices(faceVertices);
+  
+  // Add by YAJ 20190609
+  // Test code
+  vector<int> neighbours;
+  cell.neighbors(neighbours);
       
   int index = 0;
   for(int i = 0; i < numFaces; i++){
     vector<Point> faceCoords;
     vector<int>   faceIDs;
     int faceOrder = faceVertices[index];
+
+    // Add by YAJ 20190609
+    // Test code
+    int neighborAtom = neighbours[i];
+    cout << "neighborAtom: " << neighborAtom << endl;
+    cout << "face order: " << faceOrder << endl;
+
     index++;
     for(int j = 0; j < faceOrder; j++){
       int verID = faceVertices[index];
@@ -276,7 +290,7 @@ void createAdvCell(voronoicell &cell, vector<double> coords, int *idMap, VOR_CEL
       faceIDs.push_back(idMap[4*verID]);
       index++;
     }
-    newCell.addFace(VOR_FACE(faceCoords, faceIDs));
+    newCell.addFace(VOR_FACE(centerAtom, neighborAtom, faceCoords, faceIDs));
   }
 }
 
@@ -289,7 +303,10 @@ bool storeVoronoiNetwork(c_option &con, ATOM_NETWORK *atmnet, VORONOI_NETWORK *v
   voronoi_network vnet (con, VOR_NODE_MERGE_THRESHOLD); // data structure defined in voro++ which is not to be confused with VORONOI_NETWORK
   int id;
   double vvol=0,x,y,z,r;
-  voronoicell c(con);
+  // voronoicell c(con);
+
+  //Add by YAJ 20190609
+  voronoicell_neighbor c(con);
 
   puts("Performing Voronoi decomposition.");
 
@@ -316,6 +333,10 @@ bool storeVoronoiNetwork(c_option &con, ATOM_NETWORK *atmnet, VORONOI_NETWORK *v
       vector<double> coords;
       c.vertices(atmnet->atoms[id].x, atmnet->atoms[id].y, atmnet->atoms[id].z, coords);
 
+      // Add by YAJ 20190509
+      // Test code
+      cout<< "c.up:" << c.up << " current cell id: " << id << endl; 
+
       numNodes.push_back(c.p);
       cellIDs.push_back(id);
       vertices.push_back(coords);
@@ -326,7 +347,8 @@ bool storeVoronoiNetwork(c_option &con, ATOM_NETWORK *atmnet, VORONOI_NETWORK *v
       
       if(storeAdvCells){
         VOR_CELL newCell;
-        createAdvCell(c, coords, map, newCell);
+        // createAdvCell(c, coords, map, newCell);
+        createAdvCell(c, coords, map, newCell, id);
         advCells[id] = newCell;
       }
     } 
@@ -1439,4 +1461,26 @@ void addVorNetId(VORONOI_NETWORK *vornet){
   for (unsigned int i = 0; i < (vornet->nodes).size(); i++) {
 		(vornet->nodes[i]).id = i;
 	}
+}
+
+//将面心加入VoronoiNetwork
+void add_net_to_vornet(vector<int> fc_ids, vector<double> fc_radii, vector<vector<double> > fc_coords, vector<vector<int> > fc_vertices, VORONOI_NETWORK* vornet){
+  if(fc_ids.size() == fc_radii.size() == fc_coords.size() == fc_vertices.size()){
+    for(int i = 0; i < fc_ids.size(); i++){
+      vornet->nodes.push_back(VOR_NODE(fc_ids[i], fc_coords[i][0], fc_coords[i][1], fc_coords[i][2], fc_radii[i]));
+    }
+    for(int j = 0; j < fc_ids.size(); j++){
+      vector<int> verts = fc_vertices[j];
+      for(int k=0; k < verts.size(); k++){
+        VOR_NODE nodeA = vornet->nodes[verts[k]];
+        double edge_len = 0.0;
+        vornet->edges.push_back(VOR_EDGE(fc_ids[j], verts[k], fc_radii[j], fc_coords[j][0], fc_coords[j][1], fc_coords[j][2], 0, 0, 0, edge_len));
+        vornet->edges.push_back(VOR_EDGE(fc_ids[j], verts[k], fc_radii[j], fc_coords[j][0], fc_coords[j][1], fc_coords[j][2], 0, 0, 0, edge_len));
+      }
+    }
+  }
+  else
+  {
+    throw VoronoiDecompException();
+  }
 }

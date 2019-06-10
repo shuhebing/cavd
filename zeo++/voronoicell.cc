@@ -38,6 +38,16 @@ VOR_FACE::VOR_FACE(vector<Point> vertices, vector<int> vertexIDs) {
   nodeIDs = vertexIDs;
 }
 
+// Add by YAJ 20190609
+/* Store the provided vertices and their ids.  */
+VOR_FACE::VOR_FACE(int centerAt, int neighborAt, vector<Point> vertices, vector<int> vertexIDs) {
+  neighborAtom1 = centerAt;
+  neighborAtom2 = neighborAt;
+  orderedVertices = vertices;
+  nodeIDs = vertexIDs;
+}
+
+
 /* Returns a vector of pairs of integers and Points, where each entry represents
  *  the pair (node id, node coordinates).*/
 vector< pair<int,Point> > VOR_FACE::getNodes(){

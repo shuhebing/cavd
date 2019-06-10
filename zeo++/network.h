@@ -73,7 +73,12 @@ bool performVoronoiDecomp(bool radial, ATOM_NETWORK *cell, VORONOI_NETWORK *vorn
 			   std::vector<BASIC_VCELL> *bvcells);
 
 
-void createAdvCell(voro::voronoicell &cell, std::vector<double> coords, int *idMap, VOR_CELL &newCell);
+// void createAdvCell(voro::voronoicell &cell, std::vector<double> coords, int *idMap, VOR_CELL &newCell);
+void createAdvCell(voro::voronoicell_neighbor &cell, std::vector<double> coords, int *idMap, VOR_CELL &newCell);
+
+// Add by YAJ 20190609
+// void createAdvCell(voro::voronoicell &cell, std::vector<double> coords, int *idMap, VOR_CELL &newCell);
+void createAdvCell(voro::voronoicell_neighbor &cell, std::vector<double> coords, int *idMap, VOR_CELL &newCell, int id);
 
 /** Extends the provided unit cell in the x, y and z directions using
     the given factors and stores the resulting ATOM_NETWORK using the
@@ -116,6 +121,7 @@ bool throughVorNet(VORONOI_NETWORK *vornet, char *filename, double *Ri, double *
 void calculateConnParameters(VORONOI_NETWORK *vornet, char *filename, vector<double> *values);
 void parseNetworkSymmetry(std::vector<int> symmlabels, VORONOI_NETWORK *vornet);
 void addVorNetId(VORONOI_NETWORK *vornet);
+void add_net_to_vornet(vector<int> fc_ids, vector<double> fc_radii, vector<vector<double> > fc_coords, vector<vector<int> > fc_vertices, VORONOI_NETWORK* vornet);
 
 /* 自定义异常 */
 struct InvalidParticlesNumException : public exception{

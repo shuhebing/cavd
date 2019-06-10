@@ -36,12 +36,17 @@ public:
     std::vector<Point> orderedVertices;
     std::vector<int> nodeIDs;
 
+    // Add by YAJ 20180609
+    int neighborAtom1;
+    int neighborAtom2;
+  VOR_FACE(int centerAt, int neighborAt, std::vector<Point> vertices, std::vector<int> vertexIDs);
+
   /* Store the provided vertices and their ids.   */
   VOR_FACE(std::vector<Point> vertices, ATOM_NETWORK *atmnet, VORONOI_NETWORK *vornet);
 
   /* Store the provided vertices and their ids.  */
   VOR_FACE(std::vector<Point> vertices, std::vector<int> vertexIDs);
-  
+
   /* Returns a vector of pairs of integers and Points, where each entry represents
   *  the pair (node id, node coordinates).*/
   std::vector< std::pair<int,Point> > getNodes();
