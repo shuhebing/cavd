@@ -648,11 +648,16 @@ cdef class AtomNetwork:
             cntr = center["face_center"] 
             if cntr not in fcs:
                 fcs.append(cntr)
+                fc_frac = self.absolute_to_relative(center["face_center"][0], center["face_center"][1], center["face_center"][2])
                 neighAt1 = np.array(self.atoms[center["neighbor_Atom1"]][3])
+                rad_neighAt1 = self.atoms[center["neighbor_Atom1"]][2]
                 neighAt2 = np.array(self.atoms[center["neighbor_Atom2"]][3])
+                rad_neighAt2 = self.atoms[center["neighbor_Atom2"]][2]
                 fc_coord = np.array(cntr)
-                mindis = min(np.sqrt(np.sum(np.square(neighAt1-fc_coord))), np.sqrt(np.sum(np.square(neighAt1-fc_coord))))
-                face = {"fc_id": fcidx, "fc_radii": mindis, "fc_coord": center["face_center"], "face_vertexes": center["face_vertexes"]}
+                mindis = min(np.sqrt(np.sum(np.square(neighAt1-fc_coord))) - rad_neighAt1, np.sqrt(np.sum(np.square(neighAt1-fc_coord))) - rad_neighAt2)
+                nei_atomIDs = [center["neighbor_Atom1"], center["neighbor_Atom2"]]
+                # face = {"fc_id": fcidx, "fc_radii": mindis, "fc_coord": center["face_center"], "face_vertexes": center["face_vertexes"]}
+                face = {"fc_id": fcidx, "fc_radii": mindis, "fc_coord": center["face_center"], "fc_frac": fc_frac, "face_vertexes": center["face_vertexes"], "nei_atoms": nei_atomIDs}
                 faces.append(face)
                 fcidx = fcidx + 1
         
@@ -954,8 +959,12 @@ cdef class VoronoiNetwork:
         cdef vector[double] c_fc_radius
         cdef vector[vector[double]] c_fc_coords
         cdef vector[double] c_fc_coord
+        cdef vector[vector[double]] c_fc_fracs
+        cdef vector[double] c_frac
         cdef vector[vector[int]] c_fc_vertices
         cdef vector[int] c_fc_verts
+        cdef vector[vector[int]] c_fc_neiatoms
+        cdef vector[int] c_neiatoms
 
         for fc in fcs:
             c_fc_id.push_back(fc["fc_id"])
@@ -967,18 +976,30 @@ cdef class VoronoiNetwork:
             c_fc_coord.push_back(fc["fc_coord"][2])
             c_fc_coords.push_back(c_fc_coord)
 
+            c_frac.clear()
+            c_frac.push_back(fc["fc_frac"][0])
+            c_frac.push_back(fc["fc_frac"][1])
+            c_frac.push_back(fc["fc_frac"][2])
+            c_fc_fracs.push_back(c_frac)
+
             c_fc_verts.clear()
             face_vertexes = fc["face_vertexes"]
             for i in range(len(face_vertexes)):
                 c_fc_verts.push_back(face_vertexes[i])
             c_fc_vertices.push_back(c_fc_verts)
+
+            c_neiatoms.clear()
+            c_neiatoms.push_back(fc["nei_atoms"][0])
+            c_neiatoms.push_back(fc["nei_atoms"][1])
+            c_fc_neiatoms.push_back(c_neiatoms)
             
             print(fc["fc_id"])
             print(fc["fc_radii"])
             print(fc["fc_coord"])
             print(fc["face_vertexes"])
+            print(fc["nei_atoms"])
 
-        add_net_to_vornet(c_fc_id, c_fc_radius, c_fc_coords, c_fc_vertices, self.thisptr)
+        add_net_to_vornet(c_fc_id, c_fc_radius, c_fc_coords, c_fc_fracs, c_fc_vertices, c_fc_neiatoms, self.thisptr)
 
 
 def substitute_atoms(atmnet, substituteSeed, radialFlag):

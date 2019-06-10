@@ -20,6 +20,7 @@
 #include "material.h"
 //#include "OMS.h"
 #include <exception>
+#include "networkio.h"
 
 using namespace std;
 using namespace voro;
@@ -1472,20 +1473,32 @@ void addVorNetId(VORONOI_NETWORK *vornet){
 }
 
 //将面心加入VoronoiNetwork
-void add_net_to_vornet(vector<int> fc_ids, vector<double> fc_radii, vector<vector<double> > fc_coords, vector<vector<int> > fc_vertices, VORONOI_NETWORK* vornet){
-  if(fc_ids.size() == fc_radii.size() == fc_coords.size() == fc_vertices.size()){
+void add_net_to_vornet(vector<int> fc_ids, vector<double> fc_radii, vector<vector<double> > fc_coords, vector<vector<double> > fc_fracs, vector<vector<int> > fc_vertices, vector<vector<int> > fc_neiatoms, VORONOI_NETWORK* vornet){
+  cout << "fc_ids len: " << fc_ids.size() << endl;
+  cout << "fc_radii len: " << fc_radii.size() << endl;
+  cout << "fc_coords len: " << fc_coords.size() << endl;
+  cout << "fc_fracs len: " << fc_fracs.size() << endl;
+  cout << "fc_vertices len: " << fc_vertices.size() << endl;
+  cout << "fc_neiatoms len: " << fc_neiatoms.size() << endl;
+  if(fc_ids.size() == fc_radii.size() && fc_ids.size() == fc_coords.size() 
+      && fc_ids.size()== fc_fracs.size() && fc_ids.size() == fc_vertices.size() 
+      && fc_ids.size()== fc_neiatoms.size()){
     for(int i = 0; i < fc_ids.size(); i++){
-      vornet->nodes.push_back(VOR_NODE(fc_ids[i], fc_coords[i][0], fc_coords[i][1], fc_coords[i][2], fc_radii[i]));
+      vornet->nodes.push_back(VOR_NODE(fc_ids[i], fc_coords[i][0], fc_coords[i][1], fc_coords[i][2], fc_fracs[i][0], fc_fracs[i][1], fc_fracs[i][2], fc_radii[i], fc_neiatoms[i]));
     }
+    string filename = string("tmp.nt2");
+    bool store = writeToNt2((char *)filename.data(), vornet);
     for(int j = 0; j < fc_ids.size(); j++){
       vector<int> verts = fc_vertices[j];
       for(int k=0; k < verts.size(); k++){
         VOR_NODE nodeA = vornet->nodes[verts[k]];
         double edge_len = 0.0;
         vornet->edges.push_back(VOR_EDGE(fc_ids[j], verts[k], fc_radii[j], fc_coords[j][0], fc_coords[j][1], fc_coords[j][2], 0, 0, 0, edge_len));
-        vornet->edges.push_back(VOR_EDGE(fc_ids[j], verts[k], fc_radii[j], fc_coords[j][0], fc_coords[j][1], fc_coords[j][2], 0, 0, 0, edge_len));
+        vornet->edges.push_back(VOR_EDGE(verts[k], fc_ids[j], fc_radii[j], fc_coords[j][0], fc_coords[j][1], fc_coords[j][2], 0, 0, 0, edge_len));
       }
     }
+    string filename2 = string("tmp2.nt2");
+    bool store2 = writeToNt2((char *)filename2.data(), vornet);
   }
   else
   {

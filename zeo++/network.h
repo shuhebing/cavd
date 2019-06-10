@@ -121,7 +121,7 @@ bool throughVorNet(VORONOI_NETWORK *vornet, char *filename, double *Ri, double *
 void calculateConnParameters(VORONOI_NETWORK *vornet, char *filename, vector<double> *values);
 void parseNetworkSymmetry(std::vector<int> symmlabels, VORONOI_NETWORK *vornet);
 void addVorNetId(VORONOI_NETWORK *vornet);
-void add_net_to_vornet(vector<int> fc_ids, vector<double> fc_radii, vector<vector<double> > fc_coords, vector<vector<int> > fc_vertices, VORONOI_NETWORK* vornet);
+void add_net_to_vornet(vector<int> fc_ids, vector<double> fc_radii, vector<vector<double> > fc_coords, vector<vector<double> > fc_fracs, vector<vector<int> > fc_vertices, vector<vector<int> > fc_neiatoms, VORONOI_NETWORK* vornet);
 
 /* 自定义异常 */
 struct InvalidParticlesNumException : public exception{

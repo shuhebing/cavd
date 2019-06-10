@@ -659,20 +659,15 @@ VOR_NODE::VOR_NODE(double myX, double myY, double myZ, double fracA, double frac
     atomIDs = ids;
 }
 
-VOR_NODE::VOR_NODE(int myid, double myX, double myY, double myZ, double rad){
-    id = myid;
-    x = myX; y = myY; z = myZ;
-    rad_stat_sphere = rad;
-}
-
 VOR_NODE::VOR_NODE(int myid, double myX, double myY, double myZ, double fracA, double fracB, double fracC, 
-                   double rad){
+                   double rad, vector<int> ids){
     id = myid;
     x = myX; y = myY; z = myZ;
     frac_a = fracA;
     frac_b = fracB;
     frac_c = fracC;
     rad_stat_sphere = rad;
+    atomIDs = ids;
 }
 
 //Copy constructor for VOR_NODE
