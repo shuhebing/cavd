@@ -638,6 +638,7 @@ cdef class AtomNetwork:
                 face_centers.append(face_center)
 
         # Convert the Zeo++ Point objects in (x,y,z) tuple objects
+        print("face_centers in netstorage.pyx", face_centers)
         fcs = []
         faces = []
         # fcid_start = vnodes.size()
@@ -655,7 +656,7 @@ cdef class AtomNetwork:
                 faces.append(face)
                 fcidx = fcidx + 1
         
-        print(len(faces), len(face_centers))
+        print("faces:", len(faces), "face_centers", len(face_centers))
 
         #bvcelllist = []
         # define copy methods for BASIC_VCELL and VOR_CELL methods
@@ -971,7 +972,12 @@ cdef class VoronoiNetwork:
             for i in range(len(face_vertexes)):
                 c_fc_verts.push_back(face_vertexes[i])
             c_fc_vertices.push_back(c_fc_verts)
-        
+            
+            print(fc["fc_id"])
+            print(fc["fc_radii"])
+            print(fc["fc_coord"])
+            print(fc["face_vertexes"])
+
         add_net_to_vornet(c_fc_id, c_fc_radius, c_fc_coords, c_fc_vertices, self.thisptr)
 
 

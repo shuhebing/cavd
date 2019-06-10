@@ -151,9 +151,14 @@ void* performVoronoiDecomp(bool radial, ATOM_NETWORK *cell, VORONOI_NETWORK *vor
       vector <ATOM> ::iterator iter = cell->atoms.begin();
       i = 0;
       int da, db, dc;
-      while(iter != cell->atoms.end()){ 
+      while(iter != cell->atoms.end()){
         rad_con->put(i,iter->x,iter->y,iter->z,iter->radius, da, db, dc);
         atomShifts.push_back(da); atomShifts.push_back(db); atomShifts.push_back(dc);
+
+        // Test code add at 20190610
+        cout << "network.cc/performVoronoiDecomp." << endl;
+        cout << "da: " << da << " db: " << db << " dc: " << dc << endl;
+
         iter++;
         i++;
       }
@@ -289,6 +294,9 @@ void createAdvCell(voronoicell_neighbor &cell, vector<double> coords, int *idMap
       faceCoords.push_back(Point(coords[verID*3], coords[verID*3+1], coords[verID*3+2]));
       faceIDs.push_back(idMap[4*verID]);
       index++;
+
+      //test code add by YAJ
+      cout << "vertic id in face: " << idMap[4*verID] << endl;
     }
     newCell.addFace(VOR_FACE(centerAtom, neighborAtom, faceCoords, faceIDs));
   }
@@ -335,7 +343,7 @@ bool storeVoronoiNetwork(c_option &con, ATOM_NETWORK *atmnet, VORONOI_NETWORK *v
 
       // Add by YAJ 20190509
       // Test code
-      cout<< "c.up:" << c.up << " current cell id: " << id << endl; 
+      cout<< " current cell id: " << id << endl; 
 
       numNodes.push_back(c.p);
       cellIDs.push_back(id);

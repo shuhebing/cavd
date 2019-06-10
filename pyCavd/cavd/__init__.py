@@ -202,6 +202,7 @@ def getIonicRadii(filename):
     return radii
 
 def AllCom8(filename, standard, migrant=None, rad_flag=True, effective_rad=True, rad_file=None):
+    radii = {}
     with zopen(filename, "rt") as f:
         input_string = f.read()
     parser = CifParser_new.from_string(input_string)
@@ -224,7 +225,12 @@ def AllCom8(filename, standard, migrant=None, rad_flag=True, effective_rad=True,
     sym_opt_num = len(sitesym)
     voids_num = len(vornet.nodes)
 
-    sym_vornet,voids =  get_labeled_vornet(vornet, sitesym, symprec)
+    print("faces in __init__", faces)
+    writeNETFile(prefixname+"_origin_nofcs.net",atmnet,vornet)
+    add_fcs_vornet = vornet.add_facecenters(faces)
+    writeNETFile(prefixname+"_origin_addfcs.net",atmnet,add_fcs_vornet)
+
+    sym_vornet,voids =  get_labeled_vornet(add_fcs_vornet, sitesym, symprec)
     uni_voids_num = len(voids)
 
     voids_abs = []
@@ -261,6 +267,7 @@ def AllCom8(filename, standard, migrant=None, rad_flag=True, effective_rad=True,
     return symm_sybol,symm_number,symprec,voids_num,sym_opt_num,uni_voids_num,recover_rate,recover_state,migrate_mindis
 
 def AllCom7(filename, standard, migrant=None, rad_flag=True, effective_rad=True, rad_file=None):
+    radii = {}
     with zopen(filename, "rt") as f:
         input_string = f.read()
     parser = CifParser_new.from_string(input_string)
@@ -327,6 +334,7 @@ def AllCom7(filename, standard, migrant=None, rad_flag=True, effective_rad=True,
 
 # 使用带半径的公式进行计算
 def AllCom6(filename, standard, migrant=None, rad_flag=True, effective_rad=True, rad_file=None):
+    radii = {}    
     with zopen(filename, "rt") as f:
         input_string = f.read()
     parser = CifParser_new.from_string(input_string)
@@ -379,6 +387,7 @@ def AllCom6(filename, standard, migrant=None, rad_flag=True, effective_rad=True,
     
 # 使用带半径的公式进行计算
 def AllCom5(filename, standard, migrant=None, rad_flag=True, effective_rad=True, rad_file=None):
+    radii = {}
     with zopen(filename, "rt") as f:
         input_string = f.read()
     parser = CifParser_new.from_string(input_string)
