@@ -21,6 +21,7 @@ from libcpp.map cimport map
 from libcpp.pair cimport pair
 from libcpp.string cimport string
 import numpy as np
+import math
 
 #STUFF='Hi'
 
@@ -595,6 +596,7 @@ cdef class AtomNetwork:
         cdef vector[int] node_ids
         # face_node_ids = set()
         face_node_ids = []
+
         for i in range(vcells.size()):
             # print("cell",i)
             vfaces = vcells[i].faces
@@ -605,6 +607,7 @@ cdef class AtomNetwork:
 
                 node_ids = vfaces[j].node_ids
                 node_id_list = []
+                node_coord_list = []
                 for k in range(node_ids.size()):
                     node_id_list.append(node_ids[k])
                 # print("netstorage node_id_list:", node_id_list)
@@ -623,6 +626,11 @@ cdef class AtomNetwork:
                     centroid.x = centroid.x + vertices[k].vals[0]
                     centroid.y = centroid.y + vertices[k].vals[1]
                     centroid.z = centroid.z + vertices[k].vals[2]
+
+                    # Add by YAJ 20190611
+                    node_coord = [vertices[k].vals[0], vertices[k].vals[1], vertices[k].vals[2]]
+                    node_coord_list.append(node_coord)
+
                 centroid.x = centroid.x/vertices.size()
                 centroid.y = centroid.y/vertices.size()
                 centroid.z = centroid.z/vertices.size()
@@ -634,30 +642,64 @@ cdef class AtomNetwork:
                 face_center["neighbor_Atom1"] = neighborAt1
                 face_center["neighbor_Atom2"] = neighborAt2
                 face_center["face_center"] = [centroid.x, centroid.y, centroid.z]
-                face_center["face_vertexes"] = node_id_list
+                face_center["face_vertex_ids"] = node_id_list
+                face_center["face_vertex_coords"] = node_coord_list
                 face_centers.append(face_center)
 
         # Convert the Zeo++ Point objects in (x,y,z) tuple objects
-        print("face_centers in netstorage.pyx", face_centers)
         fcs = []
         faces = []
         # fcid_start = vnodes.size()
         fcidx = vnodes.size()
         for center in face_centers:
             # Added by YAJ, at 20190609
-            cntr = center["face_center"] 
-            if cntr not in fcs:
-                fcs.append(cntr)
-                fc_frac = self.absolute_to_relative(center["face_center"][0], center["face_center"][1], center["face_center"][2])
+            cntr = center["face_center"]
+            fc_frac = self.absolute_to_relative(cntr[0], cntr[1], cntr[2])
+            fc_frac = [round(p, 6) for p in fc_frac]
+
+            # fc_pdv = [math.floor(frac) for frac in fc_frac]
+
+            frac_rd = [round(p%1.0, 6) for p in fc_frac]
+
+            # print("cntr:",cntr)
+            # print("fc_frac:",fc_frac)
+            # print("frac_rd:",frac_rd)
+
+            if frac_rd not in fcs:
+                fcs.append(frac_rd)
+                # Get the peroidic vector of face center
+                fc_pdv = [math.floor(frac) for frac in frac_rd]
+                print(fc_pdv)
+
                 neighAt1 = np.array(self.atoms[center["neighbor_Atom1"]][3])
                 rad_neighAt1 = self.atoms[center["neighbor_Atom1"]][2]
                 neighAt2 = np.array(self.atoms[center["neighbor_Atom2"]][3])
                 rad_neighAt2 = self.atoms[center["neighbor_Atom2"]][2]
+                print("neighAt1", neighAt1)
+                print("neighAt2", neighAt2)
+
                 fc_coord = np.array(cntr)
                 mindis = min(np.sqrt(np.sum(np.square(neighAt1-fc_coord))) - rad_neighAt1, np.sqrt(np.sum(np.square(neighAt1-fc_coord))) - rad_neighAt2)
                 nei_atomIDs = [center["neighbor_Atom1"], center["neighbor_Atom2"]]
-                # face = {"fc_id": fcidx, "fc_radii": mindis, "fc_coord": center["face_center"], "face_vertexes": center["face_vertexes"]}
-                face = {"fc_id": fcidx, "fc_radii": mindis, "fc_coord": center["face_center"], "fc_frac": fc_frac, "face_vertexes": center["face_vertexes"], "nei_atoms": nei_atomIDs}
+                
+                face_vertex_fracs = []
+                face_vertex_pdvs = []
+                face_vertex_diss = []
+                vertices_coords = center["face_vertex_coords"]
+                for vertex_coord in vertices_coords:
+                    vertex_frac = self.absolute_to_relative(vertex_coord[0], vertex_coord[1], vertex_coord[2])
+                    vertex_frac = [round(p, 6) for p in vertex_frac]
+                    face_vertex_fracs.append(vertex_frac)
+                    face_vertex_pdvs.append([math.floor(v_frac) for v_frac in vertex_frac])
+                    vertex = np.array(vertex_coord)
+                    dist = np.sqrt(np.sum(np.square(vertex-fc_coord)))
+                    face_vertex_diss.append(dist)
+
+
+                face = {"fc_id": fcidx, "fc_radii": mindis, "fc_coord": center["face_center"], \
+                    "fc_frac": frac_rd, "fc_pdv": fc_pdv, "nei_atoms": nei_atomIDs, "face_vertex_ids": center["face_vertex_ids"], \
+                    "face_vertex_coords": center["face_vertex_coords"], "face_vertex_fracs": face_vertex_fracs, \
+                    "face_vertex_pdvs": face_vertex_pdvs, "fcver_dists": face_vertex_diss}
                 faces.append(face)
                 fcidx = fcidx + 1
         
@@ -955,52 +997,113 @@ cdef class VoronoiNetwork:
 
     # add at 20190610
     def add_facecenters(self, fcs):
-        cdef vector[int] c_fc_id
-        cdef vector[double] c_fc_radius
-        cdef vector[vector[double]] c_fc_coords
+        # face centers
+        cdef vector[int] c_fcs_ids
+        cdef vector[double] c_fcs_radii
         cdef vector[double] c_fc_coord
-        cdef vector[vector[double]] c_fc_fracs
-        cdef vector[double] c_frac
-        cdef vector[vector[int]] c_fc_vertices
-        cdef vector[int] c_fc_verts
-        cdef vector[vector[int]] c_fc_neiatoms
-        cdef vector[int] c_neiatoms
+        cdef vector[vector[double]] c_fcs_coords
+        cdef vector[double] c_fc_frac
+        cdef vector[vector[double]] c_fcs_fracs
+        cdef vector[int] c_fc_pdv
+        cdef vector[vector[int]] c_fcs_pdvs
+        cdef vector[int] c_fc_neiatom
+        cdef vector[vector[int]] c_fcs_neiatoms
 
+        # vertices in the faces
+        cdef vector[int] c_fc_vertids
+        cdef vector[vector[int]] c_fcs_vertids
+        cdef vector[double] c_vertcoord
+        cdef vector[vector[double]] c_fc_vertcoords
+        cdef vector[vector[vector[double]]] c_fcs_vertcoords
+        cdef vector[double] c_vertfrac
+        cdef vector[vector[double]] c_fc_vertfracs
+        cdef vector[vector[vector[double]]] c_fcs_vertfracs
+        cdef vector[int] c_vertpdv
+        cdef vector[vector[int]] c_fc_vertpdvs
+        cdef vector[vector[vector[int]]] c_fcs_vertpdvs
+        cdef vector[double] c_fcvert_dists
+        cdef vector[vector[double]] c_fcverts_dists
+        
         for fc in fcs:
-            c_fc_id.push_back(fc["fc_id"])
-            c_fc_radius.push_back(fc["fc_radii"])
+            c_fcs_ids.push_back(fc["fc_id"])
+            c_fcs_radii.push_back(fc["fc_radii"])
 
             c_fc_coord.clear()
             c_fc_coord.push_back(fc["fc_coord"][0])
             c_fc_coord.push_back(fc["fc_coord"][1])
             c_fc_coord.push_back(fc["fc_coord"][2])
-            c_fc_coords.push_back(c_fc_coord)
+            c_fcs_coords.push_back(c_fc_coord)
 
-            c_frac.clear()
-            c_frac.push_back(fc["fc_frac"][0])
-            c_frac.push_back(fc["fc_frac"][1])
-            c_frac.push_back(fc["fc_frac"][2])
-            c_fc_fracs.push_back(c_frac)
+            c_fc_frac.clear()
+            c_fc_frac.push_back(fc["fc_frac"][0])
+            c_fc_frac.push_back(fc["fc_frac"][1])
+            c_fc_frac.push_back(fc["fc_frac"][2])
+            c_fcs_fracs.push_back(c_fc_frac)
 
-            c_fc_verts.clear()
-            face_vertexes = fc["face_vertexes"]
+            c_fc_pdv.clear()
+            c_fc_pdv.push_back(fc["fc_pdv"][0])
+            c_fc_pdv.push_back(fc["fc_pdv"][1])
+            c_fc_pdv.push_back(fc["fc_pdv"][2])
+            c_fcs_pdvs.push_back(c_fc_pdv)
+
+            c_fc_neiatom.clear()
+            c_fc_neiatom.push_back(fc["nei_atoms"][0])
+            c_fc_neiatom.push_back(fc["nei_atoms"][1])
+            c_fcs_neiatoms.push_back(c_fc_neiatom)
+
+
+            c_fc_vertids.clear()
+            face_vertexes = fc["face_vertex_ids"]
             for i in range(len(face_vertexes)):
-                c_fc_verts.push_back(face_vertexes[i])
-            c_fc_vertices.push_back(c_fc_verts)
+                c_fc_vertids.push_back(face_vertexes[i])
+            c_fcs_vertids.push_back(c_fc_vertids)
 
-            c_neiatoms.clear()
-            c_neiatoms.push_back(fc["nei_atoms"][0])
-            c_neiatoms.push_back(fc["nei_atoms"][1])
-            c_fc_neiatoms.push_back(c_neiatoms)
+            c_fc_vertcoords.clear()
+            vertcoords = fc["face_vertex_coords"]
+            for j in range(len(vertcoords)):
+                c_vertcoord.clear()
+                c_vertcoord.push_back(vertcoords[j][0])
+                c_vertcoord.push_back(vertcoords[j][1])
+                c_vertcoord.push_back(vertcoords[j][2])
+                c_fc_vertcoords.push_back(c_vertcoord)
+            c_fcs_vertcoords.push_back(c_fc_vertcoords)
+
+            c_fc_vertfracs.clear()
+            vertfracs = fc["face_vertex_fracs"]
+            for k in range(len(vertfracs)):
+                c_vertfrac.clear()
+                c_vertfrac.push_back(vertfracs[k][0])
+                c_vertfrac.push_back(vertfracs[k][1])
+                c_vertfrac.push_back(vertfracs[k][2])
+                c_fc_vertfracs.push_back(c_vertfrac)
+            c_fcs_vertfracs.push_back(c_fc_vertfracs)
+
+            c_fc_vertpdvs.clear()
+            vertpdvs = fc["face_vertex_pdvs"]
+            for m in range(len(vertpdvs)):
+                c_vertpdv.clear()
+                c_vertpdv.push_back(vertpdvs[m][0])
+                c_vertpdv.push_back(vertpdvs[m][1])
+                c_vertpdv.push_back(vertpdvs[m][2])
+                c_fc_vertpdvs.push_back(c_vertpdv)
+            c_fcs_vertpdvs.push_back(c_fc_vertpdvs)
+
+            c_fcvert_dists.clear()
+            fcvertdis = fc["fcver_dists"]
+            for n in range(len(fcvertdis)):
+                c_fcvert_dists.push_back(fcvertdis[k])
+            c_fcverts_dists.push_back(c_fcvert_dists)
             
-            print(fc["fc_id"])
-            print(fc["fc_radii"])
-            print(fc["fc_coord"])
-            print(fc["face_vertexes"])
-            print(fc["nei_atoms"])
+        for p in range(len(c_fcs_pdvs)):
+            print("fcpdv",c_fcs_pdvs[p][0], c_fcs_pdvs[p][1], c_fcs_pdvs[p][2])
+            tmp = c_fcs_vertpdvs[p]
+            for q in range(len(tmp)):
+                print("verpdv",tmp[q][0], tmp[q][1], tmp[q][2])
 
-        add_net_to_vornet(c_fc_id, c_fc_radius, c_fc_coords, c_fc_fracs, c_fc_vertices, c_fc_neiatoms, self.thisptr)
-
+        add_net_to_vornet(c_fcs_ids, c_fcs_radii, c_fcs_coords, c_fcs_fracs, \
+                c_fcs_pdvs, c_fcs_neiatoms, c_fcs_vertids, c_fcs_vertcoords, \
+                c_fcs_vertfracs, c_fcs_vertpdvs, c_fcverts_dists, self.thisptr)
+        return self
 
 def substitute_atoms(atmnet, substituteSeed, radialFlag):
     """

@@ -220,15 +220,18 @@ def AllCom8(filename, standard, migrant=None, rad_flag=True, effective_rad=True,
     
     prefixname = filename.replace(".cif","")
     vornet,edge_centers,fcs,faces = atmnet.perform_voronoi_decomposition(True)
+    print("face", faces)
+    writeVaspFile(prefixname+"_origin_nofcs.vasp",atmnet,vornet)
 
     symprec = 0.01
     sym_opt_num = len(sitesym)
     voids_num = len(vornet.nodes)
 
-    print("faces in __init__", faces)
     writeNETFile(prefixname+"_origin_nofcs.net",atmnet,vornet)
     add_fcs_vornet = vornet.add_facecenters(faces)
     writeNETFile(prefixname+"_origin_addfcs.net",atmnet,add_fcs_vornet)
+
+    spg_vornet,uq_voids = get_equivalent_vornet(add_fcs_vornet, 0.01)
 
     sym_vornet,voids =  get_labeled_vornet(add_fcs_vornet, sitesym, symprec)
     uni_voids_num = len(voids)
@@ -246,13 +249,13 @@ def AllCom8(filename, standard, migrant=None, rad_flag=True, effective_rad=True,
     # print(bottlenecks)
     
     # print("fcs",fcs)
-    facecenters = []
-    for fc in fcs:
-        facecenters.append(atmnet.absolute_to_relative(fc[0], fc[1], fc[2]))
+    # facecenters = []
+    # for fc in fcs:
+    #     facecenters.append(atmnet.absolute_to_relative(fc[0], fc[1], fc[2]))
     # print("facecenters")
     # print(facecenters)
 
-    vorosites = [voids_abs, bottlenecks, facecenters]
+    vorosites = [voids_abs, bottlenecks, fcs]
     recover_rate, recover_state, migrate_mindis = rediscovery_kdTree(migrant,vorosites,stru)
     
     writeNETFile(prefixname+"_origin.net",atmnet,sym_vornet)
@@ -262,6 +265,7 @@ def AllCom8(filename, standard, migrant=None, rad_flag=True, effective_rad=True,
     minRad = standard*migrant_alpha*0.85
     dim_network,connect = ConnStatus(minRad, conn_val)
     writeVaspFile(prefixname+"_"+str(round(minRad,4))+".vasp",atmnet,sym_vornet,minRad,5.0)
+    channels = Channel.findChannels(sym_vornet,atmnet,0,prefixname+"_0.net")
     channels = Channel.findChannels(sym_vornet,atmnet,minRad,prefixname+"_"+str(round(minRad,4))+".net")
     
     return symm_sybol,symm_number,symprec,voids_num,sym_opt_num,uni_voids_num,recover_rate,recover_state,migrate_mindis

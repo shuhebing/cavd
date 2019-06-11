@@ -289,11 +289,14 @@ def get_equivalent_vornet(vornet, symprec=1e-5, angle_tolerance=5):
     cell = (lattice, positions, numbers)
 
     dataset = spglib.get_symmetry_dataset(cell, symprec, angle_tolerance)
+    print(dataset['number'])
     voids = []
     if dataset:
         symm_label = dataset['equivalent_atoms']
         vornet_uni_symm = vornet.parse_symmetry(symm_label)
         sym_independ = np.unique(dataset['equivalent_atoms'])
+        print("symm_label", symm_label)
+        print("sym_independ", sym_independ)
         print("The number of symmetry distinct voids: ",len(sym_independ))
         for i in sym_independ:
             voids.append(positions[i])
