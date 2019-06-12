@@ -1,9 +1,7 @@
 #ifndef NETWORKIO_H
 #define NETWORKIO_H
 
-//#include "network.h"
 #include <iostream>
-
 #include "networkstorage.h"
 
 #define SUPERCELL_SIZE 2

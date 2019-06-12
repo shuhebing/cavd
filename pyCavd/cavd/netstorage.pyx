@@ -563,13 +563,7 @@ cdef class AtomNetwork:
         #print self.rad_flag
         if not performVoronoiDecomp(self.rad_flag, self.thisptr, 
                 vornet.thisptr, &vcells, saveVorCells, &bvcells):
-            #edited at 20180604
-            #Add a compute flag
-            #success = False
             raise PerformVDError
-        #else:
-            #success = True
-        cdef int N
 
         # Get the edge centers
         edge_centers = []
@@ -591,34 +585,29 @@ cdef class AtomNetwork:
         face_centers = []
         cdef vector[VOR_FACE] vfaces
         cdef vector[CPoint] vertices
-        cdef CPoint* cpoint_ptr 
         #cdef map[int, int] id_maps
         cdef vector[int] node_ids
-        # face_node_ids = set()
-        face_node_ids = []
 
         for i in range(vcells.size()):
             # print("cell",i)
             vfaces = vcells[i].faces
             for j in range(vfaces.size()):
                 # print("face",j)
+
+                # 获取Voronoi Face两侧的原子
                 neighborAt1 = vfaces[j].neighborAtom1
                 neighborAt2 = vfaces[j].neighborAtom1
 
+                # 获取Voronoi Face上顶点的id
+                vertice_id_list = []
                 node_ids = vfaces[j].node_ids
-                node_id_list = []
-                node_coord_list = []
                 for k in range(node_ids.size()):
-                    node_id_list.append(node_ids[k])
+                    vertice_id_list.append(node_ids[k])
                 # print("netstorage node_id_list:", node_id_list)
-                # node_id_set = frozenset(node_id_list)
-                # print("netstorage node_id_set:", node_id_set)
-                # if not node_id_set in face_node_ids:
-                # if not sorted(node_id_list) in face_node_ids:
-                #    print("sorted node_id_list", sorted(node_id_list))
-                # face_node_ids.append(sorted(node_id_list))
+                
+                # 获取Voronoi面心以及面上顶点的笛卡尔坐标
+                vertice_coord_list = []
                 centroid = Point()
-                cpoint_ptr = (<Point?>centroid).thisptr
                 vertices = vfaces[j].vertices
                 for k in range(vertices.size()):
                     # print("vertices",k)
@@ -628,8 +617,8 @@ cdef class AtomNetwork:
                     centroid.z = centroid.z + vertices[k].vals[2]
 
                     # Add by YAJ 20190611
-                    node_coord = [vertices[k].vals[0], vertices[k].vals[1], vertices[k].vals[2]]
-                    node_coord_list.append(node_coord)
+                    vertice_coord = [vertices[k].vals[0], vertices[k].vals[1], vertices[k].vals[2]]
+                    vertice_coord_list.append(vertice_coord)
 
                 centroid.x = centroid.x/vertices.size()
                 centroid.y = centroid.y/vertices.size()
@@ -638,6 +627,7 @@ cdef class AtomNetwork:
                 # face_centers.append(centroid)
 
                 # Add at 20190609
+                # 将面心数据以字典形式组合（后续将修改为数据结构）
                 face_center = {}
                 face_center["neighbor_Atom1"] = neighborAt1
                 face_center["neighbor_Atom2"] = neighborAt2
@@ -646,19 +636,19 @@ cdef class AtomNetwork:
                 face_center["face_vertex_coords"] = node_coord_list
                 face_centers.append(face_center)
 
-        # Convert the Zeo++ Point objects in (x,y,z) tuple objects
         fcs = []
         faces = []
-        # fcid_start = vnodes.size()
+
+        # 为后续将Voronoi Face center加入Voronoi network的便利
+        # 设置面心的起始id为vornet.thisptr.nodes.size()
+
         fcidx = vnodes.size()
         for center in face_centers:
             # Added by YAJ, at 20190609
             cntr = center["face_center"]
             fc_frac = self.absolute_to_relative(cntr[0], cntr[1], cntr[2])
-            fc_frac = [round(p, 6) for p in fc_frac]
-
-            # fc_pdv = [math.floor(frac) for frac in fc_frac]
-
+            # fc_frac = [round(p, 6) for p in fc_frac]
+            fc_pdv = [math.floor(frac) for frac in fc_frac]
             frac_rd = [round(p%1.0, 6) for p in fc_frac]
 
             # print("cntr:",cntr)
@@ -668,29 +658,38 @@ cdef class AtomNetwork:
             if frac_rd not in fcs:
                 fcs.append(frac_rd)
                 # Get the peroidic vector of face center
-                fc_pdv = [math.floor(frac) for frac in frac_rd]
+                # fc_pdv = [math.floor(frac) for frac in frac_rd]
                 print(fc_pdv)
 
+                # 如何区分邻居原子的pdv？？？
+                nei_atomIDs = [center["neighbor_Atom1"], center["neighbor_Atom2"]]
+
+                # 计算面心到邻居原子的距离，并取最小值
                 neighAt1 = np.array(self.atoms[center["neighbor_Atom1"]][3])
                 rad_neighAt1 = self.atoms[center["neighbor_Atom1"]][2]
                 neighAt2 = np.array(self.atoms[center["neighbor_Atom2"]][3])
                 rad_neighAt2 = self.atoms[center["neighbor_Atom2"]][2]
                 print("neighAt1", neighAt1)
                 print("neighAt2", neighAt2)
-
                 fc_coord = np.array(cntr)
                 mindis = min(np.sqrt(np.sum(np.square(neighAt1-fc_coord))) - rad_neighAt1, np.sqrt(np.sum(np.square(neighAt1-fc_coord))) - rad_neighAt2)
-                nei_atomIDs = [center["neighbor_Atom1"], center["neighbor_Atom2"]]
-                
+                    
                 face_vertex_fracs = []
                 face_vertex_pdvs = []
                 face_vertex_diss = []
                 vertices_coords = center["face_vertex_coords"]
                 for vertex_coord in vertices_coords:
+                    # 计算面上顶点的分数坐标
                     vertex_frac = self.absolute_to_relative(vertex_coord[0], vertex_coord[1], vertex_coord[2])
                     vertex_frac = [round(p, 6) for p in vertex_frac]
                     face_vertex_fracs.append(vertex_frac)
-                    face_vertex_pdvs.append([math.floor(v_frac) for v_frac in vertex_frac])
+
+                    # 计算面上顶点相对于面心的pdv
+                    vertex_pdv = [math.floor(v_frac) for v_frac in vertex_frac]
+                    edge_pdv = [vertex_pdv[i] - fc_pdv[i] for i in range(len(vertex_pdv))]
+                    face_vertex_pdvs.append(edge_pdv)
+
+                    # 计算面上顶点到面心的距离
                     vertex = np.array(vertex_coord)
                     dist = np.sqrt(np.sum(np.square(vertex-fc_coord)))
                     face_vertex_diss.append(dist)

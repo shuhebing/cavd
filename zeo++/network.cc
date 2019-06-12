@@ -1485,15 +1485,10 @@ void add_net_to_vornet(vector<int> fc_ids, vector<double> fc_radii,
       && fc_ids.size()== fc_fracs.size() && fc_ids.size() == fc_vertices.size() 
       && fc_ids.size()== fc_neiatoms.size() ){
 
-    // string filename1 = string("tmp1.nt2");
-    // bool store1 = writeToNt2((char *)filename1.data(), vornet);
-
     for(int i = 0; i < fc_ids.size(); i++){
       cout<< "fc_fracs: " << fc_fracs[i][0] << " " << fc_fracs[i][1] << " " << fc_fracs[i][2] << endl;
       vornet->nodes.push_back(VOR_NODE(fc_ids[i], fc_coords[i][0], fc_coords[i][1], fc_coords[i][2], fc_fracs[i][0], fc_fracs[i][1], fc_fracs[i][2], fc_radii[i], fc_neiatoms[i]));
     }
-    // string filename2 = string("tmp2.nt2");
-    // bool store2 = writeToNt2((char *)filename2.data(), vornet);
 
     for(int j = 0; j < fc_ids.size(); j++){
       vector<int> verts = fc_vertices[j];
