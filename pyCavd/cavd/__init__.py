@@ -220,7 +220,6 @@ def AllCom8(filename, standard, migrant=None, rad_flag=True, effective_rad=True,
     
     prefixname = filename.replace(".cif","")
     vornet,edge_centers,fcs,faces = atmnet.perform_voronoi_decomposition(True)
-    print("face", faces)
     writeVaspFile(prefixname+"_origin_nofcs.vasp",atmnet,vornet)
 
     symprec = 0.01

@@ -156,10 +156,6 @@ void* performVoronoiDecomp(bool radial, ATOM_NETWORK *cell, VORONOI_NETWORK *vor
         rad_con->put(i,iter->x,iter->y,iter->z,iter->radius, da, db, dc);
         atomShifts.push_back(da); atomShifts.push_back(db); atomShifts.push_back(dc);
 
-        // Test code add at 20190610
-        cout << "network.cc/performVoronoiDecomp." << endl;
-        cout << "da: " << da << " db: " << db << " dc: " << dc << endl;
-
         iter++;
         i++;
       }
@@ -297,7 +293,7 @@ void createAdvCell(voronoicell_neighbor &cell, vector<double> coords, int *idMap
       index++;
 
       //test code add by YAJ
-      cout << "vertic id in face: " << idMap[4*verID] << endl;
+      cout << "vertice id in face: " << idMap[4*verID] << endl;
     }
     newCell.addFace(VOR_FACE(centerAtom, neighborAtom, faceCoords, faceIDs));
   }
@@ -1473,43 +1469,30 @@ void addVorNetId(VORONOI_NETWORK *vornet){
 }
 
 //将面心加入VoronoiNetwork
-void add_net_to_vornet(vector<int> fc_ids, vector<double> fc_radii, 
-                        vector<vector<double> > fc_coords, vector<vector<double> > fc_fracs, 
-                        vector<vector<int> > fc_pdvs, vector<vector<int> > fc_neiatoms,
-                        vector<vector<int> > fc_vertices, vector< vector< vector<double> > > vert_coords, 
-                        vector< vector< vector<double> > > vert_fracs, vector< vector< vector<int> > > vert_pdvs, 
+void add_net_to_vornet(vector<int> fc_ids, vector<double> fc_radii, vector<vector<double> > fc_coords, vector<vector<double> > fc_fracs,
+                        vector<vector<int> > fc_neiatoms, vector<vector<int> > fc_vertices, vector< vector< vector<int> > > edge_pdvs, 
                         vector< vector< double> > fc_vert_dists, VORONOI_NETWORK* vornet){
   int da, db, dc;
- // void add_net_to_vornet(vector<int> fc_ids, vector<double> fc_radii, vector<vector<double> > fc_coords, vector<vector<double> > fc_fracs, vector<vector<int> > fc_vertices, vector<vector<int> > fc_neiatoms, VORONOI_NETWORK* vornet){
   if(fc_ids.size() == fc_radii.size() && fc_ids.size() == fc_coords.size() 
-      && fc_ids.size()== fc_fracs.size() && fc_ids.size() == fc_vertices.size() 
-      && fc_ids.size()== fc_neiatoms.size() ){
+      && fc_ids.size()== fc_fracs.size() && fc_ids.size() == fc_vertices.size()){
 
     for(int i = 0; i < fc_ids.size(); i++){
-      cout<< "fc_fracs: " << fc_fracs[i][0] << " " << fc_fracs[i][1] << " " << fc_fracs[i][2] << endl;
+      // cout<< "fc_fracs: " << fc_fracs[i][0] << " " << fc_fracs[i][1] << " " << fc_fracs[i][2] << endl;
       vornet->nodes.push_back(VOR_NODE(fc_ids[i], fc_coords[i][0], fc_coords[i][1], fc_coords[i][2], fc_fracs[i][0], fc_fracs[i][1], fc_fracs[i][2], fc_radii[i], fc_neiatoms[i]));
     }
-
     for(int j = 0; j < fc_ids.size(); j++){
       vector<int> verts = fc_vertices[j];
       for(int k=0; k < verts.size(); k++){
-        vector<int> fc_pdv = fc_pdvs[j];
-        vector<int> vert_pdv = vert_pdvs[j][k];
-
-        da = vert_pdv[0] - fc_pdv[0];
-        db = vert_pdv[1] - fc_pdv[1];
-        dc = vert_pdv[2] - fc_pdv[2];
-
-        // cout<< "vert_pdv: " << vert_pdv[0] << " " << vert_pdv[1] << " " << vert_pdv[2] << endl;
-        // cout<< "fc_pdv: " << fc_pdv[0] << " " << fc_pdv[1] << " " << fc_pdv[2] << endl;
+        vector<int> edge_pdv = edge_pdvs[j][k];
+        da = edge_pdv[0];
+        db = edge_pdv[1];
+        dc = edge_pdv[2];
         // cout<< "d: " << da << " " << db << " " << dc << endl;
 
         vornet->edges.push_back(VOR_EDGE(fc_ids[j], verts[k], fc_radii[j], fc_coords[j][0], fc_coords[j][1], fc_coords[j][2], fc_fracs[j][0], fc_fracs[j][1], fc_fracs[j][2], da, db, dc, fc_vert_dists[j][k]));
         vornet->edges.push_back(VOR_EDGE(verts[k], fc_ids[j], fc_radii[j], fc_coords[j][0], fc_coords[j][1], fc_coords[j][2], fc_fracs[j][0], fc_fracs[j][1], fc_fracs[j][2], -da, -db, -dc, fc_vert_dists[j][k]));
       }
     }
-    string filename3 = string("tmp3.nt2");
-    bool store3 = writeToNt2((char *)filename3.data(), vornet);
   }
   else
   {

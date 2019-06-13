@@ -146,8 +146,7 @@ cdef extern from "../../zeo++/network.h":
     cdef void addVorNetId(VORONOI_NETWORK*)
 
     cdef void add_net_to_vornet(vector[int], vector[double], vector[vector[double]], \
-        vector[vector[double]], vector[vector[int]], vector[vector[int]], vector[vector[int]], \
-        vector[vector[vector[double]]], vector[vector[vector[double]]], vector[vector[vector[int]]], \
+        vector[vector[double]], vector[vector[int]], vector[vector[int]], vector[vector[vector[int]]], \
         vector[vector[double]], VORONOI_NETWORK*)
 
 
