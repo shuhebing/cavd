@@ -546,7 +546,9 @@ cdef class AtomNetwork:
             return c_Ri,c_Rf,c_Rif
     
     def get_ture_facecenter(self, currentId, neighId, fc_coord, face_vertex_coords):
-        true_nei = []
+        INFINITE = float("Inf")
+        possi_nei = []
+        true_nei = {}
         lattice = np.array(self.lattice)
         # print("lattice", lattice)
         cur_center = np.array(self.atoms[currentId][3])
@@ -564,14 +566,12 @@ cdef class AtomNetwork:
             v_AC = np.around(np.array(face_vertex_coords[2]) - np.array(face_vertex_coords[0]), 6)
             # print("v_AB", v_AB)
             # print("v_AC", v_AC)
+            min_norm = INFINITE
             
             for a in range(-1, 2):
                 for b in range(-1, 2):
                     for c in range(-1, 2):
                         if currentId == neighId and a == b == c == 0:
-                            print(currentId)
-                            print(neighId)
-                            print(a,b,c)
                             continue
                         else:
                             pdv = np.array([a, b, c])
@@ -587,10 +587,25 @@ cdef class AtomNetwork:
 
                             # print("v_FC", v_FC)
                             # print("v_FN", v_FN)
-                            print(np.around(v_AB.dot(v_center),4), np.around(v_AC.dot(v_center),4))
+                            
                             if np.around(v_AB.dot(v_center),4) == np.around(v_AC.dot(v_center),4) == 0 and v_FC.dot(v_FN) <= 0:
-                                true_nei.append({"neig_center_tmp": neig_center_tmp, "pdv": pdv})
-        print(true_nei)                  
+                                possi_nei.append({"poss_coord": neig_center_tmp, "pdv": pdv})
+                                norm_v_center = np.linalg.norm(v_center)
+                                if norm_v_center < min_norm:
+                                    min_norm = norm_v_center
+                                    true_nei = {"coord": neig_center_tmp, "pdv": pdv}
+                                # print("True:")
+                                # print("currentId:", currentId, "neighId:", neighId)
+                                # neig_center_frac = self.absolute_to_relative(neig_center_tmp[0], neig_center_tmp[1], neig_center_tmp[2])
+                                # print("neig_center_frac:", neig_center_frac, "pdv:", pdv)
+                                # print(np.around(v_AB.dot(v_center),4), np.around(v_AC.dot(v_center),4))
+                            # else:
+                            #     print("False:")
+                            #     print("currentId:", currentId, "neighId:", neighId)
+                            #     print("pdv:", pdv)
+                            #     print(np.around(v_AB.dot(v_center),4), np.around(v_AC.dot(v_center),4))
+
+        # print(possi_nei)              
         return true_nei
 
     def perform_voronoi_decomposition(self, saveVorCells=True):
@@ -644,7 +659,7 @@ cdef class AtomNetwork:
 
                 # 获取Voronoi Face两侧的原子
                 neighborAt1 = vfaces[j].neighborAtom1
-                neighborAt2 = vfaces[j].neighborAtom1
+                neighborAt2 = vfaces[j].neighborAtom2
 
                 # 获取Voronoi Face上顶点的id
                 vertice_id_list = []
@@ -686,11 +701,7 @@ cdef class AtomNetwork:
 
         fcs = []
         faces = []
-
-        # 为后续将Voronoi Face center加入Voronoi network的便利
-        # 设置面心的起始id为vornet.thisptr.nodes.size()
-
-        
+        fcidx = vnodes.size()
         for center in face_centers:
             # Added by YAJ, at 20190609
             cntr = center["face_center"]
@@ -731,17 +742,26 @@ cdef class AtomNetwork:
             # 根据当前Cell的中心（currentId）、面心的PDV、面上顶点的分数坐标\，
             # 求邻居Cell中心（neighId）的真实坐标，以笛卡尔坐标形式返回
             # neighAt2 = self.get_ture_facecenter(currentId, neighId, fc_frac, fc_pdv, face_vertex_fracs)
-            neighAt2 = self.get_ture_facecenter(currentId, neighId, cntr, vertices_coords)
+            print(" ")
+            print("cell:",currentId,"face:",(currentId,neighId))
+            print("face_center id:",fcidx)
+            print("vertices id:",center["face_vertex_ids"])
+            true_neighAt2 = self.get_ture_facecenter(currentId, neighId, cntr, vertices_coords)
+            print(true_neighAt2)
+            neighAt2 = true_neighAt2["coord"]
+            neighAt2_frac = self.absolute_to_relative(neighAt2[0], neighAt2[1], neighAt2[2])
+            print("neighAt2_frac:", neighAt2_frac)
 
             # print("neighAt1", neighAt1)
             # print("neighAt2", neighAt2)
 
             # 计算面心到两个相邻原子的距离
+            mindis = min(np.sqrt(np.sum(np.square(neighAt1-fc_coord))) - rad_neighAt1, np.sqrt(np.sum(np.square(neighAt2-fc_coord))) - rad_neighAt2)
+            print("mindis", mindis)
+            # 为后续将Voronoi Face center加入Voronoi network的便利
+            # 设置面心的起始id为vornet.thisptr.nodes.size()
             
-            mindis = min(np.sqrt(np.sum(np.square(neighAt1-fc_coord))) - rad_neighAt1, np.sqrt(np.sum(np.square(neighAt1-fc_coord))) - rad_neighAt2)
-
-            fcidx = vnodes.size()
-            frac_rd = [p%1.0 for p in fc_frac]
+            frac_rd = [p%1.0%1.0 for p in fc_frac]
             if frac_rd not in fcs:
                 fcs.append(frac_rd)
                 face = {"fc_id": fcidx, "fc_radii": mindis, "fc_coord": center["face_center"], \
@@ -749,8 +769,9 @@ cdef class AtomNetwork:
                     "face_edge_pdvs": face_edge_pdvs, "fcver_dists": face_vertex_diss}
                 faces.append(face)
                 fcidx = fcidx + 1
+                
         
-        print("faces:", len(faces), "face_centers", len(face_centers))
+        print("face_centers", len(face_centers), "faces:", len(faces))
 
         #bvcelllist = []
         # define copy methods for BASIC_VCELL and VOR_CELL methods

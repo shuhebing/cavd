@@ -215,8 +215,6 @@ def AllCom8(filename, standard, migrant=None, rad_flag=True, effective_rad=True,
     sitesym = parser.get_sym_opt()
     radii,migrant_radius,migrant_alpha,nei_dises,coordination_list = LocalEnvirCom(stru,migrant)
     atmnet = AtomNetwork.read_from_RemoveMigrantCif(filename, migrant, radii, True, None)
-
-    print(atmnet.atoms)
     
     prefixname = filename.replace(".cif","")
     vornet,edge_centers,fcs,faces = atmnet.perform_voronoi_decomposition(True)
@@ -230,7 +228,7 @@ def AllCom8(filename, standard, migrant=None, rad_flag=True, effective_rad=True,
     add_fcs_vornet = vornet.add_facecenters(faces)
     writeNETFile(prefixname+"_origin_addfcs.net",atmnet,add_fcs_vornet)
 
-    spg_vornet,uq_voids = get_equivalent_vornet(add_fcs_vornet, 0.01)
+    # spg_vornet,uq_voids = get_equivalent_vornet(add_fcs_vornet, 0.01)
 
     sym_vornet,voids =  get_labeled_vornet(add_fcs_vornet, sitesym, symprec)
     uni_voids_num = len(voids)
