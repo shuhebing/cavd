@@ -219,6 +219,7 @@ def AllCom8(filename, standard, migrant=None, rad_flag=True, effective_rad=True,
     prefixname = filename.replace(".cif","")
     vornet,edge_centers,fcs,faces = atmnet.perform_voronoi_decomposition(True)
     writeVaspFile(prefixname+"_origin_nofcs.vasp",atmnet,vornet)
+    spg_vornet,uq_voids = get_equivalent_vornet(vornet, 0.01)
 
     symprec = 0.01
     sym_opt_num = len(sitesym)
@@ -227,8 +228,9 @@ def AllCom8(filename, standard, migrant=None, rad_flag=True, effective_rad=True,
     writeNETFile(prefixname+"_origin_nofcs.net",atmnet,vornet)
     add_fcs_vornet = vornet.add_facecenters(faces)
     writeNETFile(prefixname+"_origin_addfcs.net",atmnet,add_fcs_vornet)
+    writeVaspFile(prefixname+"_origin_addfcs.vasp",atmnet,add_fcs_vornet)
 
-    # spg_vornet,uq_voids = get_equivalent_vornet(add_fcs_vornet, 0.01)
+    spg_vornet,uq_voids = get_equivalent_vornet(add_fcs_vornet, 0.01)
 
     sym_vornet,voids =  get_labeled_vornet(add_fcs_vornet, sitesym, symprec)
     uni_voids_num = len(voids)

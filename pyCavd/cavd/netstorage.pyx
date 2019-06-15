@@ -762,8 +762,13 @@ cdef class AtomNetwork:
             # 为后续将Voronoi Face center加入Voronoi network的便利
             # 设置面心的起始id为vornet.thisptr.nodes.size()
             fcs.append(rd_fc_frac)
-            frac_uc = [round(p%1.0%1.0, 6) for p in fc_frac]
+            print("fc_frac", fc_frac)
+            print("rd_fc_frac", rd_fc_frac)
+            frac_uc = [round(p%1.0, 6) for p in fc_frac]
+            print("frac_uc1", frac_uc)
+            frac_uc = [p%1.0 for p in frac_uc]
             if frac_uc not in fcs_uc:
+                print("frac_uc2", frac_uc)
                 fcs_uc.append(frac_uc)
                 face = {"fc_id": fcidx, "fc_radii": mindis, "fc_coord": center["face_center"], \
                     "fc_frac": frac_uc, "fc_pdv": fc_pdv, "nei_atoms": nei_atomIDs, "face_vertex_ids": center["face_vertex_ids"], \

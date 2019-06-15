@@ -2375,9 +2375,9 @@ bool writeToVasp(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, do
     while(niter != vornet->nodes.end()){
         if((minRad == 0.0 && maxRad == 0.0) || (niter->rad_stat_sphere >= minRad && niter->rad_stat_sphere <= maxRad)){
             //cell->initMatrices();
-            a = niter->x * cell->invUCVectors[0][0] + niter->y * cell->invUCVectors[0][1] + niter->z * cell->invUCVectors[0][2];
-            b = niter->y * cell->invUCVectors[1][1] + niter->z * cell->invUCVectors[1][2];
-            c = niter->z * cell->invUCVectors[2][2];
+            a = niter->frac_a;
+            b = niter->frac_b;
+            c = niter->frac_c;
             output <<"   " << a << "    " << b << "    " << c << "   ";
             output << niter->rad_stat_sphere << "    " << "He" << "\n";
         }
@@ -2399,9 +2399,9 @@ bool writeToVasp(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, do
                 delta_uc.push_back(tmp);
             }
             if ((minRad == 0.0 && maxRad == 0.0) || (eiter->rad_moving_sphere >= minRad && eiter->rad_moving_sphere <= maxRad)) {
-                a = eiter->bottleneck_x * cell->invUCVectors[0][0] + eiter->bottleneck_y * cell->invUCVectors[0][1] + eiter->bottleneck_z * cell->invUCVectors[0][2];
-                b = eiter->bottleneck_y * cell->invUCVectors[1][1] + eiter->bottleneck_z * cell->invUCVectors[1][2];
-                c = eiter->bottleneck_z * cell->invUCVectors[2][2];
+                a = eiter->bottleneck_a;
+                b = eiter->bottleneck_b;
+                c = eiter->bottleneck_c;
                 output << "    " << a << "    " << b << "    " << c << "    ";
                 output << eiter->rad_moving_sphere << "    " << "Ne" << "\n";
             }
@@ -2502,9 +2502,9 @@ bool writeToNET(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, dou
       if((minRad == 0.0 && maxRad == 0.0) || (niter->rad_stat_sphere >= minRad && niter->rad_stat_sphere <= maxRad)){
           output << niter->id << "\t" << niter->label << "\t";
           // output << niter->x << " " << niter->y << " " << niter->z << "\t";
-          it_a = niter->x * cell->invUCVectors[0][0] + niter->y * cell->invUCVectors[0][1] + niter->z * cell->invUCVectors[0][2];
-          it_b = niter->y * cell->invUCVectors[1][1] + niter->z * cell->invUCVectors[1][2];
-          it_c = niter->z * cell->invUCVectors[2][2];
+          it_a = niter->frac_a;
+          it_b = niter->frac_b;
+          it_c = niter->frac_c;
           output << it_a << " " << it_b << " " << it_c << "\t";
 			    output << niter->rad_stat_sphere;
           output <<  "\n";
@@ -2519,9 +2519,9 @@ bool writeToNET(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, dou
           output << eiter->from << "\t" << eiter->to <<"\t";
           output << eiter->delta_uc_x << " " << eiter->delta_uc_y << " " << eiter->delta_uc_z << "\t";
 		      // output << eiter->bottleneck_x << " " << eiter->bottleneck_y << " " << eiter->bottleneck_z << "\t";
-          bn_a = eiter->bottleneck_x * cell->invUCVectors[0][0] + eiter->bottleneck_y * cell->invUCVectors[0][1] + eiter->bottleneck_z * cell->invUCVectors[0][2];
-          bn_b = eiter->bottleneck_y * cell->invUCVectors[1][1] + eiter->bottleneck_z * cell->invUCVectors[1][2];
-          bn_c = eiter->bottleneck_z * cell->invUCVectors[2][2];
+          bn_a = eiter->bottleneck_a;
+          bn_b = eiter->bottleneck_b;
+          bn_c = eiter->bottleneck_c;
           output << bn_a << " " << bn_b << " " << bn_c << "\t";
           output << eiter->rad_moving_sphere << "\t" << eiter->length << "\n";
       }
