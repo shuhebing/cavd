@@ -282,8 +282,8 @@ void createAdvCell(voronoicell_neighbor &cell, vector<double> coords, int *idMap
     // Add by YAJ 20190609
     // Test code
     int neighborAtom = neighbours[i];
-    cout << "neighborAtom: " << neighborAtom << endl;
-    cout << "face order: " << faceOrder << endl;
+    // cout << "neighborAtom: " << neighborAtom << endl;
+    // cout << "face order: " << faceOrder << endl;
 
     index++;
     for(int j = 0; j < faceOrder; j++){
@@ -293,7 +293,7 @@ void createAdvCell(voronoicell_neighbor &cell, vector<double> coords, int *idMap
       index++;
 
       //test code add by YAJ
-      cout << "vertice id in face: " << idMap[4*verID] << endl;
+      // cout << "vertice id in face: " << idMap[4*verID] << endl;
     }
     newCell.addFace(VOR_FACE(centerAtom, neighborAtom, faceCoords, faceIDs));
   }
@@ -340,7 +340,7 @@ bool storeVoronoiNetwork(c_option &con, ATOM_NETWORK *atmnet, VORONOI_NETWORK *v
 
       // Add by YAJ 20190509
       // Test code
-      cout<< " current cell id: " << id << endl; 
+      // cout<< "current cell id: " << id << endl; 
 
       numNodes.push_back(c.p);
       cellIDs.push_back(id);
