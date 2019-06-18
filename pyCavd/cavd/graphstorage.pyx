@@ -35,6 +35,7 @@ cdef class DijkstraNetwork:
         def __get__(self):
             nodes = []
             cdef vector[DIJKSTRA_NODE] c_nodes = self.thisptr.nodes
+            cdef vector[CONN] c_node_conns
             for i in range(c_nodes.size()):
                 node_id = c_nodes[i].id
                 node_label = c_nodes[i].label
