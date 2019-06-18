@@ -19,8 +19,8 @@ cdef extern from "../../zeo++/voronoicell.h":
         vector[int] node_ids "nodeIDs"
         
         # Add by YAJ 20180609
-        int neighborAtom1;
-        int neighborAtom2;
+        int neighborAtom1
+        int neighborAtom2
 
 
     cdef cppclass VOR_CELL:
