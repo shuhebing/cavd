@@ -63,8 +63,8 @@ cdef extern from "../../zeo++/networkstorage.h":
         int delta_uc_x, delta_uc_y, delta_uc_z
 
         #added at 20180408
-        double bottleneck_x,bottleneck_y,bottleneck_z;
-        double bottleneck_a,bottleneck_b,bottleneck_c;
+        double bottleneck_x,bottleneck_y,bottleneck_z
+        double bottleneck_a,bottleneck_b,bottleneck_c
 
 
     cdef cppclass VORONOI_NETWORK:
