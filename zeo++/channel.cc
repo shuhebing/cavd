@@ -1795,18 +1795,15 @@ void CHANNEL::writeToNET(int n, fstream &output, ATOM_NETWORK *atmNet){
     }
     else{
         output << "channeId " << n << "\n";
-		output << "dimensionality " << dimensionality << "\n";
-		output << "(" << v_a.x << "," << v_a.y << "," << v_a.z << ")\n";
-		output << "(" << v_b.x << "," << v_b.y << "," << v_b.z << ")\n";
-		output << "(" << v_c.x << "," << v_c.y << "," << v_c.z << ")\n";
-        for(int i=0; i<3; i++){
-            for(int j=0; j<3; j++){
-                if(j)
-                    output << " ";
-                output << basis[i][j];
-            }
-            output << "\n";
-        }
+        output << "\n";
+		
+        output << "dimensionality " << dimensionality << "\n";
+        output << "\n";
+
+		output << "    " << v_a.x << "    " << v_a.y << "    " << v_a.z << "\n";
+		output << "    " << v_b.x << "    " << v_b.y << "    " << v_b.z << "\n";
+		output << "    " << v_c.x << "    " << v_c.y << "    " << v_c.z << "\n";
+        output << "\n";
 	
 		output << "Interstitial table:" << "\n";
         

@@ -743,32 +743,32 @@ cdef class AtomNetwork:
             # 根据当前Cell的中心（currentId）、面心的PDV、面上顶点的分数坐标\，
             # 求邻居Cell中心（neighId）的真实坐标，以笛卡尔坐标形式返回
             # neighAt2 = self.get_ture_facecenter(currentId, neighId, fc_frac, fc_pdv, face_vertex_fracs)
-            print(" ")
-            print("cell:",currentId,"face:",(currentId,neighId))
-            print("face_center id:",fcidx)
-            print("vertices id:",center["face_vertex_ids"])
+            # print(" ")
+            # print("cell:",currentId,"face:",(currentId,neighId))
+            # print("face_center id:",fcidx)
+            # print("vertices id:",center["face_vertex_ids"])
             true_neighAt2 = self.get_ture_facecenter(currentId, neighId, cntr, vertices_coords)
-            print(true_neighAt2)
+            # print(true_neighAt2)
             neighAt2 = true_neighAt2["coord"]
             neighAt2_frac = self.absolute_to_relative(neighAt2[0], neighAt2[1], neighAt2[2])
-            print("neighAt2_frac:", neighAt2_frac)
+            # print("neighAt2_frac:", neighAt2_frac)
 
             # print("neighAt1", neighAt1)
             # print("neighAt2", neighAt2)
 
             # 计算面心到两个相邻原子的距离
             mindis = min(np.sqrt(np.sum(np.square(neighAt1-fc_coord))) - rad_neighAt1, np.sqrt(np.sum(np.square(neighAt2-fc_coord))) - rad_neighAt2)
-            print("mindis", mindis)
+            # print("mindis", mindis)
             # 为后续将Voronoi Face center加入Voronoi network的便利
             # 设置面心的起始id为vornet.thisptr.nodes.size()
             fcs.append(rd_fc_frac)
-            print("fc_frac", fc_frac)
-            print("rd_fc_frac", rd_fc_frac)
+            # print("fc_frac", fc_frac)
+            # print("rd_fc_frac", rd_fc_frac)
             frac_uc = [round(p%1.0, 6) for p in fc_frac]
-            print("frac_uc1", frac_uc)
+            # print("frac_uc1", frac_uc)
             frac_uc = [p%1.0 for p in frac_uc]
             if frac_uc not in fcs_uc:
-                print("frac_uc2", frac_uc)
+                # print("frac_uc2", frac_uc)
                 fcs_uc.append(frac_uc)
                 face = {"fc_id": fcidx, "fc_radii": mindis, "fc_coord": center["face_center"], \
                     "fc_frac": frac_uc, "fc_pdv": fc_pdv, "nei_atoms": nei_atomIDs, "face_vertex_ids": center["face_vertex_ids"], \
@@ -777,10 +777,10 @@ cdef class AtomNetwork:
                 fcidx = fcidx + 1
                 
         
-        print("fcs:", len(fcs))
-        print(fcs)
-        print("fcs_uc:", len(fcs_uc))
-        print(fcs_uc)
+        # print("fcs:", len(fcs))
+        # print(fcs)
+        # print("fcs_uc:", len(fcs_uc))
+        # print(fcs_uc)
 
         #bvcelllist = []
         # define copy methods for BASIC_VCELL and VOR_CELL methods

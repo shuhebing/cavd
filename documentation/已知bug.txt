@@ -1,7 +1,4 @@
-1.计算晶体结构中离子的有效半径时，可以根据配位数计算出同价态下不同配位数离子的有效离子半径，但当前程序ionic_radii.py返回的离子半径是以“离子价态为键，离子有效半径为值”形成的字典形式返回，故会将相同价态不同配位数的半径值仅保留一个。
-解决方案：返回以cif文件中的label为标识符的半径信息，并将AtomNetwork加载半径的方法更改，按照label来加载对应离子的半径。
-2.在某些情况下，计算得到的间隙不能完全覆盖晶格Li，但加上瓶颈位后改善这一情况，原因何在？瓶颈的意义何在？
-3.直接使用“python3 setup_alt.py install”时，会安装成功，但在python3中输入import cavd时，提示如下错误：
+1.直接使用“python3 setup_alt.py install”时，会安装成功，但在python3中输入import cavd时，提示如下错误：
 >>> import cavd
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
@@ -9,6 +6,7 @@ Traceback (most recent call last):
     from cavd.netstorage import AtomNetwork
 ModuleNotFoundError: No module named 'cavd.netstorage'
 但先使用“python3 setup_alt.py develop”时，之后执行“python3 setup_alt.py install”安装，则不会出现上述错误。原因何在？
+2.读取中文目录下结构文件会报错。
 
 
 

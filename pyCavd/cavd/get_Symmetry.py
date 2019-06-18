@@ -365,8 +365,8 @@ def tag_sites(sitesym, scaled_positions, symprec=1e-3):
             sympos %= 1.0
             sympos = np.unique(np.around(sympos,8), axis=0)
             min_dis,min_ids = siteskdTree.query(sympos,k=1)
-            print(i,len(min_dis))
-            print(min_dis)
+            # print(i,len(min_dis))
+            # print(min_dis)
 
             select = min_dis <= symprec
             select_ids = min_ids[select]

@@ -17,6 +17,7 @@ from pymatgen.core.sites import PeriodicSite
 from monty.io import zopen
 import numpy as np
 from scipy.spatial.ckdtree import cKDTree
+from cavd.cavd_consts import STD_SURF_DIS, STD_DIS
 
 #from local_environment import get_local_envir,Coordination
 
@@ -603,6 +604,65 @@ def AllCom(filename, probe_rad, num_sample, migrant=None, rad_flag=True, effecti
         dims.append(i["dim"])
     return conn,oneD,twoD,threeD,nei_dises,dims,voids,coordination_list
 
+def bmd_com(filename, migrant, rad_flag=True, lower=None, upper=10.0, rad_dict=None, symprec=0.01):
+    with zopen(filename, "rt") as f:
+        input_string = f.read()
+    parser = CifParser_new.from_string(input_string)
+    stru = parser.get_structures(primitive=False)[0]
+    
+    species = [str(sp).replace("Specie ","") for sp in stru.species]
+    elements = [re.sub('[^a-zA-Z]','',sp) for sp in species]
+    if migrant not in elements:
+        raise ValueError("The input migrant ion not in the input structure! Please check it.")
+    effec_radii,migrant_radius,migrant_alpha,nei_dises,coordination_list = LocalEnvirCom(stru,migrant)
+    
+    radii = {}
+    if rad_flag:
+        if rad_dict:
+            radii = rad_dict
+        else:
+            radii = effec_radii
+    
+    atmnet = AtomNetwork.read_from_RemoveMigrantCif(filename, migrant, radii, rad_flag)
+    
+    prefixname = filename.replace(".cif","")
+    vornet,edge_centers,fcs,faces = atmnet.perform_voronoi_decomposition(True)
+    add_fcs_vornet = vornet.add_facecenters(faces)
+
+    sitesym = parser.get_sym_opt()
+    sym_vornet,voids =  get_labeled_vornet(add_fcs_vornet, sitesym, symprec)
+    writeVaspFile(prefixname+"_origin.vasp",atmnet,sym_vornet)
+    writeNETFile(prefixname+"_origin.net",atmnet,sym_vornet)
+
+    voids_abs = []
+    for void in sym_vornet.nodes:
+        voids_abs.append(void[2])
+
+    bottlenecks = []
+    for bt in sym_vornet.edges:
+        bottlenecks.append(bt[2])
+
+    vorosites = [voids_abs, bottlenecks, fcs]
+    recover_rate, recover_state, migrate_mindis = rediscovery_kdTree(migrant,vorosites,stru)
+
+    minRad = 0.0
+    if lower:
+        minRad = lower
+    else:
+        standard = STD_SURF_DIS[migrant]
+        print(standard)
+        print(migrant_alpha)
+        minRad = standard*migrant_alpha*0.85
+    conn_val = connection_values_list(prefixname+".resex", sym_vornet)
+    dim_network,connect = ConnStatus(minRad, conn_val)
+    writeVaspFile(prefixname+".vasp",atmnet, sym_vornet, minRad, upper)
+    channels = Channel.findChannels(sym_vornet, atmnet, minRad, prefixname+".net")
+    
+    dims = []
+    for i in channels:
+        dims.append(i["dim"])
+
+    return radii, minRad, conn_val, connect, dim_network, dims, migrate_mindis
 
 #计算指定结构的瓶颈和间隙
 def BIComputation(filename, migrant=None, rad_flag=True, effective_rad=True, rad_file=None, rad_store_in_vasp=True,  minRad=0.0, maxRad=0.0):

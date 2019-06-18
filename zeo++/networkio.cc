@@ -2490,9 +2490,11 @@ bool writeToNET(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, dou
 
     // Write unit cell information
     output << cell->name << "\n";
+    output << "\n";
     output << "    " << cell->v_a.x << "    " << cell->v_a.y << "    " << cell->v_a.z << "\n";
     output << "    " << cell->v_b.x << "    " << cell->v_b.y << "    " << cell->v_b.z << "\n";
     output << "    " << cell->v_c.x << "    " << cell->v_c.y << "    " << cell->v_c.z << "\n";
+    output << "\n";
 
     cout << "Writing interstitial network to " << filename << "\n";
     // Write Voronoi node information
@@ -2512,7 +2514,7 @@ bool writeToNET(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, dou
       niter++;
     }
     // Write Voronoi edge information
-    output << "\n" << "Channel table:" << "\n";
+    output << "\n" << "Connection table:" << "\n";
     vector<VOR_EDGE> ::iterator eiter = vornet->edges.begin();
     while(eiter != vornet->edges.end()){
       if(eiter->rad_moving_sphere > minRad){
