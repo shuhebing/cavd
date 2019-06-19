@@ -1,3 +1,6 @@
-/pyCavd/cavd/*.cpp
-/zeo++/*.lib
-/voro++/src/*.lib
+/cavd/*.cpp
+/cavd/*.pyd
+/basic_lib/Zeo++/*.lib
+/basic_lib/Voro++/src/*.lib
+build
+cavd.egg-info
