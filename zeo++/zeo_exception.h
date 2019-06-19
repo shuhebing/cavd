@@ -8,35 +8,41 @@
 
 #include <exception>
 
-struct InvalidParticlesNumException : public exception{
-	const char * what () const throw (){
-		return "Error: Invalid number of particles provided for Voronoi decomposition.\n";
-	}
+class InvalidParticlesNumException : public exception{
+    public:
+        const char * what () const throw (){
+            return "Error: Invalid number of particles provided for Voronoi decomposition.\n";
+        }
 };
-struct InvalidBoxDimException : public exception{
-	const char * what () const throw (){
-		return "Error: Ivalid box dimensions calculated for Voronoi decomposition, please check the input lattices.\n";
-	}
+class InvalidBoxDimException : public exception{
+    public:
+        const char * what () const throw (){
+            return "Error: Ivalid box dimensions calculated for Voronoi decomposition, please check the input lattices.\n";
+        }
 };
-struct HugeGridException : public exception{
-	const char * what () const throw (){
-		return "Error: voro++: The number of computational blocks exceeds the maximum value.\n";
-	}
+class HugeGridException : public exception{
+   public:
+    const char * what () const throw (){
+            return "Error: voro++: The number of computational blocks exceeds the maximum value.\n";
+        }
 };
-struct AttemptException : public exception{
-	const char * what () const throw (){
-		return "Error: Software did not pass the volume check after Voronoi decomposition.\n";
-	}
+class AttemptException : public exception{
+    public:    
+    const char * what () const throw (){
+            return "Error: Software did not pass the volume check after Voronoi decomposition.\n";
+        }
 };
-struct VoronoiDecompException : public exception{
-	const char * what () const throw (){
-		return "Error: Unable to begin Voronoi decomposition.\n";
-	}
+class VoronoiDecompException : public exception{
+    public:
+        const char * what () const throw (){
+            return "Error: Unable to begin Voronoi decomposition.\n";
+        }
 };
-struct CoordNumException : public exception{
-	const char * what () const throw (){
-		return "Error: Improper number of node coordinates in Voronoi decomposition.\n";
-	}
+class CoordNumException : public exception{
+    public:
+        const char * what () const throw (){
+            return "Error: Improper number of node coordinates in Voronoi decomposition.\n";
+        }
 };
 
 class MatrixException : public exception{
@@ -67,7 +73,7 @@ class AssignDummyException : public exception{
         }
 };
 
-class Zero-NonzeroException : public exception{
+class Zero_NonzeroException : public exception{
     public:
         const char * what () const throw (){
             return "ERROR: Passed trivial equivalence filter but both loops are completely zero (no ratios between elements could be found).\n";
@@ -102,10 +108,10 @@ class zAxisFoundException : public exception{
         }
 };
 
-class ConstructNetException : public exception{
+class ConclassNetException : public exception{
     public:
         const char * what () const throw (){
-            return "ERROR: could not construct net: no vertex could be found which overlaps periodically with provided vertex and edge.\n";
+            return "ERROR: could not conclass net: no vertex could be found which overlaps periodically with provided vertex and edge.\n";
         }
 };
 
@@ -116,5 +122,53 @@ class ConnectionsException : public exception{
         }
 };
 
+class VertexEdgeOverlapException : public exception{
+    public:
+        const char * what () const throw (){
+            return "ERROR: determined that vertex %d edge %d overlaps with more than one vertex!\n";
+        }
+};
+
+class VertexConnectionException : public exception{
+    public:
+        const char * what () const throw (){
+            return "ERROR: could not find corresponding connection for vertex %d edge %d overlapping with vertex!\n";
+        }
+};
+
+class FitMoleculeToVertexException : public exception{
+    public:
+        const char * what () const throw (){
+            return "ERROR: cannot fit molecule with sites and dummy sites to a vertex with sites and dummy sites!\n";
+        }
+};
+
+class OutputRotatedMoleculeException : public exception{
+    public:
+        const char * what () const throw (){
+            return "ERROR: could not open output rotated molecule file with provided name!\n";
+        }
+};
+
+class FindAllUCVectorsException : public exception{
+    public:
+        const char * what () const throw (){
+            return "ERROR: did not find all uc vectors from loop analysis!\n";
+        }
+};
+
+class OverrideException : public exception{
+    public:
+        const char * what () const throw (){
+            return "ERROR: was expecting to override exactly 1 cell side length value, but were overwritten!\n";
+        }
+};
+
+class NETException : public exception{
+    public:
+        const char * what () const throw (){
+            return "ERROR: detected that both atom and node flags are used in the input net file - this is currently assumed to indicate an invalid input file\n";
+        }
+};
 
 #endif
