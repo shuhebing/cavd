@@ -20,7 +20,6 @@
 #include "material.h"
 //#include "OMS.h"
 #include "networkio.h"
-#include "zeo_exception.h"
 
 using namespace std;
 using namespace voro;
