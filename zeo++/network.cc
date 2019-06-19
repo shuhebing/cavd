@@ -19,49 +19,12 @@
 #include "v_network.h"
 #include "material.h"
 //#include "OMS.h"
-#include <exception>
 #include "networkio.h"
+#include "zeo_exception.h"
 
 using namespace std;
 using namespace voro;
 
-// /* 自定义异常 */
-// struct InvalidParticlesNumException : public exception{
-    // const char * what () const throw (){
-        // return "Exception: Invalid number of particles provided for Voronoi decomposition.";
-    // }
-// };
-// struct InvalidBoxDimException : public exception{
-    // const char * what () const throw (){
-        // return "Exception: valid box dimensions calculated for Voronoi decomposition.";
-    // }
-// };
-// struct HugeGridException : public exception{
-    // const char * what () const throw (){
-        // return "Exception: voro++: Number of computational blocks exceeds the maximum.";
-    // }
-// };
-// struct AttemptException : public exception{
-    // const char * what () const throw (){
-        // return "Exception: Attempt numbers larger than excepted.";
-    // }
-// };
-// struct VoronoiDecompException : public exception{
-    // const char * what () const throw (){
-        // return "Exception: Unable to make Voronoi decomposition.";
-    // }
-// };
-// struct CoordNumException : public exception{
-    // const char * what () const throw (){
-        // return "Exception: Improper number of node coordinates in Voronoi decomposition.";
-    // }
-// };
-
-// /* IMPORTANT - overwriting standard exit function - notifies user that exit was called before exiting */
-// void exit(int status) {
-  // printf("NOTICE: calling abort()\n");
-  // abort();
-// }
 
 /* converts string to upper case */
 std::string toUpperCase(const std::string & s)

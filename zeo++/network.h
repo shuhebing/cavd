@@ -125,7 +125,7 @@ void add_net_to_vornet(vector<int> fc_ids, vector<double> fc_radii, vector<vecto
 	vector<vector<double> > fc_fracs, vector<vector<int> > fc_neiatoms, vector<vector<int> > fc_vertices,
 	vector< vector< vector<int> > > edge_pdvs, vector< vector< double> > fc_vert_dists, VORONOI_NETWORK* vornet);
 
-/* 自定义异常 */
+
 struct InvalidParticlesNumException : public exception{
 	const char * what () const throw (){
 		return "Exception: Invalid number of particles provided for Voronoi decomposition.";
