@@ -650,8 +650,6 @@ def bmd_com(filename, migrant, rad_flag=True, lower=None, upper=10.0, rad_dict=N
         minRad = lower
     else:
         standard = STD_SURF_DIS[migrant]
-        print(standard)
-        print(migrant_alpha)
         minRad = standard*migrant_alpha*0.85
     conn_val = connection_values_list(prefixname+".resex", sym_vornet)
     dim_network,connect = ConnStatus(minRad, conn_val)
