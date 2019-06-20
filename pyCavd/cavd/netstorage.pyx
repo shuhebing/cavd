@@ -272,7 +272,9 @@ cdef class AtomNetwork:
             cavd.netinfo.zeo_readIonRadTable(ionRadMap)
     
         atmnet = AtomNetwork()
+        print("filename:", filename)
         cdef char* c_filename = filename
+        print("c_filename", c_filename)
         cdef const char* c_migrant = migrant
         if not readRemoveMigrantCif(c_filename, atmnet.thisptr, c_migrant, rad_flag):
             raise IOError
