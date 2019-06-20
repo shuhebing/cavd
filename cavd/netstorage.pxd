@@ -9,18 +9,22 @@ __author__ = "Bharat Kumar Medasani"
 __date__ = "2013-12-09"
 
 from libcpp.vector cimport vector
+from libcpp.string cimport string
 
-from zeo.geometry cimport CPoint
-from zeo.voronoicell cimport VOR_CELL, BASIC_VCELL
+from cavd.geometry cimport CPoint
+from cavd.voronoicell cimport VOR_CELL, BASIC_VCELL
+from cavd.geometry cimport XYZ
 
 
-cdef extern from "../../networkstorage.h":
+cdef extern from "../basic_lib/Zeo++/networkstorage.h":
     cdef cppclass ATOM:
         ATOM() except +
         double x, y, z
+        double a_coord, b_coord, c_coord
         double radius
-        #string type
-        #int specialID
+        string atom_type "type"
+        string label
+        int specialID
         double mass
         double charge 
 
@@ -29,6 +33,7 @@ cdef extern from "../../networkstorage.h":
         void copy(ATOM_NETWORK*)
         double a, b, c      # Lattice parameters
         double alpha, beta, gamma   # lattice angles
+        XYZ v_a, v_b, v_c
         int no_atoms "numAtoms"
         vector[ATOM] atoms
         CPoint abc_to_xyz(double, double, double)
@@ -41,20 +46,31 @@ cdef extern from "../../networkstorage.h":
         VOR_NODE(double, double, double, double, vector[int])
         double x, y, z
         double rad_stat_sphere
+        int label
+        double frac_a,frac_b,frac_c
 
     cdef cppclass VOR_EDGE:
         VOR_EDGE() except +
         VOR_EDGE(int, int, double, int, int, int, double)
+        
+        #Added at 20180408
+        VOR_EDGE(int, int, double, double, double, double, int, int, int, double)
+
         int origin "from" 
         int ending "to"
         double rad_moving_sphere
         double length
         int delta_uc_x, delta_uc_y, delta_uc_z
 
+        #added at 20180408
+        double bottleneck_x,bottleneck_y,bottleneck_z
+        double bottleneck_a,bottleneck_b,bottleneck_c
+
 
     cdef cppclass VORONOI_NETWORK:
         VORONOI_NETWORK() except +
         VORONOI_NETWORK prune(double)
+        XYZ v_a, v_b, v_c
         vector[VOR_NODE] nodes
         vector[VOR_EDGE] edges
 
@@ -65,7 +81,7 @@ cdef extern from "../../networkstorage.h":
             ATOM_NETWORK*, bint, double, 
             int, int*, double*, bint)
 
-cdef extern from '../../networkio.h':
+cdef extern from '../basic_lib/Zeo++/networkio.h':
     cdef void parseFilename(const char* filename, char* name, char* extension)
 
     cdef bint checkInputFile(char* filename)
@@ -98,14 +114,26 @@ cdef extern from '../../networkio.h':
     cdef bint writeToMOPAC(char *filename, ATOM_NETWORK *cell, bint is_supercell)
 
     cdef bint writeVornetToXYZ "writeToXYZ"(char *filename, VORONOI_NETWORK*, double)
+    
+    cdef bint writeAtmntToVasp(char *filename, ATOM_NETWORK *cell)
 
+    #Added at 20190522
+    #used to read the cif after remove migrant atoms
+    cdef bint readRemoveMigrantCif(char *filename, ATOM_NETWORK *cell, const char *migrant, bint radial)
+    
 # At present  the return value of performVoronoiDecomp is void*
 # Compile it after void* is changed to bool in the original source file
-cdef extern from "../../network.h":
+cdef extern from "../basic_lib/Zeo++/network.h":
     cdef bint performVoronoiDecomp(bint, ATOM_NETWORK*, VORONOI_NETWORK*, 
             vector[VOR_CELL]*, bint, vector[BASIC_VCELL]*)
-
     cdef void calculateFreeSphereParameters(VORONOI_NETWORK*, char*, bint)
+
+    cdef void calculateConnParameters(VORONOI_NETWORK *, char *, vector[double] *)
+    
+    #added at 20180418
+    #Edited at 20180530
+    #Edited at 20190610
+    cdef bint throughVorNet(VORONOI_NETWORK*, char*, double*, double*, double*)
 
     cdef void viewVoronoiDecomp(ATOM_NETWORK*, double, string)
 
@@ -113,7 +141,16 @@ cdef extern from "../../network.h":
 
     cdef void loadMass(bool, ATOM_NETWORK*)
 
-cdef extern from "../../area_and_volume.h":
+    cdef void parseNetworkSymmetry(vector[int], VORONOI_NETWORK*)
+
+    cdef void addVorNetId(VORONOI_NETWORK*)
+
+    cdef void add_net_to_vornet(vector[int], vector[double], vector[vector[double]], \
+        vector[vector[double]], vector[vector[int]], vector[vector[int]], vector[vector[vector[int]]], \
+        vector[vector[double]], VORONOI_NETWORK*)
+
+
+cdef extern from "../basic_lib/Zeo++/area_and_volume.h":
     cdef void visVoro(char* name, double probeRad, int skel_a, int skel_b, int skel_c,
             VORONOI_NETWORK* vornet, ATOM_NETWORK* atmnet)
 
@@ -143,3 +180,9 @@ cdef class VoronoiNetwork:
     Cython wrapper class for Zeo++ VORONOI_NETWORK class.
     """
     cdef VORONOI_NETWORK* thisptr
+
+cdef class VoronoiEdge:
+    """
+    Cython wrapper class for Zeo++ VOR_EDGE class.
+    """
+    cdef VOR_EDGE* thisptr

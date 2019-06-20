@@ -3,6 +3,9 @@
 """
 Wrapper functions to Zeo++ atomic definitons and related functions
 """
+from libcpp.map cimport map
+from libcpp.pair cimport pair
+from libcpp.string cimport string
 
 #Python definitions for the cdefinitions in .pxd file
 def initializeRadTable():
@@ -76,4 +79,51 @@ def lookupAtomicNumber(element):
     return zeo_lookupAtomicNumber(element)
 
 def isMetal(element):
-    return zeo_isMetal(element)
+    return zeo_isMetal(element)   
+
+#Added at 20180606
+def readIonRadTable(ionicRadDic):
+    """
+    Read Ionic radius values from input Dictionary
+    """
+    cdef map[string, double] ionRadMap
+    cdef string c_key
+    cdef double c_value
+    for key in ionicRadDic:
+        c_key = (<unicode>key).encode('utf8')
+        c_value = ionicRadDic[key]
+        ionRadMap.insert(pair[string,double](c_key,c_value))       
+    zeo_readIonRadTable(ionRadMap)
+
+def lookupIonRadius(element):
+    """"
+    Args:s
+        element:
+            Element name in conventional shorthand 
+            Ex: Al for aluminum 
+                Si for silicon 
+    Returns:
+        radius of the input element
+    """
+    #added at 20180606
+    if isinstance(element, unicode):
+        element = (<unicode>element).encode('utf8')
+    cdef string c_element = element
+    radius = zeo_lookupIonRadius(c_element, True)
+    return radius    
+	
+#Added at 20180627
+def initializeIonRadTable():
+    """
+    Populate the Goldschmidt Ion radius table with Zeo++ default values
+    """
+    zeo_initializeIonRadTable()
+
+def readIonRadTableFile(filename):
+    """
+    Read Ionic radii values from input file and replace the default values
+    """
+    if isinstance(filename, unicode):
+        filename = (<unicode>filename).encode('utf8')
+    cdef char* c_filename = filename
+    zeo_readIonRadTableFile(c_filename)

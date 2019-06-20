@@ -9,11 +9,11 @@ __date__ = "Jan 6, 2014"
 
 from libcpp.vector cimport vector
 
-from zeo.netstorage cimport VORONOI_NETWORK, ATOM_NETWORK
-from zeo.geometry cimport XYZ
-from zeo.graphstorage cimport DIJKSTRA_NODE
+from cavd.netstorage cimport VORONOI_NETWORK, ATOM_NETWORK
+from cavd.geometry cimport XYZ
+from cavd.graphstorage cimport DIJKSTRA_NODE
 
-cdef extern from "../../cycle.h":
+cdef extern from "../basic_lib/Zeo++/cycle.h":
     cdef cppclass CYCLE:
         CYCLE() except +
         double length

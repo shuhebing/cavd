@@ -1,7 +1,7 @@
 from libcpp.string cimport string
 
-from zeo.netstorage cimport AtomNetwork, ATOM_NETWORK
-import zeo.high_accuracy  
+from cavd.netstorage cimport AtomNetwork, ATOM_NETWORK
+import cavd.high_accuracy  
 
 def volume(atmnet, channel_radius, probe_radius, 
         mc_sampling_no, high_accuracy=False, high_accuracy_atmnet=None, 
@@ -20,7 +20,7 @@ def volume(atmnet, channel_radius, probe_radius,
         high_accuracy (Default=False):
             Optional flag to use high accuracy.
         high_accuracy_atmnet (Default=None):
-            zeo.netstorage.AtomNetwork
+            cavd.netstorage.AtomNetwork
             Optional high accuracy AtomNetwork. If not given and high_accuracy
             flag is set to True, then it is computed and returned.
         exclude_pockets (Default=True):
@@ -36,7 +36,7 @@ def volume(atmnet, channel_radius, probe_radius,
     """
     if high_accuracy and not high_accuracy_atmnet:
         high_accuracy_atmnet = atmnet.copy()
-        zeo.high_accuracy.high_accuracy_atmnet(high_accuracy_atmnet)
+        cavd.high_accuracy.high_accuracy_atmnet(high_accuracy_atmnet)
         ret_high_acc_atmnet = True
     else:
         ret_high_acc_atmnet = False
@@ -85,7 +85,7 @@ def surface_area(atmnet, channel_radius, probe_radius,
         high_accuracy (Default=False):
             Optional flag to use high accuracy.
         high_accuracy_atmnet (Default=None):
-            zeo.netstorage.AtomNetwork
+            cavd.netstorage.AtomNetwork
             Optional high accuracy AtomNetwork. If not given and high_accuracy
             flag is set to True, then it is computed and returned.
         exclude_pockets (Default=True):
@@ -101,7 +101,7 @@ def surface_area(atmnet, channel_radius, probe_radius,
     """
     if high_accuracy and not high_accuracy_atmnet:
         high_accuracy_atmnet = atmnet.copy()
-        zeo.high_accuracy.high_accuracy_atmnet(high_accuracy_atmnet)
+        cavd.high_accuracy.high_accuracy_atmnet(high_accuracy_atmnet)
         ret_high_acc_atmnet = True
     else:
         ret_high_acc_atmnet = False
@@ -124,3 +124,12 @@ def surface_area(atmnet, channel_radius, probe_radius,
         return sa_str, high_accuracy_atmnet
     else:
         return sa_str
+
+# Added at 20180704,计算ASA并保存结果
+def asa_new(filename, high_accuracy, atmnet, channel_radius, probe_radius, mc_sampling_no):
+    if isinstance(filename, unicode):
+        filename = (<unicode>filename).encode('utf8')
+    cdef char* c_filename = filename
+    cdef ATOM_NETWORK* c_atmnet_ptr = (<AtomNetwork?>atmnet).thisptr
+    computeASA_new(c_filename, c_atmnet_ptr, high_accuracy, channel_radius, probe_radius, mc_sampling_no)
+

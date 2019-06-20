@@ -1,9 +1,15 @@
 # distutils: language = c++
 # distutils: sources = ../networkio.cc
 
-from zeo.netstorage cimport ATOM_NETWORK, VORONOI_NETWORK
+from cavd.netstorage cimport ATOM_NETWORK, VORONOI_NETWORK
+from libcpp.string cimport string
 
-cdef extern from '../../networkio.h':
+#Added at 20180704
+from libcpp.vector cimport vector
+from cavd.voronoicell cimport VOR_CELL, BASIC_VCELL
+from cavd.channel cimport CHANNEL
+
+cdef extern from '../basic_lib/Zeo++/networkio.h':
     cdef void parseFilename(const char* filename, char* name, char* extension)
 
     cdef bint checkInputFile(char* filename)
@@ -37,3 +43,28 @@ cdef extern from '../../networkio.h':
 
     cdef bint writeVornetToXYZ "writeToXYZ"(char *filename, VORONOI_NETWORK*, double)
 
+# remove migrant ion added at 20180408
+    cdef bint readRemoveMigrantCif(char *filename, ATOM_NETWORK *cell, const char *migrant, bint radial)
+# writeToBI
+    cdef bint writeToBI(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, double minRad)
+    cdef bint writeToBI(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet)
+# writeToVasp
+    #cdef bint writeToVasp(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, bint storeRadius, double minRad)
+    #edited at 20180530
+    cdef bint writeToVasp(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, double minRad, double maxRad)
+    cdef bint writeToVasp(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet)
+    cdef bint writeAtmntToVasp(char *filename, ATOM_NETWORK *cell)
+
+    #add at 20190518
+    cdef bint writeToNET(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, double minRad, double maxRad)
+    cdef bint writeToNET(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet)
+
+# Added at 20180704
+cdef extern from '../../zeo++/voronoicell.h':
+    cdef bint writeZVis(char *filename, vector[VOR_CELL] *cells, ATOM_NETWORK *atmnet, VORONOI_NETWORK *vornet)
+
+# At present  the return value of performVoronoiDecomp is void*
+# Compile it after void* is changed to bool in the original source file
+cdef extern from "../../zeo++/network.h":
+    cdef bint performVoronoiDecomp(bint, ATOM_NETWORK*, VORONOI_NETWORK*, 
+            vector[VOR_CELL]*, bint, vector[BASIC_VCELL]*)

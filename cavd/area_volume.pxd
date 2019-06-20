@@ -4,14 +4,16 @@ Declares functions for calculating the surface area and volume
 of channels and pockets.
 """
 from libcpp.string cimport string
-from zeo.netstorage cimport ATOM_NETWORK
+from cavd.netstorage cimport ATOM_NETWORK
 
-cdef extern from "../../area_and_volume.h":
+cdef extern from "../basic_lib/Zeo++/area_and_volume.h":
     cdef string calcAV(ATOM_NETWORK*, ATOM_NETWORK*, bint, double, double, 
             int, bint, double, double)
 
     cdef string calcASA(ATOM_NETWORK*, ATOM_NETWORK*, bint, double, double,
             int, bint, bint)
 
-    cdef double calcDensity(ATOM_NETWORK*) 
+    cdef double calcDensity(ATOM_NETWORK*)
+
+    cdef void computeASA_new(char*,  ATOM_NETWORK*, bint, double, double, int)
 

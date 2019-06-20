@@ -5,7 +5,7 @@ Declares Zeo++ XYZ and Point Classes and the associated Python wrappers.
 __author__ = "Bharat Medasani"
 __date__ = "2013-12-09"
 
-cdef extern from "../../geometry.h":
+cdef extern from "../basic_lib/Zeo++/geometry.h":
     cdef cppclass XYZ:
         XYZ(double, double, double) except +
         double x, y, z
@@ -18,8 +18,6 @@ cdef extern from "../../geometry.h":
         CPoint operator-(CPoint) 
         CPoint operator+(CPoint)
         CPoint operator*(CPoint)
-
-
 
 cdef class Xyz:
     """
