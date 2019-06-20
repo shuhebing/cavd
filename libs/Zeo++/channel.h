@@ -158,7 +158,15 @@ public:
      *  to a vector of channels. In addition, the pointer to the vector of bools is used to a store bool
      *  for each VORONOI_NODE, where infoStorage[i] is true iff node #i is accessible. */
     static void findChannels(VORONOI_NETWORK *, double, std::vector<bool> *, std::vector<CHANNEL> *);
- 
+
+    //Added at 20180705
+    static bool findChannels_new(VORONOI_NETWORK *vornet, double minRadius, std::vector<CHANNEL> *channels);
+
+    //Added at 20180823
+    // Write CHANNEL information to network file.
+    //void writeToNET(int n, fstream &output);
+    void writeToNET(int n, fstream &output, ATOM_NETWORK *atmNet);
+
   
     /* Stores the ids of all atoms that bound this channel using the provided vector reference. An atom is considered
     *  to bound a channel if a node in the channel is a member of the atom's Voronoi cell. */
@@ -220,5 +228,16 @@ public:
 
 bool compareNodes(std::pair<int,DELTA_POS> p1, std::pair<int,DELTA_POS> p2);
 
+//Added a function to write VMDfile
+bool writeToVMD_new(vector<CHANNEL> channels, char *filename);
+// Add a function to write NET file
+bool writeToNET_new(vector<CHANNEL> channels, char *filename, ATOM_NETWORK *atmNet);
+
+/* 自定义异常 */
+struct WritingCHANNELException : public exception{
+    const char * what () const throw (){
+        return "Exception: Writing CHANNEL information failed!";
+    }
+};
 
 #endif

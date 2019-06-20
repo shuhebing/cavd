@@ -39,10 +39,17 @@ public:
     double length;      // Length of edge
     double max_radius;  // Radius of largest spherical probe that can travel along edge
     DELTA_POS deltaPos; // Change in unit cell
+    double btx,bty,btz;
     
     /* Create a CONN using the provided parameters */
     CONN(int myFrom, int myTo, double len, double maxR, DELTA_POS deltaP);
+	//Add a new construct function for Cython wrapper
+	CONN();
+    CONN(int myFrom, int myTo, double len, double maxR, int myX = 0, int myY = 0, int myZ = 0);
+
     
+    CONN(int myFrom, int myTo, double len, double bt_x, double bt_y, double bt_z, double maxR, DELTA_POS deltaP);
+    CONN(int myFrom, int myTo, double len, double bt_x, double bt_y, double bt_z, double maxR, int myX = 0, int myY = 0, int myZ = 0);
     /* Output information about the connection to the provided output stream*/
     void print(std::ostream& out = std::cout) const;
     //void print();
@@ -58,13 +65,15 @@ public:
     std::vector <CONN> connections; // List of connections that lead from the node to other nodes
     double max_radius;         // Maximum radius of particle that can sit at the node
     bool active;               // flag used to disactivate a node
+    int label;
+
     /* Creates a node with an invalid id, no connections and a radius of 0.*/
     /** Create a node using the provided parameters. */
     //DIJKSTRA_NODE();
     
     /* Creates a node. Default is with an invalid id, no connections and a radius of 0.*/
     DIJKSTRA_NODE(int myID = -1, double myX = 0, double myY = 0, double myZ = 0,
-                  double maxR = 0, bool active_flag = true);
+                  double maxR = 0, bool active_flag = true, int label = -1);
     
     /** Output information about the node to the provided output stream. Default is std::cout*/
     void print(std::ostream &out = std::cout) const;

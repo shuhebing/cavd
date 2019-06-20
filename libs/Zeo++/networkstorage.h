@@ -71,7 +71,7 @@ class ATOM_NETWORK {
   int numAtoms;
   // vector with histogram of chemical composition
   int atomic_composition[MAX_ATOMIC_NUMBER];
-  std::vector <ATOM> atoms ;
+  std::vector <ATOM> atoms;
   std::vector <int> IDmapping;
   std::string name;
   MIN_PER_DISTANCE distanceCalculator;
@@ -282,22 +282,43 @@ public:
   double rad_moving_sphere;
   int delta_uc_x, delta_uc_y, delta_uc_z;
   double length;
+
+  //20180117修改
+  double bottleneck_x,bottleneck_y,bottleneck_z;
+  double bottleneck_a,bottleneck_b,bottleneck_c;  
+
   VOR_EDGE();
   VOR_EDGE(const VOR_EDGE&);
   VOR_EDGE(int myFrom, int myTo, double rad, int dx, int dy, int dz, double len);
+
+  // added at 20180408
+  VOR_EDGE(int myFrom, int myTo, double rad, double bottleneck_x, double bottleneck_y, double bottleneck_z, int dx, int dy, int dz, double len);
+  VOR_EDGE(int myFrom, int myTo, double rad, double bottleneck_x, double bottleneck_y, double bottleneck_z, double bottleneck_a, double bottleneck_b, double bottleneck_c, int dx, int dy, int dz, double len);
 };
+
 
 /** Data structure that stores information about a node in a Voronoi network. */
 class VOR_NODE{
 public:
   VOR_NODE();
   //VOR_NODE(const VOR_NODE&);
+//   VOR_NODE(int myid, double myX, double myY, double myZ, double rad);
   VOR_NODE(double myX, double myY, double myZ, double rad, std::vector<int> ids);
+  VOR_NODE(double myX, double myY, double myZ, double fracA, double fracB, double fracC, double rad, std::vector<int> ids);
+  VOR_NODE(int myid, double myX, double myY, double myZ, double fracA, double fracB, double fracC, double rad, std::vector<int> ids);
   double x,y,z;
   double rad_stat_sphere;
+  //neighbor atom's ID of voronoi node
   std::vector<int> atomIDs;
+
   bool active; // flag tells if a node is taken into consideration when analyzing the framework
                // e.g. this typically will set to false after pruning the network using a probe radius
+  
+  //add id and label
+  int id;
+  int label = -1;
+  double frac_a,frac_b,frac_c;
+
 };
 
 /** Data structure that stores the nodes and edges that comprise a 

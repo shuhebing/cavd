@@ -14,7 +14,6 @@
  *  in clockwise or counter-clockwise fashion and keeps track of the edges
  *  that outline it.
  */
-
 #ifndef VORONOICELL_H
 #define VORONOICELL_H
 
@@ -37,12 +36,17 @@ public:
     std::vector<Point> orderedVertices;
     std::vector<int> nodeIDs;
 
+    // Add by YAJ 20180609
+    int neighborAtom1;
+    int neighborAtom2;
+  VOR_FACE(int centerAt, int neighborAt, std::vector<Point> vertices, std::vector<int> vertexIDs);
+
   /* Store the provided vertices and their ids.   */
   VOR_FACE(std::vector<Point> vertices, ATOM_NETWORK *atmnet, VORONOI_NETWORK *vornet);
 
   /* Store the provided vertices and their ids.  */
   VOR_FACE(std::vector<Point> vertices, std::vector<int> vertexIDs);
-  
+
   /* Returns a vector of pairs of integers and Points, where each entry represents
   *  the pair (node id, node coordinates).*/
   std::vector< std::pair<int,Point> > getNodes();
@@ -61,13 +65,13 @@ public:
  */
 class VOR_CELL {
 public:
-    std::vector<VOR_FACE> faces;                             // List of faces in cell
-  int numVertices;                                    // Number of vertices
+  std::vector<VOR_FACE> faces;                             // List of faces in cell
+  int numVertices;                                         // Number of vertices
   std::map<Point, int, bool(*)(Point,Point)> vertexIDs;    // Vertex number associated with coordinate
   std::map<int,int> idMappings;                            // (Vertex ID, Node ID) pairs
-  std::map<int,std::vector<int> > reverseIDMappings;            // (Node ID, List of Vertex IDs) pairs
+  std::map<int,std::vector<int> > reverseIDMappings;       // (Node ID, List of Vertex IDs) pairs
   std::map<int, Point> vertexCoords;                       // Coordinates associated with each vertex ID
-  std::vector< std::set<int> > edgeConnections;                 // List of vertex id's connected to each vertex
+  std::vector< std::set<int> > edgeConnections;            // List of vertex id's connected to each vertex
 
   /*Constructs a VOR_CELL that does not initially have any faces or vertices.*/
   VOR_CELL();
@@ -154,7 +158,7 @@ void writeVMDEnvVars(std::fstream &output,  ATOM_NETWORK *atmnet, VORONOI_NETWOR
  *  voronoi cells (outlined and filled) and environment variables.
  */
 void writeZeoVisFile(char *filename, std::vector<VOR_CELL> *cells, ATOM_NETWORK *atmnet, VORONOI_NETWORK *vornet);
-
+bool writeZVis(char *filename, std::vector<VOR_CELL> *cells, ATOM_NETWORK *atmnet, VORONOI_NETWORK *vornet);
 void writeSpecialZeoVisFile(char *filename, std::vector<VOR_CELL> *cells, ATOM_NETWORK *atmnet, VORONOI_NETWORK *vornet, std::vector<BASIC_VCELL> &vcells);
 
 #endif

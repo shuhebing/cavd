@@ -1,9 +1,7 @@
 #ifndef NETWORKIO_H
 #define NETWORKIO_H
 
-//#include "network.h"
 #include <iostream>
-
 #include "networkstorage.h"
 
 #define SUPERCELL_SIZE 2
@@ -51,10 +49,6 @@ bool readCSSRFile(char *filename, ATOM_NETWORK *cell, bool radial);
  *     obcssr is Open Babel generated CSSR file */
 //void readCSSRFile(char *filename, ATOM_NETWORK *cell, bool radial);
 bool readOBCSSRFile(char *filename, ATOM_NETWORK *cell, bool radial);
-
-/** Read the information from the .cssr file referred to by filename
-    and store it within the provided ATOM_NETWORK. */
-bool readLMPSFile(char *filename, ATOM_NETWORK *cell, bool radial);
 
 /** Read the information from the .v1 file referrred to by filename
     and store it within the provided ATOM_NETWORK. */
@@ -130,4 +124,22 @@ void changeAtomType(ATOM *atom);
 /** Strip atom names from additional strings */
 void stripAtomNames(ATOM_NETWORK *cell);
 
+//remove migrant atom
+//added at 2018 04 08
+bool readRemoveMigrantCif(char *filename, ATOM_NETWORK *cell, const char *migrant, bool radial);
+/** Write the bottleneck and interstitial information stored within the VORONOI_NETWORK in a .BI
+    file format to the provided filename. Excludes any nodes or nodes with radii
+    less than the provided threshold. For the default 0 minRad value, all nodes
+    and edges are included. */
+bool writeToBI(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, double minRad = 0.0);
+//Added at 20180420
+/**
+ * write the bottleneck, interstitial and atomnetwork information to .vasp
+ * file format to the provided filename. Excludes any nodes or nodes with radii
+ * less than the provided threshold. For the default 0 minRad value, all nodes
+ * and edges are included.*/
+//bool writeToVasp(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, bool storeRadius = false, double minRad = 0);
+bool writeToVasp(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, double minRad = 0.0, double maxRad = 0.0);
+bool writeAtmntToVasp(char *filename, ATOM_NETWORK *cell);
+bool writeToNET(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, double minRad = 0.0, double maxRad = 0.0);
 #endif

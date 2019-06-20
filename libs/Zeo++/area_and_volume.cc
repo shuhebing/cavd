@@ -9,6 +9,7 @@
 #include "networkaccessibility.h"
 #include "general.h"
 #include "material.h"
+#include "sphere_approx.h"
 
 using namespace std;
 using namespace voro;
@@ -2771,8 +2772,25 @@ int get_most_dense_index(ATOM_NETWORK *atmnet, vector<Point> *points_vector) { /
 	return most_dense_index;
 }
 
+//Added 20180704
+//Add new function to compute ASA
 
-
+void computeASA_new(char *filename, ATOM_NETWORK *atmnet, bool highAccuracy, double r_probe_chan, double r_probe,  int numSamples){
+	fstream output;
+	ATOM_NETWORK orgAtomnet;
+	output.open(filename, fstream::out);
+	
+	atmnet->copy(&orgAtomnet); // keep a copy of original atomnet (if high accuracy is not set, this is the same as analyzed network)
+	if(highAccuracy){
+		// atmnet.copy(&orgAtomnet); // keep a copy of original atomnet
+		// calling the following function will modify atmnet - replace large atoms with clusters of small ones
+		setupHighAccuracyAtomNetwork(atmnet, "LOW");
+	};
+	//calcASA(&atmnet, &orgAtomnet, highAccuracy, chan_radius, probe_radius, calcDensity(&atmnet), numSamples, true, output, (char *)filename.data(), visualize, visVisITflag, LiverpoolFlag, ExtendedOutputFlag); 
+	double area = calcASA(atmnet, &orgAtomnet, highAccuracy, r_probe_chan, r_probe, calcDensity(atmnet), numSamples, true , output, filename, true, false, false, false);
+	output.close();
+	cout << "write information to .zsa file success!" << endl;
+}
 
 
 

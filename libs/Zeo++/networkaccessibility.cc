@@ -86,16 +86,7 @@ void AccessibilityClass::setupAndFindChannels(ATOM_NETWORK *atmnet, ATOM_NETWORK
 
    };
 
-/* DEBUG
 
-for(unsigned int i = 0; i < accessInfo.size(); i++)
-  {
-  cout << "DEBUG: NodeID, radius, channelID, pocketID = " << i << "  ,   " << vornet.nodes.at(i).rad_stat_sphere << " ,  " << channelMapping[i] << "  ,  " << pocketMapping[i] << endl;
-  };
-
-END DEBUG */
-
-// cout << "Accessibility setup: no channels = " << n_channels << " and no pockets = " << n_pockets << "/n";
 
 } 
 

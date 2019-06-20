@@ -4,6 +4,7 @@
 
 #include "voronoicell.h"
 #include "graphstorage.h"
+#include "network.h"
 
 using namespace std;
 
@@ -17,7 +18,11 @@ using namespace std;
  * and VORONOI_NETWORK using the ZeoVis tool.
  */
 
-
+struct writeZeoVisException : public exception{
+	const char * what () const throw (){
+		return "Exception: write vornet to .vis file failed!.";
+	}
+};
 
 /* Store the provided vertices and their ids.   */
 VOR_FACE::VOR_FACE(vector<Point> vertices, ATOM_NETWORK *atmnet, VORONOI_NETWORK *vornet){
@@ -32,6 +37,16 @@ VOR_FACE::VOR_FACE(vector<Point> vertices, vector<int> vertexIDs) {
   orderedVertices = vertices;
   nodeIDs = vertexIDs;
 }
+
+// Add by YAJ 20190609
+/* Store the provided vertices and their ids.  */
+VOR_FACE::VOR_FACE(int centerAt, int neighborAt, vector<Point> vertices, vector<int> vertexIDs) {
+  neighborAtom1 = centerAt;
+  neighborAtom2 = neighborAt;
+  orderedVertices = vertices;
+  nodeIDs = vertexIDs;
+}
+
 
 /* Returns a vector of pairs of integers and Points, where each entry represents
  *  the pair (node id, node coordinates).*/
@@ -113,16 +128,19 @@ void VOR_CELL::addNode(int nodeID, Point coord){
 void VOR_CELL::addEdge(Point from, Point to){
   map<Point,int>::iterator iter1 = vertexIDs.find(from);
   map<Point,int>::iterator iter2 = vertexIDs.find(to);
-  if((iter1 == vertexIDs.end()) || (iter2 == vertexIDs.end())){
-    cerr << "Unable to add edge because nodes have not been added." << "\n"
-	 << "Point 1: (" << from[0] <<  ", " << from[1] << ", " << from[2] << ")" << "\n"
-	 << "Point 2: (" << to[0]   <<  ", " << to[1]   << ", " << to[2]   << ")" << "\n"
-	 << "Exiting..." << "\n";
-    exit(1);
-  }
-  
-  if(edgeConnections[iter2->second].find(iter1->second) == edgeConnections[iter2->second].end())
+  // if((iter1 == vertexIDs.end()) || (iter2 == vertexIDs.end())){
+  //   cerr << "Unable to add edge because nodes have not been added." << "\n"
+	//  << "Point 1: (" << from[0] <<  ", " << from[1] << ", " << from[2] << ")" << "\n"
+	//  << "Point 2: (" << to[0]   <<  ", " << to[1]   << ", " << to[2]   << ")" << "\n"
+	//  << "Exiting..." << "\n";
+	//  throw VoronoiDecompException();
+  //   //exit(1);
+  // }
+
+  if((iter1 != vertexIDs.end()) && (iter2 != vertexIDs.end())){
+   if(edgeConnections[iter2->second].find(iter1->second) == edgeConnections[iter2->second].end())
     edgeConnections[iter1->second].insert(iter2->second);
+  }
 }
 
 /* Add the face to the VOR_CELL. Adds all edges and vertices that have not yet been added 
@@ -155,7 +173,8 @@ vector<Point> VOR_CELL::getNodeCoords(int nodeID){
     }
     cerr << "\n";
     cerr << "Exiting..." << "\n";
-    exit(1);
+    throw VoronoiDecompException();
+    //exit(1);
   }
   vector<int> vertexIDs = iter->second;
   vector<Point> coords = vector<Point> ();
@@ -413,6 +432,17 @@ void writeVMDEnvVars(fstream &output,  ATOM_NETWORK *atmnet, VORONOI_NETWORK *vo
  * includes atoms, nodes, the unitcell, the voronoi network, 
  * voronoi cells (outlined and filled) and environment variables.
  */
+ 
+ bool writeZVis(char *filename, std::vector<VOR_CELL> *cells, ATOM_NETWORK *atmnet, VORONOI_NETWORK *vornet){
+	try{
+		writeZeoVisFile(filename, cells, atmnet,vornet);
+		return true;
+	}
+	catch (writeZeoVisException& e1){
+		cout << e1.what() << endl;
+		return false;
+	}
+ }
 void writeZeoVisFile(char *filename, vector<VOR_CELL> *cells,
   ATOM_NETWORK *atmnet, VORONOI_NETWORK *vornet)
 {
@@ -421,7 +451,8 @@ void writeZeoVisFile(char *filename, vector<VOR_CELL> *cells,
   if(!output.is_open()){
     cout << "Error: Failed to open output file for ZeoVis settings" << filename;
     cout << "Exiting ..." << "\n";
-    exit(1);
+    throw writeZeoVisException();
+	//exit(1);
   }
   else{
     cout << "Writing ZeoVis information to " << filename << "\n";
@@ -454,7 +485,7 @@ void writeSpecialZeoVisFile(char *filename, vector<VOR_CELL> *cells,
   if(!output.is_open()){
     cout << "Error: Failed to open output file for ZeoVis settings" << filename;
     cout << "Exiting ..." << "\n";
-    exit(1);
+    //exit(1);
   }
   else{
     cout << "Writing ZeoVis information to " << filename << "\n";

@@ -1,8 +1,27 @@
 //#include "network.h"
 #include "channel.h"
 #include <cmath>
+#include "networkio.h"
 
 using namespace std;
+
+/* 自定义异常 */
+struct ZeoVectorException : public exception{
+    const char * what () const throw (){
+        return "Exception: Pore basis vector is zero vector.";
+    }
+};
+struct IllogicalResultException : public exception{
+    const char * what () const throw (){
+        return "Exception: Illogical result  when attempting to identify channels/pockets.";
+    }
+};
+struct AccessibilityException : public exception{
+    const char * what () const throw (){
+        return "Exception: Accessibility of node was determined more than once.";
+    }
+};
+
 
 /* Create a PORE that does not contain any nodes or connections
  * and spans 0 unit cells.*/
@@ -41,7 +60,8 @@ PORE::PORE(vector<int> nodeIDs, DIJKSTRA_NETWORK *dnet, int dim, int basisVecs[3
     // Iterate over all nodes in list
     for(unsigned int i = 0; i < nodeIDs.size(); i++){
         DIJKSTRA_NODE oldNode = dnet->nodes.at(nodeIDs.at(i));
-        DIJKSTRA_NODE newNode = DIJKSTRA_NODE(i, oldNode.x, oldNode.y, oldNode.z, oldNode.max_radius);
+        // DIJKSTRA_NODE newNode = DIJKSTRA_NODE(i, oldNode.x, oldNode.y, oldNode.z, oldNode.max_radius);
+        DIJKSTRA_NODE newNode = DIJKSTRA_NODE(oldNode.id, oldNode.x, oldNode.y, oldNode.z, oldNode.max_radius, oldNode.active, oldNode.label);
         
         // Include connection only if end node is in pore
         // Reindex connection start and end ids
@@ -49,8 +69,10 @@ PORE::PORE(vector<int> nodeIDs, DIJKSTRA_NETWORK *dnet, int dim, int basisVecs[3
             CONN oldConn = oldNode.connections.at(j);
             map<int,int>::iterator id1Iter = idMappings.find(oldConn.from);
             map<int,int>::iterator id2Iter = idMappings.find(oldConn.to);
+            // cout << "1: " << id1Iter->first << " " << id1Iter->second << "2: " << id2Iter->first << " " << id2Iter->second << endl;
             if(id2Iter != idMappings.end()){
-                CONN newConn = CONN(id1Iter->second,id2Iter->second,oldConn.length,oldConn.max_radius,oldConn.deltaPos);
+                CONN newConn = CONN(id1Iter->second,id2Iter->second,oldConn.length,oldConn.btx,oldConn.bty,oldConn.btz,oldConn.max_radius,oldConn.deltaPos);
+                // CONN newConn = CONN(id1Iter->first,id2Iter->first,oldConn.length,oldConn.btx,oldConn.bty,oldConn.btz,oldConn.max_radius,oldConn.deltaPos);
                 newNode.connections.push_back(newConn);
                 connections.push_back(newConn);
             }
@@ -130,8 +152,8 @@ void PORE::findChannelsAndPockets(DIJKSTRA_NETWORK *dnet, vector<bool> *infoStor
         // Start out with 0-dimensional pore w/o any basis vectors
         int dim = 0;
         int basis [3][3] = {{0,0,0},
-			{0,0,0},
-			{0,0,0}};
+                            {0,0,0},
+                            {0,0,0}};
         
         // Place starting node on stack with (0,0,0) displacement
         int accessStatus = UNKNOWN;
@@ -182,7 +204,8 @@ void PORE::findChannelsAndPockets(DIJKSTRA_NETWORK *dnet, vector<bool> *infoStor
                                 else if (basis[2][0] != 0) v = 1.0*direction.z/basis[2][0];
                                 else {
                                     cerr << "Error: Pore basis vector is zero vector. Exiting..." << "\n";
-                                    exit(1);
+                                    //exit(1);
+                                    throw ZeoVectorException();
                                 }
                                 
                                 if(!(basis[0][0]*v == direction.x && basis[1][0]*v == direction.y &&
@@ -219,7 +242,8 @@ void PORE::findChannelsAndPockets(DIJKSTRA_NETWORK *dnet, vector<bool> *infoStor
                     cerr << "Error: Illogical result  when attempting to identify channels/pockets." << "\n";
                     cerr << "Please contact the source code provider with your program input. " << "\n";
                     cerr << "Exiting ..." << "\n";
-                    exit(1);
+                    throw IllogicalResultException();
+                    //exit(1);
                 }
                 connIter++;
             }
@@ -241,7 +265,8 @@ void PORE::findChannelsAndPockets(DIJKSTRA_NETWORK *dnet, vector<bool> *infoStor
                 cerr << "Error: Accessibility of node was determined more than once." << "\n";
                 cerr << "Please contact the source code provider with your program input. " << "\n";
                 cerr << "Exiting ..." << "\n";
-                exit(1);
+                //exit(1);
+                throw AccessibilityException();
             }
             else{
                 // Store node's status
@@ -310,7 +335,7 @@ void PORE::findChannelsAndPockets(VORONOI_NETWORK *vornet, double minRadius,
     //VORONOI_NETWORK newNetwork;
     //pruneVoronoiNetwork(vornet, &newNetwork, minRadius);
     VORONOI_NETWORK newNetwork = vornet->prune(minRadius);
-    
+
     //Build graph data structure
     DIJKSTRA_NETWORK dnet;
     DIJKSTRA_NETWORK::buildDijkstraNetwork(&newNetwork, &dnet);
@@ -529,7 +554,7 @@ void CHANNEL::print(ostream &out, bool dispNodeInfo){
     if(dispNodeInfo){
         out << "     Original Node IDs: ";
         for(unsigned int i = 0; i < nodes.size(); i++){
-            out << reverseIDMappings.find(i)->second << " ";
+            out << "(" << reverseIDMappings.find(i)->first << "," << reverseIDMappings.find(i)->second << ") ";
         }
         out << "\n";
         
@@ -690,7 +715,8 @@ void CHANNEL::writeToVMD(int n, fstream &output){
     if(!output.is_open()){
         cerr << "Error: File stream needed to print channel information was not open." << "\n"
         << "Exiting ..." << "\n";
-        exit(1);
+        //exit(1);
+        throw WritingCHANNELException();
     }
     else{
         output << "set channels(" << n << ") {" << "\n"
@@ -800,6 +826,10 @@ CHANNEL::CHANNEL(PORE *p){
     connections = p->connections;
     unitCells = p->unitCells;
     ucNodes = p->ucNodes;
+    v_a = p->v_a;
+    v_b = p->v_b;
+    v_c = p->v_c;
+
     dimensionality = p->dimensionality;
     basis[0][0]=p->basis[0][0];basis[0][1]=p->basis[0][1];basis[0][2]=p->basis[0][2];
     basis[1][0]=p->basis[1][0];basis[1][1]=p->basis[1][1];basis[1][2]=p->basis[1][2];
@@ -828,6 +858,8 @@ void CHANNEL::findChannels(DIJKSTRA_NETWORK *dnet, vector<bool> *infoStorage,
     };
     pores.clear();
 }
+
+
 /* below is an old version before PORE class was introducedd */
 /*
  void CHANNEL::findChannels(DIJKSTRA_NETWORK *dnet, vector<bool> *infoStorage,
@@ -1010,6 +1042,31 @@ void CHANNEL::findChannels(VORONOI_NETWORK *vornet, double minRadius,
     pores.clear();
 }
 
+//Added 20180705
+bool CHANNEL::findChannels_new(VORONOI_NETWORK *vornet, double minRadius, vector<CHANNEL> *channels)
+{
+	vector<bool> infoStorage;
+	try{
+		findChannels(vornet,minRadius,&infoStorage,channels);
+	}
+	catch (ZeoVectorException& e1){
+		cout << e1.what() << endl;
+		return false;
+	}
+	catch (IllogicalResultException& e2){
+		cout << e2.what() << endl;
+		return false;
+	}
+	catch (AccessibilityException& e3){
+		cout << e3.what() << endl;
+		return false;
+	}
+	return true;
+}
+
+
+
+
 /* below is an earlier version before the PORE class was introduced */
 /*
  void CHANNEL::findChannels(VORONOI_NETWORK *vornet, double minRadius,
@@ -1096,27 +1153,14 @@ pair<double, pair<double,double> > CHANNEL::findFreeIncludedSphereDiameter(){
     
     for(int i=0;i<nodes.size();i++)
     {
-    // add for Dmytro
-    cout << "Node=" << i << "   ";
-    //end Dmytro
-
         // loop over all the nodes in the current channel
         if(i==0) {
             maxdidfdif = findFreeIncludedSphereDiameterforNode(i, maxdidfdif);
-           //add Dmytro
-           cout  << " Df_updated\n ";
-           //end Dmytro
         }
         else
         {
             pair<double, pair<double,double> > didfdif = findFreeIncludedSphereDiameterforNode(i, maxdidfdif);
-            // add for Dmytro
-            if(didfdif.second.first > maxdidfdif.second.first) 
-                {
-                maxdidfdif.second = didfdif.second;
-                cout << " Df_updated\n "; 
-                };
-            // end Dmytro
+            if(didfdif.second.first > maxdidfdif.second.first) maxdidfdif.second = didfdif.second;
             if(didfdif.first > maxdidfdif.first) maxdidfdif.first = didfdif.first;
         };
     };
@@ -1252,20 +1296,6 @@ pair <double, pair<double,double> > CHANNEL::findFreeIncludedSphereDiameterforNo
             {
                 // if nodes are in different unit cells, a loop is found, the resulting df can be calculated
                 if(df>nodes[best.first].connections.at(best.second).max_radius) df=nodes[best.first].connections.at(best.second).max_radius;
-                //extra print for Dmytro
-                cout << "Df_channel_value(current)= " << df << "  " ;
-                XYZ point(lnodes[best_node].x,lnodes[best_node].y,lnodes[best_node].z);
-                point = point + v_a.scale(directions.at(best_node).x)
-                                + v_b.scale(directions.at(best_node).y)
-                                + v_c.scale(directions.at(best_node).z);
-                XYZ point2(lnodes[nodes[best.first].connections.at(best.second).to].x,lnodes[nodes[best.first].connections.at(best.second).to].y,lnodes[nodes[best.first].connections.at(best.second).to].z);
-                point2 = point2 + v_a.scale((directions[best.first] + lnodes[best.first].connections.at(best.second).deltaPos).x) 
-                                + v_b.scale((directions[best.first] + lnodes[best.first].connections.at(best.second).deltaPos).y) 
-                                + v_c.scale((directions[best.first] + lnodes[best.first].connections.at(best.second).deltaPos).z);
-                point = midpoint(point,point2);
-                cout << point.x << " " << point.y << " " << point.z << "\n";
-                // end Dmytro mod
-
                 flag=false;
                 break;
             };
@@ -1734,7 +1764,162 @@ void PORE::getRestrictingDiameters(int nSegments, vector<int> vorNetID, vector< 
 } // ends getRestrictingDiameters()
 
 
+// Added at 20180704
+/** Write the commands necessary to draw the CHANNEL in ZeoVis
+ *  to the provided output stream. */
+bool writeToVMD_new(vector<CHANNEL> channels, char *filename){
+    fstream output;
+    try{
+        output.open(filename, fstream::out);
+        for(unsigned int i = 0; i < channels.size(); i++){
+            channels.at(i).writeToVMD(i, output);
+        }
+        cout << "Writing ZeoVis information to .zchan file sucessful!" << endl;
+        return true;
+    }
+    catch (WritingCHANNELException& e1){
+        cout << e1.what() << endl;
+        return false;
+    }
+}
 
+// Added at 20180823
 
+/** Write the CHANNEL to network file
+*/
+void CHANNEL::writeToNET(int n, fstream &output, ATOM_NETWORK *atmNet){
+    if(!output.is_open()){
+        cerr << "Error: File stream needed to print channel information was not open." << "\n"
+        << "Exiting ..." << "\n";
+        throw WritingCHANNELException();
+    }
+    else{
+        output << "channeId " << n << "\n";
+        output << "\n";
+
+        output << "dimensionality " << dimensionality << "\n";
+        output << "\n";
+
+        output << "    " << v_a.x << "    " << v_a.y << "    " << v_a.z << "\n";
+        output << "    " << v_b.x << "    " << v_b.y << "    " << v_b.z << "\n";
+        output << "    " << v_c.x << "    " << v_c.y << "    " << v_c.z << "\n";
+        output << "\n";
+
+        output << "Interstitial table:" << "\n";
+        
+        // Draw the components located in each unit cell
+        for(unsigned int i = 0; i < unitCells.size(); i++){
+            vector<int> nodeIDs = ucNodes.at(i);
+            DELTA_POS disp = unitCells.at(i);
+
+            // Iterate over all nodes in the unit cell
+            for(unsigned int j = 0; j < nodeIDs.size(); j++){
+                DIJKSTRA_NODE curNode = nodes.at(nodeIDs.at(j));
+                //output << j << "\t";
+                output << curNode.id << "\t" << curNode.label << "\t";
+                //output << curNode.x << "\t" << curNode.y << "\t" << curNode.z << "\t";
+                
+                //实际坐标
+                // double xCoord = curNode.x + v_a.x*disp.x + v_b.x*disp.y + v_c.x*disp.z;
+                // double yCoord = curNode.y + v_a.y*disp.x + v_b.y*disp.y + v_c.y*disp.z;
+                // double zCoord = curNode.z + v_a.z*disp.x + v_b.z*disp.y + v_c.z*disp.z;
+                // output << xCoord << "\t" << yCoord << "\t" << zCoord << "\t";
+                
+                //分数坐标
+                Point pt = atmNet->xyz_to_abc(curNode.x, curNode.y, curNode.z);
+                // output << pt[0] << "\t" << pt[1] << "\t" << pt[2] << "\t";
+
+                // Translate the coordinate by unit cell increments so that it lies within the 0 to 1 range.
+                // pt = atmNet->shiftABCInUC(pt);
+                //output << xCoord <<  "\t" << yCoord << "\t" << zCoord << "\t" << disp.x << "\t" << disp.y << "\t" << disp.z << "\t";
+                output << pt[0] << " " << pt[1] << " " << pt[2] << "\t";
+                // output << disp.x << "\t" << disp.y << "\t" << disp.z << "\t";
+                output << curNode.max_radius << endl;
+                
+            }
+        }
+        
+        output << "\n" << "Connection table:" << "\n";
+        for(unsigned int i = 0; i < unitCells.size(); i++){
+            vector<int> nodeIDs = ucNodes.at(i);
+            DELTA_POS disp = unitCells.at(i);
+            
+            // Iterate over all nodes in the unit cell
+            for(unsigned int j = 0; j < nodeIDs.size(); j++){
+                DIJKSTRA_NODE curNode = nodes.at(nodeIDs.at(j));
+                
+                // Iterate over all connections stemming from the current node
+                for(unsigned int k = 0; k < curNode.connections.size(); k++){
+                    CONN curConn = curNode.connections.at(k);
+                    double xCoord = curNode.x + v_a.x*disp.x + v_b.x*disp.y + v_c.x*disp.z;
+                    double yCoord = curNode.y + v_a.y*disp.x + v_b.y*disp.y + v_c.y*disp.z;
+                    double zCoord = curNode.z + v_a.z*disp.x + v_b.z*disp.y + v_c.z*disp.z;
+                    Point pt = atmNet->xyz_to_abc(xCoord, yCoord, zCoord);
+
+                    output << curNode.id << "\t";
+                    //output << "\t" << disp.x << " " << disp.y << " " << disp.z << "\t";
+                    //output << xCoord << " " << yCoord << " " << zCoord << "\t";
+                    //output << pt[0] << " " << pt[1] << " " << pt[2] << endl;
+
+                    DIJKSTRA_NODE otherNode = nodes.at(curConn.to);
+
+                    //double otherNode_x = otherNode.x + v_a.x*disp.x + v_b.x*disp.y + v_c.x*disp.z;
+                    //double otherNode_y = otherNode.y + v_a.y*disp.x + v_b.y*disp.y + v_c.y*disp.z;
+                    //double otherNode_z = otherNode.z + v_a.z*disp.x + v_b.z*disp.y + v_c.z*disp.z;
+
+                    //double otherNode_xCoord = otherNode_x + v_a.x*curConn.deltaPos.x + v_b.x*curConn.deltaPos.y + v_c.x*curConn.deltaPos.z;
+                    //double otherNode_yCoord = otherNode_y + v_a.y*curConn.deltaPos.x + v_b.y*curConn.deltaPos.y + v_c.y*curConn.deltaPos.z;
+                    //double otherNode_zCoord = otherNode_z + v_a.z*curConn.deltaPos.x + v_b.z*curConn.deltaPos.y + v_c.z*curConn.deltaPos.z;
+                    //Point pt_other = atmNet->xyz_to_abc(otherNode_xCoord, otherNode_yCoord, otherNode_zCoord);
+
+                    output << otherNode.id << "\t";
+                    output << curConn.deltaPos.x << " " << curConn.deltaPos.y << " " << curConn.deltaPos.z << "\t";
+
+                    //output << curConn.deltaPos.x << " " << curConn.deltaPos.y << " " << curConn.deltaPos.z << "\t";
+                    //output << otherNode_xCoord << " " << otherNode_yCoord << " " << otherNode_zCoord << "\t";
+                    //output << pt_other[0] << " " << pt_other[1] << " " << pt_other[2] << endl;
+
+                    // output << curConn.btx << "\t" << curConn.bty << "\t" << curConn.btz << "\t";
+
+                    //double btxCoord = curConn.btx + v_a.x*disp.x + v_b.x*disp.y + v_c.x*disp.z;
+                    //double btyCoord = curConn.bty + v_a.y*disp.x + v_b.y*disp.y + v_c.y*disp.z;
+                    //double btzCoord = curConn.btz + v_a.z*disp.x + v_b.z*disp.y + v_c.z*disp.z;
+                    //Point pt_bt = atmNet->xyz_to_abc(btxCoord, btyCoord, btzCoord);
+
+                    Point pt_bt = atmNet->xyz_to_abc(curConn.btx, curConn.bty, curConn.btz);
+
+                    //output << btxCoord << "\t" << btyCoord << "\t" << btzCoord << "\t";
+                    
+                    output << pt_bt[0] << " " << pt_bt[1] << " " << pt_bt[2] << "\t";
+                    output << curConn.max_radius << "\t" << curConn.length;
+                    output << endl;
+
+                    // //分数坐标
+                    // Point pt = atmNet->xyz_to_abc(btxCoord, btyCoord, btzCoord);
+                    // output << pt[0] << "\t" << pt[1] << "\t" << pt[2] << "\t";
+                    // output << btxCoord << "\t" << btyCoord << "\t" << btzCoord << "\t";
+                    // output << curConn.max_radius << "\t" << curConn.deltaPos.x << "\t" << curConn.deltaPos.y << "\t" << curConn.deltaPos.z << endl;
+                }
+            }
+        }
+        output << "\n";
+    }
+}
+
+bool writeToNET_new(vector<CHANNEL> channels, char *filename, ATOM_NETWORK *atmNet){
+    fstream output;
+    try{
+        output.open(filename, fstream::out);
+        for(unsigned int i = 0; i < channels.size(); i++){
+            channels.at(i).writeToNET(i, output, atmNet);
+        }
+        cout << "Writing CHANNEL information to .net file sucessful!" << endl;
+        return true;
+    }
+    catch (WritingCHANNELException& e1){
+        cout << e1.what() << endl;
+        return false;
+    }
+}
 
 

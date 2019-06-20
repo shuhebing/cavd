@@ -14,23 +14,9 @@
 #include "symbcalc.h"
 #include "zeo_consts.h"
 #include "network.h"        // Try to eliminate cyclic dependency in future
+#include "graphstorage.h"
 
 using namespace std;
-
-template <typename T>
-    std::string to_string(T value)
-    {
-     //create an output string stream
-     std::ostringstream os ;
-
-    //throw the value into the string stream
-     os << value ;
-
-    //convert the string stream into a string and return
-     return os.str() ;
-    }
-
-
 
 /** Identifies the extension and the prefix present in the provided
     filename and stores them using the two provided character
@@ -41,7 +27,7 @@ void parseFilename(const char * fileName, char *name, char *extension){
   if(index == string::npos){
     cerr << "Improper input filename " << fileName << "\n";
     cerr << "No . extension found. Exiting ..." << "\n";
-    exit(1);
+    //exit(1);
   }
   else{
     string prefix = s.substr(0, index);
@@ -56,8 +42,8 @@ void parseFilename(const char * fileName, char *name, char *extension){
  *  aborted. */
 bool checkInputFile(char * filename){
   string file(filename);
-  string fileTypes [] = {".cuc", ".arc", ".cssr", ".obcssr", ".v1",".cif",".car",".dlp",".pdb",".lmps"};
-  int numTypes = 10;
+  string fileTypes [] = {".cuc", ".arc", ".cssr", ".obcssr", ".v1",".cif",".car",".dlp",".pdb"};
+  int numTypes = 8;
 
   for(int i = 0; i < numTypes; i++){
     if(file.find(fileTypes[i]) != string::npos)
@@ -76,27 +62,27 @@ bool readCIFFile(char *filename, ATOM_NETWORK *cell, bool radial){
   string line;
   // Known markers in CIF File if you change the order it will affect the code
   string descriptor[] = {"data_",
-			 "_cell_length_a", //case 1
-			 "_cell_length_b", //2
-			 "_cell_length_c", //3
-			 "_cell_angle_alpha", //4
-			 "_cell_angle_beta", //5
-			 "_cell_angle_gamma", //6
-			 "loop_", //7
-			 "_symmetry_equiv_pos_as_xyz", //8
-			 "_space_group_symop_operation_xyz", //9
-			 "_atom_site_label", //10
-			 "_atom_site_type_symbol", //11
-			 "_atom_site_fract_x", //12
-			 "_atom_site_fract_y", //13
-			 "_atom_site_fract_z", //14
-			 "_atom_site_charge", //15
+             "_cell_length_a", //case 1
+             "_cell_length_b", //2
+             "_cell_length_c", //3
+             "_cell_angle_alpha", //4
+             "_cell_angle_beta", //5
+             "_cell_angle_gamma", //6
+             "loop_", //7
+             "_symmetry_equiv_pos_as_xyz", //8
+             "_space_group_symop_operation_xyz", //9
+             "_atom_site_label", //10
+             "_atom_site_type_symbol", //11
+             "_atom_site_fract_x", //12
+             "_atom_site_fract_y", //13
+             "_atom_site_fract_z", //14
+             "_atom_site_charge", //15
        "_symmetry_Int_Tables_number", //16
-			 "_atom_site_Cartn_x", //17
-			 "_atom_site_Cartn_y", //18
-			 "_atom_site_Cartn_z", //19
+             "_atom_site_Cartn_x", //17
+             "_atom_site_Cartn_y", //18
+             "_atom_site_Cartn_z", //19
                          "_symmetry_equiv_pos_site_id", // 20 
-			 "NULL"};  
+             "NULL"};  
   int ndx;
   vector<string> list = strAry2StrVec(descriptor);
   vector<string> token;
@@ -121,65 +107,70 @@ bool readCIFFile(char *filename, ATOM_NETWORK *cell, bool radial){
   bool read_a = false, read_b = false, read_c = false, read_alpha = false, read_beta = false, read_gamma = false, initialized_cell = false; //keep track of when all cell params are parsed, so the cell can be created
   if(ciffile.is_open()) {
     while(!ciffile.eof()) {
-      if(read_a && read_b && read_c && read_alpha && read_beta && read_gamma && !initialized_cell) {cell->initialize(); initialized_cell=true;}
+      if(read_a && read_b && read_c && read_alpha && read_beta && read_gamma && !initialized_cell) {
+        cell->initialize(); 
+        initialized_cell=true;
+      }
       getline(ciffile,line);
-//printf("DEBUG: read line %s\n", line.c_str());
+      //printf("DEBUG: read line %s\n", line.c_str());
       token = split(line," ()\r\t");
       exception: //I needed an easy way to jump out of the _loop command if an unknown command was found
       if (token.size() > 0) {
-	      //Where all non-loop commands should be added
-	      if(token[0].substr(0,5).compare(list[0]) == 0){ //name of unit cell
-	        cell->name=token[0].substr(5);
-	      }
-	      else if (token[0].compare(list[1]) == 0){ //length a
-	        cell->a=convertToDouble(token[1]);
+        //Where all non-loop commands should be added
+        if(token[0].substr(0,5).compare(list[0]) == 0){ //name of unit cell
+          cell->name=token[0].substr(5);
+        }
+        else if (token[0].compare(list[1]) == 0){ //length a
+          cell->a=convertToDouble(token[1]);
           read_a = true;
-	      }
-	      else if (token[0].compare(list[2]) == 0){ //length b
-	        cell->b=convertToDouble(token[1]);
+        }
+        else if (token[0].compare(list[2]) == 0){ //length b
+          cell->b=convertToDouble(token[1]);
           read_b = true;
-	      }
-	      else if (token[0].compare(list[3]) == 0){ //length c
-	        cell->c=convertToDouble(token[1]);
+        }
+        else if (token[0].compare(list[3]) == 0){ //length c
+          cell->c=convertToDouble(token[1]);
           read_c = true;
-	      }
-	      else if (token[0].compare(list[4]) == 0){ //alpha
-	        cell->alpha=convertToDouble(token[1]);
+        }
+        else if (token[0].compare(list[4]) == 0){ //alpha
+          cell->alpha=convertToDouble(token[1]);
           read_alpha = true;
-	      }
-	      else if (token[0].compare(list[5]) == 0){ //beta
-	        cell->beta=convertToDouble(token[1]);
+        }
+        else if (token[0].compare(list[5]) == 0){ //beta
+          cell->beta=convertToDouble(token[1]);
           read_beta = true;
-	      }
-	      else if (token[0].compare(list[6]) == 0){ //gamma
-	        cell->gamma=convertToDouble(token[1]);
+        }
+        else if (token[0].compare(list[6]) == 0){ //gamma
+          cell->gamma=convertToDouble(token[1]);
           read_gamma = true;
-	      }
+        }
         else if (token[0].compare(list[16]) == 0){ //_symmetry_Int_Tables_number
-	        symmetry_Int_Table_number = convertToInt(token[1]);
-	      }
-	      else if (token[0].compare(list[7]) == 0){ //loop_
-//printf("DEBUG: inside a \"loop_\" section\n");
-	        vector<string> column_labels;
-	        getline(ciffile,line);
-	        token = split(line," \r\t");
+          symmetry_Int_Table_number = convertToInt(token[1]);
+        }
+        else if (token[0].compare(list[7]) == 0){ //loop_
+          //printf("DEBUG: inside a \"loop_\" section\n");
+          vector<string> column_labels;
+          getline(ciffile,line);
+          token = split(line," \r\t");
           bool tokenized = false, in_loop = true;
           if(token.size()>0) tokenized=true;
-//	        while (token[0].at(0)=='_') { //collect all of the collumn labels
-	        while (tokenized && in_loop) { //collect all of the collumn labels
+          // while (token[0].at(0)=='_') { //collect all of the collumn labels
+          while (tokenized && in_loop) { //collect all of the collumn labels
             if(token[0].at(0)=='_') {
-	            column_labels.push_back(token[0]);
-//printf("DEBUG: within loop, parsed a column header \"%s\"\n", token[0].c_str());
-	            getline(ciffile,line);
-//printf("DEBUG: read line \"%s\" - tokenizing ...\n", line.c_str());
-	            token = split(line," \r\t");
+              column_labels.push_back(token[0]);
+              //printf("DEBUG: within loop, parsed a column header \"%s\"\n", token[0].c_str());
+              getline(ciffile,line);
+              //printf("DEBUG: read line \"%s\" - tokenizing ...\n", line.c_str());
+              token = split(line," \r\t");
               if(token.size()<=0) tokenized=false;
-            } else in_loop = false;
-	        }
+            } 
+            else in_loop = false;
+          }
           if(!tokenized) {
-printf("\n#####\n##### WARNING: parsed a loop in cif file, but data was not present\n#####\n\n");
-          } else {
-//printf("DEBUG: exited loop successfully, having read data line \"%s\"\n", line.c_str());
+            printf("\n#####\n##### WARNING: parsed a loop in cif file, but data was not present\n#####\n\n");
+          } 
+          else {
+            //printf("DEBUG: exited loop successfully, having read data line \"%s\"\n", line.c_str());
             //collecting the data associated with each column and put
             // in correct place
             token = split(line," ,'\r\t"); //This is needed to split data
@@ -193,69 +184,71 @@ printf("\n#####\n##### WARNING: parsed a loop in cif file, but data was not pres
               }
               for (unsigned int i=0; i<column_labels.size(); i++){
                 switch (strCmpList(list,column_labels[i])){
-  //printf("SYM DEBUG: checking for symmetry section ...\n");
-	              //Where all loop commands should be added
-                case 8: //_symmetry_equiv_pos_as_xyz and
-                case 9: //_space_group_symop_operation_xyz have the same meaning
-  //printf("SYM DEBUG: symmetry section found!\n");
-	              if (!((token.size()==3&&symmetry_equiv_pos_site_id_Flag==false)||(token.size()==4&&symmetry_equiv_pos_site_id_Flag==true))){
-	                cerr << "Error: Expected 3 strings for _symmetry_equiv_pos_as_xyz (or 4 if _symmetry_equiv_pos_site_id is present)" << endl;
-  //	              abort();
-                  ciffile.close();
-                  return false;
-	              }
-                      if(token.size()==3) {
-	                sym_x.push_back(token[0]);
-	                sym_y.push_back(token[1]);
-	                sym_z.push_back(token[2]);}
-                        else {
-                        sym_x.push_back(token[1]);
-                        sym_y.push_back(token[2]);
-                        sym_z.push_back(token[3]);
-                        };
-  //printf("SYM DEBUG: pushing back %s %s %s\n", token[0].c_str(), token[1].c_str(), token[2].c_str());
-	              break;
-                case 10:
-	              atom_label.push_back(token[i]);
-	              break;
-                case 11:
-	              atom_type.push_back(token[i]);
-	              break;
-                case 12:
-	              atom_x.push_back(trans_to_origuc(convertToDouble(token[i])));
-	              break;
-                case 13:
-	              atom_y.push_back(trans_to_origuc(convertToDouble(token[i])));
-	              break;
-                case 14:
-	              atom_z.push_back(trans_to_origuc(convertToDouble(token[i])));
-	              break;
-                case 15:
-	              atom_charge.push_back(convertToDouble(token[i]));
-	              break;
-                case 17:
-	              atom_x.push_back(convertToDouble(token[i]));
-                need_to_convert_to_fractional = true;
-	              break;
-                case 18:
-	              atom_y.push_back(convertToDouble(token[i]));
-                need_to_convert_to_fractional = true;
-	              break;
-                case 19:
-	              atom_z.push_back(convertToDouble(token[i]));
-                need_to_convert_to_fractional = true;
-	              break;
-                case 20:
-                      symmetry_equiv_pos_site_id_Flag = true;
-                      break;
-                }	 
+                //printf("SYM DEBUG: checking for symmetry section ...\n");
+                //Where all loop commands should be added
+                  case 8: //_symmetry_equiv_pos_as_xyz and
+                  case 9: //_space_group_symop_operation_xyz have the same meaning
+                   //printf("SYM DEBUG: symmetry section found!\n");
+                    if (!((token.size()==3&&symmetry_equiv_pos_site_id_Flag==false)||(token.size()==4&&symmetry_equiv_pos_site_id_Flag==true))){
+                      cout << "Error: Expected 3 strings for _symmetry_equiv_pos_as_xyz (or 4 if _symmetry_equiv_pos_site_id is present)" << endl;
+                    // abort();
+                      ciffile.close();
+                      return false;
+                    }
+                    if(token.size()==3) {
+                      sym_x.push_back(token[0]);
+                      sym_y.push_back(token[1]);
+                      sym_z.push_back(token[2]);
+                    }
+                    else {
+                      sym_x.push_back(token[1]);
+                      sym_y.push_back(token[2]);
+                      sym_z.push_back(token[3]);
+                    };
+                    //printf("SYM DEBUG: pushing back %s %s %s\n", token[0].c_str(), token[1].c_str(), token[2].c_str());
+                    break;
+                  case 10:
+
+                    atom_label.push_back(token[i]);
+                    break;
+                  case 11:
+                    atom_type.push_back(token[i]);
+                    break;
+                  case 12:
+                    atom_x.push_back(trans_to_origuc(convertToDouble(token[i])));
+                    break;
+                  case 13:
+                    atom_y.push_back(trans_to_origuc(convertToDouble(token[i])));
+                    break;
+                  case 14:
+                    atom_z.push_back(trans_to_origuc(convertToDouble(token[i])));
+                    break;
+                  case 15:
+                    atom_charge.push_back(convertToDouble(token[i]));
+                    break;
+                  case 17:
+                    atom_x.push_back(convertToDouble(token[i]));
+                    need_to_convert_to_fractional = true;
+                    break;
+                  case 18:
+                    atom_y.push_back(convertToDouble(token[i]));
+                    need_to_convert_to_fractional = true;
+                    break;
+                  case 19:
+                    atom_z.push_back(convertToDouble(token[i]));
+                    need_to_convert_to_fractional = true;
+                    break;
+                  case 20:
+                    symmetry_equiv_pos_site_id_Flag = true;
+                    break;
+                }     
               }  
               //now we've finished parsing this line, we might need to convert Cartesian to fractional coords
               if(need_to_convert_to_fractional) {
                 Point tempcoor;
                 int this_ID = atom_x.size()-1;
-        	      tempcoor = cell->xyz_to_abc(atom_x.at(this_ID),atom_y.at(this_ID),atom_z.at(this_ID));
-//printf("DEBUG: atom at Cartesian %.3f %.3f %.3f written to fractional %.3f %.3f %.3f\n", atom_x.at(this_ID),atom_y.at(this_ID),atom_z.at(this_ID), tempcoor[0], tempcoor[1], tempcoor[2]);
+                tempcoor = cell->xyz_to_abc(atom_x.at(this_ID),atom_y.at(this_ID),atom_z.at(this_ID));
+                //printf("DEBUG: atom at Cartesian %.3f %.3f %.3f written to fractional %.3f %.3f %.3f\n", atom_x.at(this_ID),atom_y.at(this_ID),atom_z.at(this_ID), tempcoor[0], tempcoor[1], tempcoor[2]);
                 atom_x.at(this_ID) = tempcoor[0];
                 atom_y.at(this_ID) = tempcoor[1];
                 atom_z.at(this_ID) = tempcoor[2];
@@ -268,7 +261,7 @@ printf("\n#####\n##### WARNING: parsed a loop in cif file, but data was not pres
         }
         token.clear();
       }
-    }	  
+    }      
     ciffile.close();
     
     //If no symmetry info was provided, we can assume that none is required (i.e., structure has 'P 1' symmetry), ONLY IF we did not read a symmetry_Int_Tables_Number!=1
@@ -277,7 +270,7 @@ printf("\n#####\n##### WARNING: parsed a loop in cif file, but data was not pres
       if (symmetry_Int_Table_number>=0 && symmetry_Int_Table_number!=1) {
         //read a symmetry table number, but it was not 1
         printf("ERROR:\n\tcif file provided no symmetry operations; however, a symmetry_Int_Tables_Number of %d was provided,\n\tindicating symmetry which is not 'P 1' (no symmetry operations);\n\tcannot proceed with insufficient symmetry information\nExiting ...\n", symmetry_Int_Table_number);
-//        exit(EXIT_FAILURE);
+        //exit(EXIT_FAILURE);
         return false;
       } else {
         sym_x.push_back("x");
@@ -287,46 +280,47 @@ printf("\n#####\n##### WARNING: parsed a loop in cif file, but data was not pres
     }
 
     //Now determine whether it is correct to use atom_label or atom_type (atom_label used only if atom_type has no data)
-    bool CIF_USE_LABEL = atom_type.size()==0;
-
+    // bool CIF_USE_LABEL = atom_type.size()==0;
+    bool CIF_USE_LABEL = atom_label.size()>0;
     //Now determine whether charges are used - only if they were provided
     bool CIF_CHARGES = atom_charge.size()>0;
 
     //Parse out the numbers from atom labels and types, if specified (defined in network.h)
     if (CIF_RMV_NUMS_FROM_ATOM_TYPE){
       if (!CIF_USE_LABEL){
-	      for (unsigned int i=0; i<atom_type.size(); i++){
-	        atom_type[i] = split(atom_type[i],"0123456789").at(0);
-	      }
+        for (unsigned int i=0; i<atom_type.size(); i++){
+          atom_type[i] = split(atom_type[i],"0123456789").at(0);
+        }
       }
       else{
-	      for (unsigned int i=0; i<atom_label.size(); i++){
-	        atom_label[i] = split(atom_label[i],"0123456789").at(0);
-	      }
+        for (unsigned int i=0; i<atom_label.size(); i++){
+          atom_label[i] = split(atom_label[i],"0123456789").at(0);
+          atom_type[i] = split(atom_type[i],"0123456789").at(0);
+        }
       }
     }
     
     //Error checking
     if (sym_x.size()==0 || sym_y.size()==0 || sym_z.size()==0 ){
-      cerr << "Error: No .cif symmetry information given" << endl;
-      cerr << "DEBUG SHOULDN'T HAPPEN" << endl;
+      cout << "Error: No .cif symmetry information given" << endl;
+      cout << "DEBUG SHOULDN'T HAPPEN" << endl;
       return false;
-//      abort();
+    //abort();
     }
     if (atom_label.size()==0 && CIF_USE_LABEL == true){
-      cerr << "Error: No ''_atom_site_label'' or ''_atom_site_type_symbol'' information " << endl;
-      cerr << "This structure appears to be invalid: there are no atom identifying element types or labels - if this is not the case, then this is a bug; please contact the developers." << endl;
+      cout << "Error: No ''_atom_site_label'' or ''_atom_site_type_symbol'' information " << endl;
+      cout << "This structure appears to be invalid: there are no atom identifying element types or labels - if this is not the case, then this is a bug; please contact the developers." << endl;
       return false;
     }
     if (atom_type.size()==0 && CIF_USE_LABEL == false){
-      cerr << "Error: No ''_atom_site_type_symbol'' information" << endl;
-      cerr << "DEBUG SHOULDN'T HAPPEN" << endl;
+      cout << "Error: No ''_atom_site_type_symbol'' information" << endl;
+      cout << "DEBUG SHOULDN'T HAPPEN" << endl;
       return false;
-//      abort();
+      //abort();
     }
     if (atom_x.size()!=atom_y.size() || atom_y.size()!=atom_z.size() || atom_x.size()==0){
-      cerr << "Error: Atom coordinates not read properly (" << atom_x.size() << " x coords, " << atom_y.size() << " y coords, " << atom_z.size() << " z coords)" << endl;
-//      abort();
+      cout << "Error: Atom coordinates not read properly (" << atom_x.size() << " x coords, " << atom_y.size() << " y coords, " << atom_z.size() << " z coords)" << endl;
+      //abort();
       return false;
     }
 
@@ -336,37 +330,54 @@ printf("\n#####\n##### WARNING: parsed a loop in cif file, but data was not pres
     }
     
     //Now to fully assemble the ATOM_NETWORK initialize constructor
-//    cell->initialize(); //this should now happen much earlier, during parsing
+    //cell->initialize(); //this should now happen much earlier, during parsing
     
     ATOM tempatom;
     Point tempcoor;
     for (unsigned int i=0; i<atom_x.size(); i++){ //atoms
       if (CIF_USE_LABEL){
-	      tempatom.type = atom_label[i];
+          tempatom.label = atom_label[i];
+          tempatom.type = atom_type[i];
       }
       else {
-	      tempatom.type = atom_type[i];
+          tempatom.type = atom_type[i];
       }
-      tempatom.radius = lookupRadius(tempatom.type, radial);
+      //edited at 20180526
+      //tempatom.radius = lookupRadius(tempatom.type, radial);
+      //edited at 20180606
+      //tempatom.radius = lookupGoldschmidtIonRadius(tempatom.type, radial);
+      if(CIF_USE_LABEL){
+        if(lookupIonRadius(tempatom.label, radial) == -1)
+          return false;
+        else
+          tempatom.radius = lookupIonRadius(tempatom.label, radial);
+      }
+      else{
+        if(lookupIonRadius(tempatom.type, radial) == -1)
+          return false;
+        else
+          tempatom.radius = lookupIonRadius(tempatom.type, radial);
+      }
+
       if(CIF_CHARGES) {
         tempatom.charge = atom_charge[i];
       } else tempatom.charge = 0;
       for (unsigned int j=0;j<sym_x.size(); j++){ //symmetries
-	      tempatom.a_coord = trans_to_origuc(symbCalc(sym_x[j],atom_x[i],atom_y[i],atom_z[i]));
-	      tempatom.b_coord = trans_to_origuc(symbCalc(sym_y[j],atom_x[i],atom_y[i],atom_z[i]));
-	      tempatom.c_coord = trans_to_origuc(symbCalc(sym_z[j],atom_x[i],atom_y[i],atom_z[i]));
-	      tempcoor = cell->abc_to_xyz (tempatom.a_coord,tempatom.b_coord,tempatom.c_coord);
-	      tempatom.x = tempcoor[0]; 
-	      tempatom.y = tempcoor[1]; 
-	      tempatom.z = tempcoor[2];
-	      tempatom.specialID = (i*sym_x.size())+j;
-	
-	      //make sure that no duplicate atoms are writen
-	      int match=1;
-	      for (unsigned int k=0;k<cell->atoms.size(); k++){
+          tempatom.a_coord = trans_to_origuc(symbCalc(sym_x[j],atom_x[i],atom_y[i],atom_z[i]));
+          tempatom.b_coord = trans_to_origuc(symbCalc(sym_y[j],atom_x[i],atom_y[i],atom_z[i]));
+          tempatom.c_coord = trans_to_origuc(symbCalc(sym_z[j],atom_x[i],atom_y[i],atom_z[i]));
+          tempcoor = cell->abc_to_xyz (tempatom.a_coord,tempatom.b_coord,tempatom.c_coord);
+          tempatom.x = tempcoor[0]; 
+          tempatom.y = tempcoor[1]; 
+          tempatom.z = tempcoor[2];
+          tempatom.specialID = (i*sym_x.size())+j;
+    
+          //make sure that no duplicate atoms are writen
+          int match=1;
+          for (unsigned int k=0;k<cell->atoms.size(); k++){
                 if(cell->calcDistance(cell->atoms[k],tempatom)<thresholdLarge) { match=0;
 /*
-	        if (tempatom.a_coord-thresholdLarge < cell->atoms[k].a_coord && cell->atoms[k].a_coord < tempatom.a_coord+thresholdLarge)
+          if (tempatom.a_coord-thresholdLarge < cell->atoms[k].a_coord && cell->atoms[k].a_coord < tempatom.a_coord+thresholdLarge)
           if (tempatom.b_coord-thresholdLarge < cell->atoms[k].b_coord && cell->atoms[k].b_coord < tempatom.b_coord+thresholdLarge )
           if (tempatom.c_coord-thresholdLarge < cell->atoms[k].c_coord && cell->atoms[k].c_coord < tempatom.c_coord+thresholdLarge ){
             match=0;
@@ -383,7 +394,7 @@ printf("\n#####\n##### WARNING: parsed a loop in cif file, but data was not pres
   else{
     cout << "Failed to open: " << filename << endl;
     ciffile.close();
-//    exit(1);
+    //exit(1);
     return false;
   }
   return true;
@@ -525,221 +536,6 @@ bool readARCFile(char *filename, ATOM_NETWORK *cell, bool radial){
 }
 
 
-/** Read the .lmps file refererred to by filename and store its
-    information within the provided ATOM_NETWORK. 
-    Reader based on example files from Corey */
-bool readLMPSFile(char *filename, ATOM_NETWORK *cell, bool radial){
-
-  string lmpsfilename = string(filename) + string(".lmps");
-  string xyzfilename = string(filename) + string(".xyz");
-
-  fstream input;
-//  fstream input2;
-
-  input.open(lmpsfilename.c_str());  // we will be merging information from two files
-//  input2.open(xyzfilename.c_str());
-  
-  // FILE * input;
-  // input = fopen(filename, "r");
-  int numAtoms=0;
-
-//  if(input==NULL){
-//  if(input.is_open()==false && input2.is_open()==false)
-  if(input.is_open()==false)
-    {
-    cout << "\n" << "Failed to open .lmps input file " << lmpsfilename << "\n";
-//    cout << "\n" << "Failed to open .lmps and/or .xyz input files " << lmpsfilename << "  " << xyzfilename << "\n";
-    cout << "Exiting ..." << "\n";
-//    exit(1);
-    return false;
-  }
-  else{
-    cout << "Reading input file " << filename << "\n";
-
-    string garbage;
-
-    getline(input, garbage);
-    getline(input, garbage);
-    
-    input >> numAtoms; 
-    cout << "Expecting to read " << numAtoms << " atoms.\n";
-    getline(input, garbage);
-    
-    for(int i=0;i<5;i++) getline(input, garbage);
-
-    int nAtomTypes;
-    input >> nAtomTypes;
-    getline(input, garbage);
-    for(int i=0; i<4; i++) getline(input, garbage);
-
-    // reading in the unit cell
-    double xlo, xhi, ylo, yhi, zlo, zhi;
-
-    input >> xlo >> xhi; getline(input,garbage);
-    input >> ylo >> yhi; getline(input,garbage);
-    input >> zlo >> zhi; getline(input,garbage);
-
-    XYZ v_a, v_b, v_c;
-
-    v_a.x = xhi-xlo; v_a.y = 0; v_a.z = 0;
-    v_b.x = 0; v_b.y = yhi-ylo; v_b.z = 0;
-    v_c.x = 0; v_c.y = 0; v_c.z = zhi-zlo;
-
-    double xshift, yshift, zshift;
-
-    xshift = xlo; yshift = ylo; zshift = zlo;
-
-    cout << "Box shifts [x/y/z] = " << xshift << "   " << yshift << "   " << zshift << ".\n";
-
-    // Reach atom types
-
-/*  this following block does not work as they are united atom residues
-*/
-    for(int i=0; i<3; i++) getline(input, garbage);
-    vector <double> atomMasses;
-    for(int i=0; i<nAtomTypes; i++)
-       {
-       double temp;
-       input >> temp;
-       input >> temp; atomMasses.push_back(temp);
-       getline(input,garbage);
-//       cout << "Read atom mass of " << temp << " corresponding to " << lookupAtomName(temp) << ".\n";
-       };
-    cout.flush();
-
-
-    // Parse down to the "Atoms" block
-    
-    char found_final = 0;
-    while(found_final == 0) {
-      getline(input,garbage);
-      if(input.eof() != 1) {
-        char str1[100];
-        int status = sscanf(garbage.c_str(), "%s", str1);
-        if(status!=-1) {
-          if(strcmp(str1,"Atoms")==0) {
-            found_final = 1;
-          };
-        }
-      } else {
-        printf("ERROR: finished parsing lmps file before finding atoms section\n");
-        input.close();
-        return false;
-      };
-    };
-
-    
-    
-
-    getline(input, garbage);
-
-    /* Reading data from .lmps files */
-    /* Atom radii need to be read from rad file */
-
-    for(int i= 0; i<numAtoms; i++)
-       {
-       int id, id2, type;
-       double x, y, z, charge;
-       string element;
-       input >> id >> id2 >> type >> charge >> x >> y >> z; getline(input, garbage);
-    //   input2 >> element >> x >> y >> z; getline(input2, garbage);
-
-
-      cout << "input1_id " << id << "   input2_elem " << type << " .\n"; cout.flush();
-
-       // At this point, we have the first atom info in memory
-      ATOM newAtom;
-   
-      newAtom.x = x - xshift;
-      newAtom.y = y - yshift;
-      newAtom.z = z - zshift;
-      newAtom.type = to_string(type);
-      newAtom.label = to_string(type);
-//      newAtom.type = element;
-//      newAtom.radius = lookupRadius(newAtom.type, radial);
-      newAtom.charge = charge;
-//      newAtom.mass = atomMasses.at(id2 - 1);
-      cell->atoms.push_back(newAtom);
-
-
-      cout << "Readin element id= " << i << "  element= " << newAtom.type << "\n"; cout.flush();
-   
-      };
-
-
-
-    /* Read from the corresponding .xyz files */
-/*
-    getline(input2, garbage);
-    getline(input2, garbage);
-
-    for(int i= 0; i<numAtoms; i++)
-       {
-       int id, id2, type;
-       double x, y, z, charge;
-       string element;
-       input >> id >> id2 >> type >> charge >> x >> y >> z; getline(input, garbage);
-       input2 >> element >> x >> y >> z; getline(input2, garbage);       
-
-
-      cout << "input1_id " << id << "   input2_elem " << element << ".\n"; cout.flush(); 
-
-       // At this point, we have the first atom info in memory
-      ATOM newAtom;
-    
-      newAtom.x = x - xshift;
-      newAtom.y = y - yshift;
-      newAtom.z = z - zshift;
-      newAtom.type = element;
-      newAtom.radius = lookupRadius(newAtom.type, radial);
-      newAtom.charge = charge;
-      cell->atoms.push_back(newAtom);
-    
-      };
- */     
-    
-    cell->numAtoms = numAtoms;
-    input.close();
-//    input2.close();
-
-    cout << "Lmps/xyz file closed.\n"; cout.flush();
-
-
-    // Set up cell
-    cell->v_a = v_a;
-    cell->v_b = v_b;
-    cell->v_c = v_c;
-    double alpha = v_b.angle_between(v_c);
-    double beta = v_a.angle_between(v_c);
-    double gamma = v_a.angle_between(v_b);
-    cell->alpha = alpha*360.0/(2.0*PI);
-    cell->beta = beta*360.0/(2.0*PI);
-    cell->gamma = gamma*360.0/(2.0*PI); //required since it expects to store degrees
-    cell->a = v_a.magnitude();
-    cell->b = v_b.magnitude();
-    cell->c = v_c.magnitude();
-    cell->initMatrices();
-    cell->name = filename;
-    //cell->name.erase(cell->name.end()-4, cell->name.end());
-    
-//   cout << "number of atoms read " << numAtoms << "\n";
-
-    // Convert atom coords to abc and update the xyz values to be within the UC
-    for(int i=0; i<numAtoms; i++) {
-      Point newCoords = cell->xyz_to_abc(cell->atoms.at(i).x,cell->atoms.at(i).y,cell->atoms.at(i).z);
-      cell->atoms.at(i).a_coord = trans_to_origuc(newCoords[0]); cell->atoms.at(i).b_coord = trans_to_origuc(newCoords[1]); cell->atoms.at(i).c_coord = trans_to_origuc(newCoords[2]);
-      newCoords = cell->abc_to_xyz(cell->atoms.at(i).a_coord,cell->atoms.at(i).b_coord,cell->atoms.at(i).c_coord);
-      cell->atoms.at(i).x = newCoords[0]; cell->atoms.at(i).y = newCoords[1]; cell->atoms.at(i).z = newCoords[2];
-      //cout << i << "  " << cell->atoms.at(i).type << "  " << newCoords[0] << "  " << newCoords[1] << "  " << newCoords[2] <<"\n";
-    }
-  }
-  cout << "Lmps/xyz read-in completed.\n"; cout.flush();
-  return true;
-}
-
-
-
-
 /** Read the .cuc file refererred to by filename and store its
     information within the provided ATOM_NETWORK. */
 //void readCUCFile(char *filename, ATOM_NETWORK *cell, bool radial){
@@ -766,7 +562,7 @@ bool readCUCFile(char *filename, ATOM_NETWORK *cell, bool radial){
     input >> cell->a >> cell->b >> cell->c;
     input >> cell->alpha >> cell->beta >> cell->gamma;
     cell->initialize(); // Initializes the unit cell vectors using the
-			// angles and side lengths
+            // angles and side lengths
 
     // Read and store information about each atom
     numAtoms = 0;
@@ -774,7 +570,7 @@ bool readCUCFile(char *filename, ATOM_NETWORK *cell, bool radial){
       ATOM newAtom;
       input >> newAtom.type;
       if(newAtom.type.empty())
-	break;
+    break;
       
       changeAtomType(&newAtom); // Converts to atom type
       input >> newAtom.a_coord >> newAtom.b_coord >> newAtom.c_coord;
@@ -1155,7 +951,7 @@ bool readPDBFile(char *filename, ATOM_NETWORK *cell, bool radial){
     // Read the header information
     cout << "Reading input file: " << filename << endl;
     getline(input, garbage); // skip the first comment line
-    getline(input, garbage); // skip the second comment line
+
     string PBCline;
 
     input >> PBCline; 
@@ -1185,15 +981,12 @@ bool readPDBFile(char *filename, ATOM_NETWORK *cell, bool radial){
         end = true;  
         } else
         {
-        // adopted to read gromacs files
         ATOM newAtom;
         input >> str2 ; // reading ID#
         input >> newAtom.type;
         input >> str4; // reading MDL
-        input >> str4; // reading RESID
         input >> newAtom.x >> newAtom.y >> newAtom.z;
-        input >> str2 >> str3; // ignore 2 numbers
-//        input >> str2 >> str3 >> str4; // ignore 2 numbers and a string with label
+        input >> str2 >> str3 >> str4; // ignore 2 numbers and a string with label
 
 //        if(!CAR_USE_ATOM_TYPE_OVER_NAME) newAtom.type = str1;
 
@@ -1256,7 +1049,7 @@ bool readV1File(char *filename, ATOM_NETWORK *cell, bool radial){
     cell->beta = acos(cell->v_c.x/cell->c)*360.0/(2.0*PI);
     cell->gamma = acos(cell->v_b.x/cell->b)*360.0/(2.0*PI);
     cell->alpha = 360.0/(2*PI)*acos((cell->v_c.y/cell->c*sin(2.0*PI*cell->gamma/360.0)) 
-				    +cos(2.0*PI/360.0*cell->gamma)*cos(2.0*PI/360.0*cell->beta));
+                    +cos(2.0*PI/360.0*cell->gamma)*cos(2.0*PI/360.0*cell->beta));
 
     // Read and store information about each atom. The coordinates
     // relative to the unit cell vectors remain unknown
@@ -1311,7 +1104,7 @@ bool readDLPFile(char *filename, ATOM_NETWORK *cell, bool radial){
     cell->beta = acos(cell->v_c.x/cell->c)*360.0/(2.0*PI);
     cell->gamma = acos(cell->v_b.x/cell->b)*360.0/(2.0*PI);
     cell->alpha = 360.0/(2*PI)*acos((cell->v_c.y/cell->c*sin(2.0*PI*cell->gamma/360.0)) 
-				    +cos(2.0*PI/360.0*cell->gamma)*cos(2.0*PI/360.0*cell->beta));
+                    +cos(2.0*PI/360.0*cell->gamma)*cos(2.0*PI/360.0*cell->beta));
 
     // Read and store information about each atom
     int numAtoms = 0;
@@ -1319,8 +1112,8 @@ bool readDLPFile(char *filename, ATOM_NETWORK *cell, bool radial){
       ATOM newAtom;
       input >> newAtom.type;
       if(newAtom.type.empty())
-	break;
-	      
+    break;
+          
       input.getline(garbage,256); // reading remaining data from a line
 
       input >> newAtom.x >> newAtom.y >> newAtom.z;
@@ -1372,14 +1165,14 @@ void readNet(istream *input, VORONOI_NETWORK *vornet){
     
     while(true){
       if(*currentChar == ' ' || *currentChar == '\0'){
-	char nextID[256];
-	strncpy(nextID,connectBuff,currentChar-connectBuff);
-	nextID[currentChar-connectBuff] = '\0';
-	nearestAtoms.push_back(atoi(nextID));
-	connectBuff = currentChar + 1;
+    char nextID[256];
+    strncpy(nextID,connectBuff,currentChar-connectBuff);
+    nextID[currentChar-connectBuff] = '\0';
+    nearestAtoms.push_back(atoi(nextID));
+    connectBuff = currentChar + 1;
       }
       if(*currentChar == '\0')
-	break;
+    break;
       currentChar++;
     } 
 
@@ -1395,7 +1188,7 @@ void readNet(istream *input, VORONOI_NETWORK *vornet){
   VOR_EDGE edge;
   while(!input->eof()){
     (*input) >> edge.from >> garbage >> edge.to >> edge.rad_moving_sphere  
-	     >> edge.delta_uc_x >> edge.delta_uc_y >> edge.delta_uc_z >> edge.length;
+         >> edge.delta_uc_x >> edge.delta_uc_y >> edge.delta_uc_z >> edge.length;
     vornet->edges.push_back(edge);
   }
   vornet->edges.pop_back();
@@ -1427,7 +1220,7 @@ bool writeToCSSR(char *filename, ATOM_NETWORK *cell){
   output.open(filename, fstream::out);
   if(!output.is_open()){
     cerr << "Error: Failed to open .cssr output file " << filename << endl;
-	//cerr << "Exiting ..." << "\n";
+    //cerr << "Exiting ..." << "\n";
     //exit(1);
     return false;
   }
@@ -1447,7 +1240,7 @@ bool writeToCSSR(char *filename, ATOM_NETWORK *cell){
     for(i = 0; i<cell->numAtoms; i++){
       atm = cell->atoms.at(i);
       output << " " << i+1 << " " << cell->atoms.at(i).type << " " << atm.a_coord << " "
-	     << atm.b_coord << " " << atm.c_coord << "  0  0  0  0  0  0  0  0  " << atm.charge <<  "\n";
+         << atm.b_coord << " " << atm.c_coord << "  0  0  0  0  0  0  0  0  " << atm.charge <<  "\n";
     }
     output.close();
     return true;
@@ -1535,7 +1328,7 @@ bool writeToCIF(char *filename,  ATOM_NETWORK *cell){
   output.open(filename, fstream::out);
   if(!output.is_open()){
     cerr << "Error: Failed to open .cif output file " << filename << endl;
-	//cerr << "Exiting ..." << "\n";
+    //cerr << "Exiting ..." << "\n";
     //exit(1);
     return false;
   }
@@ -1566,15 +1359,15 @@ bool writeToCIF(char *filename,  ATOM_NETWORK *cell){
     //Determine the Crystal System
     if (cell->alpha == 90 && cell->beta == 90 && cell->gamma == 90){
       if (cell->a == cell->b || cell->b == cell->c || cell->a == cell->c){
-	      if (cell->a == cell->b && cell->b == cell->c){
-	        output << "Isometric\n" << endl;
-	      }
-	      else {
-	        output << "Tetragonal\n" << endl;
+          if (cell->a == cell->b && cell->b == cell->c){
+            output << "Isometric\n" << endl;
+          }
+          else {
+            output << "Tetragonal\n" << endl;
         }
       }
       else{
-      	output << "Orthorhombic\n" << endl;
+          output << "Orthorhombic\n" << endl;
       }
     }
     else if(cell->alpha == cell->beta || cell->beta == cell->gamma || cell->alpha == cell->gamma){
@@ -1656,18 +1449,19 @@ bool writeToNt2(char *filename, VORONOI_NETWORK *vornet, double minRad){
     vector<VOR_NODE> ::iterator niter = vornet->nodes.begin();
     int i = 0;
     while(niter != vornet->nodes.end()){
-      if(niter->rad_stat_sphere > minRad){
-	output << i << " " << niter-> x << " " << niter-> y << " " 
-	       << niter-> z << " " << niter->rad_stat_sphere;
+      if(niter->rad_stat_sphere > minRad && niter->active != false){
+    // output << i << " " << niter-> x << " " << niter-> y << " " 
+    output << niter->id << " " << niter-> x << " " << niter-> y << " " 
+           << niter-> z << " " << niter->rad_stat_sphere;
       
-	//Write Voronoi node/atom pairing information in i j k....z format
-	output << " ";
-	for(unsigned int j = 0; j < niter->atomIDs.size(); j++){
-	  output << niter->atomIDs.at(j);
-	  if(j < niter->atomIDs.size()-1)
-	    output << " ";
-	}
-	output <<  "\n";
+    //Write Voronoi node/atom pairing information in i j k....z format
+    output << " ";
+    for(unsigned int j = 0; j < niter->atomIDs.size(); j++){
+      output << niter->atomIDs.at(j);
+      if(j < niter->atomIDs.size()-1)
+        output << " ";
+    }
+    output <<  "\n";
       }
       i++;
       niter++;
@@ -1678,9 +1472,9 @@ bool writeToNt2(char *filename, VORONOI_NETWORK *vornet, double minRad){
     vector<VOR_EDGE> ::iterator eiter = vornet->edges.begin();
     while(eiter != vornet->edges.end()){
       if(eiter->rad_moving_sphere > minRad){
-	output << eiter->from << " -> " << eiter->to << " " << eiter->rad_moving_sphere
-	       << " " << eiter->delta_uc_x << " " << eiter->delta_uc_y << " "
-	       << eiter->delta_uc_z << " " << eiter->length << "\n";
+    output << eiter->from << " -> " << eiter->to << " " << eiter->rad_moving_sphere
+           << " " << eiter->delta_uc_x << " " << eiter->delta_uc_y << " "
+           << eiter->delta_uc_z << " " << eiter->length << "\n";
       }
       eiter++;
     }
@@ -1985,7 +1779,7 @@ void changeAtomType(ATOM *atom){
             break;
         default:
             cerr<< "Error: Atom name not recognized " << atom->type << "\n";
-            //	<< "Exiting..." << "\n";
+            //    << "Exiting..." << "\n";
             //    exit(1);
             break;
     }
@@ -2002,4 +1796,740 @@ void stripAtomNames(ATOM_NETWORK *cell)
 //   it->type = stripAtomName(it->type);
 //   cout << stripAtomName(it->type) << "\n";
 //    }
+}
+
+
+/**
+ * remove a migrant ion in .cif file and restore it as a new .cif files
+ *    added at 20180408
+ * */
+void string_replace(string &strBig, const string &strsrc, const string &strdst){
+    string::size_type pos = 0;
+    string::size_type srclen = strsrc.size();
+    string::size_type dstlen = strdst.size();
+
+    while((pos=strBig.find(strsrc, pos)) != string::npos){
+       strBig.replace( pos, srclen, strdst );
+      pos += dstlen;
+    }
+}
+
+bool readRemoveMigrantCif(char *filename, ATOM_NETWORK *cell, const char *migrant, bool radial){
+  string line;
+  // Known markers in CIF File if you change the order it will affect the code
+  string descriptor[] = {"data_",
+             "_cell_length_a", //case 1
+             "_cell_length_b", //2
+             "_cell_length_c", //3
+             "_cell_angle_alpha", //4
+             "_cell_angle_beta", //5
+             "_cell_angle_gamma", //6
+             "loop_", //7
+             "_symmetry_equiv_pos_as_xyz", //8
+             "_space_group_symop_operation_xyz", //9
+             "_atom_site_label", //10
+             "_atom_site_type_symbol", //11
+             "_atom_site_fract_x", //12
+             "_atom_site_fract_y", //13
+             "_atom_site_fract_z", //14
+             "_atom_site_charge", //15
+             "_symmetry_Int_Tables_number", //16
+             "_atom_site_Cartn_x", //17
+             "_atom_site_Cartn_y", //18
+             "_atom_site_Cartn_z", //19
+                         "_symmetry_equiv_pos_site_id", // 20 
+             "NULL"};  
+  int ndx;
+  vector<string> list = strAry2StrVec(descriptor);
+  vector<string> token;
+
+  vector<string> sym_x;
+  vector<string> sym_y;
+  vector<string> sym_z;
+  vector<string> atom_label;
+  vector<string> atom_type;
+  vector<double> atom_x;
+  vector<double> atom_y;
+  vector<double> atom_z;
+  vector<double> atom_charge;
+
+  int symmetry_Int_Table_number = -1; //set to dummy value so we can check if anything was read
+  bool symmetry_equiv_pos_site_id_Flag = false; // this is to read symmetry lines from lines that have sym. id.
+ 
+  // Try opening the file if it opens proceed with processing
+  ifstream ciffile;
+  cout << "Opening File: " << filename << endl;
+  ciffile.open(filename);
+  bool read_a = false, read_b = false, read_c = false, read_alpha = false, read_beta = false, read_gamma = false, initialized_cell = false; //keep track of when all cell params are parsed, so the cell can be created
+  if(ciffile.is_open()) {
+    while(!ciffile.eof()) {
+      if(read_a && read_b && read_c && read_alpha && read_beta && read_gamma && !initialized_cell) {
+        cell->initialize(); 
+        initialized_cell=true;
+      }
+      getline(ciffile,line);
+      //printf("DEBUG: read line %s\n", line.c_str());
+      token = split(line," ()\r\t");
+      exception: //I needed an easy way to jump out of the _loop command if an unknown command was found
+      if (token.size() > 0) {
+        //Where all non-loop commands should be added
+        if(token[0].substr(0,5).compare(list[0]) == 0){ //name of unit cell
+          cell->name=token[0].substr(5);
+        }
+        else if (token[0].compare(list[1]) == 0){ //length a
+          cell->a=convertToDouble(token[1]);
+          read_a = true;
+        }
+        else if (token[0].compare(list[2]) == 0){ //length b
+          cell->b=convertToDouble(token[1]);
+          read_b = true;
+        }
+        else if (token[0].compare(list[3]) == 0){ //length c
+          cell->c=convertToDouble(token[1]);
+          read_c = true;
+        }
+        else if (token[0].compare(list[4]) == 0){ //alpha
+          cell->alpha=convertToDouble(token[1]);
+          read_alpha = true;
+        }
+        else if (token[0].compare(list[5]) == 0){ //beta
+          cell->beta=convertToDouble(token[1]);
+          read_beta = true;
+        }
+        else if (token[0].compare(list[6]) == 0){ //gamma
+          cell->gamma=convertToDouble(token[1]);
+          read_gamma = true;
+        }
+        else if (token[0].compare(list[16]) == 0){ //_symmetry_Int_Tables_number
+          symmetry_Int_Table_number = convertToInt(token[1]);
+        }
+        else if (token[0].compare(list[7]) == 0){ //loop_
+          //printf("DEBUG: inside a \"loop_\" section\n");
+          vector<string> column_labels;
+          getline(ciffile,line);
+          token = split(line," \r\t");
+          bool tokenized = false, in_loop = true;
+          if(token.size()>0) tokenized=true;
+          // while (token[0].at(0)=='_') { //collect all of the collumn labels
+          while (tokenized && in_loop) { //collect all of the collumn labels
+            if(token[0].at(0)=='_') {
+              column_labels.push_back(token[0]);
+              //printf("DEBUG: within loop, parsed a column header \"%s\"\n", token[0].c_str());
+              getline(ciffile,line);
+              //printf("DEBUG: read line \"%s\" - tokenizing ...\n", line.c_str());
+              token = split(line," \r\t");
+              if(token.size()<=0) tokenized=false;
+            } 
+            else in_loop = false;
+          }
+          if(!tokenized) {
+            printf("\n#####\n##### WARNING: parsed a loop in cif file, but data was not present\n#####\n\n");
+          } 
+          else {
+            //printf("DEBUG: exited loop successfully, having read data line \"%s\"\n", line.c_str());
+            //collecting the data associated with each column and put
+            // in correct place
+            token = split(line," ,'\r\t"); //This is needed to split data
+            bool need_to_convert_to_fractional = false;
+            bool line_contain_migrant = false;
+            while(token.size()>0){
+              if (token[0].at(0) =='_' || token[0].compare("loop_")==0 || token[0].at(0) == '#'){
+                goto exception; // unexpected input
+              }
+              if (token.size()!=column_labels.size() && column_labels[0].compare(list[8]) != 0 && column_labels[0].compare(list[9]) != 0 && column_labels[0].compare(list[20]) != 0){
+                goto exception; //unexpected input
+              }
+              for (unsigned int i=0; i<column_labels.size(); i++){
+                switch (strCmpList(list,column_labels[i])){
+                //printf("SYM DEBUG: checking for symmetry section ...\n");
+                //Where all loop commands should be added
+                  case 8: //_symmetry_equiv_pos_as_xyz and
+                  case 9: //_space_group_symop_operation_xyz have the same meaning
+                   //printf("SYM DEBUG: symmetry section found!\n");
+                    if (!((token.size()==3&&symmetry_equiv_pos_site_id_Flag==false)||(token.size()==4&&symmetry_equiv_pos_site_id_Flag==true))){
+                      cout << "Error: Expected 3 strings for _symmetry_equiv_pos_as_xyz (or 4 if _symmetry_equiv_pos_site_id is present)" << endl;
+                    // abort();
+                      ciffile.close();
+                      return false;
+                    }
+                    if(token.size()==3) {
+                      sym_x.push_back(token[0]);
+                      sym_y.push_back(token[1]);
+                      sym_z.push_back(token[2]);
+                    }
+                    else {
+                      sym_x.push_back(token[1]);
+                      sym_y.push_back(token[2]);
+                      sym_z.push_back(token[3]);
+                    };
+                    //printf("SYM DEBUG: pushing back %s %s %s\n", token[0].c_str(), token[1].c_str(), token[2].c_str());
+                    break;
+                  case 10:
+                    string::size_type idx;
+                    idx=token[i].find(migrant);
+                    //check and find migrant ion
+                    if(idx != string::npos)
+                      line_contain_migrant = true;
+                    else
+                      atom_label.push_back(token[i]);
+                    break;
+                  case 11:
+                    atom_type.push_back(token[i]);
+                    break;
+                  case 12:
+                    atom_x.push_back(trans_to_origuc(convertToDouble(token[i])));
+                    break;
+                  case 13:
+                    atom_y.push_back(trans_to_origuc(convertToDouble(token[i])));
+                    break;
+                  case 14:
+                    atom_z.push_back(trans_to_origuc(convertToDouble(token[i])));
+                    break;
+                  case 15:
+                    atom_charge.push_back(convertToDouble(token[i]));
+                    break;
+                  case 17:
+                    atom_x.push_back(convertToDouble(token[i]));
+                    need_to_convert_to_fractional = true;
+                    break;
+                  case 18:
+                    atom_y.push_back(convertToDouble(token[i]));
+                    need_to_convert_to_fractional = true;
+                    break;
+                  case 19:
+                    atom_z.push_back(convertToDouble(token[i]));
+                    need_to_convert_to_fractional = true;
+                    break;
+                  case 20:
+                    symmetry_equiv_pos_site_id_Flag = true;
+                    break;
+                }
+                //jump the line contain migrant atom
+                if(line_contain_migrant){
+                  line_contain_migrant=false;
+                  break;
+                }
+              }  
+              //now we've finished parsing this line, we might need to convert Cartesian to fractional coords
+              if(need_to_convert_to_fractional) {
+                Point tempcoor;
+                int this_ID = atom_x.size()-1;
+                tempcoor = cell->xyz_to_abc(atom_x.at(this_ID),atom_y.at(this_ID),atom_z.at(this_ID));
+                //printf("DEBUG: atom at Cartesian %.3f %.3f %.3f written to fractional %.3f %.3f %.3f\n", atom_x.at(this_ID),atom_y.at(this_ID),atom_z.at(this_ID), tempcoor[0], tempcoor[1], tempcoor[2]);
+                atom_x.at(this_ID) = tempcoor[0];
+                atom_y.at(this_ID) = tempcoor[1];
+                atom_z.at(this_ID) = tempcoor[2];
+              }
+              getline(ciffile,line);
+              token = split(line," ',\r\t");
+            }
+            column_labels.clear();
+          }
+        }
+        token.clear();
+      }
+    }      
+    ciffile.close();
+    
+    //If no symmetry info was provided, we can assume that none is required (i.e., structure has 'P 1' symmetry), ONLY IF we did not read a symmetry_Int_Tables_Number!=1
+    if (sym_x.size()==0 || sym_y.size()==0 || sym_z.size()==0){
+      //no symmetry provided
+      if (symmetry_Int_Table_number>=0 && symmetry_Int_Table_number!=1) {
+        //read a symmetry table number, but it was not 1
+        printf("ERROR:\n\tcif file provided no symmetry operations; however, a symmetry_Int_Tables_Number of %d was provided,\n\tindicating symmetry which is not 'P 1' (no symmetry operations);\n\tcannot proceed with insufficient symmetry information\nExiting ...\n", symmetry_Int_Table_number);
+        //exit(EXIT_FAILURE);
+        return false;
+      } else {
+        sym_x.push_back("x");
+        sym_y.push_back("y");
+        sym_z.push_back("z");
+      }
+    }
+
+    //Now determine whether it is correct to use atom_label or atom_type (atom_label used only if atom_type has no data)
+    // bool CIF_USE_LABEL = atom_type.size()==0;
+    bool CIF_USE_LABEL = atom_label.size()>0;
+    //Now determine whether charges are used - only if they were provided
+    bool CIF_CHARGES = atom_charge.size()>0;
+
+    //Parse out the numbers from atom labels and types, if specified (defined in network.h)
+    if (CIF_RMV_NUMS_FROM_ATOM_TYPE){
+      if (!CIF_USE_LABEL){
+        for (unsigned int i=0; i<atom_type.size(); i++){
+          atom_type[i] = split(atom_type[i],"0123456789").at(0);
+        }
+      }
+      else{
+        for (unsigned int i=0; i<atom_label.size(); i++){
+          atom_label[i] = split(atom_label[i],"0123456789").at(0);
+          atom_type[i] = split(atom_type[i],"0123456789").at(0);
+        }
+      }
+    }
+    
+    //Error checking
+    if (sym_x.size()==0 || sym_y.size()==0 || sym_z.size()==0 ){
+      cout << "Error: No .cif symmetry information given" << endl;
+      cout << "DEBUG SHOULDN'T HAPPEN" << endl;
+      return false;
+    //abort();
+    }
+    if (atom_label.size()==0 && CIF_USE_LABEL == true){
+      cout << "Error: No ''_atom_site_label'' or ''_atom_site_type_symbol'' information " << endl;
+      cout << "This structure appears to be invalid: there are no atom identifying element types or labels - if this is not the case, then this is a bug; please contact the developers." << endl;
+      return false;
+    }
+    if (atom_type.size()==0 && CIF_USE_LABEL == false){
+      cout << "Error: No ''_atom_site_type_symbol'' information" << endl;
+      cout << "DEBUG SHOULDN'T HAPPEN" << endl;
+      return false;
+      //abort();
+    }
+    if (atom_x.size()!=atom_y.size() || atom_y.size()!=atom_z.size() || atom_x.size()==0){
+      cout << "Error: Atom coordinates not read properly (" << atom_x.size() << " x coords, " << atom_y.size() << " y coords, " << atom_z.size() << " z coords)" << endl;
+      //abort();
+      return false;
+    }
+
+    //If no name for the unit cell is given the filename becomes its name
+    if (cell->name.size() == 0){
+      cell->name = *filename;
+    }
+    
+    //Now to fully assemble the ATOM_NETWORK initialize constructor
+    //cell->initialize(); //this should now happen much earlier, during parsing
+    
+    ATOM tempatom;
+    Point tempcoor;
+    for (unsigned int i=0; i<atom_x.size(); i++){ //atoms
+      if (CIF_USE_LABEL){
+          tempatom.label = atom_label[i];
+          tempatom.type = atom_type[i];
+      }
+      else {
+          tempatom.type = atom_type[i];
+      }
+      //edited at 20180526
+      //tempatom.radius = lookupRadius(tempatom.type, radial);
+      //edited at 20180606
+      //tempatom.radius = lookupGoldschmidtIonRadius(tempatom.type, radial);
+      if(CIF_USE_LABEL){
+        if(lookupIonRadius(tempatom.label, radial) == -1)
+          return false;
+        else
+          tempatom.radius = lookupIonRadius(tempatom.label, radial);
+      }
+      else{
+        if(lookupIonRadius(tempatom.type, radial) == -1)
+          return false;
+        else
+          tempatom.radius = lookupIonRadius(tempatom.type, radial);
+      }
+
+      if(CIF_CHARGES) {
+        tempatom.charge = atom_charge[i];
+      } else tempatom.charge = 0;
+      for (unsigned int j=0;j<sym_x.size(); j++){ //symmetries
+          tempatom.a_coord = trans_to_origuc(symbCalc(sym_x[j],atom_x[i],atom_y[i],atom_z[i]));
+          tempatom.b_coord = trans_to_origuc(symbCalc(sym_y[j],atom_x[i],atom_y[i],atom_z[i]));
+          tempatom.c_coord = trans_to_origuc(symbCalc(sym_z[j],atom_x[i],atom_y[i],atom_z[i]));
+          tempcoor = cell->abc_to_xyz (tempatom.a_coord,tempatom.b_coord,tempatom.c_coord);
+          tempatom.x = tempcoor[0]; 
+          tempatom.y = tempcoor[1]; 
+          tempatom.z = tempcoor[2];
+          tempatom.specialID = (i*sym_x.size())+j;
+    
+          //make sure that no duplicate atoms are writen
+          int match=1;
+          for (unsigned int k=0;k<cell->atoms.size(); k++){
+                if(cell->calcDistance(cell->atoms[k],tempatom)<thresholdLarge) { match=0;
+/*
+          if (tempatom.a_coord-thresholdLarge < cell->atoms[k].a_coord && cell->atoms[k].a_coord < tempatom.a_coord+thresholdLarge)
+          if (tempatom.b_coord-thresholdLarge < cell->atoms[k].b_coord && cell->atoms[k].b_coord < tempatom.b_coord+thresholdLarge )
+          if (tempatom.c_coord-thresholdLarge < cell->atoms[k].c_coord && cell->atoms[k].c_coord < tempatom.c_coord+thresholdLarge ){
+            match=0;
+*/
+          }
+        }
+        if (match == 1){
+          cell->atoms.push_back(tempatom);
+        }
+      }
+    }
+    cell->numAtoms = cell->atoms.size();
+  }
+  else{
+    cout << "Failed to open: " << filename << endl;
+    ciffile.close();
+    //exit(1);
+    return false;
+  }
+  return true;
+}
+
+
+/** Write the information stored within the VORONOI_NETWORK in a .BI
+    file format to the provided filename. Excludes any nodes or nodes with radii
+    less than the provided threshold. For the default 0（当minRad为默认值0时）, all nodes and edges are included*/
+bool writeToBI(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, double minRad){
+  fstream output;
+  double a,b,c;
+  output.open(filename, fstream::out);
+  if(!output.is_open()){
+    cerr << "Error: Failed to open .net2 output file " << filename << "\n";
+    //cerr << "Exiting ..." << "\n";
+    //exit(1);
+    return false;
+  }
+  else{
+    cout << "Writing Bottleneck and Interstitial network information to " << filename << "\n";
+
+    // Write Voronoi node information
+    output << "Interstitial table:" << "\n";
+    vector<VOR_NODE> ::iterator niter = vornet->nodes.begin();
+    int i = 0;
+    while(niter != vornet->nodes.end()){
+      if(niter->rad_stat_sphere > minRad){
+          a = niter->x * cell->invUCVectors[0][0] + niter->y * cell->invUCVectors[0][1] + niter->z * cell->invUCVectors[0][2];
+          b = niter->y * cell->invUCVectors[1][1] + niter->z * cell->invUCVectors[1][2];
+          c = niter->z * cell->invUCVectors[2][2];
+          //cout << i << " " << niter->x << " " << niter->y << " " << niter->z << endl;
+          // output << i << " " << niter->label << " " << niter->x << " " << niter->y << " " << niter->z << " " 
+          output << niter->id << " " << niter->label << " ";
+          output << "( " << niter->x << ", " << niter->y << ", " << niter->z << " ) ";
+			    output << "( " << a << ", " << b << ", " << c << " ) " << niter->rad_stat_sphere;
+          output <<  "\n";
+      }
+      i++;
+      niter++;
+    }
+    // Write Voronoi edge information
+    output << "\n" << "Channel table:" << "\n";
+    vector<VOR_EDGE> ::iterator eiter = vornet->edges.begin();
+    while(eiter != vornet->edges.end()){
+      if(eiter->rad_moving_sphere > minRad){
+          a = eiter->bottleneck_x * cell->invUCVectors[0][0] + eiter->bottleneck_y * cell->invUCVectors[0][1] + eiter->bottleneck_z * cell->invUCVectors[0][2];
+          b = eiter->bottleneck_y * cell->invUCVectors[1][1] + eiter->bottleneck_z * cell->invUCVectors[1][2];
+          c = eiter->bottleneck_z * cell->invUCVectors[2][2];
+
+          output << eiter->from << " -> " << eiter->to <<" ";
+          output << "( " << eiter->delta_uc_x << ", " << eiter->delta_uc_y << ", " << eiter->delta_uc_z << " ) ";
+		      output << "( " << eiter->bottleneck_x << ", " << eiter->bottleneck_y << ", " << eiter->bottleneck_z << " ) ";
+          output << "( " << a <<", " << b << ", " << c << " ) ";
+          output << eiter->length << " " << eiter->rad_moving_sphere << "\n";
+      }
+      eiter++;
+    }
+  }
+  output.close();
+  return true;
+}
+
+//Add at 20190523
+//This function use to remove the oxide state from ions
+string stripIonName(string ionName){
+  string number("0123456789");
+  string symbol("+-");
+  string::size_type num_pos;
+  string::size_type symbol_pos;
+  num_pos = ionName.find_first_of(number);
+  symbol_pos = ionName.find_first_of(symbol);
+  if(num_pos != string::npos)
+    ionName = ionName.substr(0,num_pos);
+  else if(symbol_pos != string::npos)
+    ionName = ionName.substr(0,symbol_pos);
+  return ionName;
+}
+
+
+//Added at 20190604
+/** 
+ * This function used to check whether the given edge with the same
+ * start id and end id exists in the vector.
+ * 
+ */
+bool is_edge_exist(vector<pair<int,DELTA_POS> > delta_uc, pair<int, DELTA_POS> del){
+  vector<pair<int,DELTA_POS> >::iterator it;
+  for(it = delta_uc.begin(); it != delta_uc.end(); it++){
+    if((it->first == del.first) && (it->second + del.second).isZero())
+      return true;
+  }
+  return false;
+}
+
+
+//Added at 20180420
+/**
+ * write the bottleneck, interstitial and atomnetwork information to .vasp
+ * file format to the provided filename. Excludes any nodes or nodes with radii
+ * less than the provided threshold. For the default 0 minRad value, all nodes
+ * and edges are included.*/
+bool writeToVasp(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, double minRad, double maxRad){
+  fstream output;
+  //string compareatom = cell->atoms.at(0).type;
+  int atomcount = 0;
+  int flag;
+  vector<string> atomtype;
+  vector<int> atomnum;
+  double a,b,c;
+  vector<pair<int,DELTA_POS> > delta_uc;
+
+  // The code below is for C++11.
+  // smatch element_type;
+  // regex element_reg("[A-Z][a-z]*");
+
+  output.open(filename, fstream::out);
+  if(!output.is_open()){
+    cerr << "Error: Failed to open .vasp output file " << filename << "\n";
+    //cerr << "Exiting ..." << "\n";
+    //exit(1);
+    return false;
+  }
+  else{
+    flag = 0;
+    cout << "Writing structure information to " << filename << "\n";
+
+    // Write unit cell information
+    output << cell->name << "\n";
+    output << "1.0" << "\n";
+    output << "    " << cell->v_a.x << "    " << cell->v_a.y << "    " << cell->v_a.z << "\n";
+    output << "    " << cell->v_b.x << "    " << cell->v_b.y << "    " << cell->v_b.z << "\n";
+    output << "    " << cell->v_c.x << "    " << cell->v_c.y << "    " << cell->v_c.z << "\n";
+
+    //calculate the number of different atoms
+    // regex_search(cell->atoms.at(0).type,element_type,element_reg);
+    // atomtype.push_back(element_type.str());
+    atomtype.push_back(stripIonName(cell->atoms.at(0).type));
+    for(int i = 0; i < cell->numAtoms; i++){
+        // regex_search(cell->atoms.at(i).type,element_type,element_reg);
+        if(stripIonName(cell->atoms.at(i).type).compare(atomtype.at(flag)) == 0){
+            atomcount ++;
+        }
+        else{
+            atomnum.push_back(atomcount);
+            flag++;
+            atomtype.push_back(stripIonName(cell->atoms.at(i).type));
+            atomcount = 1;
+        }
+        if(i == cell->numAtoms -1){
+            atomnum.push_back(atomcount);
+            atomcount = 0;
+        }
+    }
+
+    //calculate the interstitial numbers 
+    vector<VOR_NODE> ::iterator niter = vornet->nodes.begin();
+    while(niter != vornet->nodes.end()){
+          if((minRad == 0.0 && maxRad == 0.0) || (niter->rad_stat_sphere >= minRad && niter->rad_stat_sphere <= maxRad))
+              atomcount++;
+          niter++;
+    }
+    atomtype.push_back("He");
+    atomnum.push_back(atomcount);
+
+    atomcount = 0;
+
+    //calculate the bottleneck numbers
+    vector<VOR_EDGE> ::iterator eiter = vornet->edges.begin();
+    while(eiter != vornet->edges.end()){
+        // This "if" used to reduce edges repeat
+        if(eiter->from <= eiter->to){
+            if(eiter->from == eiter->to){
+                DELTA_POS delta = DELTA_POS(eiter->delta_uc_x, eiter->delta_uc_y, eiter->delta_uc_z);
+                pair<int, DELTA_POS> tmp(eiter->from, delta);
+                if(is_edge_exist(delta_uc, tmp)){
+                    eiter++;
+                    continue;
+                }
+                delta_uc.push_back(tmp);
+            }
+            if((minRad == 0.0 && maxRad == 0.0) ||(eiter->rad_moving_sphere >= minRad && eiter->rad_moving_sphere <= maxRad))
+                atomcount++;
+        }
+        eiter++;
+    }
+    atomtype.push_back("Ne");
+    atomnum.push_back(atomcount);
+    delta_uc.clear();
+
+    //Write static information
+    for(int i = 0; i< atomtype.size(); i++){
+        output << "   " << atomtype[i];
+    }
+    output << "\n";
+    for(int i = 0; i< atomnum.size(); i++){
+        output << "   " << atomnum[i];
+    }
+    output << "\n";
+
+        //write the unit cell coordinate information
+    output << "Direct" << "\n";
+      for(int i = 0; i<cell->numAtoms; i++){
+          output << "    " << cell->atoms.at(i).a_coord << "    " << cell->atoms.at(i).b_coord << "    " << cell->atoms.at(i).c_coord << "    ";
+          output << "    " << cell->atoms.at(i).radius << "    ";
+          output << cell->atoms.at(i).type << "\n";
+      }
+
+      //wirte the interstitial informations
+      niter = vornet->nodes.begin();
+    while(niter != vornet->nodes.end()){
+        if((minRad == 0.0 && maxRad == 0.0) || (niter->rad_stat_sphere >= minRad && niter->rad_stat_sphere <= maxRad)){
+            //cell->initMatrices();
+            a = niter->frac_a;
+            b = niter->frac_b;
+            c = niter->frac_c;
+            output <<"   " << a << "    " << b << "    " << c << "   ";
+            output << niter->rad_stat_sphere << "    " << "He" << "\n";
+        }
+        niter++;
+    }
+
+    // Write botttleneck information
+    eiter = vornet->edges.begin();
+    while(eiter != vornet->edges.end()){
+        // This "if" used to reduce edges repeat
+        if (eiter->from <= eiter->to) {
+            if(eiter->from == eiter->to){
+                DELTA_POS delta = DELTA_POS(eiter->delta_uc_x, eiter->delta_uc_y, eiter->delta_uc_z);
+                pair<int, DELTA_POS> tmp(eiter->from, delta);
+                if(is_edge_exist(delta_uc, tmp)){
+                    eiter++;
+                    continue;
+                }
+                delta_uc.push_back(tmp);
+            }
+            if ((minRad == 0.0 && maxRad == 0.0) || (eiter->rad_moving_sphere >= minRad && eiter->rad_moving_sphere <= maxRad)) {
+                a = eiter->bottleneck_a;
+                b = eiter->bottleneck_b;
+                c = eiter->bottleneck_c;
+                output << "    " << a << "    " << b << "    " << c << "    ";
+                output << eiter->rad_moving_sphere << "    " << "Ne" << "\n";
+            }
+        }
+      eiter++;
+    }
+  output.close();
+  return true;
+  }
+}
+
+bool writeAtmntToVasp(char *filename, ATOM_NETWORK *cell){
+  fstream output;
+  int atomcount = 0;
+  int flag = 0;
+  vector<string> atomtype;
+  vector<int> atomnum;
+  double a,b,c;
+
+  output.open(filename, fstream::out);
+  if(!output.is_open()){
+    cerr << "Error: Failed to open .vasp output file " << filename << "\n";
+    //cerr << "Exiting ..." << "\n";
+    //exit(1);
+    return false;
+  }
+  else{
+    cout << "Writing ATOM_NETWORK information to " << filename << "\n";
+
+    // Write unit cell information
+    output << cell->name << "\n";
+    output << "1.0" << "\n";
+    output << "    " << cell->v_a.x << "    " << cell->v_a.y << "    " << cell->v_a.z << "\n";
+    output << "    " << cell->v_b.x << "    " << cell->v_b.y << "    " << cell->v_b.z << "\n";
+    output << "    " << cell->v_c.x << "    " << cell->v_c.y << "    " << cell->v_c.z << "\n";
+
+    //calculate the number of different atoms
+    atomtype.push_back(stripIonName(cell->atoms.at(0).type));
+    for(int i = 0; i<cell->numAtoms; i++){
+        if(stripIonName(cell->atoms.at(i).type).compare(atomtype.at(flag)) == 0){
+            atomcount ++;
+        }
+        else{
+            atomnum.push_back(atomcount);
+            flag++;
+            atomtype.push_back(stripIonName(cell->atoms.at(i).type));
+            atomcount = 1;
+        }
+        if(i == cell->numAtoms -1){
+            atomnum.push_back(atomcount);
+            atomcount = 0;
+        }
+    }
+
+    //Write static information
+    for(int i = 0; i< atomtype.size(); i++){
+        output << "   " << atomtype[i];
+    }
+    output << "\n";
+    for(int i = 0; i< atomnum.size(); i++){
+        output << "   " << atomnum[i];
+    }
+    output << "\n";
+
+      //write the unit cell coordinate information
+    output << "Direct" << "\n";
+    for(int i = 0; i<cell->numAtoms; i++){
+        output << "    " << cell->atoms.at(i).a_coord << "    " << cell->atoms.at(i).b_coord << "    " << cell->atoms.at(i).c_coord << "    ";
+        output << "    " << cell->atoms.at(i).radius << "    " << cell->atoms.at(i).type << "\n";
+    }
+  output.close();
+  return true;
+  }
+}
+
+// Add at 20190518
+bool writeToNET(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, double minRad, double maxRad){
+  fstream output;
+  double it_a,it_b,it_c,bn_a,bn_b,bn_c;
+  output.open(filename, fstream::out);
+  if(!output.is_open()){
+    cerr << "Error: Failed to open .net output file " << filename << "\n";
+    return false;
+  }
+  else{
+
+    // Write unit cell information
+    output << cell->name << "\n";
+    output << "\n";
+    output << "    " << cell->v_a.x << "    " << cell->v_a.y << "    " << cell->v_a.z << "\n";
+    output << "    " << cell->v_b.x << "    " << cell->v_b.y << "    " << cell->v_b.z << "\n";
+    output << "    " << cell->v_c.x << "    " << cell->v_c.y << "    " << cell->v_c.z << "\n";
+    output << "\n";
+
+    cout << "Writing interstitial network to " << filename << "\n";
+    // Write Voronoi node information
+    output << "Interstitial table:" << "\n";
+    vector<VOR_NODE> ::iterator niter = vornet->nodes.begin();
+    while(niter != vornet->nodes.end()){
+      if((minRad == 0.0 && maxRad == 0.0) || (niter->rad_stat_sphere >= minRad && niter->rad_stat_sphere <= maxRad)){
+          output << niter->id << "\t" << niter->label << "\t";
+          // output << niter->x << " " << niter->y << " " << niter->z << "\t";
+          it_a = niter->frac_a;
+          it_b = niter->frac_b;
+          it_c = niter->frac_c;
+          output << it_a << " " << it_b << " " << it_c << "\t";
+			    output << niter->rad_stat_sphere;
+          output <<  "\n";
+      }
+      niter++;
+    }
+    // Write Voronoi edge information
+    output << "\n" << "Connection table:" << "\n";
+    vector<VOR_EDGE> ::iterator eiter = vornet->edges.begin();
+    while(eiter != vornet->edges.end()){
+      if(eiter->rad_moving_sphere > minRad){
+          output << eiter->from << "\t" << eiter->to <<"\t";
+          output << eiter->delta_uc_x << " " << eiter->delta_uc_y << " " << eiter->delta_uc_z << "\t";
+		      // output << eiter->bottleneck_x << " " << eiter->bottleneck_y << " " << eiter->bottleneck_z << "\t";
+          bn_a = eiter->bottleneck_a;
+          bn_b = eiter->bottleneck_b;
+          bn_c = eiter->bottleneck_c;
+          output << bn_a << " " << bn_b << " " << bn_c << "\t";
+          output << eiter->rad_moving_sphere << "\t" << eiter->length << "\n";
+      }
+      eiter++;
+    }
+  output.close();
+  return true;
+  }
 }

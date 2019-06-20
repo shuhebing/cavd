@@ -15,11 +15,36 @@ const int max_network_vertex_memory=65536;
 struct block {
 	double dis;
 	double e;
+	//added and edited at 20180408
+	double neckx;
+	double necky;
+	double neckz;
+	
+	inline void first(double v,double d,double x,double y,double z) {
+		e=v>0?v:0;
+		dis=d;
+		neckx=x;
+		necky=y;
+		neckz=z;
+	}
+	inline void add(double v,double d,double x,double y,double z) {
+		if(v<0) e=0;
+		else if(v<=e) {
+			e=v;
+			dis=d;
+			neckx=x;
+			necky=y;
+			neckz=z;
+		}
+	}
+/**
 	inline void first(double v,double d) {e=v>0?v:0;dis=d;}
 	inline void add(double v,double d) {
 		if(v<0) e=0;
 		else if(v<e) {e=v;dis=d;}
 	}
+**/
+	
 	inline void print(FILE *fp) {fprintf(fp," %g %g",e,dis);}
 };
 
@@ -57,7 +82,9 @@ class voronoi_network {
 		voronoi_network(c_class &c,double net_tol_=tolerance);
 		~voronoi_network();
 		void print_network(FILE *fp=stdout,bool reverse_remove=false);
-                void store_network(std::vector<VOR_NODE> &nodes, std::vector <VOR_EDGE> &edges, bool reverse_remove=false);
+        void store_network(std::vector<VOR_NODE> &nodes, std::vector <VOR_EDGE> &edges, bool reverse_remove=false);
+		void store_network(std::vector<VOR_NODE> &nodes, std::vector <VOR_EDGE> &edges, ATOM_NETWORK *atmnet, bool reverse_remove=false);
+
 		inline void print_network(const char* filename,bool reverse_remove=false) {
 			FILE *fp(safe_fopen(filename,"w"));
 			print_network(fp);

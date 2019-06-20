@@ -19,8 +19,8 @@ endif
 LIB = -lvoro++
 
 # The relative of path of the main library source files
-VOROINCLDIR = -I../../../Voro++/voro/trunk/src 
-VOROLINKDIR = -L../../../Voro++/voro/trunk/src
+VOROINCLDIR = -I../Voro++/src
+VOROLINKDIR = -L../Voro++/src
 
 #Object files to be created for network
 MAIN_OBJ = main.o

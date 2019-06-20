@@ -84,5 +84,8 @@ bool accessiblePoint(Point sample_pnt,voro::container_periodic_poly *new_rad_con
 double calcMolecule(ATOM_NETWORK *atmnet, ATOM_NETWORK *orgatmnet, bool highAccuracy, double r_probe_chan, double r_probe, int numSamples, bool excludePockets, std::ostream &output, char *filename, bool visualize, bool VisITflag, bool LiverpoolFlag, bool blockingMode, double low_dist_cutoff, double high_dist_cutoff);
 
 
+//Added 20180704
+
+void computeASA_new(char *filename, ATOM_NETWORK *atmnet, bool highAccuracy, double r_probe_chan, double r_probe, int numSamples);
 
 #endif

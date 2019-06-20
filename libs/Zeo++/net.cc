@@ -121,7 +121,7 @@ int assign_dummy_site(MOLECULE *m) {
   int num_atoms = m->atoms_xyz.size();
   if(num_sites!=2) {
     printf("ERROR: should not call assign_dummy_site() with num_sites!=2\n");
-    exit(EXIT_FAILURE);
+    //exit(EXIT_FAILURE);
   }
   //ok, we assign the dummy site to create a 'regular T' shape with respect to the 2 actual sites, i.e., find the midpoint of the sites and the half-width, and move in an orthogonal direction by that same distance
   XYZ site1 = m->atoms_xyz.at(m->sites.at(0));
@@ -333,7 +333,7 @@ if(verbose) printf("DEBUG: trivial equivalence\n");
         int num_ratios = ratios.size();
         if(num_ratios==0) {
           printf("ERROR: passed trivial equivalence filter but both loops are completely zero (no ratios between elements could be found)\n");
-          exit(EXIT_FAILURE);
+          //exit(EXIT_FAILURE);
         }
         double ratio = ratios.at(0); //there should always be at least one ratio, otherwise we would have been caught by the trivial equivalence filter
         unique = false; //here we assume not unique, and it becomes unique if any ratios are different
@@ -670,7 +670,7 @@ void search_for_char(FILE *f, char target) {
 	}
 	if(c==EOF) {
 		printf("ERROR: The required character (%c, with int value %d) was not found in this file.\n", target, (int)target);
-		exit(EXIT_FAILURE);
+		//exit(EXIT_FAILURE);
 	}
 }
 

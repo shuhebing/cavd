@@ -1,6 +1,7 @@
 //#include "../network.h"
 #include <voro++.hh>
 #include "v_network.h"
+#include "geometry.h"
 
 using namespace std;
 using namespace voro;
@@ -221,9 +222,10 @@ void voronoi_network::draw_network(FILE *fp) {
 }
 
 
-void voronoi_network::store_network(vector<VOR_NODE> &nodes, vector <VOR_EDGE> &edges, bool reverse_remove) {
+void voronoi_network::store_network(vector<VOR_NODE> &nodes, vector <VOR_EDGE> &edges, ATOM_NETWORK *atmnet, bool reverse_remove) {
   int ai,aj,ak,j,l,ll,q;
   double x,y,z,x2,y2,z2,*ptsp;
+  Point pt,pt_bt;
   
   nodes.clear(); edges.clear();
 
@@ -233,8 +235,9 @@ void voronoi_network::store_network(vector<VOR_NODE> &nodes, vector <VOR_EDGE> &
 
     vector<int> atomIDs;
     for(ll=0;ll<nec[l];ll++) atomIDs.push_back(ne[l][ll]);
+	pt = atmnet->xyz_to_abc(ptsp[j], ptsp[j+1], ptsp[j+2]);
 
-    nodes.push_back(VOR_NODE(ptsp[j], ptsp[j+1], ptsp[j+2], ptsp[j+3], atomIDs));
+    nodes.push_back(VOR_NODE(ptsp[j], ptsp[j+1], ptsp[j+2], pt[0],  pt[1],  pt[2], ptsp[j+3], atomIDs));
   }
   
   // Print out the edge table, loop over vertices
@@ -258,7 +261,9 @@ void voronoi_network::store_network(vector<VOR_NODE> &nodes, vector <VOR_EDGE> &
       x2=ptsp[j]+ai*bx+aj*bxy+ak*bxz-x;
       y2=ptsp[j+1]+aj*by+ak*byz-y;
       z2=ptsp[j+2]+ak*bz-z;
-      edges.push_back(VOR_EDGE(l, ed[l][q], raded[l][q].e, ai, aj, ak, sqrt(x2*x2+y2*y2+z2*z2)));
+
+      pt_bt = atmnet->xyz_to_abc(raded[l][q].neckx,raded[l][q].necky,raded[l][q].neckz);
+      edges.push_back(VOR_EDGE(l, ed[l][q], raded[l][q].e,raded[l][q].neckx,raded[l][q].necky,raded[l][q].neckz,pt_bt[0], pt_bt[1],pt_bt[2], ai, aj, ak, sqrt(x2*x2+y2*y2+z2*z2)));
     }
   }
 }
@@ -416,37 +421,62 @@ template<class v_cell>
 void voronoi_network::add_edges_to_network(v_cell &c,double x,double y,double z,double rad,int *cmap) {
 	int i,j,ai,aj,ak,bi,bj,bk,k,l,q,*vmp;unsigned int cper;
 	double vx,vy,vz,wx,wy,wz,dx,dy,dz,dis;double *pp;
+	
+	double *cp(c.pts);
+	double mx,my,mz;
+
 	for(l=0;l<c.p;l++) {
 		vmp=cmap+4*l;k=*(vmp++);ai=*(vmp++);aj=*(vmp++);ak=*vmp;
 		pp=pts[reg[k]]+4*regp[k];
 		vx=pp[0]+ai*bx+aj*bxy+ak*bxz;
 		vy=pp[1]+aj*by+ak*byz;
 		vz=pp[2]+ak*bz;
+
 		for(q=0;q<c.nu[l];q++) {
 			i=c.ed[l][q];
 			vmp=cmap+4*i;
 			j=*(vmp++);bi=*(vmp++);bj=*(vmp++);bk=*vmp;
 
 			// Skip if this is a self-connecting edge
-			if(j==k&&bi==ai&&bj==aj&&bk==ak) continue;
+			if(j==k&&bi==ai&&bj==aj&&bk==ak)
+				continue;
 			cper=pack_periodicity(bi-ai,bj-aj,bk-ak);
 			pp=pts[reg[j]]+(4*regp[j]);
 			wx=pp[0]+bi*bx+bj*bxy+bk*bxz;
 			wy=pp[1]+bj*by+bk*byz;
 			wz=pp[2]+bk*bz;
-			dx=wx-vx;dy=wy-vy;dz=wz-vz;
+			dx=wx-vx;
+			dy=wy-vy;
+			dz=wz-vz;
 			dis=(x-vx)*dx+(y-vy)*dy+(z-vz)*dz;
 			dis/=dx*dx+dy*dy+dz*dz;
-			if(dis<0) dis=0;if(dis>1) dis=1;
+			if(dis<0)
+				dis=0;
+			else if(dis>1)
+				dis=1;
+
+			//added at 20180408
+			// bottlenck site
+			mx=vx+dis*dx;
+			my=vy+dis*dy;
+			mz=vz+dis*dz;
+
+			mx=mx-ai*bx-aj*bxy-ak*bxz;
+			my=my-aj*by-ak*byz;
+			mz=mz-ak*bz;
+
 			wx=vx-x+dis*dx;wy=vy-y+dis*dy;wz=vz-z+dis*dz;
+
 			int nat=not_already_there(k,j,cper);
 			if(nat==nu[k]) {
 				if(nu[k]==numem[k]) add_particular_vertex_memory(k);
 				ed[k][nu[k]]=j;
-				raded[k][nu[k]].first(sqrt(wx*wx+wy*wy+wz*wz)-rad,dis);
+
+				raded[k][nu[k]].first(sqrt(wx*wx+wy*wy+wz*wz)-rad,dis,mx,my,mz);
+
 				pered[k][nu[k]++]=cper;
 			} else {
-				raded[k][nat].add(sqrt(wx*wx+wy*wy+wz*wz)-rad,dis);
+				raded[k][nat].add(sqrt(wx*wx+wy*wy+wz*wz)-rad,dis,mx,my,mz);
 			}
 		}
 	}

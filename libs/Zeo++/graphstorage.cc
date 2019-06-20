@@ -79,6 +79,38 @@ CONN::CONN(int myFrom, int myTo, double len, double maxR, DELTA_POS deltaP){
     deltaPos   = deltaP;
 }
 
+//Add at 20180826
+CONN::CONN(){}
+CONN::CONN(int myFrom, int myTo, double len, double maxR, int myX, int myY, int myZ){
+	from       = myFrom;
+    to         = myTo;
+    length     = len;
+    max_radius = maxR;
+	deltaPos = DELTA_POS(myX, myY, myZ);
+}
+
+CONN::CONN(int myFrom, int myTo, double len, double bt_x, double bt_y, double bt_z, double maxR, DELTA_POS deltaP){
+    from       = myFrom;
+    to         = myTo;
+    length     = len;
+    btx = bt_x;
+    bty = bt_y;
+    btz = bt_z;
+    max_radius = maxR;
+    deltaPos   = deltaP;
+
+}
+CONN::CONN(int myFrom, int myTo, double len, double bt_x, double bt_y, double bt_z, double maxR, int myX, int myY, int myZ){
+    from       = myFrom;
+    to         = myTo;
+    length     = len;
+    btx = bt_x;
+    bty = bt_y;
+    btz = bt_z;
+    max_radius = maxR;
+    deltaPos   = DELTA_POS(myX, myY, myZ);
+}
+
 /* Output information about the connection to the provided output stream*/
 void CONN::print(ostream &out) const{
     out << from << "->" << to << "   Length:" << length
@@ -97,21 +129,25 @@ void CONN::print(ostream &out) const{
  */
 
 /** Create a node using the provided parameters. */
-DIJKSTRA_NODE::DIJKSTRA_NODE(int myID, double myX, double myY, double myZ, double maxR, bool active_flag){
+DIJKSTRA_NODE::DIJKSTRA_NODE(int myID, double myX, double myY, double myZ, double maxR, bool active_flag, int label_flag){
     id = myID; x = myX; y = myY; z = myZ;
     connections = vector<CONN> ();
     max_radius = maxR;
     active = active_flag;
+	label = label_flag;
 }
 
 /** Output information about the node to the provided output stream. */
 void DIJKSTRA_NODE::print(ostream &out) const {
     out << " Node info:" << "\n"
-    << "    #: " << id << "    X: " << x << "    Y: " << y << "    Z:" << z << "\n"
+    //<< "    #: " << id << "    X: " << x << "    Y: " << y << "    Z:" << z << "    R:" << max_radius << "\n"
+    
+    // new code for test
+    << "    #: " << id  <<"    label: " << label << "    X: " << x << "    Y: " << y << "    Z:" << z << "    R:" << max_radius << "\n"
     << "   Connections:" << "\n";
     for(unsigned int i = 0; i<connections.size(); i++){
         out << "     ";
-        connections.at(i).print();
+        connections.at(i).print(out);
     }
 }
 
@@ -146,7 +182,8 @@ void DIJKSTRA_NETWORK::buildDijkstraNetwork(const VORONOI_NETWORK *vornet, DIJKS
     
     // Add copies of all nodes to the network
     while(niter != vornet->nodes.end()){
-        DIJKSTRA_NODE node = DIJKSTRA_NODE(i, niter->x, niter->y, niter->z, niter->rad_stat_sphere, niter->active);
+        // DIJKSTRA_NODE node = DIJKSTRA_NODE(i, niter->x, niter->y, niter->z, niter->rad_stat_sphere, niter->active, niter->label);
+        DIJKSTRA_NODE node = DIJKSTRA_NODE(niter->id, niter->x, niter->y, niter->z, niter->rad_stat_sphere, niter->active, niter->label);
         i++;
         niter++;
         dnet->nodes.push_back(node);
@@ -157,7 +194,7 @@ void DIJKSTRA_NETWORK::buildDijkstraNetwork(const VORONOI_NETWORK *vornet, DIJKS
     vector<VOR_EDGE> ::const_iterator eiter = vornet->edges.begin();
     while(eiter != vornet->edges.end()){
         DELTA_POS pos = DELTA_POS(eiter->delta_uc_x, eiter->delta_uc_y, eiter->delta_uc_z);
-        CONN conn = CONN(eiter->from, eiter->to, eiter->length, eiter->rad_moving_sphere,pos);
+        CONN conn = CONN(eiter->from, eiter->to, eiter->length, eiter->bottleneck_x, eiter->bottleneck_y, eiter->bottleneck_z, eiter->rad_moving_sphere,pos);
         dnet->nodes.at(conn.from).connections.push_back(conn);
         eiter++;
     }

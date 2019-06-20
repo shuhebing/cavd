@@ -59,10 +59,6 @@ double lookupCovRadius(std::string atomType);
 /** Return the mass for the corresponding atom name. */
 double lookupMass(std::string atomType); 
 
-/** Return the atom name for the corresponding mass. */
-std::string lookupAtomName(double);
-
-
 /** Return the atomic number for the corresponding symbol */
 int lookupAtomicNumber(std::string atomType);
 
@@ -71,5 +67,17 @@ bool isMetal(std::string atomType);
 
 /** Strip atom name to remove any index strings */
 std::string stripAtomName(std::string extAtom);
+
+//Added at 20180420
+// initialize Ionic Rad Table use pymatgen computational results and lookup its radius
+void readIonRadTable(std::map<std::string,double> radMap);
+double lookupIonRadius(std::string atomType, bool radial);
+
+//Added at 20180627
+/** Fills the radius table with Shanno radius. */
+void initializeIonRadTable();
+/** Reads the radius table from the provided filename. The file must be
+    formatted in two columns: atom name and radius. */
+void readIonRadTableFile(char *filename);
 
 #endif

@@ -52,7 +52,7 @@ void invertMatrix(double matrix [3][3], double newMatrix[3][3]){
     if(determinant == 0){
         cerr << "Determinant of provided matrix is 0. Matrix is not invertible."
         << "\n" << "Exiting ..." << "\n";
-        exit(1);
+        //exit(1);
     }
     
     double invDet = 1/determinant;
@@ -140,6 +140,7 @@ void Point::print(std::ostream &out) const {
 }
 ostream &operator<<(ostream &out, Point &obj) {
     obj.print(out);
+    return out;
 }
 
 
@@ -168,7 +169,7 @@ int& TRIPLET::operator[](int index){
   if(index < 0 || index > 2){
     cerr << "Error: Invalid index to [] operator for TRIPLET instance" << "\n"
 	 << "Exiting..." << "\n";
-    exit(1);
+    //exit(1);
   }
   return vals[index];
 }
@@ -233,7 +234,7 @@ double& XYZ::operator[](const int index){
        return z;
      cerr << "Error: Invalid index to [] operator for XYZ instance" << "\n"
 	  << "Exiting..." << "\n";
-     exit(1);
+     //exit(1);
 }
 const XYZ XYZ::operator-(const XYZ& other) const {
    return XYZ(x-other.x, y-other.y, z-other.z); 

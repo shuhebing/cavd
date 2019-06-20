@@ -54,7 +54,7 @@ ATOM::ATOM(XYZ xyz, string s, string l, double r) {
 
 /** Print the information about this atom to the provided output stream. */
 void ATOM::print(ostream &out){
-    out << "   type:" << type << "   x:" << x << "   y:" << y << "   z:"  << z
+    out << "   label:" << label << "   type:" << type << "   charge:" << charge << "   x:" << x << "   y:" << y << "   z:"  << z
     << "   a:" << a_coord << "   b:" << b_coord << "   c:" << c_coord
     << "   radius:" << radius << "\n";
 }
@@ -350,7 +350,7 @@ double get_unit_edge_length(ATOM_NETWORK *c) {
       if(unit_edge_length<0) unit_edge_length = edge_length;
       else if(fabs(unit_edge_length-edge_length)>DISTANCE_TOLERANCE) {
         printf("ERROR: found a basic edge length of %.3f which is sufficiently different to the previous length of %.3f; at the moment, nets with more than one edge length are not handled\n", edge_length, unit_edge_length);
-        exit(EXIT_FAILURE);
+        //exit(EXIT_FAILURE);
       }
     }
   }
@@ -612,11 +612,32 @@ VOR_EDGE::VOR_EDGE(int myFrom, int myTo, double rad,
     delta_uc_x(dx), delta_uc_y(dy), delta_uc_z(dz),
     length(len) {}
 
+/**
 /// Copy constructor
 VOR_EDGE::VOR_EDGE(const VOR_EDGE& orig):
     from(orig.from), to(orig.to), rad_moving_sphere(orig.rad_moving_sphere),
     delta_uc_x(orig.delta_uc_x), delta_uc_y(orig.delta_uc_y),
     delta_uc_z(orig.delta_uc_z) {}
+**/
+
+// Added at 20180408
+VOR_EDGE::VOR_EDGE(int myFrom, int myTo, double rad, double neck_x, double neck_y, double neck_z, int dx, int dy, int dz, double len):
+    from(myFrom), to(myTo), rad_moving_sphere(rad),bottleneck_x(neck_x), bottleneck_y(neck_y), bottleneck_z(neck_z),
+    delta_uc_x(dx), delta_uc_y(dy), delta_uc_z(dz),length(len) {}
+
+VOR_EDGE::VOR_EDGE(int myFrom, int myTo, double rad, double neck_x, double neck_y, double neck_z, double neck_a, double neck_b, double neck_c, int dx, int dy, int dz, double len):
+    from(myFrom), to(myTo), rad_moving_sphere(rad),
+    bottleneck_x(neck_x), bottleneck_y(neck_y), bottleneck_z(neck_z),
+    bottleneck_a(neck_a), bottleneck_b(neck_b), bottleneck_c(neck_c),
+    delta_uc_x(dx), delta_uc_y(dy), delta_uc_z(dz),length(len) {}
+
+/// Copy constructor
+VOR_EDGE::VOR_EDGE(const VOR_EDGE& orig):
+    from(orig.from), to(orig.to), rad_moving_sphere(orig.rad_moving_sphere),
+	  bottleneck_x(orig.bottleneck_x), bottleneck_y(orig.bottleneck_y), bottleneck_z(orig.bottleneck_z),
+    bottleneck_a(orig.bottleneck_a), bottleneck_b(orig.bottleneck_b), bottleneck_c(orig.bottleneck_c),
+    delta_uc_x(orig.delta_uc_x), delta_uc_y(orig.delta_uc_y),
+    delta_uc_z(orig.delta_uc_z),length(orig.length){}
 
 //Default constructor for VOR_NODE
 VOR_NODE::VOR_NODE(){}
@@ -624,6 +645,27 @@ VOR_NODE::VOR_NODE(){}
 VOR_NODE::VOR_NODE(double myX, double myY, double myZ,
                    double rad, vector<int> ids){
     x = myX; y = myY; z = myZ;
+    rad_stat_sphere = rad;
+    atomIDs = ids;
+}
+
+VOR_NODE::VOR_NODE(double myX, double myY, double myZ, double fracA, double fracB, double fracC, 
+                   double rad, vector<int> ids){
+    x = myX; y = myY; z = myZ;
+    frac_a = fracA;
+    frac_b = fracB;
+    frac_c = fracC;
+    rad_stat_sphere = rad;
+    atomIDs = ids;
+}
+
+VOR_NODE::VOR_NODE(int myid, double myX, double myY, double myZ, double fracA, double fracB, double fracC, 
+                   double rad, vector<int> ids){
+    id = myid;
+    x = myX; y = myY; z = myZ;
+    frac_a = fracA;
+    frac_b = fracB;
+    frac_c = fracC;
     rad_stat_sphere = rad;
     atomIDs = ids;
 }
@@ -817,11 +859,9 @@ const VORONOI_NETWORK VORONOI_NETWORK::prune(const double& minRadius)
         edgeIter != edges.end(); edgeIter++) {
         if(edgeIter->rad_moving_sphere > minRadius){
             //VOR_EDGE newEdge = *edgeIter;
-            
             // further check: keep edges only if they connect accessible nodes
             if( nodes[edgeIter->from].rad_stat_sphere > minRadius && nodes[edgeIter->to].rad_stat_sphere > minRadius )
                 newEdges.push_back(*edgeIter);
-            
         }
     };
     
@@ -1698,7 +1738,7 @@ void create_unit_cell_from_vectors(vector<XYZ> *vecs, ATOM_NETWORK *cell) {
   int num_vecs = vecs->size();
   if(num_vecs!=3) {
     printf("ERROR: create_unit_cell_from_vectors() called with !=3 (%d) vectors\n", num_vecs);
-    exit(EXIT_FAILURE);
+    //exit(EXIT_FAILURE);
   }
   vector<int> assignments, scales;
   vector<bool> is_assigned;
@@ -1755,7 +1795,7 @@ void create_unit_cell_from_vectors(vector<XYZ> *vecs, ATOM_NETWORK *cell) {
     if(!is_assigned.at(i)) { //found z
       if(found_z) {
         printf("ERROR: after setting x and y vectors, more than one vector remains to be assigned to z\n");
-        exit(EXIT_FAILURE);
+    //exit(EXIT_FAILURE);
       }
       z = vecs->at(i);
       found_z = true;
@@ -1793,7 +1833,7 @@ if(verbose) printf("DEBUG: checking for overlap between edge end position %.3f %
       }
       if(overlap_v_index==-1) {
         printf("ERROR: could not construct net: no vertex could be found which overlaps periodically with vertex %d edge %d - check cgd file (did you forget the \":H\" in the symmetry group?)\n", i, j);
-        exit(EXIT_FAILURE);
+        //exit(EXIT_FAILURE);
       } else {
         XYZ v = cell->vertices.at(overlap_v_index).abc;
         XYZ shift = e-v;
@@ -1810,7 +1850,7 @@ if(verbose) printf("DEBUG: checking for overlap between edge end position %.3f %
   if(verbose) printf("DEBUG: there are %d one-way connections\n", num_connections);
   if(num_connections%2!=0) {
     printf("ERROR: there are an odd number (%d) of one-way connections between vertices - this should not be the case because connections are expressed redundantly\n", num_connections);
-    exit(EXIT_FAILURE);
+//exit(EXIT_FAILURE);
   }
   //2) connections only go one way right now - we cannot yet position molecules because we need to know which edge is used in each VERTEX!
   vector<bool> considered;
@@ -1825,7 +1865,7 @@ if(verbose) printf("DEBUG: checking for overlap between edge end position %.3f %
           if(matches(ci,cj)) {
             if(matched) {
               printf("ERROR: determined that vertex %d edge %d overlaps with more than one vertex!\n", ci.v1, ci.e1);
-              exit(EXIT_FAILURE);
+              //exit(EXIT_FAILURE);
             }
             CONNECTION cij = ci;
             cij.e2 = cj.e1;
@@ -1839,7 +1879,7 @@ if(verbose) printf("DEBUG: checking for overlap between edge end position %.3f %
       }
       if(!matched) {
         printf("ERROR: could not find corresponding connection for vertex %d edge %d overlapping with vertex %d\n", ci.v1, ci.e1, ci.v2);
-        exit(EXIT_FAILURE);
+        //exit(EXIT_FAILURE);
       }
     }
   }
@@ -1868,7 +1908,7 @@ vector<MOLECULE> get_multiple_best_RMSD_fits(MOLECULE mol, ATOM_NETWORK *cell, i
   int num_mol_sites = num_mol_sites_no_dummy + num_mol_sites_dummy;
   if(num_fit_sites_dummy!=num_mol_sites_dummy || num_fit_sites_no_dummy!=num_mol_sites_no_dummy) { //we can only fit the molecule to the given vertex is the number of sites is the same in each
     printf("ERROR: cannot fit molecule with %d sites and %d dummy sites to a vertex with %d sites and %d dummy sites!\n", num_mol_sites_no_dummy, num_mol_sites_dummy, num_fit_sites_no_dummy, num_fit_sites_dummy);
-    exit(EXIT_FAILURE);
+    //exit(EXIT_FAILURE);
   }
 
   //2) how many ways can we do it?
@@ -1910,7 +1950,9 @@ vector<MOLECULE> get_multiple_best_RMSD_fits(MOLECULE mol, ATOM_NETWORK *cell, i
   vector<MOLECULE> vector_of_centred_molecules;
   for(int p=0; p<num_perm; p++) { //try each permutation!
     vector<int> perm = permutations.at(p);
-    double fixed[num_fit_sites][3], moving[num_fit_sites][3];
+	//double fixed[num_fit_sites][3], moving[num_fit_sites][3];
+	double(*fixed)[3] = new double[num_fit_sites][3];
+	double(*moving)[3] = new double[num_fit_sites][3];
     XYZ fixed_CoM = origin, moving_CoM = origin;
     for(int i=0; i<num_fit_sites; i++) {
       XYZ fix(0,0,0);
@@ -1951,6 +1993,9 @@ vector<MOLECULE> get_multiple_best_RMSD_fits(MOLECULE mol, ATOM_NETWORK *cell, i
     for(int i=0; i<3; i++) for(int j=0; j<3; j++) rotation_matrix[i][j] = 0; //dummy values - filled in by the rmsd method
     double rmsd = 0; //dummy value - filled in by the rmsd method
     calculate_rotation_rmsd(fixed, moving, num_fit_sites, mov_com, mov_to_ref, rotation_matrix, &rmsd); //calling rmsd code - writes the corresponding rotation matrix
+	delete[] fixed;
+	delete[] moving;
+
     //3b) some permutations are not possible, and produce NAN
     bool valid = true;
     if(isnan(rmsd)) valid=false;
@@ -1985,7 +2030,7 @@ if(verbose) {
   FILE *rotmol = fopen(rotmol_name.c_str(),"w");
   if(rotmol==NULL) {
     printf("ERROR: could not open output rotated molecule file with name %s\n", rotmol_name.c_str());
-    exit(EXIT_FAILURE);
+    //exit(EXIT_FAILURE);
   }
   MOLECULE rotated = translate(f0.fit, get_mol_site_CoM(&f0.fit).scale(-1));
   write_molecule(rotmol, &rotated, net, vertex_ID, -1, true); //oriented to basic vertex basic_ID with symmetry "-1" (not applicable here) - this will be noted in the file - true indicates 'write out sites'
@@ -2004,7 +2049,7 @@ if(verbose) {
   FILE *rotmol = fopen(rotmol_name.c_str(),"w");
   if(rotmol==NULL) {
     printf("ERROR: could not open output rotated molecule file with name %s\n", rotmol_name.c_str());
-    exit(EXIT_FAILURE);
+    //exit(EXIT_FAILURE);
   }
   MOLECULE rotated = translate(f.fit, get_mol_site_CoM(&f.fit).scale(-1));
   write_molecule(rotmol, &rotated, net, vertex_ID, -1, true); //oriented to basic vertex basic_ID with symmetry "-1" (not applicable here) - this will be noted in the file - true indicates 'write out sites'
@@ -2162,7 +2207,7 @@ if(verbose) {
 if(verbose) printf("DEBUG: found all uc vectors from loop analysis\n");
   } else {
     printf("ERROR: did not find all uc vectors from loop analysis\n");
-    exit(EXIT_FAILURE);
+   // exit(EXIT_FAILURE);
   }
 
   //if we are dealing with a 2D net (a layer), then we need to introduce a periodic connection running in that direction
@@ -2189,7 +2234,7 @@ if(verbose) printf("DEBUG: imposing a three dimensional structure on this two-di
     }
     if(num_override!=1) {
       printf("ERROR: was expecting to override exactly 1 cell side length value, but %d were overwritten - this is a bug\n", num_override);
-      exit(EXIT_FAILURE);
+   //   exit(EXIT_FAILURE);
     }
   }
   vector<XYZ> sorted_unit_cell_vectors;
@@ -2443,7 +2488,7 @@ bool read_cgd(FILE *cgd, ATOM_NETWORK *cell, string *net) {
     }
     if(uses_node && uses_atom) {
       printf("NET ERROR: detected that both atom and node flags are used in the input net file - this is currently assumed to indicate an invalid input file\n");
-      exit(EXIT_FAILURE);
+      //exit(EXIT_FAILURE);
     }
   }
   if(!read_ok) {
@@ -2480,7 +2525,7 @@ void parse_atom(vector<string> *token, int first_index, ATOM_NETWORK *cell, int 
       }
       else {
         printf("NET ERROR: atom with %d edges was declared but the string \"%s\" was read instead of the data for edge ID %d\n", v.expected_edges, local_token.at(0).c_str(), i);
-        exit(EXIT_FAILURE);
+        //exit(EXIT_FAILURE);
       }
     } else {
       printf("NET WARNING: %d edges were expected but file ended after reading %d edges\n", v.expected_edges, i+1);
@@ -2499,7 +2544,7 @@ void parse_atom(vector<string> *token, int first_index, ATOM_NETWORK *cell, int 
       }
       else {
         printf("NET ERROR: dummy edge for 2c atom with index %d was declared but the string \"%s\" was read instead of the data for the dummy edge\n", (*atom_index), local_token.at(0).c_str());
-        exit(EXIT_FAILURE);
+       // exit(EXIT_FAILURE);
       }
     } else {
       printf("NET WARNING: dummy edge was expected for 2c atom with index %d, but file ended instead\n", (*atom_index));
@@ -2552,7 +2597,7 @@ void parse_edge(vector<string> *token, int first_index, ATOM_NETWORK *cell, int 
   }
   if(v_index==-1) {
     printf("NET ERROR: could not match this edge start position to a previously parsed vertex\n");
-    exit(EXIT_FAILURE);
+    //exit(EXIT_FAILURE);
   }
   //2) update the cell accordingly
   cell->vertices.at(v_index).edges.push_back(end);
@@ -2668,7 +2713,7 @@ if(verbose) printf("DEBUG: %d edges were expected but after examining edges by s
         int num_orphan_edges_check = cell->orphan_edge_ends.size();
         if(num_orphan_edges_check!=num_orphan_edges) {
           printf("ERROR: attempting to interpret orphan edges in order to complete the basic net, but the number of start points (%d) is not equal to the number of end points (%d)\n", num_orphan_edges, num_orphan_edges_check);
-          exit(EXIT_FAILURE);
+         // exit(EXIT_FAILURE);
         }
 if(verbose) printf("DEBUG: there are %d orphan edges to consider!\n", num_orphan_edges);
         for(int j=0; j<num_orphan_edges; j++) {
@@ -2724,14 +2769,14 @@ if(verbose) printf("DEBUG: the correct number of edges, %d, have been identified
           cell->vertices.at(i) = v;
         } else {
           printf("ERROR: %d edges were expected but after examining edges by symmetry AND orphan edges, %d were identified - can not complete the net\n", num_expect_edges, num_new_edges);
-          exit(EXIT_FAILURE);
+          //exit(EXIT_FAILURE);
         }
       }
     } else if(num_edges==num_expect_edges) {
 if(verbose) printf("DEBUG: the correct number of edges, %d, have been identified - no action required for this vertex\n", num_edges);
     } else {
       printf("ERROR: more edges than expected - error case in file parsing, probably a bug!\n");
-      exit(EXIT_FAILURE);
+     // exit(EXIT_FAILURE);
     }
   }
 }
@@ -2819,7 +2864,7 @@ void add_2c_dummy_edges(ATOM_NETWORK *basic_cell, ATOM_NETWORK *full_cell, vecto
         basic_IDs_examined.push_back(basic_ID);
         if(sym_op!=0) { //double check that the symmetry operator is zero (no sym operator), as it should be
           printf("ERROR: found a 2-c vertex ID %d based on underlying 2-c vertex ID %d, which has not already been examined, but the symmetry operator is non-zero (%d)\n", i, basic_ID, sym_op);
-          exit(EXIT_FAILURE);
+         // exit(EXIT_FAILURE);
         }
         //we need to know which two vertices (in the full cell) this 2-c vertex is connected to, so that we can look at their other edges and decide a direction
         int v1 = -1, v2 = -1;
@@ -2836,7 +2881,7 @@ void add_2c_dummy_edges(ATOM_NETWORK *basic_cell, ATOM_NETWORK *full_cell, vecto
         }
         if(v1==-1 || v2==-1) { //failed to identify the two adjacent full cell vertices
           printf("ERROR: could not identify the two full cell vertices connected to 2-c vertex %d\n", i);
-          exit(EXIT_FAILURE);
+         // exit(EXIT_FAILURE);
         }
         XYZ v1_xyz = full_cell->abc_to_xyz_returning_XYZ(full_cell->vertices.at(v1).abc);
         XYZ v2_xyz = full_cell->abc_to_xyz_returning_XYZ(full_cell->vertices.at(v2).abc);
@@ -2906,7 +2951,7 @@ if(verbose) printf("DEBUG: parallel combo found: %.3f %.3f %.3f and %.3f %.3f %.
         //at this point we know the selected direction, and can implement it
         if(dummy_edge_abc.x>1000 && dummy_edge_abc.y>1000 && dummy_edge_abc.z>1000) {
           printf("ERROR: could not find a candidate orthogonal direction with which to orient full cell 2-c vertex %d's dummy edge\n", i);
-          exit(EXIT_FAILURE);
+         // exit(EXIT_FAILURE);
         } else if(verbose) {
           printf("DEBUG: orthogonal position abc chosen to be %.3f %.3f %.3f\n", dummy_edge_abc.x, dummy_edge_abc.y, dummy_edge_abc.z);
         }
@@ -3095,11 +3140,13 @@ if(verbose) printf("DEBUG: this vertex has %d edges and %d dummy_edges\n", num_e
 
 void read_xyz(FILE *input, MOLECULE *mol, const char *filename) {
   int length = 100;
-  char ch1[length];
+  //char ch1[length];
+  char* ch1 = new char[length];
   int status = 0;
   int num_atoms = 0;
   if(fgets(ch1, length, input)!=NULL) {
     string str = string(ch1);
+	delete[] ch1;
 //    printf("DEBUG: read char array as \"%s\", parsed to string as \"%s\"\n", ch, str.c_str());
     int pos=0;
     char c = str[pos];
@@ -3110,9 +3157,11 @@ void read_xyz(FILE *input, MOLECULE *mol, const char *filename) {
       pos++;
       c = str[pos];
     }
-    char ch2[length];
+    //char ch2[length];
+    char* ch2 = new char[length];
     str.copy(ch2, str.size()-pos, pos);
     status = sscanf(ch2, "%d", &num_atoms);
+    delete[] ch2;
     //printf("DEBUG: parsed num_atoms = %d from string %s (status = %d)\n", num_atoms, ch2, status);
   } else {
     printf("ERROR: could not read string\n");
@@ -3122,8 +3171,10 @@ void read_xyz(FILE *input, MOLECULE *mol, const char *filename) {
   search_for_char(input, '\n'); //now we are on a line containing an atom
   for(int i=0; i<num_atoms; i++) {
     XYZ a;
-    char e[length];
-    char ch[length];
+    //char e[length];
+    //char ch[length];
+    char* e = new char[length];
+    char* ch = new char[length];
     if(fgets(ch, length, input)!=NULL) {
       string str = string(ch);
       //printf("DEBUG: read char array as \"%s\", parsed to string as \"%s\"\n", ch, str.c_str());
@@ -3133,13 +3184,16 @@ void read_xyz(FILE *input, MOLECULE *mol, const char *filename) {
         pos++;
         c = str[pos];
       }
-      char ch2[length];
+      //char ch2[length];
+      char* ch2 = new char[length];
       str.copy(ch2, str.size()-pos, pos);
       status = sscanf(ch2, "%s %lf %lf %lf", e, &a.x, &a.y, &a.z);
+      delete[] ch2;
     } else {
       printf("ERROR: could not read expected atom coord string from %s - %d out of %d atom coords were read\n", filename, i, num_atoms);
-      exit(EXIT_FAILURE);
+      //exit(EXIT_FAILURE);
     }
+    delete[] ch;
 
     mol->atoms_xyz.push_back(a);
     string name_string(e);
@@ -3152,7 +3206,7 @@ void read_xyz(FILE *input, MOLECULE *mol, const char *filename) {
     }
     if(digit_pos==0) { //first character was a digit - this is no good
       printf("ERROR: could not parse label from atom beginning with a digit in read_xyz: %s: %s\n", filename, name_string.c_str());
-      exit(EXIT_FAILURE);
+      //exit(EXIT_FAILURE);
     } else {
       string element(e);
       if(digit_pos>0) {
@@ -3160,6 +3214,7 @@ void read_xyz(FILE *input, MOLECULE *mol, const char *filename) {
       }
       mol->atoms_type.push_back(element);
     }
+	delete[] e;
   }
 }
 

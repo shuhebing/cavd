@@ -38,7 +38,6 @@
 #include "graphstorage.h"
 #include "string_additions.h"
 #include "material.h"
-
 template<class c_option>
 bool storeVoronoiNetwork(c_option &con, ATOM_NETWORK *atmnet, VORONOI_NETWORK *vornet, double bx, double by, double bz,
 			 std::vector<BASIC_VCELL> &basCells, std::vector<int> &atomShifts, bool storeAdvCells, std::vector<VOR_CELL> &advCells);
@@ -74,7 +73,12 @@ bool performVoronoiDecomp(bool radial, ATOM_NETWORK *cell, VORONOI_NETWORK *vorn
 			   std::vector<BASIC_VCELL> *bvcells);
 
 
-void createAdvCell(voro::voronoicell &cell, std::vector<double> coords, int *idMap, VOR_CELL &newCell);
+// void createAdvCell(voro::voronoicell &cell, std::vector<double> coords, int *idMap, VOR_CELL &newCell);
+void createAdvCell(voro::voronoicell_neighbor &cell, std::vector<double> coords, int *idMap, VOR_CELL &newCell);
+
+// Add by YAJ 20190609
+// void createAdvCell(voro::voronoicell &cell, std::vector<double> coords, int *idMap, VOR_CELL &newCell);
+void createAdvCell(voro::voronoicell_neighbor &cell, std::vector<double> coords, int *idMap, VOR_CELL &newCell, int id);
 
 /** Extends the provided unit cell in the x, y and z directions using
     the given factors and stores the resulting ATOM_NETWORK using the
@@ -90,6 +94,7 @@ void extendUnitCell(ATOM_NETWORK *cell, ATOM_NETWORK *newCell, int xfactor, int 
 void extendVorNet(VORONOI_NETWORK *vornet, VORONOI_NETWORK *newNet, DELTA_POS direction, std::map<int,int> *idAliases, std::set<int> *sourceNodes);
 
 void calculateFreeSphereParameters(VORONOI_NETWORK *vornet, char *filename, bool extendedPrintout);
+
 void NEWcalculateFreeSphereParameters(MATERIAL *Mat);
 void NEWcalculateFreeSphereParametersPrint(MATERIAL *Mat, char *filename, bool);
 
@@ -99,11 +104,57 @@ void loadRadii(ATOM_NETWORK *atmnet);
 
 void loadMass(bool useMassFlag, ATOM_NETWORK *atmnet);
 
-
 /* Print information about topology of the structure */
 void getStructureInformation(char *filename, char *filenameExtendedOutput, ATOM_NETWORK *atmnet, bool extendedOutput);
 
 /* Print information about presence of open metal sites  */
 void getOMSInformation(char *filename, char *filenameExtendedOutput, ATOM_NETWORK *atmnet, bool extendedOutput);
+
+// Added at 20180418
+// Structure a new function to return whether a specific radius atom can through voronoi network
+// result is a array store integer,result[0],result[1],result[2] represent whether migrantRad larger than largest included sphere, largest free sphere, largest included sphere along free sphere path respectively
+// 1 is can through, 0 is can not through.
+//void throughVorNet(VORONOI_NETWORK *vornet, char *filename, double migrantRad);
+//bool throughVorNet(VORONOI_NETWORK *vornet, char *filename, double migrantRad);
+bool throughVorNet(VORONOI_NETWORK *vornet, char *filename, double *Ri, double *Rf, double *Rif, double migrantRad);
+bool throughVorNet(VORONOI_NETWORK *vornet, char *filename, double *Ri, double *Rf, double *Rif);
+void calculateConnParameters(VORONOI_NETWORK *vornet, char *filename, vector<double> *values);
+void parseNetworkSymmetry(std::vector<int> symmlabels, VORONOI_NETWORK *vornet);
+void addVorNetId(VORONOI_NETWORK *vornet);
+void add_net_to_vornet(vector<int> fc_ids, vector<double> fc_radii, vector<vector<double> > fc_coords,
+	vector<vector<double> > fc_fracs, vector<vector<int> > fc_neiatoms, vector<vector<int> > fc_vertices,
+	vector< vector< vector<int> > > edge_pdvs, vector< vector< double> > fc_vert_dists, VORONOI_NETWORK* vornet);
+
+/* 自定义异常 */
+struct InvalidParticlesNumException : public exception{
+	const char * what () const throw (){
+		return "Exception: Invalid number of particles provided for Voronoi decomposition.";
+	}
+};
+struct InvalidBoxDimException : public exception{
+	const char * what () const throw (){
+		return "Exception: valid box dimensions calculated for Voronoi decomposition.";
+	}
+};
+struct HugeGridException : public exception{
+	const char * what () const throw (){
+		return "Exception: voro++: Number of computational blocks exceeds the maximum.";
+	}
+};
+struct AttemptException : public exception{
+	const char * what () const throw (){
+		return "Exception: Attempt numbers larger than excepted.";
+	}
+};
+struct VoronoiDecompException : public exception{
+	const char * what () const throw (){
+		return "Exception: Unable to make Voronoi decomposition.";
+	}
+};
+struct CoordNumException : public exception{
+	const char * what () const throw (){
+		return "Exception: Improper number of node coordinates in Voronoi decomposition.";
+	}
+};
 
 #endif
