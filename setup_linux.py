@@ -16,7 +16,7 @@ netinfo_srcfiles = ['cavd/netinfo.pyx']
 netio_srcfiles = ['cavd/netio.pyx',  'cavd/netinfo.pyx']
 graphstorage_srcfiles = ['cavd/graphstorage.pyx']
 psd_srcfiles = ['cavd/psd.pyx']
-Voronoicell_srcfiles = ['cavd/Voronoicell.pyx']
+Voronoicell_srcfiles = ['cavd/voronoicell.pyx']
 channel_srcfiles = ['cavd/channel.pyx']
 highaccuracy_srcfiles = ['cavd/high_accuracy.pyx']
 areavol_srcfiles = ['cavd/area_volume.pyx']
@@ -26,7 +26,7 @@ cycle_srcfiles = ['cavd/cycle.pyx']
 
 setup(
     name = 'cavd',
-    version = '0.1.9',
+    version = '0.1.10',
     language_level = 3,
     description = "Crystal structure Analysis by Voronoi Decomposition",
     url = "ehpc.shu.edu.cn",
@@ -46,7 +46,7 @@ setup(
         "Intended Audience :: Science/Research",
         "Topic :: Scientific/Engineering"
         ],
-    ext_modules = [Extension("cavd.Voronoicell", 
+    ext_modules = [Extension("cavd.voronoicell", 
                              sources=Voronoicell_srcfiles,
                              include_dirs=includedirs,
                              libraries = ['Voro++', 'Zeo++'], 
