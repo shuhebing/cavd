@@ -9,7 +9,7 @@ from libcpp.vector cimport vector
 from cavd.voronoicell cimport VOR_CELL, BASIC_VCELL
 from cavd.channel cimport CHANNEL
 
-cdef extern from '../basic_lib/Zeo++/networkio.h':
+cdef extern from '../libs/Zeo++/networkio.h':
     cdef void parseFilename(const char* filename, char* name, char* extension)
 
     cdef bint checkInputFile(char* filename)

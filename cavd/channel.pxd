@@ -8,7 +8,7 @@ from graphstorage cimport DIJKSTRA_NODE
 from graphstorage cimport DIJKSTRA_NETWORK
 from geometry cimport XYZ
 
-cdef extern from "../basic_lib/Zeo++/channel.h":
+cdef extern from "../libs/Zeo++/channel.h":
     cdef cppclass CHANNEL:
         map[int,int] idMappings
         map[int,int] reverseIDMappings
@@ -22,11 +22,11 @@ cdef extern from "../basic_lib/Zeo++/channel.h":
 
         CHANNEL() except +
 
-cdef extern from "../basic_lib/Zeo++/channel.h" namespace "CHANNEL":
+cdef extern from "../libs/Zeo++/channel.h" namespace "CHANNEL":
     #cdef void findChannels(DIJKSTRA_NETWORK*, vector[bint] *, vector[CHANNEL] *)
     cdef bint findChannels_new(VORONOI_NETWORK*, double, vector[CHANNEL] *)
 
-cdef extern from "../basic_lib/Zeo++/channel.h":
+cdef extern from "../libs/Zeo++/channel.h":
     cdef bint c_writeToVMD "writeToVMD_new"(vector[CHANNEL] channels, char *filename)
     cdef bint c_writeToNET "writeToNET_new"(vector[CHANNEL] channels, char *filename, ATOM_NETWORK *cell)
 

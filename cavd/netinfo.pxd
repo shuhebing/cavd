@@ -4,7 +4,7 @@
 from libcpp.map cimport map
 from libcpp.string cimport string
 
-cdef extern from "../basic_lib/Zeo++/networkinfo.h":
+cdef extern from "../libs/Zeo++/networkinfo.h":
     cdef void zeo_initializeRadTable "initializeRadTable"()
 
     cdef void zeo_initializeCovRadTable "initializeCovRadTable"()

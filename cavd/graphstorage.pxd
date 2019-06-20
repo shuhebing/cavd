@@ -14,7 +14,7 @@ from libcpp.vector cimport vector
 from netstorage cimport VORONOI_NETWORK
 from geometry cimport XYZ
 
-cdef extern from "../basic_lib/Zeo++/graphstorage.h":
+cdef extern from "../libs/Zeo++/graphstorage.h":
     cdef cppclass DELTA_POS:
         int x, y, z
         DELTA_POS() except +
@@ -46,7 +46,7 @@ cdef extern from "../basic_lib/Zeo++/graphstorage.h":
         XYZ v_a, v_b, v_c
         DIJKSTRA_NETWORK() except +
 
-cdef extern from "../basic_lib/Zeo++/graphstorage.h" namespace "DIJKSTRA_NETWORK":
+cdef extern from "../libs/Zeo++/graphstorage.h" namespace "DIJKSTRA_NETWORK":
     cdef void buildDijkstraNetwork(VORONOI_NETWORK*, DIJKSTRA_NETWORK*)
 
 

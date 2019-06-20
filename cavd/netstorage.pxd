@@ -16,7 +16,7 @@ from cavd.voronoicell cimport VOR_CELL, BASIC_VCELL
 from cavd.geometry cimport XYZ
 
 
-cdef extern from "../basic_lib/Zeo++/networkstorage.h":
+cdef extern from "../libs/Zeo++/networkstorage.h":
     cdef cppclass ATOM:
         ATOM() except +
         double x, y, z
@@ -81,7 +81,7 @@ cdef extern from "../basic_lib/Zeo++/networkstorage.h":
             ATOM_NETWORK*, bint, double, 
             int, int*, double*, bint)
 
-cdef extern from '../basic_lib/Zeo++/networkio.h':
+cdef extern from '../libs/Zeo++/networkio.h':
     cdef void parseFilename(const char* filename, char* name, char* extension)
 
     cdef bint checkInputFile(char* filename)
@@ -123,7 +123,7 @@ cdef extern from '../basic_lib/Zeo++/networkio.h':
     
 # At present  the return value of performVoronoiDecomp is void*
 # Compile it after void* is changed to bool in the original source file
-cdef extern from "../basic_lib/Zeo++/network.h":
+cdef extern from "../libs/Zeo++/network.h":
     cdef bint performVoronoiDecomp(bint, ATOM_NETWORK*, VORONOI_NETWORK*, 
             vector[VOR_CELL]*, bint, vector[BASIC_VCELL]*)
     cdef void calculateFreeSphereParameters(VORONOI_NETWORK*, char*, bint)
@@ -150,7 +150,7 @@ cdef extern from "../basic_lib/Zeo++/network.h":
         vector[vector[double]], VORONOI_NETWORK*)
 
 
-cdef extern from "../basic_lib/Zeo++/area_and_volume.h":
+cdef extern from "../libs/Zeo++/area_and_volume.h":
     cdef void visVoro(char* name, double probeRad, int skel_a, int skel_b, int skel_c,
             VORONOI_NETWORK* vornet, ATOM_NETWORK* atmnet)
 

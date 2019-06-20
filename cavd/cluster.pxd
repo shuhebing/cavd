@@ -6,7 +6,7 @@ from cavd.geometry cimport XYZ
 """
 cutoff default value is 0.25
 """
-cdef extern from "../basic_lib/Zeo++/cluster.h":
+cdef extern from "../libs/Zeo++/cluster.h":
     cdef void simplify_ha_vornet(ATOM_NETWORK *atmnt)
 
     cdef void high_accuracy_vornodes_reduction(ATOM_NETWORK*, vector[XYZ]*)

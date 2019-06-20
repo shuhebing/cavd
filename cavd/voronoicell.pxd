@@ -12,7 +12,7 @@ from libcpp.vector cimport vector
 from cavd.geometry cimport CPoint
 from cavd.netstorage cimport ATOM_NETWORK, VORONOI_NETWORK
 
-cdef extern from "../basic_lib/Zeo++/voronoicell.h":
+cdef extern from "../libs/Zeo++/voronoicell.h":
     cdef cppclass VOR_FACE:
         VOR_FACE(vector[CPoint], ATOM_NETWORK*, VORONOI_NETWORK*) except +
         vector[CPoint] vertices "orderedVertices"

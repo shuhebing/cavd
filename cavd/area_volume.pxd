@@ -6,7 +6,7 @@ of channels and pockets.
 from libcpp.string cimport string
 from cavd.netstorage cimport ATOM_NETWORK
 
-cdef extern from "../basic_lib/Zeo++/area_and_volume.h":
+cdef extern from "../libs/Zeo++/area_and_volume.h":
     cdef string calcAV(ATOM_NETWORK*, ATOM_NETWORK*, bint, double, double, 
             int, bint, double, double)
 

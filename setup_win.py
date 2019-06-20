@@ -8,9 +8,9 @@ from setuptools.extension import Extension
 from Cython.Distutils import build_ext
 from Cython.Build import cythonize
 
-includedirs=["basic_lib/Voro++/src", "basic_lib/Zeo++"]
-libdirs = ["basic_lib/Voro++/src", "basic_lib/Zeo++"]
-runtimedir = os.path.realpath("basic_lib/Zeo++")
+includedirs=["libs/Voro++/src", "libs/Zeo++"]
+libdirs = ["libs/Voro++/src", "libs/Zeo++"]
+runtimedir = os.path.realpath("libs/Zeo++")
 netstorage_srcfiles = ['cavd/netstorage.pyx' ]
 netinfo_srcfiles = ['cavd/netinfo.pyx']
 netio_srcfiles = ['cavd/netio.pyx',  'cavd/netinfo.pyx']
@@ -26,7 +26,7 @@ cycle_srcfiles = ['cavd/cycle.pyx']
 
 setup(
     name = 'cavd',
-    version = '0.6.3',
+    version = '0.1.9',
     language_level = 3,
     description = "Crystal structure Analysis by Voronoi Decomposition",
     url = "ehpc.shu.edu.cn",

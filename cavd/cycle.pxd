@@ -13,7 +13,7 @@ from cavd.netstorage cimport VORONOI_NETWORK, ATOM_NETWORK
 from cavd.geometry cimport XYZ
 from cavd.graphstorage cimport DIJKSTRA_NODE
 
-cdef extern from "../basic_lib/Zeo++/cycle.h":
+cdef extern from "../libs/Zeo++/cycle.h":
     cdef cppclass CYCLE:
         CYCLE() except +
         double length
