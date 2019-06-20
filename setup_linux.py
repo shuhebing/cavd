@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os
 from setuptools import setup
@@ -8,146 +8,137 @@ from setuptools.extension import Extension
 from Cython.Distutils import build_ext
 from Cython.Build import cythonize
 
-includedirs=["../../../../Voro++/voro/trunk/src", ".."]
-libdirs = ["../../../../Voro++/voro/trunk/src", ".."]
-runtimedir = os.path.realpath("..")
-netstorage_srcfiles = ['zeo/netstorage.pyx' ]
-netinfo_srcfiles = ['zeo/netinfo.pyx']
-netio_srcfiles = ['zeo/netio.pyx',  'zeo/netinfo.pyx']
-graphstorage_srcfiles = ['zeo/graphstorage.pyx']
-psd_srcfiles = ['zeo/psd.pyx']
-voronoicell_srcfiles = ['zeo/voronoicell.pyx']
-channel_srcfiles = ['zeo/channel.pyx']
-highaccuracy_srcfiles = ['zeo/high_accuracy.pyx']
-areavol_srcfiles = ['zeo/area_volume.pyx']
-cluster_srcfiles = ['zeo/cluster.pyx' ]
-geometry_srcfiles = ['zeo/geometry.pyx']
-cycle_srcfiles = ['zeo/cycle.pyx']
+includedirs=["basic_lib/Voro++/src", "basic_lib/Zeo++"]
+libdirs = ["basic_lib/Voro++/src", "basic_lib/Zeo++"]
+runtimedir = os.path.realpath("basic_lib/Zeo++")
+netstorage_srcfiles = ['cavd/netstorage.pyx' ]
+netinfo_srcfiles = ['cavd/netinfo.pyx']
+netio_srcfiles = ['cavd/netio.pyx',  'cavd/netinfo.pyx']
+graphstorage_srcfiles = ['cavd/graphstorage.pyx']
+psd_srcfiles = ['cavd/psd.pyx']
+Voronoicell_srcfiles = ['cavd/Voronoicell.pyx']
+channel_srcfiles = ['cavd/channel.pyx']
+highaccuracy_srcfiles = ['cavd/high_accuracy.pyx']
+areavol_srcfiles = ['cavd/area_volume.pyx']
+cluster_srcfiles = ['cavd/cluster.pyx' ]
+geometry_srcfiles = ['cavd/geometry.pyx']
+cycle_srcfiles = ['cavd/cycle.pyx']
 
 setup(
-    name = 'zeo',
-    version = '0.1',
-    description = "Python interface to Zeo++",
-    url = "http://www.maciejharanczyk.info/Zeopp/",
-    author = "Bharat Medasani, Maciej Haranzcyk",
-    author_email = "bkmedasani@lbl.gov",
+    name = 'cavd',
+    version = '0.6.3',
+    language_level = 3,
+    description = "Crystal structure Analysis by Voronoi Decomposition",
+    url = "ehpc.shu.edu.cn",
+    author = "yeanjiang",
+    author_email = "yeanjiang11@qq.com",
+    packages=["cavd"],
+    package_dir={"cavd": "cavd"},
     license = "",
     cmdclass = {'build_ext':build_ext},
+    package_data = {"cavd": ["ionic_radii.json"]},
     classifiers = [
         "Development Status :: 3 - Alpha",
         "Programming Language :: Cython",
         "Programming Language :: C++",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3.6",
         "Intended Audience :: Science/Research",
         "Topic :: Scientific/Engineering"
         ],
-    ext_modules = [Extension("zeo.voronoicell", 
-                             sources=voronoicell_srcfiles,
+    ext_modules = [Extension("cavd.Voronoicell", 
+                             sources=Voronoicell_srcfiles,
                              include_dirs=includedirs,
-                             libraries = ['voro++', 'zeo++'], 
+                             libraries = ['Voro++', 'Zeo++'], 
                              library_dirs = libdirs,
-                             #extra_compiler_args = ['-fPIC'],
-                             #extra_compiler_args = ['-fPIC -Wl,-rpath-link=/home/mbkumar/lbnl/Zeo++/zeo/trunk/'],
                              extra_compiler_args = ['-fPIC -Wl,-rpath='+runtimedir],
                              runtime_library_dirs=[runtimedir],
                              language = 'c++'),
-                   Extension("zeo.netstorage",
+                   Extension("cavd.netstorage",
                              sources=netstorage_srcfiles, 
                              include_dirs=includedirs,
-                             libraries = ['voro++', 'zeo++'], 
+                             libraries = ['Voro++', 'Zeo++'], 
                              library_dirs = libdirs,
-                             #extra_compiler_args = ['-fPIC'],
                              extra_compiler_args = ['-fPIC -Wl,-rpath='+runtimedir],
                              runtime_library_dirs=[runtimedir],
                              language = 'c++'),
-                   Extension("zeo.netinfo", 
+                   Extension("cavd.netinfo", 
                              sources=netinfo_srcfiles,
                              include_dirs=includedirs,
-                             libraries = ['voro++', 'zeo++'], 
+                             libraries = ['Voro++', 'Zeo++'], 
                              library_dirs = libdirs,
-                             #extra_compiler_args = ['-fPIC'],
                              extra_compiler_args = ['-fPIC -Wl,-rpath='+runtimedir],
                              runtime_library_dirs=[runtimedir],
                              language = 'c++'),
-                   Extension("zeo.netio",
+                   Extension("cavd.netio",
                              sources=netio_srcfiles,
                              include_dirs=includedirs,
-                             libraries = ['voro++', 'zeo++'],
+                             libraries = ['Voro++', 'Zeo++'],
                              library_dirs = libdirs,
-                             #extra_compiler_args = ['-fPIC'],
                              extra_compiler_args = ['-fPIC -Wl,-rpath='+runtimedir],
                              runtime_library_dirs=[runtimedir],
                              language = 'c++'),
-                   Extension("zeo.graphstorage",
+                   Extension("cavd.graphstorage",
                              sources=graphstorage_srcfiles,
                              include_dirs=includedirs,
-                             libraries = ['voro++', 'zeo++'], 
+                             libraries = ['Voro++', 'Zeo++'], 
                              library_dirs = libdirs,
-                             #extra_compiler_args = ['-fPIC'],
                              extra_compiler_args = ['-fPIC -Wl,-rpath='+runtimedir],
                              runtime_library_dirs=[runtimedir],
                              language = 'c++'),
-                   Extension("zeo.psd", 
+                   Extension("cavd.psd", 
                              sources=psd_srcfiles,
                              include_dirs=includedirs,
-                             libraries = ['voro++', 'zeo++'],
+                             libraries = ['Voro++', 'Zeo++'],
                              library_dirs = libdirs,
-                             #extra_compiler_args = ['-fPIC'],
                              extra_compiler_args = ['-fPIC -Wl,-rpath='+runtimedir],
                              runtime_library_dirs=[runtimedir],
                              language = 'c++'),
-                   Extension("zeo.channel", 
+                   Extension("cavd.channel", 
                              sources=channel_srcfiles,
                              include_dirs=includedirs,
-                             libraries = ['voro++', 'zeo++'], 
+                             libraries = ['Voro++', 'Zeo++'], 
                              library_dirs = libdirs,
-                             #extra_compiler_args = ['-fPIC'],
                              extra_compiler_args = ['-fPIC -Wl,-rpath='+runtimedir],
                              runtime_library_dirs=[runtimedir],
                              language = 'c++'),
-                   Extension("zeo.high_accuracy", 
+                   Extension("cavd.high_accuracy", 
                              sources=highaccuracy_srcfiles,
                              include_dirs=includedirs,
-                             libraries = ['voro++', 'zeo++'],
+                             libraries = ['Voro++', 'Zeo++'],
                              library_dirs = libdirs,
-                             #extra_compiler_args = ['-fPIC'],
                              extra_compiler_args = ['-fPIC -Wl,-rpath='+runtimedir],
                              runtime_library_dirs=[runtimedir],
                              language = 'c++'),
-                   Extension("zeo.area_volume", 
+                   Extension("cavd.area_volume", 
                              sources=areavol_srcfiles,
                              include_dirs=includedirs,
-                             libraries = ['voro++', 'zeo++'],
+                             libraries = ['Voro++', 'Zeo++'],
                              library_dirs = libdirs,
-                             #extra_compiler_args = ['-fPIC'],
                              extra_compiler_args = ['-fPIC -Wl,-rpath='+runtimedir],
                              runtime_library_dirs=[runtimedir],
                              language = 'c++'),
-                   Extension("zeo.cluster", 
+                   Extension("cavd.cluster", 
                              sources=cluster_srcfiles,
                              include_dirs=includedirs,
-                             libraries = ['voro++', 'zeo++'],
+                             libraries = ['Voro++', 'Zeo++'],
                              library_dirs = libdirs,
-                             #extra_compiler_args = ['-fPIC'],
                              extra_compiler_args = ['-fPIC -Wl,-rpath='+runtimedir],
                              runtime_library_dirs=[runtimedir],
                              language = 'c++'),
-                   Extension("zeo.geometry", 
+                   Extension("cavd.geometry", 
                              sources=geometry_srcfiles,
                              include_dirs=includedirs,
-                             libraries = ['voro++', 'zeo++'],
+                             libraries = ['Voro++', 'Zeo++'],
                              library_dirs = libdirs,
-                             #extra_compiler_args = ['-fPIC'],
                              extra_compiler_args = ['-fPIC -Wl,-rpath='+runtimedir],
                              runtime_library_dirs=[runtimedir],
                              language = 'c++'),
-                   Extension("zeo.cycle", 
+                   Extension("cavd.cycle", 
                              sources=cycle_srcfiles,
                              include_dirs=includedirs,
-                             libraries = ['voro++', 'zeo++'],
+                             libraries = ['Voro++', 'Zeo++'],
                              library_dirs = libdirs,
-                             #extra_compiler_args = ['-fPIC'],
                              extra_compiler_args = ['-fPIC -Wl,-rpath='+runtimedir],
                              runtime_library_dirs=[runtimedir],
                              language = 'c++'),
