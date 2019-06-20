@@ -4,3 +4,4 @@
 /basic_lib/Voro++/src/*.lib
 build
 cavd.egg-info
+cavd/__pycache__
