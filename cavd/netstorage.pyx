@@ -220,7 +220,7 @@ cdef class AtomNetwork:
         atmnet = AtomNetwork()
         cdef char* c_filename = filename
         if not readCIFFile(c_filename, atmnet.thisptr, rad_flag):
-            raise IOError
+            raise IOError("Read .cif error. Please check the .cif file you provided and whether it is included in the Chinese directory.")
         atmnet.rad_flag = rad_flag
         return atmnet
 
@@ -275,7 +275,7 @@ cdef class AtomNetwork:
         cdef char* c_filename = filename
         cdef const char* c_migrant = migrant
         if not readRemoveMigrantCif(c_filename, atmnet.thisptr, c_migrant, rad_flag):
-            raise IOError
+            raise IOError("Read .cif error. Please check the .cif file you provided and whether it is included in the Chinese directory.")
         atmnet.rad_flag = rad_flag
         return atmnet
 

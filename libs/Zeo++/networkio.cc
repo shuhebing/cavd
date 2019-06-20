@@ -2161,7 +2161,6 @@ bool readRemoveMigrantCif(char *filename, ATOM_NETWORK *cell, const char *migran
   else{
     cout << "Failed to open: " << filename << endl;
     ciffile.close();
-    //exit(1);
     return false;
   }
   return true;
