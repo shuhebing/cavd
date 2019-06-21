@@ -93,7 +93,7 @@ def get_point_tag(id, pts_len):
         raise IndexError
 
 # 找晶格位
-def rediscovery_kdTree(migrate,vorosites,stru):
+def rediscovery_kdTree(stru, migrate, vorosites, threshold = 0.5):
     recover_labels = []
     recover_state = {}
     migrate_mindis = {}
@@ -126,13 +126,69 @@ def rediscovery_kdTree(migrate,vorosites,stru):
         pts_len = [len(vorosites[0]), len(vorosites[1]), len(vorosites[2])]
         pt_tag = get_point_tag(min_ids[idx], pts_len)
         migrate_mindis[str(labels[idx])] = (pt_tag, tmp_site1.distance(tmp_site2))
-        if tmp_site1.distance(tmp_site2) <= 0.5:
+        if tmp_site1.distance(tmp_site2) <= threshold:
             recover_state[str(labels[idx])] = pt_tag
             recover_labels.append(labels[idx])
         else:
             recover_state[str(labels[idx])] = None
 
     recover_rate = len(recover_labels) / len(np.unique(labels))
+    return recover_rate, recover_state, migrate_mindis
+
+"""
+    寻找晶格位对应的间隙、瓶颈或面心。
+    判定算法:
+        利用kd tree寻找到指定离子晶格位最近的间隙、瓶颈或面心，
+        并记录下它们之间的距离，若该距离小于间隙、瓶颈或面心的尺寸，
+        则认为当前的晶格位被复原。
+    返回：
+        复原率，按label划分的复原状态，按label划分的晶格位对应的最近邻Voronoi点（间隙、瓶颈或面心的位置与尺寸）以及它们之间距离
+"""
+def rediscovery_byRad_kdTree(stru, migrate, vorosites, vororad, threshold = 0.5):
+    recover_labels = []
+    recover_state = {}
+    migrate_mindis = {}
+    
+    migrate_pos_frac = np.around(np.array([site.frac_coords for site in stru.sites if migrate in site._atom_site_label], ndmin=2), 3)
+    # print(migrate_pos_frac)
+    migrate_pos_frac %= 1.0
+    migrate_pos_frac %= 1.0
+    # print(migrate_pos_frac)
+    migrate_pos = [site.coords for site in stru.sites if migrate in site._atom_site_label]
+    # print(migrate_pos)
+    migrate_labels = [site._atom_site_label for site in stru.sites if migrate in site._atom_site_label]
+
+    points = np.around(np.array(vorosites[0] + vorosites[1] + vorosites[2], ndmin=2), 3)
+    points_rad = np.array(vororad[0] + vororad[1] + vororad[2])
+    # print(points)
+    points %= 1.0
+    points %= 1.0
+    # print(points)
+    # print(len(points))
+    vorositesKdTree = cKDTree(points)
+    min_dis,min_ids = vorositesKdTree.query(migrate_pos_frac,k=1)
+    # print(labels)
+    # print(min_dis)
+
+    pts_len = [len(vorosites[0]), len(vorosites[1]), len(vorosites[2])]
+    for idx in range(len(migrate_labels)):
+        if migrate_labels[idx] in recover_labels:
+            continue
+        tmp_site1 = PeriodicSite("Ar", migrate_pos_frac[idx], stru.lattice)
+        tmp_site2 = PeriodicSite("Ar", points[min_ids[idx]], stru.lattice)
+        
+        pt_tag = get_point_tag(min_ids[idx], pts_len)
+        pt_rad = points_rad[min_ids[idx]]
+        dis_st1_st2 = tmp_site1.distance(tmp_site2)
+        migrate_mindis[str(migrate_labels[idx])] = (pt_tag, pt_rad, dis_st1_st2)
+        
+        if dis_st1_st2 <= threshold or dis_st1_st2 <= pt_rad:
+            recover_state[str(migrate_labels[idx])] = pt_tag
+            recover_labels.append(migrate_labels[idx])
+        else:
+            recover_state[str(migrate_labels[idx])] = None
+
+    recover_rate = len(recover_labels) / len(np.unique(migrate_labels))
     return recover_rate, recover_state, migrate_mindis
 
 # 获取特定结构中
@@ -219,44 +275,52 @@ def AllCom8(filename, standard, migrant=None, rad_flag=True, effective_rad=True,
     
     prefixname = filename.replace(".cif","")
     vornet,edge_centers,fcs,faces = atmnet.perform_voronoi_decomposition(True)
-    writeVaspFile(prefixname+"_origin_nofcs.vasp",atmnet,vornet)
-    spg_vornet,uq_voids = get_equivalent_vornet(vornet, 0.01)
+    # writeVaspFile(prefixname+"_origin_nofcs.vasp",atmnet,vornet)
+    # spg_vornet,uq_voids = get_equivalent_vornet(vornet, 0.01)
 
     symprec = 0.01
     sym_opt_num = len(sitesym)
     voids_num = len(vornet.nodes)
 
-    writeNETFile(prefixname+"_origin_nofcs.net",atmnet,vornet)
+    # writeNETFile(prefixname+"_origin_nofcs.net",atmnet,vornet)
     add_fcs_vornet = vornet.add_facecenters(faces)
-    writeNETFile(prefixname+"_origin_addfcs.net",atmnet,add_fcs_vornet)
-    writeVaspFile(prefixname+"_origin_addfcs.vasp",atmnet,add_fcs_vornet)
+    # writeNETFile(prefixname+"_origin_addfcs.net",atmnet,add_fcs_vornet)
+    # writeVaspFile(prefixname+"_origin_addfcs.vasp",atmnet,add_fcs_vornet)
 
-    spg_vornet,uq_voids = get_equivalent_vornet(add_fcs_vornet, 0.01)
+    # spg_vornet,uq_voids = get_equivalent_vornet(add_fcs_vornet, 0.01)
 
     sym_vornet,voids =  get_labeled_vornet(add_fcs_vornet, sitesym, symprec)
     uni_voids_num = len(voids)
 
     voids_abs = []
+    voids_rad = []
     for void in sym_vornet.nodes:
         voids_abs.append(void[2])
+        voids_rad.append(void[3])
     # print("voids")
     # print(voids_abs)
 
     bottlenecks = []
+    bottlenecs_rad = []
     for bt in sym_vornet.edges:
         bottlenecks.append(bt[2])
+        bottlenecs_rad.append(bt[3])
     # print("bottlenecks")
     # print(bottlenecks)
     
     # print("fcs",fcs)
-    # facecenters = []
-    # for fc in fcs:
-    #     facecenters.append(atmnet.absolute_to_relative(fc[0], fc[1], fc[2]))
+    fcens = []
+    fcens_rad = []
+    for fc in faces:
+        fcens.append(fc["fc_frac"])
+        fcens_rad.append(fc["fc_radii"])
     # print("facecenters")
     # print(facecenters)
 
-    vorosites = [voids_abs, bottlenecks, fcs]
-    recover_rate, recover_state, migrate_mindis = rediscovery_kdTree(migrant,vorosites,stru)
+    vorosites = [voids_abs, bottlenecks, fcens]
+    vororad = [voids_rad, bottlenecs_rad, fcens_rad]
+    # recover_rate, recover_state, migrate_mindis = rediscovery_kdTree(migrant,vorosites,stru)
+    recover_rate, recover_state, migrate_mindis = rediscovery_byRad_kdTree(stru, migrant, vorosites, vororad)
     
     writeNETFile(prefixname+"_origin.net",atmnet,sym_vornet)
     writeVaspFile(prefixname+"_origin.vasp",atmnet,sym_vornet)
@@ -265,7 +329,7 @@ def AllCom8(filename, standard, migrant=None, rad_flag=True, effective_rad=True,
     minRad = standard*migrant_alpha*0.85
     dim_network,connect = ConnStatus(minRad, conn_val)
     writeVaspFile(prefixname+"_"+str(round(minRad,4))+".vasp",atmnet,sym_vornet,minRad,5.0)
-    channels = Channel.findChannels(sym_vornet,atmnet,0,prefixname+"_0.net")
+    # channels = Channel.findChannels(sym_vornet,atmnet,0,prefixname+"_0.net")
     channels = Channel.findChannels(sym_vornet,atmnet,minRad,prefixname+"_"+str(round(minRad,4))+".net")
     
     return symm_sybol,symm_number,symprec,voids_num,sym_opt_num,uni_voids_num,recover_rate,recover_state,migrate_mindis

@@ -546,6 +546,7 @@ cdef class AtomNetwork:
             return c_Ri,c_Rf,c_Rif
     
     def get_ture_facecenter(self, currentId, neighId, fc_coord, face_vertex_coords):
+        print()
         INFINITE = float("Inf")
         possi_nei = []
         true_nei = {}
@@ -580,15 +581,18 @@ cdef class AtomNetwork:
                             # print(neig_center_tmp)
 
                             neig_center_tmp = np.array(neig_center_tmp)
+                            # 面两侧原子形成的向量
                             v_center = neig_center_tmp - cur_center
                             # print("v_center", v_center)
+                            # 面心分别与两侧原子形成的向量
                             v_FC = np.around(cur_center - fc_coord, 6)
                             v_FN = np.around(neig_center_tmp - fc_coord, 6)
-
-                            # print("v_FC", v_FC)
-                            # print("v_FN", v_FN)
-                            
-                            if np.around(v_AB.dot(v_center),4) == np.around(v_AC.dot(v_center),4) == 0 and v_FC.dot(v_FN) <= 0:
+            
+                            # 判断v_FC与v_FN是否位于面的同侧，若direc<0，则不为同侧
+                            direc = v_FC.dot(v_center) * v_FN.dot(v_center) 
+                            print(np.around(v_AB.dot(v_center),4), np.around(v_AC.dot(v_center),4))
+                            print(direc)
+                            if np.around(v_AB.dot(v_center),4) == np.around(v_AC.dot(v_center),4) == 0 and direc <= 0:
                                 possi_nei.append({"poss_coord": neig_center_tmp, "pdv": pdv})
                                 norm_v_center = np.linalg.norm(v_center)
                                 if norm_v_center < min_norm:
@@ -761,7 +765,7 @@ cdef class AtomNetwork:
             # print("mindis", mindis)
             # 为后续将Voronoi Face center加入Voronoi network的便利
             # 设置面心的起始id为vornet.thisptr.nodes.size()
-            fcs.append(rd_fc_frac)
+            # fcs.append(rd_fc_frac)
             # print("fc_frac", fc_frac)
             # print("rd_fc_frac", rd_fc_frac)
             frac_uc = [round(p%1.0, 6) for p in fc_frac]
@@ -794,7 +798,7 @@ cdef class AtomNetwork:
             #basicvcell = BasicVCell()
             #basicvcell.thisptr = &(bvcells[i])
             #bvcelllist.append(bvcells[i])
-        return vornet, edge_centers, fcs, faces
+        return vornet, edge_centers, fcs_uc, faces
 
 cdef class VoronoiNode:
     """
