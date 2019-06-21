@@ -752,6 +752,11 @@ cdef class AtomNetwork:
             # print("face_center id:",fcidx)
             # print("vertices id:",center["face_vertex_ids"])
             true_neighAt2 = self.get_ture_facecenter(currentId, neighId, cntr, vertices_coords)
+            # 当计算得到的true_neighAt2为空时，使用当前胞中的neighId代替。
+            if not true_neighAt2:
+                print("WARRNING: The neighId can't obtained accurately, using the coordinates in [0, 0, 0] insteaded!")
+                true_neighAt2 =  {"coord": self.atoms[neighId][3], "pdv":[0,0,0]}
+            
             # print(true_neighAt2)
             neighAt2 = true_neighAt2["coord"]
             neighAt2_frac = self.absolute_to_relative(neighAt2[0], neighAt2[1], neighAt2[2])
