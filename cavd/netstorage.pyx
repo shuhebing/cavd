@@ -546,7 +546,7 @@ cdef class AtomNetwork:
             return c_Ri,c_Rf,c_Rif
     
     def get_ture_facecenter(self, currentId, neighId, fc_coord, face_vertex_coords):
-        print()
+        # print()
         INFINITE = float("Inf")
         possi_nei = []
         true_nei = {}
@@ -590,8 +590,8 @@ cdef class AtomNetwork:
             
                             # 判断v_FC与v_FN是否位于面的同侧，若direc<0，则不为同侧
                             direc = v_FC.dot(v_center) * v_FN.dot(v_center) 
-                            print(np.around(v_AB.dot(v_center),4), np.around(v_AC.dot(v_center),4))
-                            print(direc)
+                            # print(np.around(v_AB.dot(v_center),4), np.around(v_AC.dot(v_center),4))
+                            # print(direc)
                             if np.around(v_AB.dot(v_center),4) == np.around(v_AC.dot(v_center),4) == 0 and direc <= 0:
                                 possi_nei.append({"poss_coord": neig_center_tmp, "pdv": pdv})
                                 norm_v_center = np.linalg.norm(v_center)

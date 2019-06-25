@@ -727,7 +727,7 @@ def bmd_com(filename, migrant, rad_flag=True, lower=None, upper=10.0, rad_dict=N
     return radii, minRad, conn_val, connect, dim_network, dims, migrate_mindis
 
 #计算指定结构的瓶颈和间隙   
-def BIComputation(filename, migrant=None, rad_flag=True, rad_dict=None, symprec=0.01):
+def BIComputation(filename, migrant=None, rad_flag=True, rad_dict=None):
     with zopen(filename, "rt") as f:
         input_string = f.read()
     parser = CifParser_new.from_string(input_string)
