@@ -103,7 +103,7 @@ def rediscovery_kdTree(stru, migrate, vorosites, threshold = 0.5):
     migrate_pos_frac %= 1.0
     migrate_pos_frac %= 1.0
     # print(migrate_pos_frac)
-    migrate_pos = [site.coords for site in stru.sites if migrate in site._atom_site_label]
+    # migrate_pos = [site.coords for site in stru.sites if migrate in site._atom_site_label]
     # print(migrate_pos)
     labels = [site._atom_site_label for site in stru.sites if migrate in site._atom_site_label]
 
@@ -148,13 +148,12 @@ def rediscovery_byRad_kdTree(stru, migrate, vorosites, vororad, threshold = 0.5)
     recover_labels = []
     recover_state = {}
     migrate_mindis = {}
-    
     migrate_pos_frac = np.around(np.array([site.frac_coords for site in stru.sites if migrate in site._atom_site_label], ndmin=2), 3)
     # print(migrate_pos_frac)
     migrate_pos_frac %= 1.0
     migrate_pos_frac %= 1.0
     # print(migrate_pos_frac)
-    migrate_pos = [site.coords for site in stru.sites if migrate in site._atom_site_label]
+    # migrate_pos = [site.coords for site in stru.sites if migrate in site._atom_site_label]
     # print(migrate_pos)
     migrate_labels = [site._atom_site_label for site in stru.sites if migrate in site._atom_site_label]
 
