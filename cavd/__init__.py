@@ -726,25 +726,36 @@ def bmd_com(filename, migrant, rad_flag=True, lower=None, upper=10.0, rad_dict=N
 
     return radii, minRad, conn_val, connect, dim_network, dims, migrate_mindis
 
-#计算指定结构的瓶颈和间隙
-def BIComputation(filename, migrant=None, rad_flag=True, effective_rad=True, rad_file=None, rad_store_in_vasp=True,  minRad=0.0, maxRad=0.0):
+#计算指定结构的瓶颈和间隙   
+def BIComputation(filename, migrant=None, rad_flag=True, rad_dict=None, symprec=0.01):
+    with zopen(filename, "rt") as f:
+        input_string = f.read()
+    parser = CifParser_new.from_string(input_string)
+    stru = parser.get_structures(primitive=False)[0]
+
+    species = [str(sp).replace("Specie ","") for sp in stru.species]
+    elements = [re.sub('[^a-zA-Z]','',sp) for sp in species]
+    if migrant not in elements:
+        raise ValueError("The input migrant ion not in the input structure! Please check it.")
+    effec_radii,migrant_radius,migrant_alpha,nei_dises,coordination_list = LocalEnvirCom(stru,migrant)
+
     radii = {}
-    if rad_flag and effective_rad:
-        radii,migrant_radius,migrant_alpha, nei_dises = LocalEnvirCom(filename,migrant)
-    if migrant:
-        remove_filename = getRemoveMigrantFilename(filename,migrant)
-    else:
-        remove_filename = filename
-    atmnet = AtomNetwork.read_from_CIF(remove_filename, radii, rad_flag, rad_file)
-    vornet,edge_centers,fcs = atmnet.perform_voronoi_decomposition(False)
-    #delete temp file
-    if migrant:
-        os.remove(remove_filename)
+    if rad_flag:
+        if rad_dict:
+            radii = rad_dict
+        else:
+            radii = effec_radii
+    
+    atmnet = AtomNetwork.read_from_RemoveMigrantCif(filename, migrant, radii, rad_flag)
+    
     prefixname = filename.replace(".cif","")
-    writeBIFile(prefixname+"_origin.bi",atmnet,vornet)
-    writeBIFile(prefixname+"_selected.bi",atmnet,vornet)
-    writeVaspFile(prefixname+"_origin.vasp",atmnet,vornet,rad_store_in_vasp)
-    writeVaspFile(prefixname+"_selected.vasp",atmnet,vornet,rad_store_in_vasp,minRad,maxRad)
+    vornet,edge_centers,fcs,faces = atmnet.perform_voronoi_decomposition(True)
+
+    writeVaspFile(prefixname+"_origin.vasp",atmnet,vornet)
+
+    conn_val = connection_values_list(prefixname+".resex", vornet)
+
+    return conn_val
 
 #计算指定结构最大自由球体半径，最大包含球体半径和沿着最大自由球体路径上的最大包含球体半径：Rf Ri Rif
 def ConnValCom(filename, migrant=None, rad_flag=True, effective_rad=True, rad_file=None):
