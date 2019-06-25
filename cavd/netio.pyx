@@ -1,5 +1,5 @@
 # distutils: language = c++
-# distutils: sources = ../networkio.cc
+# distutils: sources = ../libs/Zeo++/networkio.cc
 
 from netstorage cimport AtomNetwork, VoronoiNetwork
 from netstorage cimport ATOM_NETWORK, VORONOI_NETWORK

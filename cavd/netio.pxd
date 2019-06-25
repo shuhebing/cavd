@@ -1,5 +1,5 @@
 # distutils: language = c++
-# distutils: sources = ../networkio.cc
+# distutils: sources = ../libs/Zeo++/networkio.cc
 
 from cavd.netstorage cimport ATOM_NETWORK, VORONOI_NETWORK
 from libcpp.string cimport string
@@ -60,11 +60,11 @@ cdef extern from '../libs/Zeo++/networkio.h':
     cdef bint writeToNET(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet)
 
 # Added at 20180704
-cdef extern from '../../zeo++/voronoicell.h':
+cdef extern from '../libs/Zeo++/voronoicell.h':
     cdef bint writeZVis(char *filename, vector[VOR_CELL] *cells, ATOM_NETWORK *atmnet, VORONOI_NETWORK *vornet)
 
 # At present  the return value of performVoronoiDecomp is void*
 # Compile it after void* is changed to bool in the original source file
-cdef extern from "../../zeo++/network.h":
+cdef extern from "../libs/Zeo++/network.h":
     cdef bint performVoronoiDecomp(bint, ATOM_NETWORK*, VORONOI_NETWORK*, 
             vector[VOR_CELL]*, bint, vector[BASIC_VCELL]*)
