@@ -36,7 +36,7 @@ setup(
     package_dir={"cavd": "cavd"},
     license = "",
     cmdclass = {'build_ext':build_ext},
-    package_data = {"cavd": ["ionic_radii.json"]},
+    package_data = {"cavd": ["ionic_radii.json", "bvmparam.dat", "bvse.dat", "BVSEParam.dat"]},
     classifiers = [
         "Development Status :: 3 - Alpha",
         "Programming Language :: Cython",
