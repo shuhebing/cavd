@@ -116,7 +116,9 @@ void* performVoronoiDecomp(bool radial, ATOM_NETWORK *cell, VORONOI_NETWORK *vor
       int da, db, dc;
       while(iter != cell->atoms.end()){
         rad_con->put(i,iter->x,iter->y,iter->z,iter->radius, da, db, dc);
-        atomShifts.push_back(da); atomShifts.push_back(db); atomShifts.push_back(dc);
+        atomShifts.push_back(da); 
+        atomShifts.push_back(db); 
+        atomShifts.push_back(dc);
 
         iter++;
         i++;
@@ -149,7 +151,10 @@ void* performVoronoiDecomp(bool radial, ATOM_NETWORK *cell, VORONOI_NETWORK *vor
       int da, db, dc;
       while(iter != cell->atoms.end()){
         no_rad_con->put(i,iter->x,iter->y,iter->z, da, db, dc);
-        atomShifts.push_back(da); atomShifts.push_back(db); atomShifts.push_back(dc);
+        atomShifts.push_back(da); 
+        atomShifts.push_back(db); 
+        atomShifts.push_back(dc);
+        
         iter++;
         i++;
       }

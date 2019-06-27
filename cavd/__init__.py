@@ -148,6 +148,9 @@ def rediscovery_byRad_kdTree(stru, migrate, vorosites, vororad, threshold = 0.5)
     recover_labels = []
     recover_state = {}
     migrate_mindis = {}
+
+    # print(stru)
+    # print("the len of stru.sites:", len(stru.sites))
     migrate_pos_frac = np.around(np.array([site.frac_coords for site in stru.sites if migrate in site._atom_site_label], ndmin=2), 3)
     # print(migrate_pos_frac)
     migrate_pos_frac %= 1.0
@@ -160,8 +163,8 @@ def rediscovery_byRad_kdTree(stru, migrate, vorosites, vororad, threshold = 0.5)
     points = np.around(np.array(vorosites[0] + vorosites[1] + vorosites[2], ndmin=2), 3)
     points_rad = np.array(vororad[0] + vororad[1] + vororad[2])
     # print(points)
-    points %= 1.0
-    points %= 1.0
+    # points %= 1.0
+    # points %= 1.0
     # print(points)
     # print(len(points))
     vorositesKdTree = cKDTree(points)
@@ -310,9 +313,9 @@ def AllCom8(filename, standard, migrant=None, rad_flag=True, effective_rad=True,
     # print("fcs",fcs)
     fcens = []
     fcens_rad = []
-    for fc in faces:
-        fcens.append(fc["fc_frac"])
-        fcens_rad.append(fc["fc_radii"])
+    for fc in fcs:
+        fcens.append(fc[0])
+        fcens_rad.append(fc[1])
     # print("facecenters")
     # print(facecenters)
 

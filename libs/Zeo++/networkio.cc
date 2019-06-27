@@ -1931,7 +1931,7 @@ bool readRemoveMigrantCif(char *filename, ATOM_NETWORK *cell, const char *migran
             // in correct place
             token = split(line," ,'\r\t"); //This is needed to split data
             bool need_to_convert_to_fractional = false;
-            bool line_contain_migrant = false;
+            // bool line_contain_migrant = false;
             while(token.size()>0){
               if (token[0].at(0) =='_' || token[0].compare("loop_")==0 || token[0].at(0) == '#'){
                 goto exception; // unexpected input
@@ -1965,13 +1965,13 @@ bool readRemoveMigrantCif(char *filename, ATOM_NETWORK *cell, const char *migran
                     //printf("SYM DEBUG: pushing back %s %s %s\n", token[0].c_str(), token[1].c_str(), token[2].c_str());
                     break;
                   case 10:
-                    string::size_type idx;
-                    idx=token[i].find(migrant);
-                    //check and find migrant ion
-                    if(idx != string::npos)
-                      line_contain_migrant = true;
-                    else
-                      atom_label.push_back(token[i]);
+                    // string::size_type idx;
+                    // idx=token[i].find(migrant);
+                    // //check and find migrant ion
+                    // if(idx != string::npos)
+                    //   line_contain_migrant = true;
+                    // else
+                    atom_label.push_back(token[i]);
                     break;
                   case 11:
                     atom_type.push_back(token[i]);
@@ -2005,11 +2005,12 @@ bool readRemoveMigrantCif(char *filename, ATOM_NETWORK *cell, const char *migran
                     break;
                 }
                 //jump the line contain migrant atom
-                if(line_contain_migrant){
-                  line_contain_migrant=false;
-                  break;
-                }
-              }  
+                // if(line_contain_migrant){
+                //   line_contain_migrant=false;
+                //   break;
+                // }
+              }
+
               //now we've finished parsing this line, we might need to convert Cartesian to fractional coords
               if(need_to_convert_to_fractional) {
                 Point tempcoor;
@@ -2141,8 +2142,9 @@ bool readRemoveMigrantCif(char *filename, ATOM_NETWORK *cell, const char *migran
     
           //make sure that no duplicate atoms are writen
           int match=1;
-          for (unsigned int k=0;k<cell->atoms.size(); k++){
-                if(cell->calcDistance(cell->atoms[k],tempatom)<thresholdLarge) { match=0;
+          for (unsigned int k=0;k<cell->allAtoms.size(); k++){
+                if(cell->calcDistance(cell->allAtoms[k],tempatom)<thresholdLarge) {
+                  match=0;
 /*
           if (tempatom.a_coord-thresholdLarge < cell->atoms[k].a_coord && cell->atoms[k].a_coord < tempatom.a_coord+thresholdLarge)
           if (tempatom.b_coord-thresholdLarge < cell->atoms[k].b_coord && cell->atoms[k].b_coord < tempatom.b_coord+thresholdLarge )
@@ -2152,11 +2154,16 @@ bool readRemoveMigrantCif(char *filename, ATOM_NETWORK *cell, const char *migran
           }
         }
         if (match == 1){
-          cell->atoms.push_back(tempatom);
+          cell->allAtoms.push_back(tempatom);
+          string::size_type idx = tempatom.type.find(migrant);
+          if(idx == string::npos)
+            cell->atoms.push_back(tempatom);
         }
       }
     }
     cell->numAtoms = cell->atoms.size();
+    cell->numAllAtoms = cell->allAtoms.size();
+
   }
   else{
     cout << "Failed to open: " << filename << endl;
@@ -2298,19 +2305,19 @@ bool writeToVasp(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, do
     //calculate the number of different atoms
     // regex_search(cell->atoms.at(0).type,element_type,element_reg);
     // atomtype.push_back(element_type.str());
-    atomtype.push_back(stripIonName(cell->atoms.at(0).type));
-    for(int i = 0; i < cell->numAtoms; i++){
+    atomtype.push_back(stripIonName(cell->allAtoms.at(0).type));
+    for(int i = 0; i < cell->numAllAtoms; i++){
         // regex_search(cell->atoms.at(i).type,element_type,element_reg);
-        if(stripIonName(cell->atoms.at(i).type).compare(atomtype.at(flag)) == 0){
+        if(stripIonName(cell->allAtoms.at(i).type).compare(atomtype.at(flag)) == 0){
             atomcount ++;
         }
         else{
             atomnum.push_back(atomcount);
             flag++;
-            atomtype.push_back(stripIonName(cell->atoms.at(i).type));
+            atomtype.push_back(stripIonName(cell->allAtoms.at(i).type));
             atomcount = 1;
         }
-        if(i == cell->numAtoms -1){
+        if(i == cell->numAllAtoms -1){
             atomnum.push_back(atomcount);
             atomcount = 0;
         }
@@ -2361,16 +2368,17 @@ bool writeToVasp(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, do
     }
     output << "\n";
 
-        //write the unit cell coordinate information
+    //write the unit cell coordinate information
     output << "Direct" << "\n";
-      for(int i = 0; i<cell->numAtoms; i++){
-          output << "    " << cell->atoms.at(i).a_coord << "    " << cell->atoms.at(i).b_coord << "    " << cell->atoms.at(i).c_coord << "    ";
-          output << "    " << cell->atoms.at(i).radius << "    ";
-          output << cell->atoms.at(i).type << "\n";
+      for(int i = 0; i < cell->numAllAtoms; i++){
+          ATOM tmpAtom = cell->allAtoms.at(i);
+          output << "    " << tmpAtom.a_coord << "    " << tmpAtom.b_coord << "    " << tmpAtom.c_coord << "    ";
+          output << "    " << tmpAtom.radius << "    ";
+          output << tmpAtom.type << "\n";
       }
 
-      //wirte the interstitial informations
-      niter = vornet->nodes.begin();
+    //wirte the interstitial informations
+    niter = vornet->nodes.begin();
     while(niter != vornet->nodes.end()){
         if((minRad == 0.0 && maxRad == 0.0) || (niter->rad_stat_sphere >= minRad && niter->rad_stat_sphere <= maxRad)){
             //cell->initMatrices();
@@ -2438,18 +2446,18 @@ bool writeAtmntToVasp(char *filename, ATOM_NETWORK *cell){
     output << "    " << cell->v_c.x << "    " << cell->v_c.y << "    " << cell->v_c.z << "\n";
 
     //calculate the number of different atoms
-    atomtype.push_back(stripIonName(cell->atoms.at(0).type));
-    for(int i = 0; i<cell->numAtoms; i++){
-        if(stripIonName(cell->atoms.at(i).type).compare(atomtype.at(flag)) == 0){
+    atomtype.push_back(stripIonName(cell->allAtoms.at(0).type));
+    for(int i = 0; i<cell->numAllAtoms; i++){
+        if(stripIonName(cell->allAtoms.at(i).type).compare(atomtype.at(flag)) == 0){
             atomcount ++;
         }
         else{
             atomnum.push_back(atomcount);
             flag++;
-            atomtype.push_back(stripIonName(cell->atoms.at(i).type));
+            atomtype.push_back(stripIonName(cell->allAtoms.at(i).type));
             atomcount = 1;
         }
-        if(i == cell->numAtoms -1){
+        if(i == cell->numAllAtoms -1){
             atomnum.push_back(atomcount);
             atomcount = 0;
         }
@@ -2467,9 +2475,10 @@ bool writeAtmntToVasp(char *filename, ATOM_NETWORK *cell){
 
       //write the unit cell coordinate information
     output << "Direct" << "\n";
-    for(int i = 0; i<cell->numAtoms; i++){
-        output << "    " << cell->atoms.at(i).a_coord << "    " << cell->atoms.at(i).b_coord << "    " << cell->atoms.at(i).c_coord << "    ";
-        output << "    " << cell->atoms.at(i).radius << "    " << cell->atoms.at(i).type << "\n";
+    for(int i = 0; i<cell->numAllAtoms; i++){
+        ATOM tmpAtom = cell->allAtoms.at(i);
+        output << "    " << tmpAtom.a_coord << "    " << tmpAtom.b_coord << "    " << tmpAtom.c_coord << "    ";
+        output << "    " << tmpAtom.radius << "    " << tmpAtom.type << "\n";
     }
   output.close();
   return true;

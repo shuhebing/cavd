@@ -68,10 +68,18 @@ class ATOM_NETWORK {
   XYZ v_a, v_b, v_c;
   double ucVectors [3][3];
   double invUCVectors[3][3];
-  int numAtoms;
+
   // vector with histogram of chemical composition
   int atomic_composition[MAX_ATOMIC_NUMBER];
+
+  // the number of atoms (keep == true)
+  int numAtoms;
   std::vector <ATOM> atoms;
+
+  // the number of all atoms (keep == true && keep == false)
+  int numAllAtoms;
+  std::vector <ATOM> allAtoms;
+
   std::vector <int> IDmapping;
   std::string name;
   MIN_PER_DISTANCE distanceCalculator;
