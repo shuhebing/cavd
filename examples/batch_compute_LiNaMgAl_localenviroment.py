@@ -7,7 +7,7 @@ ions = ["Li", "Na", "Mg", "Al"]
 
 for i in range(len(ions)):
     filenames=[]
-    path = "./" + ions[i] + "/"
+    path = "../../Li_Na_Mg_Al_cifs_order_revise/" + ions[i] + "/"
     if not os.path.exists(path+"results"):
         os.mkdir(path+"results")
         print("create results directory successful!")
