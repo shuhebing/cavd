@@ -330,11 +330,20 @@ def AllCom8(filename, standard, migrant=None, rad_flag=True, effective_rad=True,
     conn_val = connection_values_list(prefixname+".resex", sym_vornet)
     minRad = standard*migrant_alpha*0.85
     dim_network,connect = ConnStatus(minRad, conn_val)
-    writeVaspFile(prefixname+"_"+str(round(minRad,4))+".vasp",atmnet,sym_vornet,minRad,5.0)
-    # channels = Channel.findChannels(sym_vornet,atmnet,0,prefixname+"_0.net")
-    channels = Channel.findChannels(sym_vornet,atmnet,minRad,prefixname+"_"+str(round(minRad,4))+".net")
     
-    return symm_sybol,symm_number,symprec,voids_num,sym_opt_num,uni_voids_num,recover_rate,recover_state,migrate_mindis
+    dims_channel = []
+    if len(channels)==0:
+        dims_channel.append(0)
+    else:
+        for i in channels:
+            dims_channel.append(i["dim"])
+    
+    
+    writeVaspFile(prefixname+"_select.vasp",atmnet,sym_vornet,minRad,5.0)
+    # channels = Channel.findChannels(sym_vornet,atmnet,0,prefixname+"_0.net")
+    channels = Channel.findChannels(sym_vornet,atmnet,minRad,prefixname+"_select.net")
+            
+    return radii,symm_sybol,symm_number,symprec,voids_num,sym_opt_num,uni_voids_num,minRad,migrant_alpha,migrant_radius,conn_val,connect,dim_network,dims_channel,recover_rate,recover_state,migrate_mindis,coordination_list
 
 def AllCom7(filename, standard, migrant=None, rad_flag=True, effective_rad=True, rad_file=None):
     radii = {}

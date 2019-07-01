@@ -36,6 +36,8 @@ for i in range(len(ions)):
             radii,migrant_radius,migrant_alpha,nei_dises,coordination_list = cavd.LocalEnvirCom(stru,ions[i])
             results.write(filename)
             results.write('\t')
+            results.write(str(radii))
+            results.write('\t')
             results.write(str(migrant_radius))
             results.write('\t')
             results.write(str(migrant_alpha))
