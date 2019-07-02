@@ -18,7 +18,7 @@ for i in range(len(ions)):
     com_status = open(output_path+"channel_channel_com_status_" + ions[i] + ".csv","w")
     com_status.write('filename,status\n')
     results = open(output_path+"com_results_" + ions[i] + ".csv","w")
-    results.write('filename\tradii\tsymmSymbolInCif\tsymmNumInCif\tsymprec\tsym_opt_num\tvoids_num\tnei_dises\tRT_a\tRT_b\tRT_c\tR_j\talpha\tmigrate_rad\ta\tb\tc\tdimofNetwork\tdimofChannels\trecover_rate\trecover_state\tmigrate_mindis\tCoordinates\n')
+    results.write('filename\tradii\tsymmSymbolInCif\tsymmNumInCif\tsymprec\tvoids_num\tsym_opt_num\tuni_voids_num\tnei_dises\tRT_a\tRT_b\tRT_c\tR_j\talpha\tmigrate_rad\ta\tb\tc\tdimofNetwork\tdimofChannels\trecover_rate\trecover_state\tmigrate_mindis\tCoordinates\n')
     for j in os.listdir(path):
         if ".cif" in j:
             filenames.append(j)
@@ -27,10 +27,10 @@ for i in range(len(ions)):
         filename = path+filename
         print(filename)
         try:
-            radii,symm_sybol,symm_number,symprec,voids_num,sym_opt_num,uni_voids_num,minRad,migrant_alpha,migrant_radius,conn_val,connect,dim_network,dims_channel,recover_rate,recover_state,migrate_mindis,coordination_list = cavd.AllCom8(filename,std_surf_list[i],ions[i],True,True,None)
+            radii,symm_sybol,symm_number,symprec,voids_num,sym_opt_num,uni_voids_num,minRad,migrant_alpha,nei_dises,migrant_radius,conn_val,connect,dim_network,dims_channel,recover_rate,recover_state,migrate_mindis,coordination_list = cavd.AllCom8(filename,std_surf_list[i],ions[i],True,True,None)
             results.write(filename)
             results.write('\t')
-            results.write(radii)
+            results.write(str(radii))
             results.write('\t')
             results.write(symm_sybol)
             results.write('\t')
@@ -38,9 +38,11 @@ for i in range(len(ions)):
             results.write('\t')
             results.write(str(symprec))
             results.write('\t')
+            results.write(str(voids_num))
+            results.write('\t')
             results.write(str(sym_opt_num))
             results.write('\t')
-            results.write(str(voids_num))
+            results.write(str(uni_voids_num))
             results.write('\t')
             results.write(str(nei_dises))
             results.write('\t')

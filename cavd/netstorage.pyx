@@ -22,6 +22,7 @@ from libcpp.pair cimport pair
 from libcpp.string cimport string
 import numpy as np
 import math
+import warnings
 
 #STUFF='Hi'
 
@@ -757,7 +758,8 @@ cdef class AtomNetwork:
             true_neighAt2 = self.get_ture_facecenter(currentId, neighId, cntr, vertices_coords)
             # 当计算得到的true_neighAt2为空时，使用当前胞中的neighId代替。
             if not true_neighAt2:
-                raise ValueError("WARRNING: The neighId can\'t obtained accurately, using the coordinates in [0, 0, 0] insteaded!")
+                # raise ValueError("WARRNING: The periodic displacement vector of neighbor atom cannot be obtained accurately, using [0, 0, 0] instead!")
+                warnings.warn("WARRNING: The periodic displacement vector of neighbor atom cannot be obtained accurately, using [0, 0, 0] instead!")
                 true_neighAt2 =  {"coord": self.atoms[neighId][3], "pdv":[0,0,0]}
             
             # print(true_neighAt2)
