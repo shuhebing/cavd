@@ -1,5 +1,5 @@
 import cavd
-radii, minRad, conn_val, connect, dim_network, dims_channel, migrate_mindis = cavd.bmd_com("icsd_056116.cif", "Mg", True)
+radii, minRad, conn_val, connect, dim_network, dims_channel, migrate_mindis = cavd.bmd_com("icsd_009004.cif", "Li", True)
 
 print("radii: ",radii)
 print("channel threshold: ", minRad)

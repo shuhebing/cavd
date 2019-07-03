@@ -152,19 +152,31 @@ def rediscovery_byRad_kdTree(stru, migrate, vorosites, vororad, threshold = 0.5)
     # print(stru)
     # print("the len of stru.sites:", len(stru.sites))
     migrate_pos_frac = np.around(np.array([site.frac_coords for site in stru.sites if migrate in site._atom_site_label], ndmin=2), 3)
+    migrate_pos_frac %= 1.0
+    migrate_pos_frac %= 1.0
+    expand_pos_frac = migrate_pos_frac
+    # expand the migrant sites to 3*3*3
+    for a in range(-1, 2):
+        for b in range(-1, 2):
+            for c in range(-1, 2):
+                if a==b==c==0:
+                    continue
+                else:
+                    expand_pos_frac = np.concatenate((expand_pos_frac,migrate_pos_frac+np.array([a,b,c])),axis=0)
+
     # print(migrate_pos_frac)
-    migrate_pos_frac %= 1.0
-    migrate_pos_frac %= 1.0
+    # migrate_pos_frac %= 1.0
+    # migrate_pos_frac %= 1.0
     # print(migrate_pos_frac)
     # migrate_pos = [site.coords for site in stru.sites if migrate in site._atom_site_label]
     # print(migrate_pos)
     migrate_labels = [site._atom_site_label for site in stru.sites if migrate in site._atom_site_label]
-
+    
     points = np.around(np.array(vorosites[0] + vorosites[1] + vorosites[2], ndmin=2), 3)
     points_rad = np.array(vororad[0] + vororad[1] + vororad[2])
-    # print(points)
-    # points %= 1.0
-    # points %= 1.0
+    
+    points %= 1.0
+    points %= 1.0
     # print(points)
     # print(len(points))
     vorositesKdTree = cKDTree(points)
@@ -192,6 +204,7 @@ def rediscovery_byRad_kdTree(stru, migrate, vorosites, vororad, threshold = 0.5)
 
     recover_rate = len(recover_labels) / len(np.unique(migrate_labels))
     return recover_rate, recover_state, migrate_mindis
+
 
 # 获取特定结构中
 # 所有离子的有效半径，
@@ -279,7 +292,7 @@ def AllCom8(filename, standard, migrant=None, rad_flag=True, effective_rad=True,
     vornet,edge_centers,fcs,faces = atmnet.perform_voronoi_decomposition(True)
     # writeVaspFile(prefixname+"_origin_nofcs.vasp",atmnet,vornet)
     # spg_vornet,uq_voids = get_equivalent_vornet(vornet, 0.01)
-
+    print("len fcs: ", len(fcs))
     symprec = 0.01
     sym_opt_num = len(sitesym)
     voids_num = len(vornet.nodes)
@@ -305,7 +318,11 @@ def AllCom8(filename, standard, migrant=None, rad_flag=True, effective_rad=True,
     bottlenecks = []
     bottlenecs_rad = []
     for bt in sym_vornet.edges:
-        bottlenecks.append(bt[2])
+        frac_bt = bt[2]
+        # frac_bt = [round(p%1.0, 6) for p in frac_bt]
+        # frac_bt = [p%1.0 for p in frac_bt]
+        # if frac_bt not in bottlenecks:
+        bottlenecks.append(frac_bt)
         bottlenecs_rad.append(bt[3])
     # print("bottlenecks")
     # print(bottlenecks)

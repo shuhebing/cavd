@@ -775,7 +775,9 @@ cdef class AtomNetwork:
             # print("mindis", mindis)
             # 为后续将Voronoi Face center加入Voronoi network的便利
             # 设置面心的起始id为vornet.thisptr.nodes.size()
-            fcs.append((rd_fc_frac, mindis))
+            tmp = (fc_frac, mindis)
+            if tmp not in fcs:
+                fcs.append((fc_frac, mindis))
             # print("fc_frac", fc_frac)
             # print("rd_fc_frac", rd_fc_frac)
             frac_uc = [round(p%1.0, 6) for p in fc_frac]

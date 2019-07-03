@@ -1,10 +1,10 @@
 #from pymatgen.core.structure import Structure
-from BVAnalysis import BVAnalysis
+from cavd.BVAnalysis import BVAnalysis
 import numpy as np
 from math import sqrt
 import re
-from coor_atoms import VoronoiNN_self
-from coor_atoms import CifParser_new
+from cavd.local_environment import VoronoiNN_self
+from cavd.local_environment import CifParser_new
 from pymatgen.core.structure import Structure
 
 from monty.io import zopen
@@ -67,8 +67,6 @@ def get_GII(filename, migrant):
     GII = sqrt(dM_sum/length)
     return GII
 
-  
-GII = get_GII('icsd_402760.cif', "Li")
-print('GII:',GII)
+ 
 
 
