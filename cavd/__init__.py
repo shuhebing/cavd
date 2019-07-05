@@ -893,7 +893,7 @@ def ChannelCom(filename, probe_rad = None, migrant=None, rad_flag=True, rad_dict
     elements = [re.sub('[^a-zA-Z]','',sp) for sp in species]
     if migrant not in elements:
         raise ValueError("The input migrant ion not in the input structure! Please check it.")
-    effec_radii,migrant_radius,migrant_alpha,nei_dises,coordination_list = LocalEnvirCom(stru,migrant)
+    coordination_list, radii = get_local_envir_fromstru(stru)
     
     radii = {}
     if rad_flag:
