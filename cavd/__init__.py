@@ -759,7 +759,7 @@ def bmd_com(filename, migrant, rad_flag=True, lower=None, upper=10.0, rad_dict=N
     return radii, minRad, conn_val, connect, dim_network, dims, migrate_mindis
 
 #计算指定结构的瓶颈和间隙   
-def BIComputation(filename, migrant, rad_flag=True, lower=None, upper=None, rad_dict=None):
+def BIComputation(filename, migrant, rad_flag=True, lower=0.0, upper=0.0, rad_dict=None):
     with zopen(filename, "rt") as f:
         input_string = f.read()
     parser = CifParser_new.from_string(input_string)
@@ -769,7 +769,7 @@ def BIComputation(filename, migrant, rad_flag=True, lower=None, upper=None, rad_
     elements = [re.sub('[^a-zA-Z]','',sp) for sp in species]
     if migrant not in elements:
         raise ValueError("The input migrant ion not in the input structure! Please check it.")
-    effec_radii = getIonicRadii(filename)
+    coordination_list, radii = get_local_envir_fromstru(stru)
 
     radii = {}
     if rad_flag:
