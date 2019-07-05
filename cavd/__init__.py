@@ -755,7 +755,7 @@ def bmd_com(filename, migrant, rad_flag=True, lower=None, upper=10.0, rad_dict=N
     return radii, minRad, conn_val, connect, dim_network, dims, migrate_mindis
 
 #计算指定结构的瓶颈和间隙   
-def BIComputation(filename, migrant=None, rad_flag=True, rad_dict=None):
+def BIComputation(filename, migrant, rad_flag=True, lower=None, upper=None, rad_dict=None):
     with zopen(filename, "rt") as f:
         input_string = f.read()
     parser = CifParser_new.from_string(input_string)
@@ -765,7 +765,7 @@ def BIComputation(filename, migrant=None, rad_flag=True, rad_dict=None):
     elements = [re.sub('[^a-zA-Z]','',sp) for sp in species]
     if migrant not in elements:
         raise ValueError("The input migrant ion not in the input structure! Please check it.")
-    effec_radii,migrant_radius,migrant_alpha,nei_dises,coordination_list = LocalEnvirCom(stru,migrant)
+    coordination_list, effec_radii = get_local_envir(filename)
 
     radii = {}
     if rad_flag:
@@ -778,12 +778,15 @@ def BIComputation(filename, migrant=None, rad_flag=True, rad_dict=None):
     
     prefixname = filename.replace(".cif","")
     vornet,edge_centers,fcs,faces = atmnet.perform_voronoi_decomposition(True)
-
-    writeVaspFile(prefixname+"_origin.vasp",atmnet,vornet)
-
-    conn_val = connection_values_list(prefixname+".resex", vornet)
-
-    return conn_val
+    add_fcs_vornet = vornet.add_facecenters(faces)
+    writeVaspFile(prefixname+"_origin.vasp",atmnet,add_fcs_vornet)
+    
+    if lower and not upper:
+        writeVaspFile(prefixname+"_selected.vasp",atmnet, add_fcs_vornet, lower, 10.0)
+    if not lower and upper:
+        writeVaspFile(prefixname+"_selected.vasp",atmnet, add_fcs_vornet, 0.0, upper)
+    if lower and upper:
+        writeVaspFile(prefixname+"_selected.vasp",atmnet, add_fcs_vornet, lower, upper)
 
 #计算指定结构最大自由球体半径，最大包含球体半径和沿着最大自由球体路径上的最大包含球体半径：Rf Ri Rif
 def ConnValCom(filename, migrant=None, rad_flag=True, effective_rad=True, rad_file=None):
@@ -802,20 +805,32 @@ def ConnValCom(filename, migrant=None, rad_flag=True, effective_rad=True, rad_fi
     return Ri,Rf,Rif
     
 #计算某个结构的连通数值列表，存放a，b，c方向上的Rf
-def ConnValListCom(filename, migrant=None, rad_flag=True, effective_rad=True, rad_file=None):
+def ConnValListCom(filename, migrant=None, rad_flag=True, rad_dict=None):
+    with zopen(filename, "rt") as f:
+        input_string = f.read()
+    parser = CifParser_new.from_string(input_string)
+    stru = parser.get_structures(primitive=False)[0]
+    
+    species = [str(sp).replace("Specie ","") for sp in stru.species]
+    elements = [re.sub('[^a-zA-Z]','',sp) for sp in species]
+    if migrant not in elements:
+        raise ValueError("The input migrant ion not in the input structure! Please check it.")
+    effec_radii,migrant_radius,migrant_alpha,nei_dises,coordination_list = LocalEnvirCom(stru,migrant)
+    
     radii = {}
-    if rad_flag and effective_rad:
-        radii = LocalEnvirCom(filename)
-    if migrant:
-        remove_filename = getRemoveMigrantFilename(filename,migrant)
-    else:
-        remove_filename = filename
-    atmnet = AtomNetwork.read_from_CIF(remove_filename, radii, rad_flag, rad_file)
-    vornet,edge_centers,fcs = atmnet.perform_voronoi_decomposition(False)
-    if migrant:
-        os.remove(remove_filename)
+    if rad_flag:
+        if rad_dict:
+            radii = rad_dict
+        else:
+            radii = effec_radii
+    
+    atmnet = AtomNetwork.read_from_RemoveMigrantCif(filename, migrant, radii, rad_flag)
+
+    vornet,edge_centers,fcs,faces = atmnet.perform_voronoi_decomposition(True)
+    add_fcs_vornet = vornet.add_facecenters(faces)
+
     prefixname = filename.replace(".cif","")
-    conn = connection_values_list(prefixname+".resex",vornet)
+    conn = connection_values_list(prefixname+".resex",add_fcs_vornet)
     return conn
 
 #判断某个结构的连通性,给定目标离子的半径，判断它是否是1D，2D，3D导通
@@ -864,20 +879,40 @@ def ConnStatus(radius,connlist):
     return dim_net,connects
     
 #计算通道
-def ChannelCom(filename, probe_rad, migrant=None, rad_flag=True, effective_rad=True, rad_file=None):
+def ChannelCom(filename, probe_rad = None, migrant=None, rad_flag=True, rad_file=None):
+    with zopen(filename, "rt") as f:
+        input_string = f.read()
+    parser = CifParser_new.from_string(input_string)
+    stru = parser.get_structures(primitive=False)[0]
+    
+    species = [str(sp).replace("Specie ","") for sp in stru.species]
+    elements = [re.sub('[^a-zA-Z]','',sp) for sp in species]
+    if migrant not in elements:
+        raise ValueError("The input migrant ion not in the input structure! Please check it.")
+    effec_radii,migrant_radius,migrant_alpha,nei_dises,coordination_list = LocalEnvirCom(stru,migrant)
+    
     radii = {}
-    if rad_flag and effective_rad:
-        radii = LocalEnvirCom(filename)
-    if migrant:
-        remove_filename = getRemoveMigrantFilename(filename,migrant)
-    else:
-        remove_filename = filename
-    atmnet = AtomNetwork.read_from_CIF(remove_filename, radii, rad_flag, rad_file)
-    vornet,edge_centers,fcs = atmnet.perform_voronoi_decomposition(False)
-    if migrant:
-        os.remove(remove_filename)
-    prefixname = filename.replace(".cif","")
-    Channel.findChannels(vornet,atmnet,probe_rad,prefixname+".net")
+    if rad_flag:
+        if rad_dict:
+            radii = rad_dict
+        else:
+            radii = effec_radii
+    
+    atmnet = AtomNetwork.read_from_RemoveMigrantCif(filename, migrant, radii, rad_flag)
+
+    vornet,edge_centers,fcs,faces = atmnet.perform_voronoi_decomposition(True)
+    add_fcs_vornet = vornet.add_facecenters(faces)
+    
+    sitesym = parser.get_sym_opt()
+    sym_vornet,voids =  get_labeled_vornet(add_fcs_vornet, sitesym, symprec)
+    writeNETFile(prefixname+"_origin.net",atmnet,sym_vornet)
+
+    channels = Channel.findChannels(sym_vornet, atmnet, probe_rad, prefixname+".net")
+    
+    dims = []
+    for i in channels:
+        dims.append(i["dim"])
+    return dims
 
 
 #计算ASA
