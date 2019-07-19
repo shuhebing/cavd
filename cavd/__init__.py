@@ -888,22 +888,24 @@ def ChannelCom(filename, probe_rad = None, migrant=None, rad_flag=True, rad_dict
         input_string = f.read()
     parser = CifParser_new.from_string(input_string)
     stru = parser.get_structures(primitive=False)[0]
-    
-    species = [str(sp).replace("Specie ","") for sp in stru.species]
-    elements = [re.sub('[^a-zA-Z]','',sp) for sp in species]
-    if migrant not in elements:
-        raise ValueError("The input migrant ion not in the input structure! Please check it.")
-    coordination_list, radii = get_local_envir_fromstru(stru)
-    
+       
     radii = {}
     if rad_flag:
         if rad_dict:
             radii = rad_dict
         else:
+            coordination_list, effec_radii = get_local_envir_fromstru(stru)
             radii = effec_radii
     
-    atmnet = AtomNetwork.read_from_RemoveMigrantCif(filename, migrant, radii, rad_flag)
-
+    species = [str(sp).replace("Specie ","") for sp in stru.species]
+    elements = [re.sub('[^a-zA-Z]','',sp) for sp in species]
+    if migrant:
+        if migrant not in elements:
+            raise ValueError("The input migrant ion not in the input structure! Please check it.")
+        atmnet = AtomNetwork.read_from_RemoveMigrantCif(filename, migrant, radii, rad_flag)
+    else:
+        atmnet = AtomNetwork.read_from_CIF(filename, radii, rad_flag)
+        
     vornet,edge_centers,fcs,faces = atmnet.perform_voronoi_decomposition(True)
     add_fcs_vornet = vornet.add_facecenters(faces)
     

@@ -8,5 +8,5 @@ ModuleNotFoundError: No module named 'cavd.netstorage'
 但先使用“python3 setup_alt.py develop”时，之后执行“python3 setup_alt.py install”安装，则不会出现上述错误。原因何在？
 2.读取中文目录下结构文件会报错。
 
-
+3.get_distinct_channel对于Li22Sn5_mp-1198729_conventional_standard.cif的计算有误
 
