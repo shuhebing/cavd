@@ -739,7 +739,7 @@ def bmd_com(filename, migrant, rad_flag=True, lower=None, upper=10.0, rad_dict=N
         bottlenecks.append(bt[2])
 
     vorosites = [voids_abs, bottlenecks, fcs]
-    recover_rate, recover_state, migrate_mindis = rediscovery_kdTree(migrant,vorosites,stru)
+    recover_rate, recover_state, migrate_mindis = rediscovery_kdTree(stru, migrant, vorosites)
 
     minRad = 0.0
     if lower:
