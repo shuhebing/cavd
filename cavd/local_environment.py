@@ -113,7 +113,7 @@ class CifParser_new(CifParser):
         # store if CIF contains features from non-core CIF dictionaries
         # e.g. magCIF
         self.feature_flags = {}
-        self.errors = []
+        self.warnings = []
         
         def is_magcif():
             """
