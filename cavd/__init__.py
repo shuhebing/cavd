@@ -657,48 +657,65 @@ def AllCom2(filename, probe_rad, num_sample, migrant=None, rad_flag=True, effect
         dims.append(i["dim"])
     return dims,voids
 
-def AllCom(filename, probe_rad, num_sample, migrant=None, rad_flag=True, effective_rad=True, rad_file=None, minRad=0.0, maxRad=0.0):
-    radii = {}
-    if rad_flag and effective_rad:
-        #考虑如何利用migrant_radius与migrant_alpha
-        symm_number, radii,migrant_radius,migrant_alpha, nei_dises,coordination_list = LocalEnvirCom(filename,migrant)
-    if migrant:
-        remove_filename = getRemoveMigrantFilename(filename,migrant)
-    else:
-        remove_filename = filename
-    atmnet = AtomNetwork.read_from_CIF(remove_filename, radii, rad_flag, rad_file)
-    # high_accur_atmnet = atmnet.copy()
-    # high_accuracy_atmnet(high_accur_atmnet, "S50")
-
-    if migrant:
-        os.remove(remove_filename)
-
-    prefixname = filename.replace(".cif","")
-    # vornet,edge_centers,fcs = high_accur_atmnet.perform_voronoi_decomposition(False)
-    vornet,edge_centers,fcs = atmnet.perform_voronoi_decomposition(False)
-
-    sym_vornet,voids = get_Symmetry(atmnet, vornet)
-
-    writeNETFile(prefixname+"_origin.net",atmnet,sym_vornet)
-    writeVaspFile(prefixname+"_origin.vasp",atmnet,sym_vornet)
-
-    probe_rad = migrant_radius*migrant_alpha
-    minRad = migrant_radius*migrant_alpha*0.85
-    maxRad = migrant_radius*migrant_alpha*1.15
-    print(minRad)
-    print(maxRad)
-
-    writeNETFile(prefixname+"_origin.net",atmnet,sym_vornet,minRad,maxRad)
-    writeVaspFile(prefixname+"_selected.vasp",atmnet,sym_vornet,minRad,maxRad)
+def All_com(filename, migrant, rad_flag=True, lower=None, upper=10.0, rad_dict=None, symprec=0.01):
+    with zopen(filename, "rt") as f:
+        input_string = f.read()
+    parser = CifParser_new.from_string(input_string)
+    sitesym = parser.get_sym_opt()
+    stru = parser.get_structures(primitive=False)[0]
     
-    channels = Channel.findChannels(sym_vornet,atmnet,0.60,prefixname+".net")
-    conn = connection_values_list(prefixname+".resex", sym_vornet)
-    oneD,twoD,threeD = ConnStatus(minRad, conn)
+    species = [str(sp).replace("Specie ","") for sp in stru.species]
+    elements = [re.sub('[^a-zA-Z]','',sp) for sp in species]
+    if migrant not in elements:
+        raise ValueError("The input migrant ion not in the input structure! Please check it.")
+    effec_radii,migrant_radius,migrant_alpha,nei_dises,coordination_list = LocalEnvirCom(stru,migrant)
+    
+    radii = {}
+    if rad_flag:
+        if rad_dict:
+            radii = rad_dict
+        else:
+            radii = effec_radii
+    
+    atmnet = AtomNetwork.read_from_RemoveMigrantCif(filename, migrant, radii, rad_flag)
+    
+    prefixname = filename.replace(".cif","")
+    vornet,edge_centers,fcs,faces = atmnet.perform_voronoi_decomposition(True)
+    sym_vornet,voids =  get_labeled_vornet(vornet, sitesym, symprec)
+    writeVaspFile(prefixname+"_origin.vasp",atmnet,sym_vornet)
+    writeNETFile(prefixname+"_origin.net",atmnet,sym_vornet)
+
+    voids_abs = []
+    for void in sym_vornet.nodes:
+        voids_abs.append(void[2])
+
+    bottlenecks = []
+    for bt in sym_vornet.edges:
+        bottlenecks.append(bt[2])
+    
+    fcens = []
+    for fc in fcs:
+        fcens.append(fc[0])
+
+    vorosites = [voids_abs, bottlenecks, fcens]
+    recover_rate, recover_state, migrate_mindis = rediscovery_kdTree(stru, migrant, vorosites)
+
+    minRad = 0.0
+    if lower:
+        minRad = lower
+    else:
+        standard = STD_SURF_DIS[migrant]
+        minRad = standard*migrant_alpha*0.85
+    conn_val = connection_values_list(prefixname+".resex", sym_vornet)
+    dim_network,connect = ConnStatus(minRad, conn_val)
+    writeVaspFile(prefixname+".vasp",atmnet, sym_vornet, minRad, upper)
+    channels = Channel.findChannels(sym_vornet, atmnet, minRad, prefixname+".net")
     
     dims = []
     for i in channels:
         dims.append(i["dim"])
-    return conn,oneD,twoD,threeD,nei_dises,dims,voids,coordination_list
+
+    return radii, minRad, conn_val, connect, dim_network, dims, migrate_mindis
 
 def bmd_com(filename, migrant, rad_flag=True, lower=None, upper=10.0, rad_dict=None, symprec=0.01):
     with zopen(filename, "rt") as f:
