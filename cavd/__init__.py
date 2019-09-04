@@ -780,7 +780,7 @@ def bmd_com(filename, migrant, rad_flag=True, lower=None, upper=10.0, rad_dict=N
     return radii, minRad, conn_val, connect, dim_network, dims, migrate_mindis
     
 # SPSE paper
-def bmd_com(filename, migrant, rad_flag=True, lower=None, upper=10.0, rad_dict=None, symprec=0.01):
+def bmd_spse(filename, migrant, rad_flag=True, lower=None, upper=10.0, rad_dict=None, symprec=0.01):
     with zopen(filename, "rt") as f:
         input_string = f.read()
     parser = CifParser_new.from_string(input_string)
