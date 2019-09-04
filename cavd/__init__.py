@@ -725,6 +725,7 @@ def bmd_com(filename, migrant, rad_flag=True, lower=None, upper=10.0, rad_dict=N
     
     species = [str(sp).replace("Specie ","") for sp in stru.species]
     elements = [re.sub('[^a-zA-Z]','',sp) for sp in species]
+    sitesym = parser.get_sym_opt()
     if migrant not in elements:
         raise ValueError("The input migrant ion not in the input structure! Please check it.")
     effec_radii,migrant_radius,migrant_alpha,nei_dises,coordination_list = LocalEnvirCom(stru,migrant)
@@ -739,28 +740,33 @@ def bmd_com(filename, migrant, rad_flag=True, lower=None, upper=10.0, rad_dict=N
     atmnet = AtomNetwork.read_from_RemoveMigrantCif(filename, migrant, radii, rad_flag)
     
     prefixname = filename.replace(".cif","")
-    vornet,edge_centers,fcs,faces = atmnet.perform_voronoi_decomposition(True)
-    add_fcs_vornet = vornet.add_facecenters(faces)
-
-    sitesym = parser.get_sym_opt()
-    sym_vornet,voids =  get_labeled_vornet(add_fcs_vornet, sitesym, symprec)
+    #for cst paper
+    # vornet,edge_centers,fcs,faces = atmnet.perform_voronoi_decomposition(True)
+    vornet,edge_centers,fcs,faces = atmnet.perform_voronoi_decomposition(False)
+    sym_vornet,voids =  get_labeled_vornet(vornet, sitesym, symprec)
     writeVaspFile(prefixname+"_origin.vasp",atmnet,sym_vornet)
     writeNETFile(prefixname+"_origin.net",atmnet,sym_vornet)
-
-    voids_abs = []
-    for void in sym_vornet.nodes:
-        voids_abs.append(void[2])
-
-    bottlenecks = []
-    for bt in sym_vornet.edges:
-        bottlenecks.append(bt[2])
     
-    fcens = []
-    for fc in fcs:
-        fcens.append(fc[0])
+    # add_fcs_vornet = vornet.add_facecenters(faces)
+    # sym_vornet,voids =  get_labeled_vornet(add_fcs_vornet, sitesym, symprec)
+    
+    # voids_abs = []
+    # for void in sym_vornet.nodes:
+        # voids_abs.append(void[2])
 
-    vorosites = [voids_abs, bottlenecks, fcens]
-    recover_rate, recover_state, migrate_mindis = rediscovery_kdTree(stru, migrant, vorosites)
+    # bottlenecks = []
+    # for bt in sym_vornet.edges:
+        # bottlenecks.append(bt[2])
+    
+    # fcens = []
+    # for fc in fcs:
+        # fcens.append(fc[0])
+
+    # vorosites = [voids_abs, bottlenecks, fcens]
+    # recover_rate, recover_state, migrate_mindis = rediscovery_kdTree(stru, migrant, vorosites)
+    
+    # for cst paper
+    migrate_mindis = None
 
     minRad = 0.0
     if lower:
@@ -778,54 +784,6 @@ def bmd_com(filename, migrant, rad_flag=True, lower=None, upper=10.0, rad_dict=N
         dims.append(i["dim"])
 
     return radii, minRad, conn_val, connect, dim_network, dims, migrate_mindis
-    
-# SPSE paper
-def bmd_spse(filename, migrant, rad_flag=True, lower=None, upper=10.0, rad_dict=None, symprec=0.01):
-    with zopen(filename, "rt") as f:
-        input_string = f.read()
-    parser = CifParser_new.from_string(input_string)
-    stru = parser.get_structures(primitive=False)[0]
-    
-    species = [str(sp).replace("Specie ","") for sp in stru.species]
-    elements = [re.sub('[^a-zA-Z]','',sp) for sp in species]
-    if migrant not in elements:
-        raise ValueError("The input migrant ion not in the input structure! Please check it.")
-    effec_radii,migrant_radius,migrant_alpha,nei_dises,coordination_list = LocalEnvirCom(stru,migrant)
-    
-    radii = {}
-    if rad_flag:
-        if rad_dict:
-            radii = rad_dict
-        else:
-            radii = effec_radii
-    
-    atmnet = AtomNetwork.read_from_RemoveMigrantCif(filename, migrant, radii, rad_flag)
-    
-    prefixname = filename.replace(".cif","")
-    vornet,edge_centers,fcs,faces = atmnet.perform_voronoi_decomposition(False)
-
-    sitesym = parser.get_sym_opt()
-    sym_vornet,voids =  get_labeled_vornet(vornet, sitesym, symprec)
-    writeVaspFile(prefixname+"_origin.vasp",atmnet,sym_vornet)
-    writeNETFile(prefixname+"_origin.net",atmnet,sym_vornet)
-
-    minRad = 0.0
-    if lower:
-        minRad = lower
-    else:
-        standard = STD_SURF_DIS[migrant]
-        minRad = standard*migrant_alpha*0.85
-    conn_val = connection_values_list(prefixname+".resex", sym_vornet)
-    dim_network,connect = ConnStatus(minRad, conn_val)
-    writeVaspFile(prefixname+".vasp",atmnet, sym_vornet, minRad, upper)
-    channels = Channel.findChannels(sym_vornet, atmnet, minRad, prefixname+".net")
-    
-    dims = []
-    for i in channels:
-        dims.append(i["dim"])
-
-    return radii, minRad, conn_val, connect, dim_network, dims
-
 
 #计算指定结构的瓶颈和间隙   
 def BIComputation(filename, migrant, rad_flag=True, lower=0.0, upper=0.0, rad_dict=None):
