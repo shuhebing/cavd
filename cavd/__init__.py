@@ -92,6 +92,14 @@ def get_point_tag(id, pts_len):
     else:
         raise IndexError
 
+def get_point_tag_onlyVertex(id, pts_len):
+    vexs_len = pts_len[0]
+    #点类型，表示间隙
+    if id < vexs_len:
+        return "It" + str(id)
+    else:
+        raise IndexError
+
 # 找晶格位
 def rediscovery_kdTree(stru, migrate, vorosites, threshold = 0.5):
     recover_labels = []
@@ -205,7 +213,66 @@ def rediscovery_byRad_kdTree(stru, migrate, vorosites, vororad, threshold = 0.5)
     recover_rate = len(recover_labels) / len(np.unique(migrate_labels))
     return recover_rate, recover_state, migrate_mindis
 
+def rediscovery_byRad_kdTree_onlyVertex(stru, migrate, vorosites, vororad, threshold = 0.5):
+    recover_labels = []
+    recover_state = {}
+    migrate_mindis = {}
 
+    # print(stru)
+    # print("the len of stru.sites:", len(stru.sites))
+    migrate_pos_frac = np.around(np.array([site.frac_coords for site in stru.sites if migrate in site._atom_site_label], ndmin=2), 3)
+    migrate_pos_frac %= 1.0
+    migrate_pos_frac %= 1.0
+    expand_pos_frac = migrate_pos_frac
+    # expand the migrant sites to 3*3*3
+    for a in range(-1, 2):
+        for b in range(-1, 2):
+            for c in range(-1, 2):
+                if a==b==c==0:
+                    continue
+                else:
+                    expand_pos_frac = np.concatenate((expand_pos_frac,migrate_pos_frac+np.array([a,b,c])),axis=0)
+
+    # print(migrate_pos_frac)
+    # migrate_pos_frac %= 1.0
+    # migrate_pos_frac %= 1.0
+    # print(migrate_pos_frac)
+    # migrate_pos = [site.coords for site in stru.sites if migrate in site._atom_site_label]
+    # print(migrate_pos)
+    migrate_labels = [site._atom_site_label for site in stru.sites if migrate in site._atom_site_label]
+    
+    points = np.around(np.array(vorosites[0], ndmin=2), 3)
+    points_rad = np.array(vororad[0])
+    
+    points %= 1.0
+    points %= 1.0
+    # print(points)
+    # print(len(points))
+    vorositesKdTree = cKDTree(points)
+    min_dis,min_ids = vorositesKdTree.query(migrate_pos_frac,k=1)
+    # print(labels)
+    # print(min_dis)
+
+    pts_len = [len(vorosites[0])]
+    for idx in range(len(migrate_labels)):
+        if migrate_labels[idx] in recover_labels:
+            continue
+        tmp_site1 = PeriodicSite("Ar", migrate_pos_frac[idx], stru.lattice)
+        tmp_site2 = PeriodicSite("Ar", points[min_ids[idx]], stru.lattice)
+        
+        pt_tag = get_point_tag_onlyVertex(min_ids[idx], pts_len)
+        pt_rad = points_rad[min_ids[idx]]
+        dis_st1_st2 = tmp_site1.distance(tmp_site2)
+        migrate_mindis[str(migrate_labels[idx])] = (pt_tag, pt_rad, dis_st1_st2)
+        
+        if dis_st1_st2 <= threshold or dis_st1_st2 <= pt_rad:
+            recover_state[str(migrate_labels[idx])] = pt_tag
+            recover_labels.append(migrate_labels[idx])
+        else:
+            recover_state[str(migrate_labels[idx])] = None
+
+    recover_rate = len(recover_labels) / len(np.unique(migrate_labels))
+    return recover_rate, recover_state, migrate_mindis
 # 获取特定结构中
 # 所有离子的有效半径，
 # 迁移离子到最邻近离子表面距离与迁移离子半径的比值alpha，
@@ -276,6 +343,68 @@ def getIonicRadii(filename):
     coordination_list, radii = get_local_envir_fromstru(stru)
     print(radii)
     return radii
+
+
+def AllCom9(filename, standard, migrant=None, rad_flag=True, effective_rad=True, rad_file=None):
+    radii = {}
+    with zopen(filename, "rt") as f:
+        input_string = f.read()
+    parser = CifParser_new.from_string(input_string)
+    stru = parser.get_structures(primitive=False)[0]
+
+    # print(stru)
+    #获取空间群号与符号
+    symm_number,symm_sybol = parser.get_symme()
+    #获取icsd cif文件中的对称操作
+    sitesym = parser.get_sym_opt()
+    radii,migrant_radius,migrant_alpha,nei_dises,coordination_list = LocalEnvirCom(stru,migrant)
+    atmnet = AtomNetwork.read_from_RemoveMigrantCif(filename, migrant, radii, True, None)
+    
+    prefixname = filename.replace(".cif","")
+    vornet,edge_centers,fcs,faces = atmnet.perform_voronoi_decomposition(False)
+
+    symprec = 0.01
+    sym_opt_num = len(sitesym)
+    voids_num = len(vornet.nodes)
+
+    sym_vornet,voids =  get_labeled_vornet(vornet, sitesym, symprec)
+    uni_voids_num = len(voids)
+
+    voids_abs = []
+    voids_rad = []
+    for void in sym_vornet.nodes:
+        voids_abs.append(void[2])
+        voids_rad.append(void[3])
+    # print("voids")
+    # print(voids_abs)
+
+   
+
+    vorosites = [voids_abs]
+    vororad = [voids_rad]
+    recover_rate, recover_state, migrate_mindis = rediscovery_byRad_kdTree_onlyVertex(stru, migrant, vorosites, vororad)
+    
+    writeNETFile(prefixname+"_origin.net",atmnet,sym_vornet)
+    writeVaspFile(prefixname+"_origin.vasp",atmnet,sym_vornet)
+
+    conn_val = connection_values_list(prefixname+".resex", sym_vornet)
+    minRad = standard*migrant_alpha*0.85
+    dim_network,connect = ConnStatus(minRad, conn_val)
+    
+    channels = Channel.findChannels(sym_vornet,atmnet,minRad,prefixname+"_select.net")
+    dims_channel = []
+    if len(channels)==0:
+        dims_channel.append(0)
+    else:
+        for i in channels:
+            dims_channel.append(i["dim"])
+    
+    
+    writeVaspFile(prefixname+"_select.vasp",atmnet,sym_vornet,minRad,5.0)
+    # channels = Channel.findChannels(sym_vornet,atmnet,0,prefixname+"_0.net")
+            
+    return radii,symm_sybol,symm_number,symprec,voids_num,sym_opt_num,uni_voids_num,minRad,migrant_alpha,nei_dises,migrant_radius,conn_val,connect,dim_network,dims_channel,recover_rate,recover_state,migrate_mindis,coordination_list
+
 
 def AllCom8(filename, standard, migrant=None, rad_flag=True, effective_rad=True, rad_file=None):
     radii = {}
