@@ -265,7 +265,8 @@ def rediscovery_byRad_kdTree_onlyVertex(stru, migrate, vorosites, vororad, thres
         dis_st1_st2 = tmp_site1.distance(tmp_site2)
         migrate_mindis[str(migrate_labels[idx])] = (pt_tag, pt_rad, dis_st1_st2)
         
-        if dis_st1_st2 <= threshold or dis_st1_st2 <= pt_rad:
+        # if dis_st1_st2 <= threshold or dis_st1_st2 <= pt_rad:
+        if dis_st1_st2 <= threshold:
             recover_state[str(migrate_labels[idx])] = pt_tag
             recover_labels.append(migrate_labels[idx])
         else:
@@ -358,7 +359,7 @@ def AllCom9(filename, standard, migrant=None, rad_flag=True, effective_rad=True,
     #获取icsd cif文件中的对称操作
     sitesym = parser.get_sym_opt()
     radii,migrant_radius,migrant_alpha,nei_dises,coordination_list = LocalEnvirCom(stru,migrant)
-    atmnet = AtomNetwork.read_from_RemoveMigrantCif(filename, migrant, radii, True, None)
+    atmnet = AtomNetwork.read_from_RemoveMigrantCif(filename, migrant, radii, False, None)
     
     prefixname = filename.replace(".cif","")
     vornet,edge_centers,fcs,faces = atmnet.perform_voronoi_decomposition(False)
