@@ -874,6 +874,33 @@ const VORONOI_NETWORK VORONOI_NETWORK::prune(const double& minRadius)
     return VORONOI_NETWORK(v_a, v_b, v_c, newNodes, newEdges);
 }
 
+//Added at 20190917
+const VORONOI_NETWORK VORONOI_NETWORK::prune2(const double& minRadius, const double& maxRadius)
+{
+    vector<VOR_EDGE> newEdges;
+    // Add edges whose radius is greater than the input minimum to a list
+    for(vector<VOR_EDGE>::iterator edgeIter = edges.begin();
+        edgeIter != edges.end(); edgeIter++) {
+        if((edgeIter->rad_moving_sphere > minRadius) && (edgeIter->rad_moving_sphere < maxRadius)){
+            //VOR_EDGE newEdge = *edgeIter;
+            // further check: keep edges only if they connect accessible nodes
+            if((nodes[edgeIter->from].rad_stat_sphere > minRadius) && (nodes[edgeIter->from].rad_stat_sphere < maxRadius) && (nodes[edgeIter->to].rad_stat_sphere > minRadius) && (nodes[edgeIter->to].rad_stat_sphere < maxRadius))
+                newEdges.push_back(*edgeIter);
+        }
+    };
+    
+    vector<VOR_NODE> newNodes = nodes;
+    for(unsigned int i = 0; i < nodes.size(); i++)
+    {
+        if(nodes[i].rad_stat_sphere > minRadius && nodes[i].rad_stat_sphere < maxRadius) 
+            newNodes[i].active = true; 
+        else
+            newNodes[i].active = false;
+    };
+    
+    return VORONOI_NETWORK(v_a, v_b, v_c, newNodes, newEdges);
+}
+
 
 /** Stores a copy of the original VORNOI_NETWORK into the other provided
  VORONOI_NETWORK but removes the edges that do not allow a sphere

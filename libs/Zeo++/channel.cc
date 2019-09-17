@@ -342,6 +342,22 @@ void PORE::findChannelsAndPockets(VORONOI_NETWORK *vornet, double minRadius,
     findChannelsAndPockets(&dnet, infoStorage, pores);
 }
 
+// added at 20190917
+void PORE::findChannelsAndPockets2(VORONOI_NETWORK *vornet, double minRadius, double maxRadius,
+                                  vector<bool> *infoStorage, vector<PORE> *pores)
+{
+    //Remove edges that don't allow the provided particle diameter to
+    //pass freely
+    //VORONOI_NETWORK newNetwork;
+    //pruneVoronoiNetwork(vornet, &newNetwork, minRadius);
+    VORONOI_NETWORK newNetwork = vornet->prune2(minRadius, maxRadius);
+
+    //Build graph data structure
+    DIJKSTRA_NETWORK dnet;
+    DIJKSTRA_NETWORK::buildDijkstraNetwork(&newNetwork, &dnet);
+    findChannelsAndPockets(&dnet, infoStorage, pores);
+}
+
 
 /** Calculates center of mass and internal void radii (distance between the center of mass and its nearest atom)
  *  This function attempts pore reconstruction in cases where pores cross the cell boundaries. 
@@ -1042,6 +1058,19 @@ void CHANNEL::findChannels(VORONOI_NETWORK *vornet, double minRadius,
     pores.clear();
 }
 
+// Added at 20190917
+void CHANNEL::findChannels2(VORONOI_NETWORK *vornet, double minRadius, double maxRadius,
+                           vector<bool> *infoStorage, vector<CHANNEL> *channels)
+{
+    vector <PORE> pores;
+    findChannelsAndPockets2(vornet, minRadius, maxRadius, infoStorage, &pores);
+    for(unsigned int i = 0; i<pores.size(); i++)
+    {
+        if(pores[i].dimensionality>0) channels->push_back(CHANNEL(&pores[i]));
+    };
+    pores.clear();
+}
+
 //Added 20180705
 bool CHANNEL::findChannels_new(VORONOI_NETWORK *vornet, double minRadius, vector<CHANNEL> *channels)
 {
@@ -1064,6 +1093,27 @@ bool CHANNEL::findChannels_new(VORONOI_NETWORK *vornet, double minRadius, vector
 	return true;
 }
 
+// Added at 20190917
+bool CHANNEL::findChannels_new2(VORONOI_NETWORK *vornet, double minRadius, double maxRadius, vector<CHANNEL> *channels)
+{
+	vector<bool> infoStorage;
+	try{
+		findChannels2(vornet,minRadius,maxRadius,&infoStorage,channels);
+	}
+	catch (ZeoVectorException& e1){
+		cout << e1.what() << endl;
+		return false;
+	}
+	catch (IllogicalResultException& e2){
+		cout << e2.what() << endl;
+		return false;
+	}
+	catch (AccessibilityException& e3){
+		cout << e3.what() << endl;
+		return false;
+	}
+	return true;
+}
 
 
 

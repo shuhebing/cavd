@@ -73,6 +73,9 @@ public:
      *  This function does the same as the other findChannelsAndPockets but operates on VORONOI_NETWORK,
      *  the one provided as argument */
     static void findChannelsAndPockets(VORONOI_NETWORK *, double, std::vector<bool> *, std::vector<PORE> *);
+    
+    // Added at 20190917
+    static void findChannelsAndPockets2(VORONOI_NETWORK *, double, double, std::vector<bool> *, std::vector<PORE> *);
 
     /** Prints all pore information (nodes, their positions and radii) to a file 
      *  Atom_network is needed to convert xyz coordinates to abc **/
@@ -161,6 +164,10 @@ public:
 
     //Added at 20180705
     static bool findChannels_new(VORONOI_NETWORK *vornet, double minRadius, std::vector<CHANNEL> *channels);
+    
+    // Added at 20190913
+    static bool findChannels_new2(VORONOI_NETWORK *vornet, double minRadius, double maxRadius, std::vector<CHANNEL> *channels);
+    static void findChannels2(VORONOI_NETWORK *, double, double, std::vector<bool> *, std::vector<CHANNEL> *);
 
     //Added at 20180823
     // Write CHANNEL information to network file.

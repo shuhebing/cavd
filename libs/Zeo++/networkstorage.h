@@ -366,6 +366,9 @@ public:
      *  but removes the edges that do not allow a sphere
      *  with the provided radius to pass. */
     const VORONOI_NETWORK prune(const double& minRadius);
+    
+    // added at 20190917
+    const VORONOI_NETWORK prune2(const double& minRadius, const double& maxRadius);
 
     /** Stores a copy of the original VORNOI_NETWORK into the other provided
      *  VORONOI_NETWORK but removes the edges that are connected to specified nodes

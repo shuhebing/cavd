@@ -25,6 +25,7 @@ cdef extern from "../libs/Zeo++/channel.h":
 cdef extern from "../libs/Zeo++/channel.h" namespace "CHANNEL":
     #cdef void findChannels(DIJKSTRA_NETWORK*, vector[bint] *, vector[CHANNEL] *)
     cdef bint findChannels_new(VORONOI_NETWORK*, double, vector[CHANNEL] *)
+    cdef bint findChannels_new2(VORONOI_NETWORK*, double, double, vector[CHANNEL] *)
 
 cdef extern from "../libs/Zeo++/channel.h":
     cdef bint c_writeToVMD "writeToVMD_new"(vector[CHANNEL] channels, char *filename)
