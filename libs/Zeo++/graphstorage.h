@@ -43,8 +43,8 @@ public:
     
     /* Create a CONN using the provided parameters */
     CONN(int myFrom, int myTo, double len, double maxR, DELTA_POS deltaP);
-	//Add a new construct function for Cython wrapper
-	CONN();
+    //Add a new construct function for Cython wrapper
+    CONN();
     CONN(int myFrom, int myTo, double len, double maxR, int myX = 0, int myY = 0, int myZ = 0);
 
     

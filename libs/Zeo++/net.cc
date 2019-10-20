@@ -514,9 +514,9 @@ bool try_unit_cell_vector_assign(int a, int b, int c, XYZ xyz, vector<int> *loop
     if(!this_uc_assigned) {
       //if not assigned already, can we assign it based on this loop alone?
       if(
-(uc==0 && a!=0 && b==0 && c==0) ||
-(uc==1 && a==0 && b!=0 && c==0) ||
-(uc==2 && a==0 && b==0 && c!=0)
+        (uc==0 && a!=0 && b==0 && c==0) ||
+        (uc==1 && a==0 && b!=0 && c==0) ||
+        (uc==2 && a==0 && b==0 && c!=0)
       ) {
         XYZ vec(0,0,0);
         if(uc==0) vec=xyz.scale(1.0/a); else if(uc==1) vec=xyz.scale(1.0/b); else vec=xyz.scale(1.0/c);
@@ -533,23 +533,23 @@ if(verbose) printf("DEBUG: we can assign unit cell vector %c as %.3f %.3f %.3f\n
           int other_a = loops_a->at(i);
           int other_b = loops_b->at(i);
           int other_c = loops_c->at(i);
-if(verbose) printf("DEBUG: comparing to previous loop (%d %d %d) %.3f %.3f %.3f to try and isolate vector %c\n", other_a, other_b, other_c, other_xyz.x, other_xyz.y, other_xyz.z, 'a'+uc);
+          if(verbose) printf("DEBUG: comparing to previous loop (%d %d %d) %.3f %.3f %.3f to try and isolate vector %c\n", other_a, other_b, other_c, other_xyz.x, other_xyz.y, other_xyz.z, 'a'+uc);
           //can we isolate this unit cell vector with a linear combination of these two loops?
           //bool can_isolate = true;
           if(
-(uc!=0 && a!=0 && other_a==0) ||
-(uc!=1 && b!=0 && other_b==0) ||
-(uc!=2 && c!=0 && other_c==0)
+            (uc!=0 && a!=0 && other_a==0) ||
+            (uc!=1 && b!=0 && other_b==0) ||
+            (uc!=2 && c!=0 && other_c==0)
           ) {
-if(verbose) printf("DEBUG: cannot isolate vector %c because some other unit cell vector cannot be reduced to zero\n", 'a'+uc);
+          if(verbose) printf("DEBUG: cannot isolate vector %c because some other unit cell vector cannot be reduced to zero\n", 'a'+uc);
           } else if(
-(uc==0 && a==0 && other_a==0) ||
-(uc==1 && b==0 && other_b==0) ||
-(uc==2 && c==0 && other_c==0)
+            (uc==0 && a==0 && other_a==0) ||
+            (uc==1 && b==0 && other_b==0) ||
+            (uc==2 && c==0 && other_c==0)
           ) {
-if(verbose) printf("DEBUG: cannot isolate vector %c because both coefficients of this vector are zero\n", 'a'+uc);
+            if(verbose) printf("DEBUG: cannot isolate vector %c because both coefficients of this vector are zero\n", 'a'+uc);
           } else { //there is another way it might not be possible - if the ratios of the two other unit cell vector coefficients are not equal
-if(verbose) printf("DEBUG: may be able to isolate vector %c\n", 'a'+uc);
+            if(verbose) printf("DEBUG: may be able to isolate vector %c\n", 'a'+uc);
             vector<double> amounts_of_other_loop_to_subtract;
             vector<double> amount_of_other_loop_that_would_reduce_uc_to_zero;
             if(!(a==0 && other_a==0)) {double r = ((double)(a))/other_a; if(uc!=0) amounts_of_other_loop_to_subtract.push_back(r); else amount_of_other_loop_that_would_reduce_uc_to_zero.push_back(r);}
@@ -567,7 +567,7 @@ if(verbose) printf("DEBUG: may be able to isolate vector %c\n", 'a'+uc);
               if(num_amounts==2) {
                 if(fabs(amounts_of_other_loop_to_subtract.at(0)-amounts_of_other_loop_to_subtract.at(1))>DISTANCE_TOLERANCE) {
                   can_isolate = false;
-if(verbose) printf("DEBUG: cannot isolate vector %c because no linear combination will isolate this vector\n", 'a'+uc);
+              if(verbose) printf("DEBUG: cannot isolate vector %c because no linear combination will isolate this vector\n", 'a'+uc);
                 }
               }
               if(can_isolate) { //we should be able to isolate it - but are we reducing to zero?
@@ -576,15 +576,15 @@ if(verbose) printf("DEBUG: cannot isolate vector %c because no linear combinatio
                 if(amount_of_other_loop_that_would_reduce_uc_to_zero.size()!=0) {
                   if(fabs(ratio-amount_of_other_loop_that_would_reduce_uc_to_zero.at(0))<DISTANCE_TOLERANCE) {
                     can_isolate_nonzero = false;
-if(verbose) printf("DEBUG: cannot isolate vector %c because this linear combination reveals that the two vectors are multiples of each other\n", 'a'+uc);
+              if(verbose) printf("DEBUG: cannot isolate vector %c because this linear combination reveals that the two vectors are multiples of each other\n", 'a'+uc);
                   }
                 }
                 if(can_isolate_nonzero) {
                   XYZ pre_scale_vector = xyz-(other_xyz.scale(ratio));
-if(verbose) printf("DEBUG: this loop %.3f %.3f %.3f, minus %.3f times other loop %.3f %.3f %.3f, gives isolated %c loop %.3f %.3f %.3f\n", xyz.x, xyz.y, xyz.z, ratio, other_xyz.x, other_xyz.y, other_xyz.z, 'a'+uc, pre_scale_vector.x, pre_scale_vector.y, pre_scale_vector.z);
+                if(verbose) printf("DEBUG: this loop %.3f %.3f %.3f, minus %.3f times other loop %.3f %.3f %.3f, gives isolated %c loop %.3f %.3f %.3f\n", xyz.x, xyz.y, xyz.z, ratio, other_xyz.x, other_xyz.y, other_xyz.z, 'a'+uc, pre_scale_vector.x, pre_scale_vector.y, pre_scale_vector.z);
                   XYZ vec(0,0,0);
                   if(uc==0) vec=pre_scale_vector.scale(1.0/(a-(other_a*ratio))); else if(uc==1) vec=pre_scale_vector.scale(1.0/(b-(other_b*ratio))); else vec=pre_scale_vector.scale(1.0/(c-(other_c*ratio)));
-if(verbose) printf("DEBUG: we can assign unit cell vector %c as %.3f %.3f %.3f based on a linear combination with a previous loop\n", 'a'+uc, vec.x, vec.y, vec.z);
+                  if(verbose) printf("DEBUG: we can assign unit cell vector %c as %.3f %.3f %.3f based on a linear combination with a previous loop\n", 'a'+uc, vec.x, vec.y, vec.z);
                   unit_cell_vector_IDs->push_back(uc);
                   unit_cell_vectors->push_back(vec);
                   this_uc_assigned = true;
@@ -593,7 +593,7 @@ if(verbose) printf("DEBUG: we can assign unit cell vector %c as %.3f %.3f %.3f b
                   int new_a=0, new_b=0, new_c=0;
                   if(uc==0) new_a=1; else if(uc==1) new_b=1; else new_c=1;
                   if(loop_is_unique(new_a, new_b, new_c, loops_a, loops_b, loops_c)) {
-if(verbose) printf("DEBUG: pushing the newly defined, unique loop\n");
+                  if(verbose) printf("DEBUG: pushing the newly defined, unique loop\n");
                     loops_a->push_back(new_a);
                     loops_b->push_back(new_b);
                     loops_c->push_back(new_c);

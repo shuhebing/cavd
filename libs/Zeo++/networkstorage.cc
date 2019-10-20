@@ -1,3 +1,8 @@
+/* 
+ * Updated by Ye Anjiang September 17, 2019
+ *
+ */
+
 /* Stores information about the basic data types that constitute a unit cell,
  * such as atoms (ATOM) and networks of atoms (ATOM_NETWORK). Also stores
  * information about the underlying Voronoi network constituents such as nodes
@@ -634,7 +639,7 @@ VOR_EDGE::VOR_EDGE(int myFrom, int myTo, double rad, double neck_x, double neck_
 /// Copy constructor
 VOR_EDGE::VOR_EDGE(const VOR_EDGE& orig):
     from(orig.from), to(orig.to), rad_moving_sphere(orig.rad_moving_sphere),
-	  bottleneck_x(orig.bottleneck_x), bottleneck_y(orig.bottleneck_y), bottleneck_z(orig.bottleneck_z),
+      bottleneck_x(orig.bottleneck_x), bottleneck_y(orig.bottleneck_y), bottleneck_z(orig.bottleneck_z),
     bottleneck_a(orig.bottleneck_a), bottleneck_b(orig.bottleneck_b), bottleneck_c(orig.bottleneck_c),
     delta_uc_x(orig.delta_uc_x), delta_uc_y(orig.delta_uc_y),
     delta_uc_z(orig.delta_uc_z),length(orig.length){}
@@ -1977,9 +1982,9 @@ vector<MOLECULE> get_multiple_best_RMSD_fits(MOLECULE mol, ATOM_NETWORK *cell, i
   vector<MOLECULE> vector_of_centred_molecules;
   for(int p=0; p<num_perm; p++) { //try each permutation!
     vector<int> perm = permutations.at(p);
-	//double fixed[num_fit_sites][3], moving[num_fit_sites][3];
-	double(*fixed)[3] = new double[num_fit_sites][3];
-	double(*moving)[3] = new double[num_fit_sites][3];
+    //double fixed[num_fit_sites][3], moving[num_fit_sites][3];
+    double(*fixed)[3] = new double[num_fit_sites][3];
+    double(*moving)[3] = new double[num_fit_sites][3];
     XYZ fixed_CoM = origin, moving_CoM = origin;
     for(int i=0; i<num_fit_sites; i++) {
       XYZ fix(0,0,0);
@@ -2020,8 +2025,8 @@ vector<MOLECULE> get_multiple_best_RMSD_fits(MOLECULE mol, ATOM_NETWORK *cell, i
     for(int i=0; i<3; i++) for(int j=0; j<3; j++) rotation_matrix[i][j] = 0; //dummy values - filled in by the rmsd method
     double rmsd = 0; //dummy value - filled in by the rmsd method
     calculate_rotation_rmsd(fixed, moving, num_fit_sites, mov_com, mov_to_ref, rotation_matrix, &rmsd); //calling rmsd code - writes the corresponding rotation matrix
-	delete[] fixed;
-	delete[] moving;
+    delete[] fixed;
+    delete[] moving;
 
     //3b) some permutations are not possible, and produce NAN
     bool valid = true;
@@ -3027,7 +3032,7 @@ fprintf(cif, "_symmetry_space_group_name_H-M\t\tP-1\n");
       }
     }
     else{
-    	fprintf(cif, "Orthorhombic\n\n");
+        fprintf(cif, "Orthorhombic\n\n");
     }
   }
   else if(cell->alpha == cell->beta || cell->beta == cell->gamma || cell->alpha == cell->gamma){
@@ -3173,7 +3178,7 @@ void read_xyz(FILE *input, MOLECULE *mol, const char *filename) {
   int num_atoms = 0;
   if(fgets(ch1, length, input)!=NULL) {
     string str = string(ch1);
-	delete[] ch1;
+    delete[] ch1;
 //    printf("DEBUG: read char array as \"%s\", parsed to string as \"%s\"\n", ch, str.c_str());
     int pos=0;
     char c = str[pos];
@@ -3241,7 +3246,7 @@ void read_xyz(FILE *input, MOLECULE *mol, const char *filename) {
       }
       mol->atoms_type.push_back(element);
     }
-	delete[] e;
+    delete[] e;
   }
 }
 

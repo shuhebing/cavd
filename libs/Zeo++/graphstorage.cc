@@ -20,19 +20,19 @@ const bool DELTA_POS::equals(DELTA_POS other) const
 }
 const DELTA_POS DELTA_POS::operator*(const int& factor) const
 {
-	return DELTA_POS(x*factor, y*factor, z*factor);
+    return DELTA_POS(x*factor, y*factor, z*factor);
 }
 const DELTA_POS DELTA_POS::operator*(const DELTA_POS& other) const
 {
-	return DELTA_POS(x*other.x, y*other.y, z*other.z);
+    return DELTA_POS(x*other.x, y*other.y, z*other.z);
 }
 const DELTA_POS DELTA_POS::operator+(const DELTA_POS& other) const
 {
-	return DELTA_POS(x+other.x, y+other.y, z+other.z);
+    return DELTA_POS(x+other.x, y+other.y, z+other.z);
 }
 const DELTA_POS DELTA_POS::operator-(const DELTA_POS& other) const
 {
-	return DELTA_POS(x-other.x, y-other.y, z-other.z);
+    return DELTA_POS(x-other.x, y-other.y, z-other.z);
 }
 const DELTA_POS DELTA_POS::absoluteValue() const
 {
@@ -82,11 +82,11 @@ CONN::CONN(int myFrom, int myTo, double len, double maxR, DELTA_POS deltaP){
 //Add at 20180826
 CONN::CONN(){}
 CONN::CONN(int myFrom, int myTo, double len, double maxR, int myX, int myY, int myZ){
-	from       = myFrom;
+    from       = myFrom;
     to         = myTo;
     length     = len;
     max_radius = maxR;
-	deltaPos = DELTA_POS(myX, myY, myZ);
+    deltaPos = DELTA_POS(myX, myY, myZ);
 }
 
 CONN::CONN(int myFrom, int myTo, double len, double bt_x, double bt_y, double bt_z, double maxR, DELTA_POS deltaP){
@@ -134,7 +134,7 @@ DIJKSTRA_NODE::DIJKSTRA_NODE(int myID, double myX, double myY, double myZ, doubl
     connections = vector<CONN> ();
     max_radius = maxR;
     active = active_flag;
-	label = label_flag;
+    label = label_flag;
 }
 
 /** Output information about the node to the provided output stream. */

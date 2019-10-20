@@ -1,3 +1,7 @@
+/* 
+ * Updated by Ye Anjiang April 20, 2018
+ *
+ */
 #ifndef NETWORKIO_H
 #define NETWORKIO_H
 
@@ -125,14 +129,7 @@ void changeAtomType(ATOM *atom);
 void stripAtomNames(ATOM_NETWORK *cell);
 
 //remove migrant atom
-//added at 2018 04 08
 bool readRemoveMigrantCif(char *filename, ATOM_NETWORK *cell, const char *migrant, bool radial);
-/** Write the bottleneck and interstitial information stored within the VORONOI_NETWORK in a .BI
-    file format to the provided filename. Excludes any nodes or nodes with radii
-    less than the provided threshold. For the default 0 minRad value, all nodes
-    and edges are included. */
-bool writeToBI(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, double minRad = 0.0);
-//Added at 20180420
 /**
  * write the bottleneck, interstitial and atomnetwork information to .vasp
  * file format to the provided filename. Excludes any nodes or nodes with radii

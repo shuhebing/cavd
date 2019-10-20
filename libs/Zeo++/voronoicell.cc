@@ -1,3 +1,7 @@
+/* 
+ * Updated by Ye Anjiang June 9, 2019
+ *
+ */
 
 //#include "network.h"
 #include <cstdlib>
@@ -19,9 +23,9 @@ using namespace std;
  */
 
 struct writeZeoVisException : public exception{
-	const char * what () const throw (){
-		return "Exception: write vornet to .vis file failed!.";
-	}
+    const char * what () const throw (){
+        return "Exception: write vornet to .vis file failed!.";
+    }
 };
 
 /* Store the provided vertices and their ids.   */
@@ -38,15 +42,13 @@ VOR_FACE::VOR_FACE(vector<Point> vertices, vector<int> vertexIDs) {
   nodeIDs = vertexIDs;
 }
 
-// Add by YAJ 20190609
-/* Store the provided vertices and their ids.  */
+/* Store the provided the Voronoi center atom, the neighbor atom, vertices, their ids.  */
 VOR_FACE::VOR_FACE(int centerAt, int neighborAt, vector<Point> vertices, vector<int> vertexIDs) {
   neighborAtom1 = centerAt;
   neighborAtom2 = neighborAt;
   orderedVertices = vertices;
   nodeIDs = vertexIDs;
 }
-
 
 /* Returns a vector of pairs of integers and Points, where each entry represents
  *  the pair (node id, node coordinates).*/
@@ -81,15 +83,13 @@ void VOR_FACE::writeVMDFilled(fstream &output){
     Point p2 = orderedVertices.at(n2);
     Point p3 = orderedVertices.at(n3);
     output << "{triangle {" 
-	   << p1[0] << " " << p1[1] << " " << p1[2] << "} {" 
-	   << p2[0] << " " << p2[1] << " " << p2[2] << "} {" 
-	   << p3[0] << " " << p3[1] << " " << p3[2] << "} }" << "\n";
+       << p1[0] << " " << p1[1] << " " << p1[2] << "} {" 
+       << p2[0] << " " << p2[1] << " " << p2[2] << "} {" 
+       << p3[0] << " " << p3[1] << " " << p3[2] << "} }" << "\n";
     n2++;
     n3++;
   }
 }
-
-
 
 /*Constructs a VOR_CELL that does not initially have any faces or vertices.*/
 VOR_CELL::VOR_CELL(){
@@ -130,10 +130,10 @@ void VOR_CELL::addEdge(Point from, Point to){
   map<Point,int>::iterator iter2 = vertexIDs.find(to);
   // if((iter1 == vertexIDs.end()) || (iter2 == vertexIDs.end())){
   //   cerr << "Unable to add edge because nodes have not been added." << "\n"
-	//  << "Point 1: (" << from[0] <<  ", " << from[1] << ", " << from[2] << ")" << "\n"
-	//  << "Point 2: (" << to[0]   <<  ", " << to[1]   << ", " << to[2]   << ")" << "\n"
-	//  << "Exiting..." << "\n";
-	//  throw VoronoiDecompException();
+    //  << "Point 1: (" << from[0] <<  ", " << from[1] << ", " << from[2] << ")" << "\n"
+    //  << "Point 2: (" << to[0]   <<  ", " << to[1]   << ", " << to[2]   << ")" << "\n"
+    //  << "Exiting..." << "\n";
+    //  throw VoronoiDecompException();
   //   //exit(1);
   // }
 
@@ -189,7 +189,7 @@ vector<Point> VOR_CELL::getNodeCoords(int nodeID){
  *  the corresponding commands as faces(n).*/
 void VOR_CELL::writeVMDFilled(fstream &output, int n){
   output << "set faces(" << n << ") {" << "\n"
-	 << "{color $faceColors(" << n << ") }" << "\n";
+     << "{color $faceColors(" << n << ") }" << "\n";
   for(unsigned int i = 0; i < faces.size(); i++){
     faces[i].writeVMDFilled(output);
   }
@@ -217,10 +217,10 @@ void VOR_CELL::writeVMDOutlined(fstream &output, int n){
     set<int>::iterator vertexIter = edgeConnections[i].begin();
     while(vertexIter != edgeConnections[i].end()){
       Point p2 = vertexCoords[*vertexIter];
-	output << "{line {" 
-	       << p1[0] << " " << p1[1] << " " << p1[2] << "} {" 
-	       << p2[0] << " " << p2[1] << " " << p2[2] << "} width 1}" << "\n";
-	vertexIter++;
+    output << "{line {" 
+           << p1[0] << " " << p1[1] << " " << p1[2] << "} {" 
+           << p2[0] << " " << p2[1] << " " << p2[2] << "} width 1}" << "\n";
+    vertexIter++;
     }
   }
   output << "}" << "\n";
@@ -275,7 +275,7 @@ void BASIC_VCELL::removeOverlappedNodes(int atomID, ATOM_NETWORK *atmnet, double
   for(unsigned int i = 0; i < nodeCoords.size(); i++){
     Point node  = nodeCoords[i];
     if(calcEuclideanDistance(node[0], node[1], node[2], center.x, center.y, center.z) >= 
-		(center.radius + r_probe)){
+        (center.radius + r_probe)){
       newIDs.push_back(nodeIDs[i]);
       newCoords.push_back(nodeCoords[i]);
     }
@@ -298,9 +298,6 @@ void BASIC_VCELL::writeToVMD(fstream &output, int n){
   output << "}" << "\n";
 }
 
-
-
-
 /* Writes the commands to the provided output stream necessary to approriately
  * display the unit cell in the ZeoVis visualization tool. Labels the unitcell
  * as unitcells(0).
@@ -311,7 +308,7 @@ void writeVMDUC(fstream &output, ATOM_NETWORK *atmnet){
   XYZ v_c = atmnet->v_c;
   
   output << "set unitcells(0) {" << "\n"
-	 << "{color $unitcellColors(0)}" << "\n";
+     << "{color $unitcellColors(0)}" << "\n";
   DELTA_POS directions [3] = {DELTA_POS(1,0,0), DELTA_POS(0,1,0), DELTA_POS(0,0,1)};
   DELTA_POS limits [3] = {DELTA_POS(0,1,1), DELTA_POS(1,0,1), DELTA_POS(1,1,0)};
   for(unsigned int i = 0; i < 3; i++){
@@ -319,24 +316,24 @@ void writeVMDUC(fstream &output, ATOM_NETWORK *atmnet){
     DELTA_POS limit = limits[i];
     for(int a = 0; a < 2; a++){
       for(int b = 0; b < 2; b++){
-	for(int c = 0; c < 2; c++){
-	  if((limit.x < a) || (limit.y < b) || (limit.z < c))
-	    continue;
-	  
-	  // Calculate starting coordinate
-	  double x1 = v_a.x *a + v_b.x*b + v_c.x*c;
-	  double y1 = v_a.y *a + v_b.y*b + v_c.y*c;
-	  double z1 = v_a.z *a + v_b.z*b + v_c.z*c;
-	  
-	  // Calculate ending coordinate
-	  double x2 = x1 + v_a.x*direction.x + v_b.x*direction.y + v_c.x*direction.z;
-	  double y2 = y1 + v_a.y*direction.x + v_b.y*direction.y + v_c.y*direction.z;
-	  double z2 = z1 + v_a.z*direction.x + v_b.z*direction.y + v_c.z*direction.z;
+    for(int c = 0; c < 2; c++){
+      if((limit.x < a) || (limit.y < b) || (limit.z < c))
+        continue;
+      
+      // Calculate starting coordinate
+      double x1 = v_a.x *a + v_b.x*b + v_c.x*c;
+      double y1 = v_a.y *a + v_b.y*b + v_c.y*c;
+      double z1 = v_a.z *a + v_b.z*b + v_c.z*c;
+      
+      // Calculate ending coordinate
+      double x2 = x1 + v_a.x*direction.x + v_b.x*direction.y + v_c.x*direction.z;
+      double y2 = y1 + v_a.y*direction.x + v_b.y*direction.y + v_c.y*direction.z;
+      double z2 = z1 + v_a.z*direction.x + v_b.z*direction.y + v_c.z*direction.z;
 
-	  output << "{line "
-		 << "{" << x1 << " " << y1 << " " << z1 << "} "
-		 << "{" << x2 << " " << y2 << " " << z2 << "} }" << "\n";
-	}
+      output << "{line "
+         << "{" << x1 << " " << y1 << " " << z1 << "} "
+         << "{" << x2 << " " << y2 << " " << z2 << "} }" << "\n";
+    }
       }
     }
   }
@@ -353,8 +350,8 @@ void writeVornet(fstream &output, ATOM_NETWORK *atmnet, VORONOI_NETWORK *vornet)
   for(unsigned int i = 0; i < vornet->nodes.size(); i++){
     VOR_NODE curNode = vornet->nodes.at(i);
     output << "{color $nodeColors("<< i << ") }" << "\n"
-	       << "{sphere {" << curNode.x << " " << curNode.y << " " << curNode.z 
-	       << "} radius $nodeRadii(" << i << ") resolution $sphere_resolution}" << "\n";
+           << "{sphere {" << curNode.x << " " << curNode.y << " " << curNode.z 
+           << "} radius $nodeRadii(" << i << ") resolution $sphere_resolution}" << "\n";
   }
 
   // Iterate over all Voronoi edges
@@ -367,9 +364,9 @@ void writeVornet(fstream &output, ATOM_NETWORK *atmnet, VORONOI_NETWORK *vornet)
     Point end = Point(endNode.x, endNode.y, endNode.z);
     atmnet->translatePoint(&end, curEdge.delta_uc_x, curEdge.delta_uc_y, curEdge.delta_uc_z);
     output << "{line {" 
-	   << start[0] << " " << start[1] << " " << start[2] << "} " 
-	   << "{" << end[0] << " " << end[1] << " " << end[2] << "}" 
-	   << "}" << "\n";
+       << start[0] << " " << start[1] << " " << start[2] << "} " 
+       << "{" << end[0] << " " << end[1] << " " << end[2] << "}" 
+       << "}" << "\n";
   }
   output << "}" << "\n";
 }
@@ -382,10 +379,10 @@ void writeVMDAtomsAndNodes(fstream &output, ATOM_NETWORK *atmnet, VORONOI_NETWOR
   for(unsigned int i = 0; i < atmnet->atoms.size(); i++){
     ATOM curAtom = atmnet->atoms.at(i);
     output << "set atoms(" << i << ") {" << "\n"
-	       << "{color $atomColors(" << i << ") }" << "\n"
-	       << "{sphere {" << curAtom.x << " " << curAtom.y << " " << curAtom.z 
-	       << "} radius $atomRadii(" << i << ") resolution $sphere_resolution}" 
-	       << "\n" << "}" << "\n";
+           << "{color $atomColors(" << i << ") }" << "\n"
+           << "{sphere {" << curAtom.x << " " << curAtom.y << " " << curAtom.z 
+           << "} radius $atomRadii(" << i << ") resolution $sphere_resolution}" 
+           << "\n" << "}" << "\n";
     output << "set atomRadii(" << i << ") " << curAtom.radius << "\n";
   }
 
@@ -393,10 +390,10 @@ void writeVMDAtomsAndNodes(fstream &output, ATOM_NETWORK *atmnet, VORONOI_NETWOR
   for(unsigned int i = 0; i < vornet->nodes.size(); i++){
     VOR_NODE curNode = vornet->nodes.at(i);
     output << "set nodes(" << i << ") {" << "\n"
-	   << "{color $nodeColors("<< i << ") }" << "\n"
-	   << "{sphere {" << curNode.x << " " << curNode.y << " " << curNode.z 
-	   << "} radius $nodeRadii(" << i <<  ") resolution $sphere_resolution}" << "\n"
-	   << "}" << "\n";
+       << "{color $nodeColors("<< i << ") }" << "\n"
+       << "{sphere {" << curNode.x << " " << curNode.y << " " << curNode.z 
+       << "} radius $nodeRadii(" << i <<  ") resolution $sphere_resolution}" << "\n"
+       << "}" << "\n";
     output << "set nodeRadii(" << i << ") " << curNode.rad_stat_sphere << "\n";
   }    
 }
@@ -434,14 +431,14 @@ void writeVMDEnvVars(fstream &output,  ATOM_NETWORK *atmnet, VORONOI_NETWORK *vo
  */
  
  bool writeZVis(char *filename, std::vector<VOR_CELL> *cells, ATOM_NETWORK *atmnet, VORONOI_NETWORK *vornet){
-	try{
-		writeZeoVisFile(filename, cells, atmnet,vornet);
-		return true;
-	}
-	catch (writeZeoVisException& e1){
-		cout << e1.what() << endl;
-		return false;
-	}
+    try{
+        writeZeoVisFile(filename, cells, atmnet,vornet);
+        return true;
+    }
+    catch (writeZeoVisException& e1){
+        cout << e1.what() << endl;
+        return false;
+    }
  }
 void writeZeoVisFile(char *filename, vector<VOR_CELL> *cells,
   ATOM_NETWORK *atmnet, VORONOI_NETWORK *vornet)
@@ -452,7 +449,7 @@ void writeZeoVisFile(char *filename, vector<VOR_CELL> *cells,
     cout << "Error: Failed to open output file for ZeoVis settings" << filename;
     cout << "Exiting ..." << "\n";
     throw writeZeoVisException();
-	//exit(1);
+    //exit(1);
   }
   else{
     cout << "Writing ZeoVis information to " << filename << "\n";
@@ -467,10 +464,10 @@ void writeZeoVisFile(char *filename, vector<VOR_CELL> *cells,
       cells->at(i).writeVMDFilled(output, i);
     }
     output << "set num_faces " << cells->size() << "\n"
-	   << "set num_channels " << 0 << "\n"
-	   << "set num_features " << 0 << "\n"
-	   << "set num_segments " << 0 << "\n"
-	   << "set num_cages "    << 0 << "\n";
+       << "set num_channels " << 0 << "\n"
+       << "set num_features " << 0 << "\n"
+       << "set num_segments " << 0 << "\n"
+       << "set num_cages "    << 0 << "\n";
   }
   output.close();
 }
@@ -505,7 +502,7 @@ void writeSpecialZeoVisFile(char *filename, vector<VOR_CELL> *cells,
     for(unsigned int i = 0; i < vcells.size(); i++){
       vcells[i].writeToVMD(output, i);
     }
-
+    
   }
   output.close();
 }

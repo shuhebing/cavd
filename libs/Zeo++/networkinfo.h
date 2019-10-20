@@ -1,3 +1,8 @@
+/* 
+ * Updated by Ye Anjiang June 27, 2018
+ *
+ */
+
 /* This file is used to store information about the radii and weights of
  * atoms. The information can be specified in input files or default values can be used
  * for more common types.
@@ -68,12 +73,10 @@ bool isMetal(std::string atomType);
 /** Strip atom name to remove any index strings */
 std::string stripAtomName(std::string extAtom);
 
-//Added at 20180420
 // initialize Ionic Rad Table use pymatgen computational results and lookup its radius
 void readIonRadTable(std::map<std::string,double> radMap);
 double lookupIonRadius(std::string atomType, bool radial);
 
-//Added at 20180627
 /** Fills the radius table with Shanno radius. */
 void initializeIonRadTable();
 /** Reads the radius table from the provided filename. The file must be

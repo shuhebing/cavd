@@ -1,3 +1,8 @@
+/* 
+ * Updated by Ye Anjiang April 18, 2018
+ *
+ */
+
 // 
 //
 // Author   : Thomas F. Willems (LBL / UC Berkeley)
@@ -40,7 +45,7 @@
 #include "material.h"
 template<class c_option>
 bool storeVoronoiNetwork(c_option &con, ATOM_NETWORK *atmnet, VORONOI_NETWORK *vornet, double bx, double by, double bz,
-			 std::vector<BASIC_VCELL> &basCells, std::vector<int> &atomShifts, bool storeAdvCells, std::vector<VOR_CELL> &advCells);
+             std::vector<BASIC_VCELL> &basCells, std::vector<int> &atomShifts, bool storeAdvCells, std::vector<VOR_CELL> &advCells);
 
 // A guess for the memory allocation per region
 const int memory=16;
@@ -64,13 +69,13 @@ std::string toUpperCase(const std::string & s);
     the option is specified, information about each VOR_CELL will also be stored using the provied pointer to
     a vector of VOR_CELL instances. The BASIC_VCELL information is stored regardless of the option specified.*/
 void* performVoronoiDecomp(bool radial, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, std::vector<VOR_CELL> &cells, bool saveVorCells,
-			   std::vector<BASIC_VCELL> &bvcells);
+               std::vector<BASIC_VCELL> &bvcells);
 
 /** Decompose the provided network of atoms into a VORONOI_NETWORK that is stored using the provided pointer. If
     the option is specified, information about each VOR_CELL will also be stored using the provied pointer to
     a vector of VOR_CELL instances. The BASIC_VCELL information is stored regardless of the option specified. This function is wrapper to above function, and has no return type*/
 bool performVoronoiDecomp(bool radial, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, std::vector<VOR_CELL> *cells, bool saveVorCells,
-			   std::vector<BASIC_VCELL> *bvcells);
+               std::vector<BASIC_VCELL> *bvcells);
 
 
 // void createAdvCell(voro::voronoicell &cell, std::vector<double> coords, int *idMap, VOR_CELL &newCell);
@@ -122,39 +127,39 @@ void calculateConnParameters(VORONOI_NETWORK *vornet, char *filename, vector<dou
 void parseNetworkSymmetry(std::vector<int> symmlabels, VORONOI_NETWORK *vornet);
 void addVorNetId(VORONOI_NETWORK *vornet);
 void add_net_to_vornet(vector<int> fc_ids, vector<double> fc_radii, vector<vector<double> > fc_coords,
-	vector<vector<double> > fc_fracs, vector<vector<int> > fc_neiatoms, vector<vector<int> > fc_vertices,
-	vector< vector< vector<int> > > edge_pdvs, vector< vector< double> > fc_vert_dists, VORONOI_NETWORK* vornet);
+    vector<vector<double> > fc_fracs, vector<vector<int> > fc_neiatoms, vector<vector<int> > fc_vertices,
+    vector< vector< vector<int> > > edge_pdvs, vector< vector< double> > fc_vert_dists, VORONOI_NETWORK* vornet);
 
 /* 自定义异常 */
 struct InvalidParticlesNumException : public exception{
-	const char * what () const throw (){
-		return "Exception: Invalid number of particles provided for Voronoi decomposition.";
-	}
+    const char * what () const throw (){
+        return "Exception: Invalid number of particles provided for Voronoi decomposition.";
+    }
 };
 struct InvalidBoxDimException : public exception{
-	const char * what () const throw (){
-		return "Exception: valid box dimensions calculated for Voronoi decomposition.";
-	}
+    const char * what () const throw (){
+        return "Exception: valid box dimensions calculated for Voronoi decomposition.";
+    }
 };
 struct HugeGridException : public exception{
-	const char * what () const throw (){
-		return "Exception: voro++: Number of computational blocks exceeds the maximum.";
-	}
+    const char * what () const throw (){
+        return "Exception: voro++: Number of computational blocks exceeds the maximum.";
+    }
 };
 struct AttemptException : public exception{
-	const char * what () const throw (){
-		return "Exception: Attempt numbers larger than excepted.";
-	}
+    const char * what () const throw (){
+        return "Exception: Attempt times larger than excepted.";
+    }
 };
 struct VoronoiDecompException : public exception{
-	const char * what () const throw (){
-		return "Exception: Unable to make Voronoi decomposition.";
-	}
+    const char * what () const throw (){
+        return "Exception: Unable to perform Voronoi decomposition.";
+    }
 };
 struct CoordNumException : public exception{
-	const char * what () const throw (){
-		return "Exception: Improper number of node coordinates in Voronoi decomposition.";
-	}
+    const char * what () const throw (){
+        return "Exception: Improper number of node coordinates in Voronoi decomposition.";
+    }
 };
 
 #endif

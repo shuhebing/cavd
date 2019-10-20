@@ -1,3 +1,8 @@
+/* 
+ * Updated by Ye Anjiang June 27, 2019
+ *
+ */
+
 // 
 //
 // Author   : Thomas F. Willems (LBL / UC Berkeley)
@@ -1264,21 +1269,21 @@ bool throughVorNet(VORONOI_NETWORK *vornet, char* filename,  double *Ri, double 
 }
 
 
-//根据对称性列表，获取每个Voronoi Node的label
+//parse the label of Voronoi Node
 void parseNetworkSymmetry(std::vector<int> symmlabels, VORONOI_NETWORK *vornet){
 	for (unsigned int i = 0; i < (vornet->nodes).size(); i++) {
 		(vornet->nodes[i]).label = symmlabels[i];
 	}
 }
 
-//给每个VoronoiNode设置全局id
+//set the global id of VoronoiNode
 void addVorNetId(VORONOI_NETWORK *vornet){
   for (unsigned int i = 0; i < (vornet->nodes).size(); i++) {
 		(vornet->nodes[i]).id = i;
 	}
 }
 
-//将面心加入VoronoiNetwork
+//add the center of Voronoi face into Vronoi network
 void add_net_to_vornet(vector<int> fc_ids, vector<double> fc_radii, vector<vector<double> > fc_coords, vector<vector<double> > fc_fracs,
                         vector<vector<int> > fc_neiatoms, vector<vector<int> > fc_vertices, vector< vector< vector<int> > > edge_pdvs, 
                         vector< vector< double> > fc_vert_dists, VORONOI_NETWORK* vornet){

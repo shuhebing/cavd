@@ -1,3 +1,8 @@
+/* 
+ * Updated by Ye Anjiang June 9, 2019
+ *
+ */
+
 //#include "network.h"
 #include <cmath>
 #include <cstdlib>
@@ -24,17 +29,17 @@ void Sphere::hitSphere(ray r,hitdata& hitsphere)
   if (temp>0) //check inside of sqrt is not negative
     { 
       if ((r.vector * newCenter) - sqrt(temp) > 0) //If it hits the sphere twice pick the closest
-	{ 
-	  hitsphere.hit=true;
-	  hitsphere.dist=(r.vector*newCenter) - sqrt(temp);
-	  hitsphere.hitpoint=r.base+r.vector.scale(hitsphere.dist);
-	}
+    { 
+      hitsphere.hit=true;
+      hitsphere.dist=(r.vector*newCenter) - sqrt(temp);
+      hitsphere.hitpoint=r.base+r.vector.scale(hitsphere.dist);
+    }
       else if ((r.vector * newCenter) + sqrt(temp) > 0) //Ray was inside sphere (this is possible in some cases)
-	{ 
-	  hitsphere.hit=true;
-	  hitsphere.dist=(r.vector*newCenter) + sqrt(temp);
-	  hitsphere.hitpoint=r.base+r.vector.scale(hitsphere.dist);
-    	} 
+    { 
+      hitsphere.hit=true;
+      hitsphere.dist=(r.vector*newCenter) + sqrt(temp);
+      hitsphere.hitpoint=r.base+r.vector.scale(hitsphere.dist);
+        } 
     }
   return;
 }
@@ -44,7 +49,7 @@ void Plane::hitPlane(ray r,hitdata& hitplane)
 {
   if (normal*r.vector >= 0){ //ray is either parallel or infront of the plane
     return;
-  }	
+  } 
   
   double dist=((normal*point)-(normal*r.base))/(normal*r.vector);
   if (dist < 0){ //There is no reason that the distance should be negative
@@ -75,18 +80,18 @@ hitdata findClosestSphere(vector<Sphere>& s,ray& r)
   for (unsigned int i=0;i<s.size();i++)
     {
       s[i].hitSphere(r,hitsphere);
-      if (hitsphere.hit == true)			
-	{
-	  if(hitobject.hit == false || hitobject.dist > hitsphere.dist) //Conditions for this to be closest sphere found so far
-	    {
-	      hitobject.hit = true;
-	      hitobject.dist = hitsphere.dist;
-	      hitobject.hitpoint = hitsphere.hitpoint;
-	      hitobject.id = i;
-	      hitobject.object = &(s[i]);
-	    }
-	  hitsphere.hit = false;				
-	}
+      if (hitsphere.hit == true)
+    {
+      if(hitobject.hit == false || hitobject.dist > hitsphere.dist) //Conditions for this to be closest sphere found so far
+        {
+          hitobject.hit = true;
+          hitobject.dist = hitsphere.dist;
+          hitobject.hitpoint = hitsphere.hitpoint;
+          hitobject.id = i;
+          hitobject.object = &(s[i]);
+        }
+      hitsphere.hit = false;
+    }
     }
   return hitobject;
 } 
@@ -100,18 +105,18 @@ hitdata findClosestPlane(vector<Plane>& p,ray& r)
   for (unsigned int i=0;i<p.size();i++)
     {
       p[i].hitPlane(r,hitplane);
-      if (hitplane.hit == true)			
-	{
-	  if(hitobject.hit == false || hitobject.dist > hitplane.dist) //Conditions for this to be closest sphere found so far
-	    {
-	      hitobject.hit = true;
-	      hitobject.dist = hitplane.dist;
-	      hitobject.hitpoint = hitplane.hitpoint;
-	      hitobject.id = i;
-	      hitobject.object = &(p[i]);
-	    }
-	  hitplane.hit = false;				
-	}
+      if (hitplane.hit == true)
+    {
+      if(hitobject.hit == false || hitobject.dist > hitplane.dist) //Conditions for this to be closest sphere found so far
+        {
+          hitobject.hit = true;
+          hitobject.dist = hitplane.dist;
+          hitobject.hitpoint = hitplane.hitpoint;
+          hitobject.id = i;
+          hitobject.object = &(p[i]);
+        }
+      hitplane.hit = false;
+    }
     }
   return hitobject;
 } 
@@ -165,16 +170,16 @@ void duplicateSpheresOnFace(ATOM_NETWORK *cell,vector<Sphere>& spheres,vector<Pl
     {
       //Assemble touch_face[] for which faces it touches
       for (unsigned int j=0; j<faces.size(); j++) 
-	{
-	  if (faces[j].distToPlane(spheres[i].center) < (spheres[i].radius))
-	    {
-	      touch_face[j] = true;
-	    }
-	  else
-	    {
-	      touch_face[j] = false;
-	    }
-	}    
+    {
+      if (faces[j].distToPlane(spheres[i].center) < (spheres[i].radius))
+        {
+          touch_face[j] = true;
+        }
+      else
+        {
+          touch_face[j] = false;
+        }
+    }    
       
       //Add allowable permutations on the unitcell
       permutation_a.clear(); permutation_a.push_back(0.0);
@@ -182,47 +187,47 @@ void duplicateSpheresOnFace(ATOM_NETWORK *cell,vector<Sphere>& spheres,vector<Pl
       permutation_c.clear(); permutation_c.push_back(0.0);
       
       if (touch_face[0] == true)
-	{
-	  permutation_c.push_back(1.0);
-	}
+    {
+      permutation_c.push_back(1.0);
+    }
       if (touch_face[1] == true)
-	{
-	  permutation_b.push_back(1.0);
-	}
+    {
+      permutation_b.push_back(1.0);
+    }
       if (touch_face[2] == true)
-	{
-	  permutation_a.push_back(1.0);
-	}
+    {
+      permutation_a.push_back(1.0);
+    }
       if (touch_face[3] == true)
-	{
-	  permutation_c.push_back(-1.0);
-	}
+    {
+      permutation_c.push_back(-1.0);
+    }
       if (touch_face[4] == true)
-	{
-	  permutation_b.push_back(-1.0);
-	}
+    {
+      permutation_b.push_back(-1.0);
+    }
       if (touch_face[5] == true)
-	{
-	  permutation_a.push_back(-1.0);
-	}
+    {
+      permutation_a.push_back(-1.0);
+    }
       
       //Iterate through all the permutations on the sphere
       temp_sphere = spheres[i];
       for (unsigned int a=0; a<permutation_a.size(); a++)
-	{
-	  for (unsigned int b=0; b<permutation_b.size(); b++)
-	    {
-	      for (unsigned int c=0; c<permutation_c.size(); c++)
-		{
-		  if (permutation_a[a] != 0 || permutation_b[b] != 0 || permutation_c[c] != 0)
-		    {
-		      temp_sphere.center = spheres[i].center;
-		      temp_sphere.center = temp_sphere.center + cell->abc_to_xyz(Point(permutation_a[a],permutation_b[b],permutation_c[c]));
-		      spheres.push_back(temp_sphere);
-		    }
-		}
-	    }
-	}
+    {
+      for (unsigned int b=0; b<permutation_b.size(); b++)
+        {
+          for (unsigned int c=0; c<permutation_c.size(); c++)
+        {
+          if (permutation_a[a] != 0 || permutation_b[b] != 0 || permutation_c[c] != 0)
+            {
+              temp_sphere.center = spheres[i].center;
+              temp_sphere.center = temp_sphere.center + cell->abc_to_xyz(Point(permutation_a[a],permutation_b[b],permutation_c[c]));
+              spheres.push_back(temp_sphere);
+            }
+        }
+        }
+    }
     }
 }
 
@@ -240,12 +245,12 @@ void convertNodeToSphere(VORONOI_NETWORK& vornet,vector<Sphere>& nodes, vector<b
   for (unsigned int i=0; i<vornet.nodes.size(); i++)
     {
       if (accessInfo[i] ==true)
-	{
-	  temp_vornode = vornet.nodes[i];
-	  temp_sphere.center = Point(temp_vornode.x,temp_vornode.y,temp_vornode.z);
-	  temp_sphere.radius = temp_vornode.rad_stat_sphere;
-	  nodes.push_back(temp_sphere);
-	}
+    {
+      temp_vornode = vornet.nodes[i];
+      temp_sphere.center = Point(temp_vornode.x,temp_vornode.y,temp_vornode.z);
+      temp_sphere.radius = temp_vornode.rad_stat_sphere;
+      nodes.push_back(temp_sphere);
+    }
     }
 }
 
@@ -274,7 +279,7 @@ bool findSphereOfPoint(Point p,vector<Sphere>& spheres,int& id)
 {
   for (unsigned int i=0; i<spheres.size(); i++){
     if ((calcEuclideanDistance(p,spheres[i].center) < spheres[i].radius) && (int)i != id){ 
-      id = i;			
+      id = i;           
       return true;
     }
   }
@@ -337,25 +342,25 @@ void rayTraceInsideSphere(ATOM_NETWORK *cell,vector<Sphere>& spheres,ray r, hitd
     //It is possible that point is an epsilon outside lets check
     if (fabs(calcEuclideanDistance(r.base,spheres[hitobject.id].center) - spheres[hitobject.id].radius) < threshold)
       {
-	//It was round-off error so lets continue
-	Sphere epsilon_sphere = spheres[hitobject.id];
-	if (((r.base - spheres[hitobject.id].center) * r.vector) > 0)
-	  { //vector is headed away from sphere
-	    epsilon_sphere.radius += threshold;
-	  }
-	else
-	  { // vector is headed into the sphere	    
-	    epsilon_sphere.radius += -threshold;
-	  }
-	epsilon_sphere.hitSphere(r,hitsphere);
+    //It was round-off error so lets continue
+    Sphere epsilon_sphere = spheres[hitobject.id];
+    if (((r.base - spheres[hitobject.id].center) * r.vector) > 0)
+      { //vector is headed away from sphere
+        epsilon_sphere.radius += threshold;
+      }
+    else
+      { // vector is headed into the sphere     
+        epsilon_sphere.radius += -threshold;
+      }
+    epsilon_sphere.hitSphere(r,hitsphere);
       }
     if (hitsphere.hit == false) //Epsilon Case has been covered so thid should not happen
       {
-      	cerr << "Error: Ray did not hit a sphere. findSphereOfPoint said that one was within the radius. And it failed to be within an epsilon. Output in vmd style for easy visulization" << endl;
-	cout << "draw sphere {" << spheres[hitobject.id].center << "} radius " << spheres[hitobject.id].radius << " resolution 10\n";
-	Point p = r.base+r.vector.scale(10);
-	cout << "draw line {" << r.base << "} {" << p << "}\n";
-	abort();
+        cerr << "Error: Ray did not hit a sphere. findSphereOfPoint said that one was within the radius. And it failed to be within an epsilon. Output in vmd style for easy visulization" << endl;
+    cout << "draw sphere {" << spheres[hitobject.id].center << "} radius " << spheres[hitobject.id].radius << " resolution 10\n";
+    Point p = r.base+r.vector.scale(10);
+    cout << "draw line {" << r.base << "} {" << p << "}\n";
+    abort();
       }
   }
   
@@ -389,9 +394,9 @@ void rayTraceToSphere(ATOM_NETWORK *cell,vector<Sphere>& spheres,ray r, vector<P
   if (hitsphere.hit == true)
     {
       if (hitsphere.id == hitobject.id)
-	{
-	  //cerr << "Just hit same atom this is not allowable" << endl;
-	}
+    {
+      //cerr << "Just hit same atom this is not allowable" << endl;
+    }
       hitobject.hit = true;
       hitobject.hitpoint = hitsphere.hitpoint;
       hitobject.dist += hitsphere.dist;
@@ -443,9 +448,9 @@ void calcRaysInAV(ATOM_NETWORK *hiaccatmnet, ATOM_NETWORK *orgatmnet, bool highA
   vector<Plane> faces;
   calcPlanesToCell(cell,faces);
   
-  //Duplicate the nodes and atoms that intersect with the plane faces	
+  //Duplicate the nodes and atoms that intersect with the plane faces   
   duplicateSpheresOnFace(cell,atoms,faces);
-  duplicateSpheresOnFace(cell,nodes,faces);	
+  duplicateSpheresOnFace(cell,nodes,faces); 
   
   //Lists of Accessible, Inaccessible, and Resampled Rays
   vector<ray> axsray; //List of successful rays that were shot
@@ -481,48 +486,48 @@ void calcRaysInAV(ATOM_NETWORK *hiaccatmnet, ATOM_NETWORK *orgatmnet, bool highA
       ray opposite_rand_ray;
       hitdata hitobject;
       for (int i=0; i<numSamples; i++)
-	{
-	  rand_ray.base =  cell->abc_to_xyz(genRandomPoint());
-	  rand_ray.vector = genRandomVec();
-	  
-	  bool point_accessible = accessAnalysis.isVPointAccessible(rand_ray.base); 
-	  
-	  if (point_accessible == false)
-	    {
+    {
+      rand_ray.base =  cell->abc_to_xyz(genRandomPoint());
+      rand_ray.vector = genRandomVec();
+      
+      bool point_accessible = accessAnalysis.isVPointAccessible(rand_ray.base); 
+      
+      if (point_accessible == false)
+        {
               rand_ray.vector = Point(0,0,0);
-	      inaxsray.push_back(rand_ray);
-	    }
-	  else //point is accessible
-	    {
-	      opposite_rand_ray.base = rand_ray.base;
-	      opposite_rand_ray.vector  = rand_ray.vector.scale(-1);
-	      
-	      rayTraceToSphere(cell,atoms,rand_ray,faces,hitobject);
-	      rand_ray.vector = rand_ray.vector.scale(hitobject.dist);
-	      
+          inaxsray.push_back(rand_ray);
+        }
+      else //point is accessible
+        {
+          opposite_rand_ray.base = rand_ray.base;
+          opposite_rand_ray.vector  = rand_ray.vector.scale(-1);
+          
+          rayTraceToSphere(cell,atoms,rand_ray,faces,hitobject);
+          rand_ray.vector = rand_ray.vector.scale(hitobject.dist);
+          
               hitobject.dist = 0.0;
               hitobject.hit = false;
-	      hitobject.object = NULL;
-	      hitobject.id = -1;
-	      hitobject.hitpoint = Point(0,0,0);
-	      
-	      //Test negative of ray
-	      rayTraceToSphere(cell,atoms,opposite_rand_ray,faces,hitobject);
-	      opposite_rand_ray.vector = opposite_rand_ray.vector.scale(hitobject.dist);
-	      
-	      rand_ray.base = rand_ray.base + opposite_rand_ray.vector;
-	      rand_ray.vector = rand_ray.vector - opposite_rand_ray.vector;
-	      
-	      axsray.push_back(rand_ray);
-	      
-	      hitobject.dist = 0.0;
+          hitobject.object = NULL;
+          hitobject.id = -1;
+          hitobject.hitpoint = Point(0,0,0);
+          
+          //Test negative of ray
+          rayTraceToSphere(cell,atoms,opposite_rand_ray,faces,hitobject);
+          opposite_rand_ray.vector = opposite_rand_ray.vector.scale(hitobject.dist);
+          
+          rand_ray.base = rand_ray.base + opposite_rand_ray.vector;
+          rand_ray.vector = rand_ray.vector - opposite_rand_ray.vector;
+          
+          axsray.push_back(rand_ray);
+          
+          hitobject.dist = 0.0;
               hitobject.hit = false;
-	      hitobject.object = NULL;
-	      hitobject.id = -1;
-	      hitobject.hitpoint = Point(0,0,0);
-	      
-	    }
-	}
+          hitobject.object = NULL;
+          hitobject.id = -1;
+          hitobject.hitpoint = Point(0,0,0);
+          
+        }
+    }
     }
 
   if (option.compare("node") == 0)
@@ -534,44 +539,44 @@ void calcRaysInAV(ATOM_NETWORK *hiaccatmnet, ATOM_NETWORK *orgatmnet, bool highA
       ray opposite_rand_ray;
       hitdata hitobject;
       for (int i=0; i<numSamples; i++)
-	{
-	  do {
-	    ndx++;
-	    if (ndx >= accessAnalysis.accessInfo.size())
-	      {
-		ndx = 0;
-	      }
-	  } while(accessAnalysis.accessInfo[ndx] != true);
-	  rand_ray.base = nodes[ndx].center;  
-	  rand_ray.vector = genRandomVec();
-	  
-	  opposite_rand_ray.base = rand_ray.base;
-	  opposite_rand_ray.vector  = rand_ray.vector.scale(-1);
-	  
-	  rayTraceToSphere(cell,atoms,rand_ray,faces,hitobject);
-	  rand_ray.vector = rand_ray.vector.scale(hitobject.dist);
-	  
-	  hitobject.dist = 0.0;
-	  hitobject.hit = false;
-	  hitobject.object = NULL;
-	  hitobject.id = -1;
-	  hitobject.hitpoint = Point(0,0,0);
-	  
-	  //Test negative of ray
-	  rayTraceToSphere(cell,atoms,opposite_rand_ray,faces,hitobject);
-	  opposite_rand_ray.vector = opposite_rand_ray.vector.scale(hitobject.dist);
-	  
-	  rand_ray.base = rand_ray.base + opposite_rand_ray.vector;
-	  rand_ray.vector = rand_ray.vector - opposite_rand_ray.vector;
-	  
-	  axsray.push_back(rand_ray);
-	  
-	  hitobject.dist = 0.0;
-	  hitobject.hit = false;
-	  hitobject.object = NULL;
-	  hitobject.id = -1;
-	  hitobject.hitpoint = Point(0,0,0);
-	}
+    {
+      do {
+        ndx++;
+        if (ndx >= accessAnalysis.accessInfo.size())
+          {
+        ndx = 0;
+          }
+      } while(accessAnalysis.accessInfo[ndx] != true);
+      rand_ray.base = nodes[ndx].center;  
+      rand_ray.vector = genRandomVec();
+      
+      opposite_rand_ray.base = rand_ray.base;
+      opposite_rand_ray.vector  = rand_ray.vector.scale(-1);
+      
+      rayTraceToSphere(cell,atoms,rand_ray,faces,hitobject);
+      rand_ray.vector = rand_ray.vector.scale(hitobject.dist);
+      
+      hitobject.dist = 0.0;
+      hitobject.hit = false;
+      hitobject.object = NULL;
+      hitobject.id = -1;
+      hitobject.hitpoint = Point(0,0,0);
+      
+      //Test negative of ray
+      rayTraceToSphere(cell,atoms,opposite_rand_ray,faces,hitobject);
+      opposite_rand_ray.vector = opposite_rand_ray.vector.scale(hitobject.dist);
+      
+      rand_ray.base = rand_ray.base + opposite_rand_ray.vector;
+      rand_ray.vector = rand_ray.vector - opposite_rand_ray.vector;
+      
+      axsray.push_back(rand_ray);
+      
+      hitobject.dist = 0.0;
+      hitobject.hit = false;
+      hitobject.object = NULL;
+      hitobject.id = -1;
+      hitobject.hitpoint = Point(0,0,0);
+    }
     }
 
   
@@ -584,44 +589,44 @@ void calcRaysInAV(ATOM_NETWORK *hiaccatmnet, ATOM_NETWORK *orgatmnet, bool highA
       ray opposite_rand_ray;
       hitdata hitobject;
       for (int i=0; i<numSamples; i++)
-	{
-	  rand_ray.base =  cell->abc_to_xyz(genRandomPoint());
-	  rand_ray.vector = genRandomVec();
-	  opposite_rand_ray.base = rand_ray.base;
-	  opposite_rand_ray.vector  = rand_ray.vector.scale(-1);
-	      
-	  rayTraceInsideSphere(cell,nodes,rand_ray,hitobject);
-	  
-	  if (hitobject.hit == false)
-	    {
-	      rand_ray.vector = Point(0,0,0);
-	      inaxsray.push_back(rand_ray);
-	    }
-	  else
-	    { //It was traveling within a sphere    
-	      rand_ray.vector = rand_ray.vector.scale(hitobject.dist);
+    {
+      rand_ray.base =  cell->abc_to_xyz(genRandomPoint());
+      rand_ray.vector = genRandomVec();
+      opposite_rand_ray.base = rand_ray.base;
+      opposite_rand_ray.vector  = rand_ray.vector.scale(-1);
+          
+      rayTraceInsideSphere(cell,nodes,rand_ray,hitobject);
+      
+      if (hitobject.hit == false)
+        {
+          rand_ray.vector = Point(0,0,0);
+          inaxsray.push_back(rand_ray);
+        }
+      else
+        { //It was traveling within a sphere    
+          rand_ray.vector = rand_ray.vector.scale(hitobject.dist);
 
               hitobject.dist = 0.0;
               hitobject.hit = false;
-	      hitobject.id = -1;
-	      hitobject.object = NULL;
-	      hitobject.hitpoint = Point(0,0,0);
+          hitobject.id = -1;
+          hitobject.object = NULL;
+          hitobject.hitpoint = Point(0,0,0);
 
-	      rayTraceInsideSphere(cell,nodes,opposite_rand_ray,hitobject);
-	      opposite_rand_ray.vector = opposite_rand_ray.vector.scale(hitobject.dist);
+          rayTraceInsideSphere(cell,nodes,opposite_rand_ray,hitobject);
+          opposite_rand_ray.vector = opposite_rand_ray.vector.scale(hitobject.dist);
 
-	      rand_ray.base = rand_ray.base + opposite_rand_ray.vector;
-	      rand_ray.vector = rand_ray.vector - opposite_rand_ray.vector;
+          rand_ray.base = rand_ray.base + opposite_rand_ray.vector;
+          rand_ray.vector = rand_ray.vector - opposite_rand_ray.vector;
 
-	      axsray.push_back(rand_ray);
+          axsray.push_back(rand_ray);
 
-	      hitobject.dist = 0.0;
+          hitobject.dist = 0.0;
               hitobject.hit = false;
-	      hitobject.object = NULL;
-	      hitobject.id = -1;
-	      hitobject.hitpoint = Point(0,0,0);
-	    }
-	}
+          hitobject.object = NULL;
+          hitobject.id = -1;
+          hitobject.hitpoint = Point(0,0,0);
+        }
+    }
     }
   
   //Does not require to be found out if point is accessible
@@ -637,71 +642,71 @@ void calcRaysInAV(ATOM_NETWORK *hiaccatmnet, ATOM_NETWORK *orgatmnet, bool highA
       hitdata hitobject;
       bool inside_node = true;
       for (int i=0; i<numSamples; i++)
-	{
-	  distance = 0.0;
-	  
-	  rand_ray.base =  cell->abc_to_xyz(genRandomPoint());
-	  rand_ray.vector = genRandomVec();
-	  
-	  //Ray in the opposite direction
-	  opposite_rand_ray.base = rand_ray.base;
-	  opposite_rand_ray.vector  = rand_ray.vector.scale(-1);
-	  
-	  //For this implementation I need a reference to the original ray
-	  init_ray = rand_ray;
-	  opposite_init_ray = opposite_rand_ray;
-	  
-	  if (findSphereOfPoint(rand_ray.base,nodes,hitobject.id) == false)
-	    {
-	      inside_node = false; //Point is not within a node
-	    }
-	  
-	  while(distance < MAXRAYDIST) //Iterate Ray untill it reaches max distance
-	    {	      
-	      if (inside_node == false)
-		{
-		  rayTraceToSphere(cell,nodes,rand_ray,faces,hitobject);
-		  
-		  rand_ray.vector = rand_ray.vector.scale(hitobject.dist);
-		  rand_ray.base = init_ray.base + init_ray.vector.scale(distance);
-		  inaxsray.push_back(rand_ray);
-		  
-		  //Update Total Info
-		  distance += hitobject.dist;
-		  rand_ray.vector = init_ray.vector;
-		  rand_ray.base = cell->shiftXYZInUC(hitobject.hitpoint+rand_ray.vector.scale(threshold));
-		  
-		  hitobject.dist = 0.0;
-		  hitobject.hit = false;
-		  hitobject.hitpoint = Point(0,0,0); 
-		  hitobject.id = -1;
-		  hitobject.object = NULL;
-		  
-		  inside_node = true; //Now inside node
-		}
-	      else
-		{ //Shoot Through Nodes    
-		  rayTraceInsideSphere(cell,nodes,rand_ray,hitobject);
-		  
-		  rand_ray.vector = rand_ray.vector.scale(hitobject.dist);
-		  rand_ray.base = init_ray.base + init_ray.vector.scale(distance);
-		  axsray.push_back(rand_ray);
-		  
-		  //Update Total Info
-		  distance += hitobject.dist;
-		  rand_ray.vector = init_ray.vector;
-		  rand_ray.base = cell->shiftXYZInUC(hitobject.hitpoint+rand_ray.vector.scale(threshold));
-		  
-		  hitobject.dist = 0.0;
-		  hitobject.hit = false;
-		  hitobject.hitpoint = Point(0,0,0);  
-		  //Notice that I am not resetting hitobject.id and setting object
-		  hitobject.object = &(nodes[hitobject.id]);
-		  
-		  inside_node = false; //Now outside of nodes
-		}
-	    }	  
-	}
+    {
+      distance = 0.0;
+      
+      rand_ray.base =  cell->abc_to_xyz(genRandomPoint());
+      rand_ray.vector = genRandomVec();
+      
+      //Ray in the opposite direction
+      opposite_rand_ray.base = rand_ray.base;
+      opposite_rand_ray.vector  = rand_ray.vector.scale(-1);
+      
+      //For this implementation I need a reference to the original ray
+      init_ray = rand_ray;
+      opposite_init_ray = opposite_rand_ray;
+      
+      if (findSphereOfPoint(rand_ray.base,nodes,hitobject.id) == false)
+        {
+          inside_node = false; //Point is not within a node
+        }
+      
+      while(distance < MAXRAYDIST) //Iterate Ray untill it reaches max distance
+        {         
+          if (inside_node == false)
+        {
+          rayTraceToSphere(cell,nodes,rand_ray,faces,hitobject);
+          
+          rand_ray.vector = rand_ray.vector.scale(hitobject.dist);
+          rand_ray.base = init_ray.base + init_ray.vector.scale(distance);
+          inaxsray.push_back(rand_ray);
+          
+          //Update Total Info
+          distance += hitobject.dist;
+          rand_ray.vector = init_ray.vector;
+          rand_ray.base = cell->shiftXYZInUC(hitobject.hitpoint+rand_ray.vector.scale(threshold));
+          
+          hitobject.dist = 0.0;
+          hitobject.hit = false;
+          hitobject.hitpoint = Point(0,0,0); 
+          hitobject.id = -1;
+          hitobject.object = NULL;
+          
+          inside_node = true; //Now inside node
+        }
+          else
+        { //Shoot Through Nodes    
+          rayTraceInsideSphere(cell,nodes,rand_ray,hitobject);
+          
+          rand_ray.vector = rand_ray.vector.scale(hitobject.dist);
+          rand_ray.base = init_ray.base + init_ray.vector.scale(distance);
+          axsray.push_back(rand_ray);
+          
+          //Update Total Info
+          distance += hitobject.dist;
+          rand_ray.vector = init_ray.vector;
+          rand_ray.base = cell->shiftXYZInUC(hitobject.hitpoint+rand_ray.vector.scale(threshold));
+          
+          hitobject.dist = 0.0;
+          hitobject.hit = false;
+          hitobject.hitpoint = Point(0,0,0);  
+          //Notice that I am not resetting hitobject.id and setting object
+          hitobject.object = &(nodes[hitobject.id]);
+          
+          inside_node = false; //Now outside of nodes
+        }
+        }     
+    }
       cout << "Ray Andrew Sphere Implementation Completed:" << endl;
     }
   
@@ -720,102 +725,102 @@ void calcRaysInAV(ATOM_NETWORK *hiaccatmnet, ATOM_NETWORK *orgatmnet, bool highA
       bool inside_atom = false;
       bool inside_accessible_region;
       for (int i=0; i<numSamples; i++)
-	{
-	  distance = 0.0;
-	  
-	  rand_ray.base =  cell->abc_to_xyz(genRandomPoint());
-	  rand_ray.vector = genRandomVec();
-	  
-	  //Ray in the opposite direction
-	  opposite_rand_ray.base = rand_ray.base;
-	  opposite_rand_ray.vector  = rand_ray.vector.scale(-1);
-	  
-	  //For this implementation I need a reference to the original ray
-	  init_ray = rand_ray;
-	  opposite_init_ray = opposite_rand_ray;
-	  
-	  if ((findSphereOfPoint(rand_ray.base,atoms,hitobject.id) == true))
-	    {
-	      inside_atom = true; //Point is within an atom
-	    }
-	  else //Point is not within an atom
-	    {
-	      inside_atom = false;
-	    }
-	  inside_accessible_region = accessAnalysis.isVPointAccessible(rand_ray.base);
-	  
-	  while(distance < MAXRAYDIST) //Iterate Ray untill it reaches max distance
-	    {	      
-	      if ((inside_atom == false) && (inside_accessible_region == true))
-		{
-		  rayTraceToSphere(cell,atoms,rand_ray,faces,hitobject);
-		  
-		  rand_ray.vector = rand_ray.vector.scale(hitobject.dist);
-		  //rand_ray.base = init_ray.base + init_ray.vector.scale(distance);
-		  axsray.push_back(rand_ray);
-		  
-		  //Update Total Info
-		  distance += hitobject.dist;
-		  rand_ray.vector = init_ray.vector;
-		  rand_ray.base = cell->shiftXYZInUC(hitobject.hitpoint+rand_ray.vector.scale(threshold));
-		  //Reset all hitobject data
-		  hitobject.dist = 0.0;
-		  hitobject.hit = false;
-		  hitobject.hitpoint = Point(0,0,0); 
-		  hitobject.id = -1;
-		  hitobject.object = NULL;
-		  
-		  inside_atom = true; //Now inside atom
-		}
-	      else if ((inside_atom == false) && (inside_accessible_region == false))
-		{ //not within an atom but in inaccessible region
-		  rayTraceToSphere(cell,atoms,rand_ray,faces,hitobject);
-		  
-		  rand_ray.vector = rand_ray.vector.scale(hitobject.dist);
-		  //rand_ray.base = init_ray.base + init_ray.vector.scale(distance);
-		  inaxsray.push_back(rand_ray);
-		  
-		  //Update Total Info
-		  distance += hitobject.dist;
-		  rand_ray.vector = init_ray.vector;
-		  rand_ray.base = cell->shiftXYZInUC(hitobject.hitpoint+init_ray.vector.scale(threshold));
-		  //Reset all hitobject data
-		  hitobject.dist = 0.0;
-		  hitobject.hit = false;
-		  hitobject.hitpoint = Point(0,0,0); 
-		  hitobject.object = NULL;
-		  hitobject.id = -1;
-		  
-		  inside_atom = true; //Now inside atom
-		}
-	      else // Ray is inside of atoms
-		{    
-		  rayTraceInsideSphere(cell,atoms,rand_ray,hitobject);
-		  		  
-		  rand_ray.vector = rand_ray.vector.scale(hitobject.dist);
-		  //rand_ray.base = init_ray.base + init_ray.vector.scale(distance);
-		  //This is where I would push data on traveling through atoms  
-		  //but it is not here yet
+    {
+      distance = 0.0;
+      
+      rand_ray.base =  cell->abc_to_xyz(genRandomPoint());
+      rand_ray.vector = genRandomVec();
+      
+      //Ray in the opposite direction
+      opposite_rand_ray.base = rand_ray.base;
+      opposite_rand_ray.vector  = rand_ray.vector.scale(-1);
+      
+      //For this implementation I need a reference to the original ray
+      init_ray = rand_ray;
+      opposite_init_ray = opposite_rand_ray;
+      
+      if ((findSphereOfPoint(rand_ray.base,atoms,hitobject.id) == true))
+        {
+          inside_atom = true; //Point is within an atom
+        }
+      else //Point is not within an atom
+        {
+          inside_atom = false;
+        }
+      inside_accessible_region = accessAnalysis.isVPointAccessible(rand_ray.base);
+      
+      while(distance < MAXRAYDIST) //Iterate Ray untill it reaches max distance
+        {         
+          if ((inside_atom == false) && (inside_accessible_region == true))
+        {
+          rayTraceToSphere(cell,atoms,rand_ray,faces,hitobject);
+          
+          rand_ray.vector = rand_ray.vector.scale(hitobject.dist);
+          //rand_ray.base = init_ray.base + init_ray.vector.scale(distance);
+          axsray.push_back(rand_ray);
+          
+          //Update Total Info
+          distance += hitobject.dist;
+          rand_ray.vector = init_ray.vector;
+          rand_ray.base = cell->shiftXYZInUC(hitobject.hitpoint+rand_ray.vector.scale(threshold));
+          //Reset all hitobject data
+          hitobject.dist = 0.0;
+          hitobject.hit = false;
+          hitobject.hitpoint = Point(0,0,0); 
+          hitobject.id = -1;
+          hitobject.object = NULL;
+          
+          inside_atom = true; //Now inside atom
+        }
+          else if ((inside_atom == false) && (inside_accessible_region == false))
+        { //not within an atom but in inaccessible region
+          rayTraceToSphere(cell,atoms,rand_ray,faces,hitobject);
+          
+          rand_ray.vector = rand_ray.vector.scale(hitobject.dist);
+          //rand_ray.base = init_ray.base + init_ray.vector.scale(distance);
+          inaxsray.push_back(rand_ray);
+          
+          //Update Total Info
+          distance += hitobject.dist;
+          rand_ray.vector = init_ray.vector;
+          rand_ray.base = cell->shiftXYZInUC(hitobject.hitpoint+init_ray.vector.scale(threshold));
+          //Reset all hitobject data
+          hitobject.dist = 0.0;
+          hitobject.hit = false;
+          hitobject.hitpoint = Point(0,0,0); 
+          hitobject.object = NULL;
+          hitobject.id = -1;
+          
+          inside_atom = true; //Now inside atom
+        }
+          else // Ray is inside of atoms
+        {    
+          rayTraceInsideSphere(cell,atoms,rand_ray,hitobject);
+                  
+          rand_ray.vector = rand_ray.vector.scale(hitobject.dist);
+          //rand_ray.base = init_ray.base + init_ray.vector.scale(distance);
+          //This is where I would push data on traveling through atoms  
+          //but it is not here yet
    
-		  //Update Total Info
-		  distance += hitobject.dist;
-		  rand_ray.vector = init_ray.vector;
-		  rand_ray.base = cell->shiftXYZInUC(hitobject.hitpoint+init_ray.vector.scale(threshold));
-		 
-		  //Reset all hitobject data besides the last object id hit
-		  hitobject.dist = 0.0;
-		  hitobject.hit = false;
-		  hitobject.hitpoint = Point(0,0,0);  
-		  //Notice that I am not resetting hitobject.id and setting object
-		  hitobject.object = &(nodes[hitobject.id]);
-		  
-		  //So at this point I know that I am outside an atom however am
-		  //I in an accesible region or not?
-		  inside_atom = false; //Now outside of atoms and in accessible region
-		  inside_accessible_region = accessAnalysis.isVPointAccessible(rand_ray.base);
-		}
-	    }	  
-	}
+          //Update Total Info
+          distance += hitobject.dist;
+          rand_ray.vector = init_ray.vector;
+          rand_ray.base = cell->shiftXYZInUC(hitobject.hitpoint+init_ray.vector.scale(threshold));
+         
+          //Reset all hitobject data besides the last object id hit
+          hitobject.dist = 0.0;
+          hitobject.hit = false;
+          hitobject.hitpoint = Point(0,0,0);  
+          //Notice that I am not resetting hitobject.id and setting object
+          hitobject.object = &(nodes[hitobject.id]);
+          
+          //So at this point I know that I am outside an atom however am
+          //I in an accesible region or not?
+          inside_atom = false; //Now outside of atoms and in accessible region
+          inside_accessible_region = accessAnalysis.isVPointAccessible(rand_ray.base);
+        }
+        }     
+    }
       cout << "Ray Andrew Atom Implementation Completed:" << endl;
     }
   
@@ -867,9 +872,9 @@ void calcRaysInAV(ATOM_NETWORK *cell, ATOM_NETWORK *orgcell, bool highAccuracy, 
   vector<Plane> faces;
   calcPlanesToCell(cell,faces);
   
-  //Duplicate the nodes and atoms that intersect with the plane faces	
+  //Duplicate the nodes and atoms that intersect with the plane faces   
   duplicateSpheresOnFace(cell,atoms,faces);
-  duplicateSpheresOnFace(cell,nodes,faces);	
+  duplicateSpheresOnFace(cell,nodes,faces); 
   
   //Lists of Accessible, Inaccessible, and Resampled Rays
   vector<ray> axsray; //List of successful rays that were shot
@@ -905,48 +910,48 @@ void calcRaysInAV(ATOM_NETWORK *cell, ATOM_NETWORK *orgcell, bool highAccuracy, 
       ray opposite_rand_ray;
       hitdata hitobject;
       for (int i=0; i<numSamples; i++)
-	{
-	  rand_ray.base =  cell->abc_to_xyz(genRandomPoint());
-	  rand_ray.vector = genRandomVec();
-	  
-	  bool point_accessible = accessiblePoint(rand_ray.base,new_rad_con,r_probe,cell,vorcells,accessInfo);				
-	  
-	  if (point_accessible == false)
-	    {
+    {
+      rand_ray.base =  cell->abc_to_xyz(genRandomPoint());
+      rand_ray.vector = genRandomVec();
+      
+      bool point_accessible = accessiblePoint(rand_ray.base,new_rad_con,r_probe,cell,vorcells,accessInfo);              
+      
+      if (point_accessible == false)
+        {
               rand_ray.vector = Point(0,0,0);
-	      inaxsray.push_back(rand_ray);
-	    }
-	  else //point is accessible
-	    {
-	      opposite_rand_ray.base = rand_ray.base;
-	      opposite_rand_ray.vector  = rand_ray.vector.scale(-1);
-	      
-	      rayTraceToSphere(cell,atoms,rand_ray,faces,hitobject);
-	      rand_ray.vector = rand_ray.vector.scale(hitobject.dist);
-	      
+          inaxsray.push_back(rand_ray);
+        }
+      else //point is accessible
+        {
+          opposite_rand_ray.base = rand_ray.base;
+          opposite_rand_ray.vector  = rand_ray.vector.scale(-1);
+          
+          rayTraceToSphere(cell,atoms,rand_ray,faces,hitobject);
+          rand_ray.vector = rand_ray.vector.scale(hitobject.dist);
+          
               hitobject.dist = 0.0;
               hitobject.hit = false;
-	      hitobject.object = NULL;
-	      hitobject.id = -1;
-	      hitobject.hitpoint = Point(0,0,0);
-	      
-	      //Test negative of ray
-	      rayTraceToSphere(cell,atoms,opposite_rand_ray,faces,hitobject);
-	      opposite_rand_ray.vector = opposite_rand_ray.vector.scale(hitobject.dist);
-	      
-	      rand_ray.base = rand_ray.base + opposite_rand_ray.vector;
-	      rand_ray.vector = rand_ray.vector - opposite_rand_ray.vector;
-	      
-	      axsray.push_back(rand_ray);
-	      
-	      hitobject.dist = 0.0;
+          hitobject.object = NULL;
+          hitobject.id = -1;
+          hitobject.hitpoint = Point(0,0,0);
+          
+          //Test negative of ray
+          rayTraceToSphere(cell,atoms,opposite_rand_ray,faces,hitobject);
+          opposite_rand_ray.vector = opposite_rand_ray.vector.scale(hitobject.dist);
+          
+          rand_ray.base = rand_ray.base + opposite_rand_ray.vector;
+          rand_ray.vector = rand_ray.vector - opposite_rand_ray.vector;
+          
+          axsray.push_back(rand_ray);
+          
+          hitobject.dist = 0.0;
               hitobject.hit = false;
-	      hitobject.object = NULL;
-	      hitobject.id = -1;
-	      hitobject.hitpoint = Point(0,0,0);
-	      
-	    }
-	}
+          hitobject.object = NULL;
+          hitobject.id = -1;
+          hitobject.hitpoint = Point(0,0,0);
+          
+        }
+    }
     }
 
   if (option.compare("node") == 0)
@@ -958,44 +963,44 @@ void calcRaysInAV(ATOM_NETWORK *cell, ATOM_NETWORK *orgcell, bool highAccuracy, 
       ray opposite_rand_ray;
       hitdata hitobject;
       for (int i=0; i<numSamples; i++)
-	{
-	  do {
-	    ndx++;
-	    if (ndx >= accessInfo.size())
-	      {
-		ndx = 0;
-	      }
-	  } while(accessInfo[ndx] != true);
-	  rand_ray.base = nodes[ndx].center;  
-	  rand_ray.vector = genRandomVec();
-	  
-	  opposite_rand_ray.base = rand_ray.base;
-	  opposite_rand_ray.vector  = rand_ray.vector.scale(-1);
-	  
-	  rayTraceToSphere(cell,atoms,rand_ray,faces,hitobject);
-	  rand_ray.vector = rand_ray.vector.scale(hitobject.dist);
-	  
-	  hitobject.dist = 0.0;
-	  hitobject.hit = false;
-	  hitobject.object = NULL;
-	  hitobject.id = -1;
-	  hitobject.hitpoint = Point(0,0,0);
-	  
-	  //Test negative of ray
-	  rayTraceToSphere(cell,atoms,opposite_rand_ray,faces,hitobject);
-	  opposite_rand_ray.vector = opposite_rand_ray.vector.scale(hitobject.dist);
-	  
-	  rand_ray.base = rand_ray.base + opposite_rand_ray.vector;
-	  rand_ray.vector = rand_ray.vector - opposite_rand_ray.vector;
-	  
-	  axsray.push_back(rand_ray);
-	  
-	  hitobject.dist = 0.0;
-	  hitobject.hit = false;
-	  hitobject.object = NULL;
-	  hitobject.id = -1;
-	  hitobject.hitpoint = Point(0,0,0);
-	}
+    {
+      do {
+        ndx++;
+        if (ndx >= accessInfo.size())
+          {
+        ndx = 0;
+          }
+      } while(accessInfo[ndx] != true);
+      rand_ray.base = nodes[ndx].center;  
+      rand_ray.vector = genRandomVec();
+      
+      opposite_rand_ray.base = rand_ray.base;
+      opposite_rand_ray.vector  = rand_ray.vector.scale(-1);
+      
+      rayTraceToSphere(cell,atoms,rand_ray,faces,hitobject);
+      rand_ray.vector = rand_ray.vector.scale(hitobject.dist);
+      
+      hitobject.dist = 0.0;
+      hitobject.hit = false;
+      hitobject.object = NULL;
+      hitobject.id = -1;
+      hitobject.hitpoint = Point(0,0,0);
+      
+      //Test negative of ray
+      rayTraceToSphere(cell,atoms,opposite_rand_ray,faces,hitobject);
+      opposite_rand_ray.vector = opposite_rand_ray.vector.scale(hitobject.dist);
+      
+      rand_ray.base = rand_ray.base + opposite_rand_ray.vector;
+      rand_ray.vector = rand_ray.vector - opposite_rand_ray.vector;
+      
+      axsray.push_back(rand_ray);
+      
+      hitobject.dist = 0.0;
+      hitobject.hit = false;
+      hitobject.object = NULL;
+      hitobject.id = -1;
+      hitobject.hitpoint = Point(0,0,0);
+    }
     }
 
   
@@ -1008,44 +1013,44 @@ void calcRaysInAV(ATOM_NETWORK *cell, ATOM_NETWORK *orgcell, bool highAccuracy, 
       ray opposite_rand_ray;
       hitdata hitobject;
       for (int i=0; i<numSamples; i++)
-	{
-	  rand_ray.base =  cell->abc_to_xyz(genRandomPoint());
-	  rand_ray.vector = genRandomVec();
-	  opposite_rand_ray.base = rand_ray.base;
-	  opposite_rand_ray.vector  = rand_ray.vector.scale(-1);
-	      
-	  rayTraceInsideSphere(cell,nodes,rand_ray,hitobject);
-	  
-	  if (hitobject.hit == false)
-	    {
-	      rand_ray.vector = Point(0,0,0);
-	      inaxsray.push_back(rand_ray);
-	    }
-	  else
-	    { //It was traveling within a sphere    
-	      rand_ray.vector = rand_ray.vector.scale(hitobject.dist);
+    {
+      rand_ray.base =  cell->abc_to_xyz(genRandomPoint());
+      rand_ray.vector = genRandomVec();
+      opposite_rand_ray.base = rand_ray.base;
+      opposite_rand_ray.vector  = rand_ray.vector.scale(-1);
+          
+      rayTraceInsideSphere(cell,nodes,rand_ray,hitobject);
+      
+      if (hitobject.hit == false)
+        {
+          rand_ray.vector = Point(0,0,0);
+          inaxsray.push_back(rand_ray);
+        }
+      else
+        { //It was traveling within a sphere    
+          rand_ray.vector = rand_ray.vector.scale(hitobject.dist);
 
               hitobject.dist = 0.0;
               hitobject.hit = false;
-	      hitobject.id = -1;
-	      hitobject.object = NULL;
-	      hitobject.hitpoint = Point(0,0,0);
+          hitobject.id = -1;
+          hitobject.object = NULL;
+          hitobject.hitpoint = Point(0,0,0);
 
-	      rayTraceInsideSphere(cell,nodes,opposite_rand_ray,hitobject);
-	      opposite_rand_ray.vector = opposite_rand_ray.vector.scale(hitobject.dist);
+          rayTraceInsideSphere(cell,nodes,opposite_rand_ray,hitobject);
+          opposite_rand_ray.vector = opposite_rand_ray.vector.scale(hitobject.dist);
 
-	      rand_ray.base = rand_ray.base + opposite_rand_ray.vector;
-	      rand_ray.vector = rand_ray.vector - opposite_rand_ray.vector;
+          rand_ray.base = rand_ray.base + opposite_rand_ray.vector;
+          rand_ray.vector = rand_ray.vector - opposite_rand_ray.vector;
 
-	      axsray.push_back(rand_ray);
+          axsray.push_back(rand_ray);
 
-	      hitobject.dist = 0.0;
+          hitobject.dist = 0.0;
               hitobject.hit = false;
-	      hitobject.object = NULL;
-	      hitobject.id = -1;
-	      hitobject.hitpoint = Point(0,0,0);
-	    }
-	}
+          hitobject.object = NULL;
+          hitobject.id = -1;
+          hitobject.hitpoint = Point(0,0,0);
+        }
+    }
     }
   
   //Does not require to be found out if point is accessible
@@ -1061,71 +1066,71 @@ void calcRaysInAV(ATOM_NETWORK *cell, ATOM_NETWORK *orgcell, bool highAccuracy, 
       hitdata hitobject;
       bool inside_node = true;
       for (int i=0; i<numSamples; i++)
-	{
-	  distance = 0.0;
-	  
-	  rand_ray.base =  cell->abc_to_xyz(genRandomPoint());
-	  rand_ray.vector = genRandomVec();
-	  
-	  //Ray in the opposite direction
-	  opposite_rand_ray.base = rand_ray.base;
-	  opposite_rand_ray.vector  = rand_ray.vector.scale(-1);
-	  
-	  //For this implementation I need a reference to the original ray
-	  init_ray = rand_ray;
-	  opposite_init_ray = opposite_rand_ray;
-	  
-	  if (findSphereOfPoint(rand_ray.base,nodes,hitobject.id) == false)
-	    {
-	      inside_node = false; //Point is not within a node
-	    }
-	  
-	  while(distance < MAXRAYDIST) //Iterate Ray untill it reaches max distance
-	    {	      
-	      if (inside_node == false)
-		{
-		  rayTraceToSphere(cell,nodes,rand_ray,faces,hitobject);
-		  
-		  rand_ray.vector = rand_ray.vector.scale(hitobject.dist);
-		  rand_ray.base = init_ray.base + init_ray.vector.scale(distance);
-		  inaxsray.push_back(rand_ray);
-		  
-		  //Update Total Info
-		  distance += hitobject.dist;
-		  rand_ray.vector = init_ray.vector;
-		  rand_ray.base = cell->shiftXYZInUC(hitobject.hitpoint+rand_ray.vector.scale(threshold));
-		  
-		  hitobject.dist = 0.0;
-		  hitobject.hit = false;
-		  hitobject.hitpoint = Point(0,0,0); 
-		  hitobject.id = -1;
-		  hitobject.object = NULL;
-		  
-		  inside_node = true; //Now inside node
-		}
-	      else
-		{ //Shoot Through Nodes    
-		  rayTraceInsideSphere(cell,nodes,rand_ray,hitobject);
-		  
-		  rand_ray.vector = rand_ray.vector.scale(hitobject.dist);
-		  rand_ray.base = init_ray.base + init_ray.vector.scale(distance);
-		  axsray.push_back(rand_ray);
-		  
-		  //Update Total Info
-		  distance += hitobject.dist;
-		  rand_ray.vector = init_ray.vector;
-		  rand_ray.base = cell->shiftXYZInUC(hitobject.hitpoint+rand_ray.vector.scale(threshold));
-		  
-		  hitobject.dist = 0.0;
-		  hitobject.hit = false;
-		  hitobject.hitpoint = Point(0,0,0);  
-		  //Notice that I am not resetting hitobject.id and setting object
-		  hitobject.object = &(nodes[hitobject.id]);
-		  
-		  inside_node = false; //Now outside of nodes
-		}
-	    }	  
-	}
+    {
+      distance = 0.0;
+      
+      rand_ray.base =  cell->abc_to_xyz(genRandomPoint());
+      rand_ray.vector = genRandomVec();
+      
+      //Ray in the opposite direction
+      opposite_rand_ray.base = rand_ray.base;
+      opposite_rand_ray.vector  = rand_ray.vector.scale(-1);
+      
+      //For this implementation I need a reference to the original ray
+      init_ray = rand_ray;
+      opposite_init_ray = opposite_rand_ray;
+      
+      if (findSphereOfPoint(rand_ray.base,nodes,hitobject.id) == false)
+        {
+          inside_node = false; //Point is not within a node
+        }
+      
+      while(distance < MAXRAYDIST) //Iterate Ray untill it reaches max distance
+        {         
+          if (inside_node == false)
+        {
+          rayTraceToSphere(cell,nodes,rand_ray,faces,hitobject);
+          
+          rand_ray.vector = rand_ray.vector.scale(hitobject.dist);
+          rand_ray.base = init_ray.base + init_ray.vector.scale(distance);
+          inaxsray.push_back(rand_ray);
+          
+          //Update Total Info
+          distance += hitobject.dist;
+          rand_ray.vector = init_ray.vector;
+          rand_ray.base = cell->shiftXYZInUC(hitobject.hitpoint+rand_ray.vector.scale(threshold));
+          
+          hitobject.dist = 0.0;
+          hitobject.hit = false;
+          hitobject.hitpoint = Point(0,0,0); 
+          hitobject.id = -1;
+          hitobject.object = NULL;
+          
+          inside_node = true; //Now inside node
+        }
+          else
+        { //Shoot Through Nodes    
+          rayTraceInsideSphere(cell,nodes,rand_ray,hitobject);
+          
+          rand_ray.vector = rand_ray.vector.scale(hitobject.dist);
+          rand_ray.base = init_ray.base + init_ray.vector.scale(distance);
+          axsray.push_back(rand_ray);
+          
+          //Update Total Info
+          distance += hitobject.dist;
+          rand_ray.vector = init_ray.vector;
+          rand_ray.base = cell->shiftXYZInUC(hitobject.hitpoint+rand_ray.vector.scale(threshold));
+          
+          hitobject.dist = 0.0;
+          hitobject.hit = false;
+          hitobject.hitpoint = Point(0,0,0);  
+          //Notice that I am not resetting hitobject.id and setting object
+          hitobject.object = &(nodes[hitobject.id]);
+          
+          inside_node = false; //Now outside of nodes
+        }
+        }     
+    }
       cout << "Ray Andrew Sphere Implementation Completed:" << endl;
     }
   
@@ -1144,102 +1149,102 @@ void calcRaysInAV(ATOM_NETWORK *cell, ATOM_NETWORK *orgcell, bool highAccuracy, 
       bool inside_atom = false;
       bool inside_accessible_region;
       for (int i=0; i<numSamples; i++)
-	{
-	  distance = 0.0;
-	  
-	  rand_ray.base =  cell->abc_to_xyz(genRandomPoint());
-	  rand_ray.vector = genRandomVec();
-	  
-	  //Ray in the opposite direction
-	  opposite_rand_ray.base = rand_ray.base;
-	  opposite_rand_ray.vector  = rand_ray.vector.scale(-1);
-	  
-	  //For this implementation I need a reference to the original ray
-	  init_ray = rand_ray;
-	  opposite_init_ray = opposite_rand_ray;
-	  
-	  if ((findSphereOfPoint(rand_ray.base,atoms,hitobject.id) == true))
-	    {
-	      inside_atom = true; //Point is within an atom
-	    }
-	  else //Point is not within an atom
-	    {
-	      inside_atom = false;
-	    }
-	  inside_accessible_region = accessiblePoint(rand_ray.base,new_rad_con,r_probe,cell,vorcells,accessInfo); 
-	  
-	  while(distance < MAXRAYDIST) //Iterate Ray untill it reaches max distance
-	    {	      
-	      if ((inside_atom == false) && (inside_accessible_region == true))
-		{
-		  rayTraceToSphere(cell,atoms,rand_ray,faces,hitobject);
-		  
-		  rand_ray.vector = rand_ray.vector.scale(hitobject.dist);
-		  //rand_ray.base = init_ray.base + init_ray.vector.scale(distance);
-		  axsray.push_back(rand_ray);
-		  
-		  //Update Total Info
-		  distance += hitobject.dist;
-		  rand_ray.vector = init_ray.vector;
-		  rand_ray.base = cell->shiftXYZInUC(hitobject.hitpoint+rand_ray.vector.scale(threshold));
-		  //Reset all hitobject data
-		  hitobject.dist = 0.0;
-		  hitobject.hit = false;
-		  hitobject.hitpoint = Point(0,0,0); 
-		  hitobject.id = -1;
-		  hitobject.object = NULL;
-		  
-		  inside_atom = true; //Now inside atom
-		}
-	      else if ((inside_atom == false) && (inside_accessible_region == false))
-		{ //not within an atom but in inaccessible region
-		  rayTraceToSphere(cell,atoms,rand_ray,faces,hitobject);
-		  
-		  rand_ray.vector = rand_ray.vector.scale(hitobject.dist);
-		  //rand_ray.base = init_ray.base + init_ray.vector.scale(distance);
-		  inaxsray.push_back(rand_ray);
-		  
-		  //Update Total Info
-		  distance += hitobject.dist;
-		  rand_ray.vector = init_ray.vector;
-		  rand_ray.base = cell->shiftXYZInUC(hitobject.hitpoint+init_ray.vector.scale(threshold));
-		  //Reset all hitobject data
-		  hitobject.dist = 0.0;
-		  hitobject.hit = false;
-		  hitobject.hitpoint = Point(0,0,0); 
-		  hitobject.object = NULL;
-		  hitobject.id = -1;
-		  
-		  inside_atom = true; //Now inside atom
-		}
-	      else // Ray is inside of atoms
-		{    
-		  rayTraceInsideSphere(cell,atoms,rand_ray,hitobject);
-		  		  
-		  rand_ray.vector = rand_ray.vector.scale(hitobject.dist);
-		  //rand_ray.base = init_ray.base + init_ray.vector.scale(distance);
-		  //This is where I would push data on traveling through atoms  
-		  //but it is not here yet
+    {
+      distance = 0.0;
+      
+      rand_ray.base =  cell->abc_to_xyz(genRandomPoint());
+      rand_ray.vector = genRandomVec();
+      
+      //Ray in the opposite direction
+      opposite_rand_ray.base = rand_ray.base;
+      opposite_rand_ray.vector  = rand_ray.vector.scale(-1);
+      
+      //For this implementation I need a reference to the original ray
+      init_ray = rand_ray;
+      opposite_init_ray = opposite_rand_ray;
+      
+      if ((findSphereOfPoint(rand_ray.base,atoms,hitobject.id) == true))
+        {
+          inside_atom = true; //Point is within an atom
+        }
+      else //Point is not within an atom
+        {
+          inside_atom = false;
+        }
+      inside_accessible_region = accessiblePoint(rand_ray.base,new_rad_con,r_probe,cell,vorcells,accessInfo); 
+      
+      while(distance < MAXRAYDIST) //Iterate Ray untill it reaches max distance
+        {         
+          if ((inside_atom == false) && (inside_accessible_region == true))
+        {
+          rayTraceToSphere(cell,atoms,rand_ray,faces,hitobject);
+          
+          rand_ray.vector = rand_ray.vector.scale(hitobject.dist);
+          //rand_ray.base = init_ray.base + init_ray.vector.scale(distance);
+          axsray.push_back(rand_ray);
+          
+          //Update Total Info
+          distance += hitobject.dist;
+          rand_ray.vector = init_ray.vector;
+          rand_ray.base = cell->shiftXYZInUC(hitobject.hitpoint+rand_ray.vector.scale(threshold));
+          //Reset all hitobject data
+          hitobject.dist = 0.0;
+          hitobject.hit = false;
+          hitobject.hitpoint = Point(0,0,0); 
+          hitobject.id = -1;
+          hitobject.object = NULL;
+          
+          inside_atom = true; //Now inside atom
+        }
+          else if ((inside_atom == false) && (inside_accessible_region == false))
+        { //not within an atom but in inaccessible region
+          rayTraceToSphere(cell,atoms,rand_ray,faces,hitobject);
+          
+          rand_ray.vector = rand_ray.vector.scale(hitobject.dist);
+          //rand_ray.base = init_ray.base + init_ray.vector.scale(distance);
+          inaxsray.push_back(rand_ray);
+          
+          //Update Total Info
+          distance += hitobject.dist;
+          rand_ray.vector = init_ray.vector;
+          rand_ray.base = cell->shiftXYZInUC(hitobject.hitpoint+init_ray.vector.scale(threshold));
+          //Reset all hitobject data
+          hitobject.dist = 0.0;
+          hitobject.hit = false;
+          hitobject.hitpoint = Point(0,0,0); 
+          hitobject.object = NULL;
+          hitobject.id = -1;
+          
+          inside_atom = true; //Now inside atom
+        }
+          else // Ray is inside of atoms
+        {    
+          rayTraceInsideSphere(cell,atoms,rand_ray,hitobject);
+                  
+          rand_ray.vector = rand_ray.vector.scale(hitobject.dist);
+          //rand_ray.base = init_ray.base + init_ray.vector.scale(distance);
+          //This is where I would push data on traveling through atoms  
+          //but it is not here yet
    
-		  //Update Total Info
-		  distance += hitobject.dist;
-		  rand_ray.vector = init_ray.vector;
-		  rand_ray.base = cell->shiftXYZInUC(hitobject.hitpoint+init_ray.vector.scale(threshold));
-		 
-		  //Reset all hitobject data besides the last object id hit
-		  hitobject.dist = 0.0;
-		  hitobject.hit = false;
-		  hitobject.hitpoint = Point(0,0,0);  
-		  //Notice that I am not resetting hitobject.id and setting object
-		  hitobject.object = &(nodes[hitobject.id]);
-		  
-		  //So at this point I know that I am outside an atom however am
-		  //I in an accesible region or not?
-		  inside_atom = false; //Now outside of atoms and in accessible region
-		  inside_accessible_region = accessiblePoint(rand_ray.base,new_rad_con,r_probe,cell,vorcells,accessInfo); 
-		}
-	    }	  
-	}
+          //Update Total Info
+          distance += hitobject.dist;
+          rand_ray.vector = init_ray.vector;
+          rand_ray.base = cell->shiftXYZInUC(hitobject.hitpoint+init_ray.vector.scale(threshold));
+         
+          //Reset all hitobject data besides the last object id hit
+          hitobject.dist = 0.0;
+          hitobject.hit = false;
+          hitobject.hitpoint = Point(0,0,0);  
+          //Notice that I am not resetting hitobject.id and setting object
+          hitobject.object = &(nodes[hitobject.id]);
+          
+          //So at this point I know that I am outside an atom however am
+          //I in an accesible region or not?
+          inside_atom = false; //Now outside of atoms and in accessible region
+          inside_accessible_region = accessiblePoint(rand_ray.base,new_rad_con,r_probe,cell,vorcells,accessInfo); 
+        }
+        }     
+    }
       cout << "Ray Andrew Atom Implementation Completed:" << endl;
     }
   
@@ -1279,7 +1284,7 @@ void reportRayInfo(vector<ray>& axsray){
 //      rayinfo << rand_ray.base << " "<< rand_ray.vector << " " << rand_ray.vector.magnitude()  << endl;
       rayinfo << rand_ray.base.vals[0] << " " << rand_ray.base.vals[1] << " "<< rand_ray.base.vals[2] << " "
               << rand_ray.vector.vals[0] << " " << rand_ray.vector.vals[1] << " " << rand_ray.vector.vals[2] << " " 
-	      << rand_ray.vector.magnitude()  << endl;
+          << rand_ray.vector.magnitude()  << endl;
       }
   }
   else {
@@ -1299,78 +1304,78 @@ void reportRays(ostream &output, vector<ray>& axsray, vector<ray>& inaxsray, boo
       //Colors are in order of the rainbow
       output << "{color purple}" << "\n";
       for(unsigned int i = 0; i < axsray.size(); i++)
-	{
-	  if (axsray[i].vector.magnitude() < 3)
-	    {
-	      ray rand_ray = axsray.at(i);
-	      Point addition = rand_ray.base + rand_ray.vector;
-	      output << "{line {" << rand_ray.base << "} {" << addition << "}}" << "\n";
-	    }
-	}
+    {
+      if (axsray[i].vector.magnitude() < 3)
+        {
+          ray rand_ray = axsray.at(i);
+          Point addition = rand_ray.base + rand_ray.vector;
+          output << "{line {" << rand_ray.base << "} {" << addition << "}}" << "\n";
+        }
+    }
       output << "{color blue}" << "\n";
       for(unsigned int i = 0; i < axsray.size(); i++)
-	{
-	  if (axsray[i].vector.magnitude() < 6 && axsray[i].vector.magnitude() >= 3)
-	    {
-	      ray rand_ray = axsray.at(i);
-	      Point addition = rand_ray.base + rand_ray.vector;
-	      output << "{line {" << rand_ray.base << "} {" << addition << "}}" << "\n";
-	    }
-	}
+    {
+      if (axsray[i].vector.magnitude() < 6 && axsray[i].vector.magnitude() >= 3)
+        {
+          ray rand_ray = axsray.at(i);
+          Point addition = rand_ray.base + rand_ray.vector;
+          output << "{line {" << rand_ray.base << "} {" << addition << "}}" << "\n";
+        }
+    }
       output << "{color cyan}" << "\n";
       for(unsigned int i = 0; i < axsray.size(); i++)
-	{
-	  if (axsray[i].vector.magnitude() >= 6 && axsray[i].vector.magnitude() < 9)
-	    {
-	      ray rand_ray = axsray.at(i);
-	      Point addition = rand_ray.base + rand_ray.vector;
-	      output << "{line {" << rand_ray.base << "} {" << addition << "}}" << "\n";
-	    }
-	}
+    {
+      if (axsray[i].vector.magnitude() >= 6 && axsray[i].vector.magnitude() < 9)
+        {
+          ray rand_ray = axsray.at(i);
+          Point addition = rand_ray.base + rand_ray.vector;
+          output << "{line {" << rand_ray.base << "} {" << addition << "}}" << "\n";
+        }
+    }
       output << "{color lime}" << "\n";
       for(unsigned int i = 0; i < axsray.size(); i++)
-	{
-	  if (axsray[i].vector.magnitude() >= 9 && axsray[i].vector.magnitude() < 12)
-	    {
-	      ray rand_ray = axsray.at(i);
-	      Point addition = rand_ray.base + rand_ray.vector;
-	      output << "{line {" << rand_ray.base << "} {" << addition << "}}" << "\n";
-	    }
-	}
+    {
+      if (axsray[i].vector.magnitude() >= 9 && axsray[i].vector.magnitude() < 12)
+        {
+          ray rand_ray = axsray.at(i);
+          Point addition = rand_ray.base + rand_ray.vector;
+          output << "{line {" << rand_ray.base << "} {" << addition << "}}" << "\n";
+        }
+    }
       output << "{color orange}" << "\n";
       for(unsigned int i = 0; i < axsray.size(); i++)
-	{
-	  if (axsray[i].vector.magnitude() >= 12 && axsray[i].vector.magnitude() < 20)
-	    {
-	      ray rand_ray = axsray.at(i);
-	      Point addition = rand_ray.base + rand_ray.vector;
-	      output << "{line {" << rand_ray.base << "} {" << addition << "}}" << "\n";
-	    }
-	}
+    {
+      if (axsray[i].vector.magnitude() >= 12 && axsray[i].vector.magnitude() < 20)
+        {
+          ray rand_ray = axsray.at(i);
+          Point addition = rand_ray.base + rand_ray.vector;
+          output << "{line {" << rand_ray.base << "} {" << addition << "}}" << "\n";
+        }
+    }
       output << "{color red}" << "\n";
       for(unsigned int i = 0; i < axsray.size(); i++)
-	{
-	  if (axsray[i].vector.magnitude() >= 20)
-	    {
-	      ray rand_ray = axsray.at(i);
-	      Point addition = rand_ray.base + rand_ray.vector;
-	      output << "{line {" << rand_ray.base << "} {" << addition << "}}" << "\n";
-	    }
-	}
+    {
+      if (axsray[i].vector.magnitude() >= 20)
+        {
+          ray rand_ray = axsray.at(i);
+          Point addition = rand_ray.base + rand_ray.vector;
+          output << "{line {" << rand_ray.base << "} {" << addition << "}}" << "\n";
+        }
+    }
     }
   else //colors if false
     {
       output << "{color blue}" << "\n";
       for(unsigned int i = 0; i < axsray.size(); i++){
-	ray rand_ray = axsray.at(i);
-	Point addition = rand_ray.base + rand_ray.vector;
-	output << "{line {" << rand_ray.base << "} {" << addition << "}}" << "\n";
+    ray rand_ray = axsray.at(i);
+    Point addition = rand_ray.base + rand_ray.vector;
+    output << "{line {" << rand_ray.base << "} {" << addition << "}}" << "\n";
       }  
       output << "{color red}" << "\n";
       for(unsigned int i = 0; i < inaxsray.size(); i++){
-	ray rand_ray = inaxsray.at(i);
-	Point addition = rand_ray.base + rand_ray.vector;
-	output << "{line {" <<  rand_ray.base << "} {" << addition << "}}" << "\n";
+    ray rand_ray = inaxsray.at(i);
+    Point addition = rand_ray.base + rand_ray.vector;
+    output << "{line {" <<  rand_ray.base << "} {" << addition << "}}" << "\n";
       }
     }
 }
@@ -1414,9 +1419,9 @@ void reportHistogram(ostream& output,const double binSize,const int maxBins, vec
     {
       bin = rays[i].vector.magnitude()/binSize;
       if (bin >= maxBins) 
-	{
-	  bin = maxBins - 1;
-	}
+    {
+      bin = maxBins - 1;
+    }
       bins[bin]++;
     }
   

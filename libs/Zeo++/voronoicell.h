@@ -1,3 +1,9 @@
+/* 
+ * Updated by Ye Anjiang for extending the class to record neighbor atoms.
+ * June 9, 2019
+ *
+ */
+
 /* This file contains two defintions of Voronoi cells: one that stores
  * information about the faces, edges and nodes in each cell and one that only
  * stores information about the node coordinates. The first definition, VOR_CELL, is used
@@ -7,7 +13,6 @@
  * The file also contains all of the functions required to visualize an ATOM_NETWORK
  * and VORONOI_NETWORK using the ZeoVis tool.
  */
-
 
 /** Class used to store the node ids and coordinates of the vertices 
  *  that comprise a face of a Voronoi cell. The class orders the vertices
@@ -36,10 +41,9 @@ public:
     std::vector<Point> orderedVertices;
     std::vector<int> nodeIDs;
 
-    // Add by YAJ 20180609
     int neighborAtom1;
     int neighborAtom2;
-  VOR_FACE(int centerAt, int neighborAt, std::vector<Point> vertices, std::vector<int> vertexIDs);
+    VOR_FACE(int centerAt, int neighborAt, std::vector<Point> vertices, std::vector<int> vertexIDs);
 
   /* Store the provided vertices and their ids.   */
   VOR_FACE(std::vector<Point> vertices, ATOM_NETWORK *atmnet, VORONOI_NETWORK *vornet);

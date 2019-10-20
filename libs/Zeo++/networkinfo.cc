@@ -1,3 +1,7 @@
+/* 
+ * Updated by Ye Anjiang June 27, 2018
+ *
+ */
 //#include "network.h"
 #include <fstream>
 #include <iostream>
@@ -24,10 +28,7 @@ static std::map <std::string,int> atomicNumberTable;
 static std::map <std::string,bool> atomicCharacterTable;
 static std::set<string> periodicTable;
 
-//Added at 20180420
 static std::map <std::string,double> goldschmidtIonRadTable;
-
-//Added at 20180606
 //this table is used to get ionic rad infor1 from pymatgen computational results
 static std::map <std::string,double> ionRadTable;
 
@@ -813,8 +814,8 @@ double lookupRadius(string atomType, bool radial){
   map <string,double>::iterator  info = radTable.find(atomType);
   if(info == radTable.end()){
     cerr << "Unable to find radius for " << atomType << " in table. Please provide it " << "\n"
-	 << "in a reference file or check you input file." << "\n"
-	 << "Exiting ..." << "\n";
+     << "in a reference file or check you input file." << "\n"
+     << "Exiting ..." << "\n";
     exit(1);
   }
   else
@@ -842,8 +843,8 @@ double lookupMass(string atomType){
   map <string,double>::iterator  info = massTable.find(atomType);
   if(info == massTable.end()){
     cerr << "Unable to find molar mass for " << atomType << " in table. Please provide it " << "\n"
-	 << "in a reference file or check you input file." << "\n"
-	 << "Exiting ..." << "\n";
+     << "in a reference file or check you input file." << "\n"
+     << "Exiting ..." << "\n";
     exit(1);
   }
   else
@@ -889,7 +890,6 @@ std::string stripAtomName(std::string extAtom) {
         }
 }
 
-
 //Added at 20180606
 /** Reads the radius table from the provided static std::map <std::string,double>*/
 void readIonRadTable(std::map<std::string,double> radMap){
@@ -908,9 +908,9 @@ double lookupIonRadius(string atomType, bool radial){
   map <string,double>::iterator  info = ionRadTable.find(atomType);
   if(info == ionRadTable.end()){
     cerr << "Unable to find radius for " << atomType << " in table. Please provide it " << "\n"
-	 << "in a reference file or check you input file." << "\n"
-	 << "Exiting ..." << "\n";
-	 return -1;
+     << "in a reference file or check you input file." << "\n"
+     << "Exiting ..." << "\n";
+     return -1;
     //exit(1);
   }
   else
@@ -921,106 +921,106 @@ double lookupIonRadius(string atomType, bool radial){
 /*
  * Fills the ionic radius table with Shanno effictive radius.
  * Chosen Ruler:
- * 	coordination number: 6.
- * 	most commom oxidation state.
- *		shannon crystal radius.
- *	Reference papper:
- *		Energy Environ. Sci.,2017, 10, 306.
+ *  coordination number: 6.
+ *  most commom oxidation state.
+ *      shannon crystal radius.
+ *  Reference papper:
+ *      Energy Environ. Sci.,2017, 10, 306.
  *
  * */
 void initializeIonRadTable(){
-	ionRadTable.insert(pair <string,double> ("H",  0.31));
-	ionRadTable.insert(pair <string,double> ("He",  0.28));
-	ionRadTable.insert(pair <string,double> ("Li",  0.90));
-	ionRadTable.insert(pair <string,double> ("Be",  0.59));
-	ionRadTable.insert(pair <string,double> ("B",  0.41));
-	ionRadTable.insert(pair <string,double> ("C",  0.3));
-	ionRadTable.insert(pair <string,double> ("N",  1.32));
-	ionRadTable.insert(pair <string,double> ("O",  1.26));
-	ionRadTable.insert(pair <string,double> ("F",  1.19));
-	ionRadTable.insert(pair <string,double> ("Ne",  0.58));
-	ionRadTable.insert(pair <string,double> ("Na",  1.16));
-	ionRadTable.insert(pair <string,double> ("Mg",  0.86));
-	ionRadTable.insert(pair <string,double> ("Al",  0.68));
-	ionRadTable.insert(pair <string,double> ("Si",  0.54));
-	ionRadTable.insert(pair <string,double> ("P",  0.52));
-	ionRadTable.insert(pair <string,double> ("S",  1.70));
-	ionRadTable.insert(pair <string,double> ("Cl",  1.67));
-	ionRadTable.insert(pair <string,double> ("Ar",  1.06));
-	ionRadTable.insert(pair <string,double> ("K",  1.52));
-	ionRadTable.insert(pair <string,double> ("Ca",  1.14));
-	ionRadTable.insert(pair <string,double> ("Sc",  0.89));
-	ionRadTable.insert(pair <string,double> ("Ti",  0.85));
-	ionRadTable.insert(pair <string,double> ("V5",  0.78));
-	ionRadTable.insert(pair <string,double> ("Cr",  0.74));
-	ionRadTable.insert(pair <string,double> ("Mn",  0.75));
-	ionRadTable.insert(pair <string,double> ("Fe",  0.77));
-	ionRadTable.insert(pair <string,double> ("Co",  0.76));
-	ionRadTable.insert(pair <string,double> ("Ni",  0.72));
-	ionRadTable.insert(pair <string,double> ("Cu",  0.82));
-	ionRadTable.insert(pair <string,double> ("Zn",  0.88));
-	ionRadTable.insert(pair <string,double> ("Ga",  0.76));
-	ionRadTable.insert(pair <string,double> ("Ge",  0.77));
-	ionRadTable.insert(pair <string,double> ("As",  0.66));
-	ionRadTable.insert(pair <string,double> ("Se",  1.84));
-	ionRadTable.insert(pair <string,double> ("Br",  1.82));
-	ionRadTable.insert(pair <string,double> ("Kr",  1.16));
-	ionRadTable.insert(pair <string,double> ("Rb",  1.66));
-	ionRadTable.insert(pair <string,double> ("Sr",  1.32));
-	ionRadTable.insert(pair <string,double> ("Y",  1.04));
-	ionRadTable.insert(pair <string,double> ("Zr",  0.86));
-	ionRadTable.insert(pair <string,double> ("Nb",  0.82));
-	ionRadTable.insert(pair <string,double> ("Mo",  0.78));
-	ionRadTable.insert(pair <string,double> ("Tc",  0.74));
-	ionRadTable.insert(pair <string,double> ("Ru",  0.76));
-	ionRadTable.insert(pair <string,double> ("Rh",  0.75));
-	ionRadTable.insert(pair <string,double> ("Pd",  0.88));
-	ionRadTable.insert(pair <string,double> ("Ag",  1.09));
-	ionRadTable.insert(pair <string,double> ("Cd",  1.09));
-	ionRadTable.insert(pair <string,double> ("In",  0.94));
-	ionRadTable.insert(pair <string,double> ("Sn",  0.83));
-	ionRadTable.insert(pair <string,double> ("Sb",  0.82));
-	ionRadTable.insert(pair <string,double> ("Te",  2.07));
-	ionRadTable.insert(pair <string,double> ("I",  2.06));
-	ionRadTable.insert(pair <string,double> ("Xe",  1.40));
-	ionRadTable.insert(pair <string,double> ("Cs",  1.81));
-	ionRadTable.insert(pair <string,double> ("Ba",  1.49));
-	ionRadTable.insert(pair <string,double> ("La",  1.17));
-	ionRadTable.insert(pair <string,double> ("Ce",  1.08));
-	ionRadTable.insert(pair <string,double> ("Pr",  1.06));
-	ionRadTable.insert(pair <string,double> ("Nd",  1.12));
-	ionRadTable.insert(pair <string,double> ("Pm",  1.11));
-	ionRadTable.insert(pair <string,double> ("Sm",  1.10));
-	ionRadTable.insert(pair <string,double> ("Eu",  1.20));
-	ionRadTable.insert(pair <string,double> ("Gd",  1.08));
-	ionRadTable.insert(pair <string,double> ("Tb",  0.98));
-	ionRadTable.insert(pair <string,double> ("Dy",  1.13));
-	ionRadTable.insert(pair <string,double> ("Ho",  1.04));
-	ionRadTable.insert(pair <string,double> ("Er",  1.03));
-	ionRadTable.insert(pair <string,double> ("Tm",  1.10));
-	ionRadTable.insert(pair <string,double> ("Yb",  1.08));
-	ionRadTable.insert(pair <string,double> ("Lu",  1.00));
-	ionRadTable.insert(pair <string,double> ("Hf",  0.85));
-	ionRadTable.insert(pair <string,double> ("Ta",  0.82));
-	ionRadTable.insert(pair <string,double> ("W",  0.77));
-	ionRadTable.insert(pair <string,double> ("Re",  0.71));
-	ionRadTable.insert(pair <string,double> ("Os",  0.71));
-	ionRadTable.insert(pair <string,double> ("Ir",  0.77));
-	ionRadTable.insert(pair <string,double> ("Pt",  0.81));
-	ionRadTable.insert(pair <string,double> ("Au",  1.07));
-	ionRadTable.insert(pair <string,double> ("Hg",  1.24));
-	ionRadTable.insert(pair <string,double> ("Tl",  1.33));
-	ionRadTable.insert(pair <string,double> ("Pb",  1.12));
-	ionRadTable.insert(pair <string,double> ("Bi",  1.04));
-	ionRadTable.insert(pair <string,double> ("Po",  0.94));
-	ionRadTable.insert(pair <string,double> ("At",  0.76));
-	ionRadTable.insert(pair <string,double> ("Rn",  1.50));
-	ionRadTable.insert(pair <string,double> ("Fr",  1.94));
-	ionRadTable.insert(pair <string,double> ("Ra",  1.62));
-	ionRadTable.insert(pair <string,double> ("Ac",  1.26));
-	ionRadTable.insert(pair <string,double> ("Th",  1.08));
-	ionRadTable.insert(pair <string,double> ("Pa",  1.04));
-	ionRadTable.insert(pair <string,double> ("U",  0.99));
+    ionRadTable.insert(pair <string,double> ("H",  0.31));
+    ionRadTable.insert(pair <string,double> ("He",  0.28));
+    ionRadTable.insert(pair <string,double> ("Li",  0.90));
+    ionRadTable.insert(pair <string,double> ("Be",  0.59));
+    ionRadTable.insert(pair <string,double> ("B",  0.41));
+    ionRadTable.insert(pair <string,double> ("C",  0.3));
+    ionRadTable.insert(pair <string,double> ("N",  1.32));
+    ionRadTable.insert(pair <string,double> ("O",  1.26));
+    ionRadTable.insert(pair <string,double> ("F",  1.19));
+    ionRadTable.insert(pair <string,double> ("Ne",  0.58));
+    ionRadTable.insert(pair <string,double> ("Na",  1.16));
+    ionRadTable.insert(pair <string,double> ("Mg",  0.86));
+    ionRadTable.insert(pair <string,double> ("Al",  0.68));
+    ionRadTable.insert(pair <string,double> ("Si",  0.54));
+    ionRadTable.insert(pair <string,double> ("P",  0.52));
+    ionRadTable.insert(pair <string,double> ("S",  1.70));
+    ionRadTable.insert(pair <string,double> ("Cl",  1.67));
+    ionRadTable.insert(pair <string,double> ("Ar",  1.06));
+    ionRadTable.insert(pair <string,double> ("K",  1.52));
+    ionRadTable.insert(pair <string,double> ("Ca",  1.14));
+    ionRadTable.insert(pair <string,double> ("Sc",  0.89));
+    ionRadTable.insert(pair <string,double> ("Ti",  0.85));
+    ionRadTable.insert(pair <string,double> ("V5",  0.78));
+    ionRadTable.insert(pair <string,double> ("Cr",  0.74));
+    ionRadTable.insert(pair <string,double> ("Mn",  0.75));
+    ionRadTable.insert(pair <string,double> ("Fe",  0.77));
+    ionRadTable.insert(pair <string,double> ("Co",  0.76));
+    ionRadTable.insert(pair <string,double> ("Ni",  0.72));
+    ionRadTable.insert(pair <string,double> ("Cu",  0.82));
+    ionRadTable.insert(pair <string,double> ("Zn",  0.88));
+    ionRadTable.insert(pair <string,double> ("Ga",  0.76));
+    ionRadTable.insert(pair <string,double> ("Ge",  0.77));
+    ionRadTable.insert(pair <string,double> ("As",  0.66));
+    ionRadTable.insert(pair <string,double> ("Se",  1.84));
+    ionRadTable.insert(pair <string,double> ("Br",  1.82));
+    ionRadTable.insert(pair <string,double> ("Kr",  1.16));
+    ionRadTable.insert(pair <string,double> ("Rb",  1.66));
+    ionRadTable.insert(pair <string,double> ("Sr",  1.32));
+    ionRadTable.insert(pair <string,double> ("Y",  1.04));
+    ionRadTable.insert(pair <string,double> ("Zr",  0.86));
+    ionRadTable.insert(pair <string,double> ("Nb",  0.82));
+    ionRadTable.insert(pair <string,double> ("Mo",  0.78));
+    ionRadTable.insert(pair <string,double> ("Tc",  0.74));
+    ionRadTable.insert(pair <string,double> ("Ru",  0.76));
+    ionRadTable.insert(pair <string,double> ("Rh",  0.75));
+    ionRadTable.insert(pair <string,double> ("Pd",  0.88));
+    ionRadTable.insert(pair <string,double> ("Ag",  1.09));
+    ionRadTable.insert(pair <string,double> ("Cd",  1.09));
+    ionRadTable.insert(pair <string,double> ("In",  0.94));
+    ionRadTable.insert(pair <string,double> ("Sn",  0.83));
+    ionRadTable.insert(pair <string,double> ("Sb",  0.82));
+    ionRadTable.insert(pair <string,double> ("Te",  2.07));
+    ionRadTable.insert(pair <string,double> ("I",  2.06));
+    ionRadTable.insert(pair <string,double> ("Xe",  1.40));
+    ionRadTable.insert(pair <string,double> ("Cs",  1.81));
+    ionRadTable.insert(pair <string,double> ("Ba",  1.49));
+    ionRadTable.insert(pair <string,double> ("La",  1.17));
+    ionRadTable.insert(pair <string,double> ("Ce",  1.08));
+    ionRadTable.insert(pair <string,double> ("Pr",  1.06));
+    ionRadTable.insert(pair <string,double> ("Nd",  1.12));
+    ionRadTable.insert(pair <string,double> ("Pm",  1.11));
+    ionRadTable.insert(pair <string,double> ("Sm",  1.10));
+    ionRadTable.insert(pair <string,double> ("Eu",  1.20));
+    ionRadTable.insert(pair <string,double> ("Gd",  1.08));
+    ionRadTable.insert(pair <string,double> ("Tb",  0.98));
+    ionRadTable.insert(pair <string,double> ("Dy",  1.13));
+    ionRadTable.insert(pair <string,double> ("Ho",  1.04));
+    ionRadTable.insert(pair <string,double> ("Er",  1.03));
+    ionRadTable.insert(pair <string,double> ("Tm",  1.10));
+    ionRadTable.insert(pair <string,double> ("Yb",  1.08));
+    ionRadTable.insert(pair <string,double> ("Lu",  1.00));
+    ionRadTable.insert(pair <string,double> ("Hf",  0.85));
+    ionRadTable.insert(pair <string,double> ("Ta",  0.82));
+    ionRadTable.insert(pair <string,double> ("W",  0.77));
+    ionRadTable.insert(pair <string,double> ("Re",  0.71));
+    ionRadTable.insert(pair <string,double> ("Os",  0.71));
+    ionRadTable.insert(pair <string,double> ("Ir",  0.77));
+    ionRadTable.insert(pair <string,double> ("Pt",  0.81));
+    ionRadTable.insert(pair <string,double> ("Au",  1.07));
+    ionRadTable.insert(pair <string,double> ("Hg",  1.24));
+    ionRadTable.insert(pair <string,double> ("Tl",  1.33));
+    ionRadTable.insert(pair <string,double> ("Pb",  1.12));
+    ionRadTable.insert(pair <string,double> ("Bi",  1.04));
+    ionRadTable.insert(pair <string,double> ("Po",  0.94));
+    ionRadTable.insert(pair <string,double> ("At",  0.76));
+    ionRadTable.insert(pair <string,double> ("Rn",  1.50));
+    ionRadTable.insert(pair <string,double> ("Fr",  1.94));
+    ionRadTable.insert(pair <string,double> ("Ra",  1.62));
+    ionRadTable.insert(pair <string,double> ("Ac",  1.26));
+    ionRadTable.insert(pair <string,double> ("Th",  1.08));
+    ionRadTable.insert(pair <string,double> ("Pa",  1.04));
+    ionRadTable.insert(pair <string,double> ("U",  0.99));
 }
 
 /** Reads the radius table from the provided filename. The file must be

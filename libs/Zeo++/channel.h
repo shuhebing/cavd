@@ -1,3 +1,8 @@
+/* 
+ * Updated by Ye Anjiang September 17, 2019
+ *
+ */
+
 #ifndef CHANNEL_H
 #define CHANNEL_H
 
@@ -165,7 +170,7 @@ public:
     //Added at 20180705
     static bool findChannels_new(VORONOI_NETWORK *vornet, double minRadius, std::vector<CHANNEL> *channels);
     
-    // Added at 20190913
+    //Added at 20190913
     static bool findChannels_new2(VORONOI_NETWORK *vornet, double minRadius, double maxRadius, std::vector<CHANNEL> *channels);
     static void findChannels2(VORONOI_NETWORK *, double, double, std::vector<bool> *, std::vector<CHANNEL> *);
 
@@ -207,9 +212,7 @@ public:
 
 // moved to PORE class    double getIncludedSphereDiameter();
 
-
 };
-
  
 /** Special class used to compare pair<int,DELTA_POS> instances when rebuilding
  *  CHANNEL instances. Used in conjunction with a HEAP, this class ensures that nodes 
@@ -230,9 +233,6 @@ public:
 };
 
 
-
-
-
 bool compareNodes(std::pair<int,DELTA_POS> p1, std::pair<int,DELTA_POS> p2);
 
 //Added a function to write VMDfile
@@ -240,7 +240,6 @@ bool writeToVMD_new(vector<CHANNEL> channels, char *filename);
 // Add a function to write NET file
 bool writeToNET_new(vector<CHANNEL> channels, char *filename, ATOM_NETWORK *atmNet);
 
-/* 自定义异常 */
 struct WritingCHANNELException : public exception{
     const char * what () const throw (){
         return "Exception: Writing CHANNEL information failed!";

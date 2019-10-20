@@ -1,3 +1,8 @@
+/* 
+ * Updated by Ye Anjiang September 17, 2019
+ *
+ */
+ 
 /* Stores information about the basic data types that constitute a unit cell,
  * such as atoms (ATOM) and networks of atoms (ATOM_NETWORK). Also stores 
  * information about the underlying Voronoi network constituents such as nodes 

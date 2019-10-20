@@ -1,3 +1,8 @@
+/* 
+ * Updated by Ye Anjiang June 9, 2019
+ *
+ */
+
 /*
 *  PORE SIZE DISTRIBUTION CALCULATION
 * Author: Marielle Pinheiro
@@ -83,8 +88,8 @@ void calcPoreSizeDistr(ATOM_NETWORK *atmnet, ATOM_NETWORK *orgAtomnet, bool high
   vector <int> nodeIDs;
   vector <pair <Point, double> > coord_and_radiiOfNodeSphere;
   vector <pair <Point, double> > coord_and_radiiOfGhostSphere;
-	vector <double> distanceBetweenNodeSpheres;
-	vector <double> distanceBetweenGhostSpheres;
+    vector <double> distanceBetweenNodeSpheres;
+    vector <double> distanceBetweenGhostSpheres;
 
   int count = 0;
   int incount = 0;
@@ -113,16 +118,16 @@ void calcPoreSizeDistr(ATOM_NETWORK *atmnet, ATOM_NETWORK *orgAtomnet, bool high
 
 // Store sampled points that did not overlap with an atom but were inaccessible
     if(accessAnalysis.needToResample() == false && !inside && overlaps){
-	Point abcCoords = Point(aPoint, bPoint, cPoint);
-	Point coord = atmnet->abc_to_xyz(abcCoords);
-	inaxsPoint.push_back(coord);
+    Point abcCoords = Point(aPoint, bPoint, cPoint);
+    Point coord = atmnet->abc_to_xyz(abcCoords);
+    inaxsPoint.push_back(coord);
     }
 // Store accessible points
     if(accessAnalysis.needToResample() == false &&!overlaps) {
-	count++;     
-	Point abcCoords = Point(aPoint, bPoint, cPoint);
-	Point coords = atmnet->abc_to_xyz(abcCoords);
-	axsPoint.push_back(coords); 
+    count++;     
+    Point abcCoords = Point(aPoint, bPoint, cPoint);
+    Point coords = atmnet->abc_to_xyz(abcCoords);
+    axsPoint.push_back(coords); 
     }
   } // ends loop over all sampled points
 
@@ -248,13 +253,13 @@ void calcPoreSizeDistr(ATOM_NETWORK *atmnet, ATOM_NETWORK *orgAtomnet, bool high
   if (visualize) {
     printFileCoords_Radii(outfile, axsPoint_and_radiiOfNodeSphere, axsPoint_and_radiiOfGhostSphere, distanceBetweenNodeSpheres, distanceBetweenGhostSpheres, false, -1, -1);
     printf("Points file generated.\n\n");
-		if (!visVISIT){
+        if (!visVISIT){
                 // here printing ZeoVis stuff
-		}
-		if (visVISIT) {
-		  printFileCoords_Radii(nodeAndRadii, coord_and_radiiOfNodeSphere, coord_and_radiiOfGhostSphere, distanceBetweenNodeSpheres, distanceBetweenGhostSpheres, false, -1, -1);
-		  printf("Radii file generated.\n");
-		}
+        }
+        if (visVISIT) {
+          printFileCoords_Radii(nodeAndRadii, coord_and_radiiOfNodeSphere, coord_and_radiiOfGhostSphere, distanceBetweenNodeSpheres, distanceBetweenGhostSpheres, false, -1, -1);
+          printf("Radii file generated.\n");
+        }
   }
 
   accessAnalysis.deconstruct();
@@ -286,8 +291,8 @@ void NEWcalcPoreSizeDistr(MATERIAL *Mat, ostream &output){
   vector <int> nodeIDs;
   vector <pair <Point, double> > coord_and_radiiOfNodeSphere;
   vector <pair <Point, double> > coord_and_radiiOfGhostSphere;
-	vector <double> distanceBetweenNodeSpheres;
-	vector <double> distanceBetweenGhostSpheres;
+    vector <double> distanceBetweenNodeSpheres;
+    vector <double> distanceBetweenGhostSpheres;
 
 /* end PSD debug */
 
@@ -461,8 +466,8 @@ srand(randSeed);
   vector <int> nodeIDs;
   vector <pair <Point, double> > coord_and_radiiOfNodeSphere;
   vector <pair <Point, double> > coord_and_radiiOfGhostSphere;
-	vector <double> distanceBetweenNodeSpheres;
-	vector <double> distanceBetweenGhostSpheres;
+    vector <double> distanceBetweenNodeSpheres;
+    vector <double> distanceBetweenGhostSpheres;
 
   int resampleCount = 0;
   int count = 0;
@@ -481,8 +486,8 @@ srand(randSeed);
     int minAtomID;
     bool foundCell = new_rad_con->find_voronoi_cell(samplingPoint[0], samplingPoint[1], samplingPoint[2], newAtomX, newAtomY, newAtomZ, minAtomID);
     if(!foundCell){
-	cerr << "Error: Unable to find Voronoi cell for sampled point in AV calculation." << "\n" << "Occurred for structure " << newAtomNet.name << "\n" << "Exiting..." << "\n";
-	exit(1);
+    cerr << "Error: Unable to find Voronoi cell for sampled point in AV calculation." << "\n" << "Occurred for structure " << newAtomNet.name << "\n" << "Exiting..." << "\n";
+    exit(1);
     }
     ATOM curAtom = atmnet->atoms[minAtomID];
 
@@ -502,50 +507,50 @@ srand(randSeed);
 // Scan the nodes in the Voronoi cell to find if line can be drawn from the node to the sampling point
       bool foundNode = false;
       if(vcell.getNumNodes() == 0){
-	cerr << "Error: Voronoi cell of sampled point does not have any nodes" << "\nPoint: " << newSamplingPoint[0] << " " << newSamplingPoint[1] << " " << newSamplingPoint[2] << "\nVoronoi cell is #" << minAtomID << " in structure " << newAtomNet.name << "\nPlease contact the source code provider." << "\nExiting...\n";
+    cerr << "Error: Voronoi cell of sampled point does not have any nodes" << "\nPoint: " << newSamplingPoint[0] << " " << newSamplingPoint[1] << " " << newSamplingPoint[2] << "\nVoronoi cell is #" << minAtomID << " in structure " << newAtomNet.name << "\nPlease contact the source code provider." << "\nExiting...\n";
         exit(1);
       }
       for(int k = 0; k < vcell.getNumNodes(); k++){
-	Point nodePoint = vcell.getNodeCoord(k); 
-	double ptDist= calcEuclideanDistance(nodePoint[0], nodePoint[1], nodePoint[2], circCenter[0], circCenter[1], circCenter[2]);
-	bool nodeInsideSphere = (ptDist < samplingRadius);
-	if(!nodeInsideSphere){
-	  Point otherRay = newSamplingPoint.subtract(nodePoint);
-	  double dotProduct = sampleRay.dot_product(otherRay);
-	  if(dotProduct > 0) {
-	    // Angle is less than 90 degrees and so the line segment intersects twice,
-	    // making the path not viable
-	  }
-	  else {
-	    // Angle is at least 90 degrees and so the line segment interesects only once, 
-	    // thereby representing a viable path--> overlaps is now FALSE
-	    foundNode = true;
-	    overlaps = !accessInfo.at(vcell.getNodeID(k));
-	    break; 
-	  }
-	}
+    Point nodePoint = vcell.getNodeCoord(k); 
+    double ptDist= calcEuclideanDistance(nodePoint[0], nodePoint[1], nodePoint[2], circCenter[0], circCenter[1], circCenter[2]);
+    bool nodeInsideSphere = (ptDist < samplingRadius);
+    if(!nodeInsideSphere){
+      Point otherRay = newSamplingPoint.subtract(nodePoint);
+      double dotProduct = sampleRay.dot_product(otherRay);
+      if(dotProduct > 0) {
+        // Angle is less than 90 degrees and so the line segment intersects twice,
+        // making the path not viable
+      }
+      else {
+        // Angle is at least 90 degrees and so the line segment interesects only once, 
+        // thereby representing a viable path--> overlaps is now FALSE
+        foundNode = true;
+        overlaps = !accessInfo.at(vcell.getNodeID(k));
+        break; 
+      }
+    }
       }
 // Sampling failed due to lying on Voronoi cell face and numerical inaccurarcy. 
 // Record failure, resample and notify user later
       if(!foundNode){
-	resampleCount++;
-	resampledInfo.push_back(pair<int, Point> (minAtomID, newSamplingPoint));
-	i--;
+    resampleCount++;
+    resampledInfo.push_back(pair<int, Point> (minAtomID, newSamplingPoint));
+    i--;
       }
     }
 
 // Store sampled points that did not overlap with an atom but were inaccessible
     if(!inside && overlaps){
-	Point abcCoords = Point(aPoint, bPoint, cPoint);
-	Point coord = atmnet->abc_to_xyz(abcCoords);
-	inaxsPoint.push_back(coord);
+    Point abcCoords = Point(aPoint, bPoint, cPoint);
+    Point coord = atmnet->abc_to_xyz(abcCoords);
+    inaxsPoint.push_back(coord);
     }
 // Store accessible points
     if(!overlaps) {
-	count++;     
-	Point abcCoords = Point(aPoint, bPoint, cPoint);
-	Point coords = atmnet->abc_to_xyz(abcCoords);
-	axsPoint.push_back(coords); 
+    count++;     
+    Point abcCoords = Point(aPoint, bPoint, cPoint);
+    Point coords = atmnet->abc_to_xyz(abcCoords);
+    axsPoint.push_back(coords); 
     }
   }
 
@@ -640,13 +645,13 @@ srand(randSeed);
   if (visualize) {
     printFileCoords_Radii(outfile, axsPoint_and_radiiOfNodeSphere, axsPoint_and_radiiOfGhostSphere, distanceBetweenNodeSpheres, distanceBetweenGhostSpheres, false, -1, -1);
     printf("Points file generated.\n\n");
-		if (!visVISIT){
+        if (!visVISIT){
                 // here printing ZeoVis stuff
-		}
-		if (visVISIT) {
-		  printFileCoords_Radii(nodeAndRadii, coord_and_radiiOfNodeSphere, coord_and_radiiOfGhostSphere, distanceBetweenNodeSpheres, distanceBetweenGhostSpheres, false, -1, -1);
-		  printf("Radii file generated.\n");
-		}
+        }
+        if (visVISIT) {
+          printFileCoords_Radii(nodeAndRadii, coord_and_radiiOfNodeSphere, coord_and_radiiOfGhostSphere, distanceBetweenNodeSpheres, distanceBetweenGhostSpheres, false, -1, -1);
+          printf("Radii file generated.\n");
+        }
   }
 }
 
@@ -659,14 +664,14 @@ srand(randSeed);
 //This function checks for duplicates in the node IDs vector
 void checkDuplicates(ATOM_NETWORK *atomnetwork, VORONOI_NETWORK *vornet, vector <int> &listNodeIDs, vector <pair <Point, double> > &nodeAndRadii, Point nodePt, double newRadius){
   int newNodeID = getNodeID(nodePt, atomnetwork, vornet);
-	bool unique = true;
+    bool unique = true;
   listNodeIDs.push_back(newNodeID);
   nodeAndRadii.push_back(pair <Point, double> (nodePt, newRadius));
   for (int i=0; i<(listNodeIDs.size()-1) && unique; i++){
     if (newNodeID == listNodeIDs.at(i)){
       listNodeIDs.pop_back();
       nodeAndRadii.pop_back();
-			unique = false;
+            unique = false;
     }
   }
 }
@@ -674,75 +679,75 @@ void checkDuplicates(ATOM_NETWORK *atomnetwork, VORONOI_NETWORK *vornet, vector 
 //This function checks the amount of overlap between spheres. 
 //In the circumstance that the volume of intersection overlap is above the threshold, the larger sphere is selected
 void calcSphereIntersect(vector<pair <Point, double> > &inputNodeSphereAndRadii, vector<pair <Point, double> > &outputNodeSphereAndRadii){
-	int size = inputNodeSphereAndRadii.size(); 
-	vector <int> overlap_nodes; 
-	for (int a=0; a<inputNodeSphereAndRadii.size(); a++){
-		bool noOverlap = true;
-		for (int b=a+1; b<inputNodeSphereAndRadii.size() && noOverlap; b++){
-			double Radius1= inputNodeSphereAndRadii.at(a). second; double Radius2=inputNodeSphereAndRadii.at(b).second;
-			Point coord1 = inputNodeSphereAndRadii.at(a).first; Point coord2 = inputNodeSphereAndRadii.at(b).first;
+    int size = inputNodeSphereAndRadii.size(); 
+    vector <int> overlap_nodes; 
+    for (int a=0; a<inputNodeSphereAndRadii.size(); a++){
+        bool noOverlap = true;
+        for (int b=a+1; b<inputNodeSphereAndRadii.size() && noOverlap; b++){
+            double Radius1= inputNodeSphereAndRadii.at(a). second; double Radius2=inputNodeSphereAndRadii.at(b).second;
+            Point coord1 = inputNodeSphereAndRadii.at(a).first; Point coord2 = inputNodeSphereAndRadii.at(b).first;
 
-			double dist = calcEuclideanDistance(coord1[0], coord1[1], coord1[2], coord2[0], coord2[1], coord2[2]);
-			double vol1 = (4*PI/3)*(Radius1*Radius1*Radius1);
-			double vol2 = (4*PI/3)*(Radius2*Radius2*Radius2);
+            double dist = calcEuclideanDistance(coord1[0], coord1[1], coord1[2], coord2[0], coord2[1], coord2[2]);
+            double vol1 = (4*PI/3)*(Radius1*Radius1*Radius1);
+            double vol2 = (4*PI/3)*(Radius2*Radius2*Radius2);
 
-			bool overlap = (dist < (Radius1 + Radius2));
-			if (overlap){
-				bool size = (Radius1>Radius2);
-				bool inside = (dist <= abs(Radius1-Radius2));
-				/*if (inside && size) {
-					printf("Node %d encompasses Node %d\n", a, b);
-				}
-				if (inside && !size){
-					printf("Node %d encompasses Node %d\n", b, a);
-				}*/
-				if (!inside){
-				double distsq = dist*dist; 
-				double Rad1sq = Radius1*Radius1; double Rad2sq = Radius2*Radius2;
-				double volIntersect = (PI/(12*dist))*(Radius1 + Radius2 - dist)*(Radius1 + Radius2 - dist)*(distsq+2*dist*(Radius1 + Radius2) - 3*(Radius1 - Radius2)*(Radius1-Radius2));
-				double overlapDist = Radius1 + Radius2 - dist;
+            bool overlap = (dist < (Radius1 + Radius2));
+            if (overlap){
+                bool size = (Radius1>Radius2);
+                bool inside = (dist <= abs(Radius1-Radius2));
+                /*if (inside && size) {
+                    printf("Node %d encompasses Node %d\n", a, b);
+                }
+                if (inside && !size){
+                    printf("Node %d encompasses Node %d\n", b, a);
+                }*/
+                if (!inside){
+                double distsq = dist*dist; 
+                double Rad1sq = Radius1*Radius1; double Rad2sq = Radius2*Radius2;
+                double volIntersect = (PI/(12*dist))*(Radius1 + Radius2 - dist)*(Radius1 + Radius2 - dist)*(distsq+2*dist*(Radius1 + Radius2) - 3*(Radius1 - Radius2)*(Radius1-Radius2));
+                double overlapDist = Radius1 + Radius2 - dist;
 
-				double diff; double volFraction;
-				int largerID; double largerRadius; Point largerCoord;
-				double smallerRadius; Point smallerCoord;
-				if (size){
-					diff = 2*Radius2 - overlapDist; 
-					volFraction = volIntersect/ vol2; 
-				}
-				if (!size){
-					diff = 2*Radius1 - overlapDist; 
-					volFraction = volIntersect/vol1;
-				}
-				if (volFraction>=TOL) {
-					noOverlap = false;
-				}
-			}
-	  }
-	}
-	if (noOverlap) outputNodeSphereAndRadii.push_back(pair <Point, double> (inputNodeSphereAndRadii.at(a).first, inputNodeSphereAndRadii.at(a).second));
-	}
+                double diff; double volFraction;
+                int largerID; double largerRadius; Point largerCoord;
+                double smallerRadius; Point smallerCoord;
+                if (size){
+                    diff = 2*Radius2 - overlapDist; 
+                    volFraction = volIntersect/ vol2; 
+                }
+                if (!size){
+                    diff = 2*Radius1 - overlapDist; 
+                    volFraction = volIntersect/vol1;
+                }
+                if (volFraction>=TOL) {
+                    noOverlap = false;
+                }
+            }
+      }
+    }
+    if (noOverlap) outputNodeSphereAndRadii.push_back(pair <Point, double> (inputNodeSphereAndRadii.at(a).first, inputNodeSphereAndRadii.at(a).second));
+    }
 }
 
 //This function calculates the periodic distance between spheres with radii in the range of interest (specified by last 2 arguments in -vpsd)
 void calcSpheresDistance(ATOM_NETWORK atomnetwork, vector <pair <Point, double> > &sphereAndRadii, vector <double> &distanceBetweenSpheres){
-	for (int a=0; a<sphereAndRadii.size(); a++){
-		Point coord1 = sphereAndRadii.at(a).first; double Radius1 = sphereAndRadii.at(a).second;
-		double SpheresDistanceCalc = 0;
-		double minDistance = 1000000;
-		for (int b=0; b<sphereAndRadii.size(); b++){
-			Point coord2 = sphereAndRadii.at(b).first; double Radius2 = sphereAndRadii.at(b).second;
-			if (Radius1>=2 && Radius1<=2.15){
-				if (Radius2>=2 && Radius2<=2.15){
-					if (a !=b){
-						double checkDistance = atomnetwork.calcDistanceXYZ(coord1[0], coord1[1], coord1[2], coord2[0], coord2[1], coord2[2]);
-						minDistance = min(minDistance, checkDistance);
-						SpheresDistanceCalc = minDistance; 
-					}
-				}
-			}
-		}
-		distanceBetweenSpheres.push_back(SpheresDistanceCalc);
-	}	
+    for (int a=0; a<sphereAndRadii.size(); a++){
+        Point coord1 = sphereAndRadii.at(a).first; double Radius1 = sphereAndRadii.at(a).second;
+        double SpheresDistanceCalc = 0;
+        double minDistance = 1000000;
+        for (int b=0; b<sphereAndRadii.size(); b++){
+            Point coord2 = sphereAndRadii.at(b).first; double Radius2 = sphereAndRadii.at(b).second;
+            if (Radius1>=2 && Radius1<=2.15){
+                if (Radius2>=2 && Radius2<=2.15){
+                    if (a !=b){
+                        double checkDistance = atomnetwork.calcDistanceXYZ(coord1[0], coord1[1], coord1[2], coord2[0], coord2[1], coord2[2]);
+                        minDistance = min(minDistance, checkDistance);
+                        SpheresDistanceCalc = minDistance; 
+                    }
+                }
+            }
+        }
+        distanceBetweenSpheres.push_back(SpheresDistanceCalc);
+    }   
 }
 
 //This function will output a histogram file with extension .distr
@@ -812,26 +817,26 @@ void Histogram(ostream& output, const double binSize, const int maxBins, vector<
 void printFileCoords_Radii(ostream& outfile, vector<pair <Point, double> > &pt_node_rad, vector<pair <Point, double> > &pt_ghost_rad, vector <double> &distanceBetweenNodeSpheres, vector <double> &distanceBetweenGhostSpheres, bool overlaps, double startRad, double endRad){
  outfile <<(pt_node_rad.size() + pt_ghost_rad.size())<<"\n\n";
   for (int i=0; i<pt_node_rad.size(); i++){
-		if (overlaps){
-			if (pt_node_rad.at(i).second>=startRad && pt_node_rad.at(i).second <= endRad) outfile <<"3\t";
-			if (pt_node_rad.at(i).second<startRad) outfile <<"2\t";
-		  if (pt_node_rad.at(i).second>endRad) outfile <<"1\t"; 
-		}
-		else outfile <<"1\t";
-		outfile << pt_node_rad.at(i).first[0]<< "\t"<< pt_node_rad.at(i).first[1]<< "\t" << pt_node_rad.at(i).first[2]<<"\t"<<pt_node_rad.at(i).second;
-		if (overlaps) outfile <<"\t"<< distanceBetweenNodeSpheres.at(i);
-		outfile<<"\n";
+        if (overlaps){
+            if (pt_node_rad.at(i).second>=startRad && pt_node_rad.at(i).second <= endRad) outfile <<"3\t";
+            if (pt_node_rad.at(i).second<startRad) outfile <<"2\t";
+          if (pt_node_rad.at(i).second>endRad) outfile <<"1\t"; 
+        }
+        else outfile <<"1\t";
+        outfile << pt_node_rad.at(i).first[0]<< "\t"<< pt_node_rad.at(i).first[1]<< "\t" << pt_node_rad.at(i).first[2]<<"\t"<<pt_node_rad.at(i).second;
+        if (overlaps) outfile <<"\t"<< distanceBetweenNodeSpheres.at(i);
+        outfile<<"\n";
   }
  for (int i=0; i<pt_ghost_rad.size(); i++){
-	if (overlaps){
-		if (pt_ghost_rad.at(i).second>=startRad && pt_ghost_rad.at(i).second <= endRad) outfile <<"3\t";
-		if (pt_ghost_rad.at(i).second<startRad) outfile <<"2\t";
-		if (pt_ghost_rad.at(i).second>endRad) outfile <<"1\t";
-	}
-	else outfile <<"0\t";
-	outfile<< pt_ghost_rad.at(i).first[0]<< "\t"<< pt_ghost_rad.at(i).first[1]<< "\t" << pt_ghost_rad.at(i).first[2]<<"\t"<<pt_ghost_rad.at(i).second;
-	if (overlaps) outfile <<"\t"<< distanceBetweenGhostSpheres.at(i);
-	outfile<<"\n";
+    if (overlaps){
+        if (pt_ghost_rad.at(i).second>=startRad && pt_ghost_rad.at(i).second <= endRad) outfile <<"3\t";
+        if (pt_ghost_rad.at(i).second<startRad) outfile <<"2\t";
+        if (pt_ghost_rad.at(i).second>endRad) outfile <<"1\t";
+    }
+    else outfile <<"0\t";
+    outfile<< pt_ghost_rad.at(i).first[0]<< "\t"<< pt_ghost_rad.at(i).first[1]<< "\t" << pt_ghost_rad.at(i).first[2]<<"\t"<<pt_ghost_rad.at(i).second;
+    if (overlaps) outfile <<"\t"<< distanceBetweenGhostSpheres.at(i);
+    outfile<<"\n";
   }
 }
 
