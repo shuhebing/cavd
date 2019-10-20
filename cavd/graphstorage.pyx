@@ -1,6 +1,12 @@
 # distutils: language = c++
 # distutils: sources = ../graphstorage.cc
 
+"""
+    Updated by Ye Anjiang for storing the Voronoi network.
+    yeanjiang@shu.edu.cn
+    May 18, 2019
+"""
+
 from netstorage cimport VoronoiNetwork
 
 cdef class DijkstraNetwork:

@@ -45,9 +45,7 @@ cdef extern from '../libs/Zeo++/networkio.h':
 
 # remove migrant ion added at 20180408
     cdef bint readRemoveMigrantCif(char *filename, ATOM_NETWORK *cell, const char *migrant, bint radial)
-# writeToBI
-    cdef bint writeToBI(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, double minRad)
-    cdef bint writeToBI(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet)
+    
 # writeToVasp
     #cdef bint writeToVasp(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, bint storeRadius, double minRad)
     #edited at 20180530
@@ -58,10 +56,6 @@ cdef extern from '../libs/Zeo++/networkio.h':
     #add at 20190518
     cdef bint writeToNET(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, double minRad, double maxRad)
     cdef bint writeToNET(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet)
-
-# Added at 20180704
-cdef extern from '../libs/Zeo++/voronoicell.h':
-    cdef bint writeZVis(char *filename, vector[VOR_CELL] *cells, ATOM_NETWORK *atmnet, VORONOI_NETWORK *vornet)
 
 # At present  the return value of performVoronoiDecomp is void*
 # Compile it after void* is changed to bool in the original source file

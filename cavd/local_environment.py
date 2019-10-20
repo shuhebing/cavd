@@ -1,54 +1,11 @@
 '''
-离子局部环境分析程序。
-更新日期：20190123
-作者：YAJ
+Coordination environment analysis.
+
+Update date：20190123
+Author：YAJ
 School of Computer Engineering and Science ShangHai University 
 
-配位数计算原理：
-    1.按距离与正负号计算配位：
-        以目标原子为中心，10A为半径画球形区域，得到区域内所有原子。按照距离目标离子中心的距离排序从小到大排序，存入列表中。
-        从前往后遍历列表，判断每个原子的正负，直到出现第一个同号原子为止，记录下的异号原子的数目即为配位数。（计算第一配位球壳层）
-    2.按O'Keefee 提供的方法计算配位。
-        原始文献为：
-            [1]	M. O’Keeffe, “A proposed rigorous definition of coordination number,” Acta Crystallogr. Sect. A, vol. 35, no. 5, pp. 772–775, 1979.
-        下列文献对该方法做了介绍：
-            [2]	L. Yang, S. Dacek, and G. Ceder, “Proposed definition of crystal substructure and substructural similarity,” Phys. Rev. B - Condens. Matter Mater. Phys., vol. 90, no. 5, pp. 1–9, 2014.
-
-离子半径计算原理：
-    计算给定结构文件中对应位点的配位数后，依据元素、价态和配位数三者的信息查香农1976年有效离子半径表，得到对应的半径。
-    ！！！----------注意----------！！！
-    若香农表中无法找到结构文件中离子对应的价态或配位数，则会返回香农表中最接近文件中的价态或配位数所对应的半径，作为离子半径。
-    若结构文件中为给定价态，使用原子半径作为替代。
-
-输入：
-    结构文件、迁移离子元素符号
-    离子半径表：香农1976年离子半径。(ionic_radii.json)
-输出：
-    格式：
-    Coordination组成的列表、(label,radius)组成的列表。
-    Coordination定义为:
-        Coordination：
-            label element coord frac_coord radius coord_num(配位数) coord_nei
-    分别指：
-        label：cif文件中的的“_atom_site_label”字段对应的值，表征不同环境下的原子
-        element：中心原子元素符号
-        coord：中心原子的直角坐标
-        frac_coord：中心原子的直角坐标
-        radius：中心原子的离子半径（在结构文件中未给出价态时，使用原子半径替代）
-        coord_num：中心原子的配位数
-        coord_nei：中心原子的配位原子列表。列表中的每一项为(PeriodicSite,distance)，表示一个配位原子：
-            PeriodicSite为Pymatgen中表示位点的数据结构；
-            distance为中心原子到配位原子的距离，单位为A。
-    label: radius 组成的列表。
-环境要求：
-    需安装pymatgen包
-    需将ionic_radii.json文件与该文件（ionic_radii.py）放置在同一目录下。
-使用方法：
-    更改“if __name__ == "__main__":”模块中调用的“get_ionic_radii()”中的参数为需要计算的cif文件，并加上迁移离子。
-程序目前的缺陷：
-    无法计算具有部分占据/混占的结构文件。
-    对于香农1976年有效离子半径表中不存在的价态（小数价态）、元素（H与H的同位素等）和配位数组合，会采用近似值的方法查表。
-    仅保证针对对离子晶体计算有效。
+[1]	M. O’Keeffe, “A proposed rigorous definition of coordination number,” Acta Crystallogr. Sect. A, vol. 35, no. 5, pp. 772–775, 1979.
 '''
 
 import os
@@ -88,7 +45,6 @@ rad_file = os.path.join(file_dir, 'ionic_radii.json')
 with open(rad_file, 'r') as fp:
     _ion_radii = json.load(fp)
 
-# 自定义的Cif文件解析类,实现获取cif结构中的label
 class CifParser_new(CifParser):
     """
     Parses a cif file
@@ -487,12 +443,11 @@ class VoronoiNN_self(VoronoiNN):
         self.weight = weight
         self.extra_nn_info = extra_nn_info
 
-    #使用solid angle计算配位数
+  
     def get_cn_solidangle(self, structure, n, use_weights=False):
         siw = self.get_nn_info(structure, n)
         return sum([e['weight'] for e in siw]) if use_weights else len(siw)
 
-    #根据距离与异号原则计算配位数
     def get_cn_dis(self, structure, n):
         cn = 0
         center = structure[n]
@@ -513,7 +468,7 @@ class VoronoiNN_self(VoronoiNN):
                     break
         return cn
     
-#自定义数据结构 
+
 class Coordination():
     def __init__(self, label, coord, frac_coord, element, radius=None, coord_neighbors=None):
         self._label = label
@@ -523,7 +478,7 @@ class Coordination():
         self._radius = radius
         self._coord_num = len(coord_neighbors)
         self._coord_nei = coord_neighbors
-    #列表labels, elements, coord_nums, radii必须具有相同的大小
+  
     @staticmethod
     def get_coor_list(sites, radii, coord_neighbors):
         coordination_list = []
@@ -539,7 +494,7 @@ class Coordination():
         else:
             raise CoordEnviroComError("labels, sites, elements, coord_neighbors, radii must be have same length!")
     
-    #根据label从coordination列表中查找Coordination
+  
     def get_coordination(coordination_list,label):
         for i in coordination_list:
             if i["label"] == label:
@@ -559,13 +514,6 @@ class Coordination():
              "coord_num": self._coord_num,
              "coord_nei": self._coord_nei
         }
-        
-#         # 有序字典
-#         d = OrderedDict()
-#         d["label"] = self._label
-#         d["element"] = self._element
-#         d["coord_num"] = self._coord_num
-#         d["radius"] =  self._radius
         return d
 
 def nearest_key(sorted_vals, key):
@@ -581,8 +529,8 @@ def nearest_key(sorted_vals, key):
     else:
         return before
 
-# 计算原子半径
-# 注意：仅在结构文件中不含任何价态信息时调用
+# Calculate the atomic radius
+# Note: Called only if the structure file does not contain any valence information
 # If valence is zero, atomic radius is used.
 def get_atomic_radius(site):
     radius = site.specie.atomic_radius
@@ -592,7 +540,7 @@ def get_atomic_radius(site):
         radius = site.specie.atomic_radius_calculated
     return radius
 
-#根据元素、价态、配位数查询香农表获取离子半径
+#Query Shannon table according to element, valence, and coordination number to get ionic radius
 def ger_ionic_radius(elem,oxi_state,coord_no):
     try:
         tab_oxi_states = sorted(map(int, _ion_radii[elem].keys()))
@@ -630,7 +578,7 @@ def ger_ionic_radius(elem,oxi_state,coord_no):
                 radius = (radius1+radius2)/2
     return radius
 
-#获取指定位点半径值
+
 def get_radius_value(site,coord_no):
     el = site.specie.symbol
     oxi_state = int(round(site.specie.oxi_state))
@@ -640,7 +588,7 @@ def get_radius_value(site,coord_no):
         radius = ger_ionic_radius(el,oxi_state,coord_no)
     return radius
 
-#从结构中获取半径
+
 def get_radii_stru(stru):       
     radii = []
     labels = [] 
@@ -648,7 +596,6 @@ def get_radii_stru(stru):
     for i in range(len(stru.sites)):
         site = stru.sites[i]
         label = site._atom_site_label
-        #按label获取数据
         if label in labels:
             continue
         coord_no= vnn.get_cn_solidangle(stru, i)
@@ -695,7 +642,6 @@ def get_cns(filename):
     stru = parser.get_structures(primitive=False)[0]
     return get_cns_stru(stru)  
 
-#获取离中心原子半径cutoff范围内最近的coordnum个原子
 def get_nearest_atoms(stru, ind, coordnum, cutoff = 10.0):
     centre = stru.sites[ind]
     neighbors = stru.get_neighbors(centre, cutoff)
@@ -729,8 +675,3 @@ def get_local_envir(filename):
     symm_number,symm_sybol = parser.get_symme()
     coord_list,radii = get_local_envir_fromstru(stru)
     return symm_number,symm_sybol, coord_list, radii
-
-# if __name__ == "__main__":
-#     a,b= get_local_envir("./Li_Na_Mg_Al_cifs/Li/icsd_281589.cif")
-#     print(a)
-#     print(b)

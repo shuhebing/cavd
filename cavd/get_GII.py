@@ -1,4 +1,8 @@
-#from pymatgen.core.structure import Structure
+"""
+Calculate GII
+
+"""
+
 from cavd.BVAnalysis import BVAnalysis
 import numpy as np
 from math import sqrt
@@ -37,8 +41,7 @@ def get_GII(filename, migrant):
             if (results[i][0].specie.oxi_state*oxi < 0):
                 neighbors.append(results[i])
 
-
-        bvs = 0                                                                                                                                                                                                                                                                        
+        bvs = 0
         for i in range(len(neighbors)):
             distance = neighbors[i][1]
             neig = neighbors[i][0].specie

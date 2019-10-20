@@ -1,5 +1,8 @@
 '''
-Created on 2018年7月12日
+
+Symmetry analysis.
+
+Created on 2018.7.2
 
 @author: YeAnjiang
 '''
@@ -375,9 +378,3 @@ def tag_sites(sitesym, scaled_positions, symprec=1e-3):
     return tags,tagdis
 
 from cavd.local_environment import CifParser_new
-if __name__ == "__main__":
-    with zopen("F:\paper\paper-yaj\对称性问题思考\icsd_467.cif", "rt") as f:
-        input_string = f.read()
-    parser = CifParser_new.from_string(input_string)
-    sitesym = parser.get_sym_opt()
-    get_unique_sites("F:\paper\paper-yaj\对称性问题思考\icsd_000467_origin.vasp", sitesym, 0.01)

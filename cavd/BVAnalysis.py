@@ -460,11 +460,7 @@ class BVAnalysis(object):
         return np.max(connectnumber)                
     Data = property(get_data, set_data, del_data, "Data's docstring")
     Max = property(get_max, set_max, del_max, "Max's docstring")
-    Min = property(get_min, set_min, del_min, "Min's docstring")
-# if __name__=="__main__":
-#     bvmdata=loadbvparam('bvmparam.data')
-#     
-#     print(bvmdata['Na'+'1'+'O'+'-2'])                            
+    Min = property(get_min, set_min, del_min, "Min's docstring")                       
                             
 
         

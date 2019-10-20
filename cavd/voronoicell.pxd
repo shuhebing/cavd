@@ -2,6 +2,11 @@
 Cython declarations file for Zeo++ classes in geometry module.
 Declares Zeo++ XYZ and Point Classes and the associated Python wrappers.
 """
+"""
+ updated by Ye Anjiang 20180609
+
+"""
+
 __author__ = "Bharat Medasani"
 __date__ = "2014-02-17"
 
@@ -21,7 +26,6 @@ cdef extern from "../libs/Zeo++/voronoicell.h":
         # Add by YAJ 20180609
         int neighborAtom1
         int neighborAtom2
-
 
     cdef cppclass VOR_CELL:
         VOR_CELL() except +

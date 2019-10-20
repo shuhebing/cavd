@@ -111,7 +111,7 @@ def lookupIonRadius(element):
     cdef string c_element = element
     radius = zeo_lookupIonRadius(c_element, True)
     return radius    
-	
+
 #Added at 20180627
 def initializeIonRadTable():
     """

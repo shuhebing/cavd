@@ -1,4 +1,6 @@
 '''
+Unequal path calculation.
+
 Created on 2019.5.8
 
 @author: YeAnjiang
@@ -7,7 +9,6 @@ import spglib
 import numpy as np
 from cavd.graphstorage import DijkstraNetwork
 
-#只记录label的Node，用于寻找本质Node
 class Node:
     label = 0
     conn_num = 0
@@ -20,7 +21,6 @@ class Node:
             }
         return d
 
-#只记录label、len和bt_rad的Edge，用于寻找本质Edge
 class Edge:
     from_label = 0
     to_label = 0
@@ -81,7 +81,6 @@ def get_Symmetry_vornet(atmnt, vornet, symprec=0.01, angle_tolerance=5):
     return vornet_uni_symm,voids
     
     
-#读取结构文件
 def get_nodes(filename):
     nodes = {}
     conns = {}
@@ -127,7 +126,6 @@ def get_nodes(filename):
                 conns[from_id].append(segment)
     return nodes,conns
 
-#获得邻接表
 def get_voidnet(nodes,conns):
     for key,value in nodes.items():
         void = nodes[key]
@@ -138,26 +136,22 @@ def get_voidnet(nodes,conns):
             conn["to_label"] = to_void["label"]
     return nodes
     
-#去除同个void的重复边
-#perci为精度范围，preci=4意味着保留小数点后4位作有效数字
+
 def get_distict_channels(voidnet,preci=4,duplicate=False):
     distinct_voids = []
     visited_nodes = []
 
     for key,value in voidnet.items():
-        #去除重复void
         void = voidnet[key]
         node = Node(void["label"],len(void["conn"])).as_dict()
         if node in visited_nodes:
             continue
         visited_nodes.append(node)
         
-        #去除void中的重复conn
         distinct_channels = []
         visited_channels = []
         for conn in void["conn"]:
             to_void = voidnet[conn["to_id"]]
-            #指定是否重复记录边
             if not duplicate and void["label"] > conn["to_label"]:
                 continue
             edge = Edge(void["label"],to_void["label"],round(conn["bot_radius"],preci),round(conn["conn_legth"],preci)).as_dict()
@@ -169,7 +163,6 @@ def get_distict_channels(voidnet,preci=4,duplicate=False):
         distinct_voids.append(void)
     return distinct_voids
                 
-#输出本质路径
 def print_net(voidnet,file):
     out = open(file,"w")
     print("distinct voids:")
@@ -185,8 +178,6 @@ def print_net(voidnet,file):
             print(void["label"],ck["to_label"],ck["conn_legth"],ck["bot_frac"],ck["bot_radius"])
             out.write(str(void["label"])+"\t"+str(ck["to_label"])+"\t"+str(ck["conn_legth"])+"\t"+str(ck["bot_frac"])+"\t"+str(ck["bot_radius"])+"\n")
 
-
-#根据空隙尺寸分类空隙
 def voids_classify(nodes,preci=4):
     rad_id_pairs = {}
     for key,value in nodes.items():
@@ -196,7 +187,6 @@ def voids_classify(nodes,preci=4):
         rad_id_pairs[radkey].append(nodes[key]["void_id"])
     return rad_id_pairs
 
-#根据空隙尺寸分类重建label
 def voids_relabel(nodes,rad_id_pairs):
     for value in rad_id_pairs.values():
         for id in value:
@@ -209,9 +199,6 @@ def voids_relabel(nodes,rad_id_pairs):
             conn["to_label"] = to_void["label"]
     return nodes
 
-#对外接口
-#参数分别表示精度和是否重复保存无向边
-#当label过多，则根据空隙尺寸重建label
 def get_distinc(filename,preci=4,duplicate=False):
     nodes,conns = get_nodes(filename)
     voidnet = get_voidnet(nodes,conns)
@@ -224,13 +211,3 @@ def get_distinc(filename,preci=4,duplicate=False):
         revoidnet = voids_relabel(voidnet,rad_label)
         dist_revoidnet = get_distict_channels(revoidnet,preci,duplicate)
         return dist_revoidnet
-
-if __name__ == "__main__":
-    filename = "icsd_060635"
-    preci = 2
-    duplicate=False
-    dist_net = get_distinc(filename+".net",preci,duplicate)
-    file = filename+"_DistintChannels_" + str(preci)+"_"+str(duplicate)+".txt"
-    print_net(dist_net,file)
-
-    

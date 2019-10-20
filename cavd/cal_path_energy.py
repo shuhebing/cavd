@@ -1,3 +1,9 @@
+"""
+    Calculating the energy profiles according to BVSE calculations.
+    Author: Mi Penghui
+
+"""
+
 from pymatgen.core.structure import Structure
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 import numpy as np
@@ -18,24 +24,24 @@ def pathfind(start, end, V, n_images=21, dr=None, h=0.1, k=0.17, min_iter=100, m
         dr = np.array(dr, dtype=float)
     keff = k * dr * n_images
     h0 = h
-    # 初使化 string
-    g1 = np.linspace(0, 1, n_images)  # 创建等差数列
-    s0 = start  # 初使结构的迁移离子的坐标
-    s1 = end  # 最终结构的迁移离子的坐标
-    s = np.array([g * (s1 - s0) for g in g1]) + s0  # s是一个3*n的矩阵
-    ds = s - np.roll(s, 1, axis=0)  # np.roll函数的意思是将s，沿着axis的方向，滚动1个长度，相当于把最后一个元素放到第一个
-    ds[0] = (ds[0] - ds[0])  # 把第一个元素置为（0，0，0）
-    ls = np.cumsum(la.norm(ds, axis=1))  # norm求ds的范数  cumsum计算轴向元素累加和，返回由中间结果组成的数组
-    ls = ls / ls[-1]  # 归一化
-    fi = interp1d(ls, s, axis=0)  # 插值
+    
+    g1 = np.linspace(0, 1, n_images)  
+    s0 = start 
+    s1 = end  
+    s = np.array([g * (s1 - s0) for g in g1]) + s0  
+    ds = s - np.roll(s, 1, axis=0) 
+    ds[0] = (ds[0] - ds[0])  
+    ls = np.cumsum(la.norm(ds, axis=1))  
+    ls = ls / ls[-1]  
+    fi = interp1d(ls, s, axis=0)  
     s = fi(g1)
     # print(s)
     # Evaluate initial distances (for elastic equilibrium)
-    ds0_plus = s - np.roll(s, 1, axis=0)  # 正向
-    ds0_minus = s - np.roll(s, -1, axis=0)  # 负向
+    ds0_plus = s - np.roll(s, 1, axis=0)  
+    ds0_minus = s - np.roll(s, -1, axis=0) 
     ds0_plus[0] = (ds0_plus[0] - ds0_plus[0])
     ds0_minus[-1] = (ds0_minus[-1] - ds0_minus[-1])
-    dV = np.gradient(V)  # 计算梯度
+    dV = np.gradient(V)  
 
     # Evolve string
     for step in range(0, max_iter):
@@ -62,10 +68,10 @@ def pathfind(start, end, V, n_images=21, dr=None, h=0.1, k=0.17, min_iter=100, m
         Fel = keff * (la.norm(ds_plus) - la.norm(ds0_plus)) * (ds_plus / la.norm(ds_plus))
         Fel += keff * (la.norm(ds_minus) - la.norm(ds0_minus)) * (ds_minus / la.norm(ds_minus))
         s = s - h * (Fpot + Fel)
-        # 每次迭代保持两端值保持不变
+     
         s[0] = s0[0]
         s[-1] = s0[-1]
-        # Reparametrize string            #更新参数
+        # Reparametrize string         
         ds = s - np.roll(s, 1, axis=0)
         ds[0] = (ds[0] - ds[0])
         ls = np.cumsum(la.norm(ds, axis=1))
@@ -159,8 +165,8 @@ def cal_path_energy(file,start_point,end_point,images,degval,step,max_smi):
     
     for pi in range(len(p)):
         energy_profile.write(str(p[pi])+"\t"+str(p_e[pi])+"\n")
-    print(p)  #输出坐标
-    print(p_e)  #输出能量
+    print(p) 
+    print(p_e) 
 
 
     for i in range(1,len(p)-1):
@@ -173,13 +179,13 @@ def cal_path_energy(file,start_point,end_point,images,degval,step,max_smi):
         xcoords.append(p_e[j][0])
         ycoords.append(p_e[j][1])
 
-    poly = np.polyfit(xcoords, ycoords, deg=degval)  # 最小二乘法多项式拟合
+    poly = np.polyfit(xcoords, ycoords, deg=degval) 
     z = np.polyval(poly, xcoords)
-    plt.figure(figsize=(6, 4))  # 创建绘图对象
+    plt.figure(figsize=(6, 4))  
     plt.plot(xcoords, z, linewidth=3)
     plt.scatter(xcoords, ycoords, color='k', marker='o')
-    plt.xlabel("Reaction Coordinate ")  # X轴标签
-    plt.ylabel("Energy")  # Y轴标签
+    plt.xlabel("Reaction Coordinate ") 
+    plt.ylabel("Energy") 
     plt.savefig(file+"_path_"+start_point[0]+"-"+end_point[0]+"_"+str(images)+"_"+str(degval)+"_"+str(step)+"_"+str(max_smi)+".png")
     plt.show()
     

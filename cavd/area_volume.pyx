@@ -125,7 +125,8 @@ def surface_area(atmnet, channel_radius, probe_radius,
     else:
         return sa_str
 
-# Added at 20180704,计算ASA并保存结果
+# Added at 20180704
+# Calculate the ASA and save the results
 def asa_new(filename, high_accuracy, atmnet, channel_radius, probe_radius, mc_sampling_no):
     if isinstance(filename, unicode):
         filename = (<unicode>filename).encode('utf8')

@@ -17,7 +17,7 @@ from pymatgen.core.sites import PeriodicSite
 from monty.io import zopen
 import numpy as np
 from scipy.spatial.ckdtree import cKDTree
-from cavd.cavd_consts import STD_SURF_DIS, STD_DIS
+from cavd.cavd_consts import LOWER_THRESHOLD, UPPER_THRESHOLD
 
 #from local_environment import get_local_envir,Coordination
 
@@ -923,7 +923,7 @@ def All_com(filename, migrant, rad_flag=True, lower=None, upper=10.0, rad_dict=N
     if lower:
         minRad = lower
     else:
-        standard = STD_SURF_DIS[migrant]
+        standard = LOWER_THRESHOLD[migrant]
         minRad = standard*migrant_alpha*0.85
     conn_val = connection_values_list(prefixname+".resex", sym_vornet)
     dim_network,connect = ConnStatus(conn_val,minRad)
@@ -991,7 +991,7 @@ def bmd_com(filename, migrant, rad_flag=True, lower=None, upper=10.0, rad_dict=N
     if lower:
         minRad = lower
     else:
-        standard = STD_SURF_DIS[migrant]
+        standard = LOWER_THRESHOLD[migrant]
         minRad = standard*migrant_alpha*0.85
     conn_val = connection_values_list(prefixname+".resex", sym_vornet)
     dim_network,connect = ConnStatus(conn_val,minRad)

@@ -1,6 +1,12 @@
 # distutils: language = c++
 # distutils: sources = ../libs/Zeo++/networkio.cc
 
+"""
+    Updated by Ye Anjiang for extending the In/Output.
+    yeanjiang@shu.edu.cn
+    May 18, 2019
+"""
+
 from netstorage cimport AtomNetwork, VoronoiNetwork
 from netstorage cimport ATOM_NETWORK, VORONOI_NETWORK
 
@@ -15,10 +21,6 @@ from cavd.netstorage import PerformVDError
 #def void parseFilename(const char* filename, char* name, char* extension):
 
 #def bint checkInputFile(char* filename)
-
-#class PerformVDError(Exception):
-#    #print("Perform Voronoi Decompition failured!")
-#    pass
 
 def readCiffile(filename, radialflag):
     atmnet = AtomNetwork()
@@ -126,20 +128,6 @@ def writeMopacfile(filename, atmnet, supercell_flag):
     if not writeToMOPAC(c_filename, c_atmnet, supercell_flag):
         raise IOError
 
-# write to .bi file. Added at 20180408
-def writeBIFile(filename, atmnet, vornet, minRad = None):
-    if isinstance(filename, unicode):
-        filename = (<unicode>filename).encode('utf8')
-    cdef char* c_filename = filename
-    cdef ATOM_NETWORK* c_atmnet = (<AtomNetwork?>atmnet).thisptr
-    cdef VORONOI_NETWORK* c_vornet_ptr = (<VoronoiNetwork?>vornet).thisptr
-    if minRad:
-        if not writeToBI(c_filename, c_atmnet, c_vornet_ptr, minRad):
-            raise IOError
-    else:
-        if not writeToBI(c_filename, c_atmnet, c_vornet_ptr):
-            raise IOError
-
 def read_from_RemoveMigrantCif(filename,migrant,radialflag):
     atmnet = AtomNetwork()
     if isinstance(filename, unicode):
@@ -152,7 +140,8 @@ def read_from_RemoveMigrantCif(filename,migrant,radialflag):
         raise ValueError
     return atmnet
 
-# write to .vasp file. Added at 20180426
+# write to .vasp file. 
+# Added at 20180426
 def writeVaspFile(filename, atmnet, vornet, minRad = None, maxRad = None):
     if isinstance(filename, unicode):
          filename = (<unicode>filename).encode('utf8')
@@ -167,7 +156,8 @@ def writeVaspFile(filename, atmnet, vornet, minRad = None, maxRad = None):
         if not writeToVasp(c_filename, c_atmnet, c_vornet_ptr):
             raise IOError
 
-# write to atomnetwork to .vasp file. Added at 20180827
+# write to atomnetwork to .vasp file. 
+# Added at 20180827
 def writeAtomNetVaspFile(filename, atmnet):
     if isinstance(filename, unicode):
         filename = (<unicode>filename).encode('utf8')
@@ -177,21 +167,8 @@ def writeAtomNetVaspFile(filename, atmnet):
         raise IOError
 
 
-# write to .zvis file. In this file, all AtomNetwork and VoronoiNetwork information contained. Added at 20180704
-def writeZVisFile(filename, rad_flag, atmnet, vornet):
-    if isinstance(filename, unicode):
-         filename = (<unicode>filename).encode('utf8')
-    cdef char* c_filename = filename
-    cdef ATOM_NETWORK* c_atmnet = (<AtomNetwork?>atmnet).thisptr
-    cdef VORONOI_NETWORK* c_vornet_ptr = (<VoronoiNetwork?>vornet).thisptr
-    cdef vector[VOR_CELL] vcells
-    cdef vector[BASIC_VCELL] bvcells
-    if not performVoronoiDecomp(rad_flag, c_atmnet, c_vornet_ptr, &vcells, True, &bvcells):
-        raise PerformVDError
-    if not writeZVis(c_filename, &vcells, c_atmnet, c_vornet_ptr):
-        raise IOError
-
-# write to .net file. Added at 20190518
+# write to .net file. 
+# Added at 20190518
 def writeNETFile(filename, atmnet, vornet, minRad = None, maxRad = None):
     if isinstance(filename, unicode):
         filename = (<unicode>filename).encode('utf8')

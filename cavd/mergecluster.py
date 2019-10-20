@@ -1,3 +1,8 @@
+"""
+Merge interstitial clusters.
+Created by Mi Penghui
+"""
+
 import numpy as np
 from scipy.spatial import cKDTree
 import networkx as nx
@@ -6,7 +11,8 @@ from pymatgen.core.structure import Structure
 
 
 class Void(object):
-    # 把间隙抽象为Void类，包含id、类别、分数坐标、半径、能量等属性
+    # Abstract the interstice as a Void class with attributes such as 
+    # id, category, fractional coordinates, radius, energy, etc.
     def __init__(self):
         self.id = None
         self.label = None
@@ -16,7 +22,8 @@ class Void(object):
 
 
 class Channel(object):
-    # 把通道抽象为Channel类，包含开始间隙点id、结束间隙点id、晶相、瓶颈分数坐标、瓶颈尺寸等属性
+    # Abstract the channel as a Channel class, including attributes such as 
+    # start interstice id, end gap point id, crystal phase, bottleneck fraction coordinates, bottleneck size, etc.
     def __init__(self):
         self.start = None
         self.end = None
@@ -29,7 +36,6 @@ class Channel(object):
 
 class MergeCluster(object):
     def __init__(self):
-        # threshold为簇之间的阈值
         self.__struc = None
         self.voids = None
         self.channels = None
@@ -81,7 +87,7 @@ class MergeCluster(object):
 
     @staticmethod
     def readdata(filename_cavd):
-        # 读取CAVD方法计算出的连通文件bi
+        # 读取CAVD方法计算出的连通文件
         voids_list = []
         channels_list = []
         flag_p = 0
@@ -119,13 +125,13 @@ class MergeCluster(object):
 
     def fac2cart(self, coord):
         """
-        分数坐标转换成笛卡尔坐标
+        Converting fractional coordinates into Cartesian coordinates
         """
         return np.dot(coord, self.__struc.lattice.matrix)
 
     def cart2fac(self, coord):
         """
-        笛卡尔坐标转换成分数坐标
+        Converting cartesian coordinate into fractional coordinates
         """
         return np.dot(coord, np.linalg.inv(self.__struc.lattice.matrix))
 
@@ -390,7 +396,7 @@ class CalChannelLabel(object):
 
     @staticmethod
     def readdata(filename_cavd):
-        # 读取CAVD方法计算出的连通文件bi
+        # 读取CAVD方法计算出的连通文件
         voids_list = []
         channels_list = []
         flag_p = 0
@@ -473,20 +479,4 @@ class CalChannelLabel(object):
                         + str(channel.radii) + "\t "
                         + str(channel.dist) + "\t "
                         + str(channel.label) + "\n")
-
-
-if __name__ == "__main__":
-    filename_CIF = 'stucture/icsd_000467/icsd_000467.cif'
-    filename_CAVD = "stucture/icsd_000467/icsd_000467_origin.net"
-    mc = MergeCluster()
-    mc.setstruc(filename_CIF)
-    voids, channels = mc.readdata(filename_CAVD)
-    mc.setvoids(voids)
-    mc.setchannels(channels)
-    mc.cal_clusters()
-    mc.process_voidsandchannels()
-    mc.savedata(filename_CIF)
-
-
-
 

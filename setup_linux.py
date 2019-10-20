@@ -3,8 +3,6 @@
 import os
 from setuptools import setup
 from setuptools.extension import Extension
-#from distutils.extension import Extension
-#from distutils.core import setup
 from Cython.Distutils import build_ext
 from Cython.Build import cythonize
 
@@ -26,10 +24,10 @@ cycle_srcfiles = ['cavd/cycle.pyx']
 
 setup(
     name = 'cavd',
-    version = '0.1.25',
+    version = '0.1.26',
     language_level = 3,
     description = "Crystal structure Analysis by Voronoi Decomposition",
-    url = "ehpc.shu.edu.cn",
+    url = "https://www.bmaterials.cn",
     author = "yeanjiang",
     author_email = "yeanjiang11@qq.com",
     packages=["cavd"],
@@ -38,13 +36,9 @@ setup(
     cmdclass = {'build_ext':build_ext},
     package_data = {"cavd": ["ionic_radii.json", "bvmparam.dat", "bvse.dat", "BVSEParam.dat"]},
     classifiers = [
-        "Development Status :: 3 - Alpha",
         "Programming Language :: Cython",
         "Programming Language :: C++",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 3.6",
-        "Intended Audience :: Science/Research",
-        "Topic :: Scientific/Engineering"
         ],
     ext_modules = [Extension("cavd.voronoicell", 
                              sources=Voronoicell_srcfiles,

@@ -1,16 +1,6 @@
 # encoding: utf-8
 '''
-estimate_struc_type -- 判断结构中原子堆积类型
-有两个模式，分别为cmd模式和程序调用模式。
-
-cmd模式下的使用命令如下：
-            命令格式： python estimate_struc_type.py -e S [-l 0.2] [-s 1] [-a 5] [-infile Li3PS4_icsd.cif]  [-batch 0]
-             其中, -l, -s -a 缺省值分别为0.2, 1 , 5。
-    -batch 缺省值为0，表示单文件就按模式，需要给定“-infile”的值。
-            当设置“-batch 0”时，表示批处理模式，程序直接读取当前目录下“cifs/”目录下的cif文件，由于这里是比较同一元素的堆积方式，故“cifs/“目录下需都含有“-e”参数指定的元素。
-
-程序调用模式，需分别指定相应的参数。
-            当“batch=False”时，为单文件处理模式，参数“infile”所传递的为文件名。当“batch=True”时，为批处理模式，参数“infile”所传递的为目录名。
+estimate_struc_type -- Judging the type of atomic packing in a structure
 
 @author:     he bing
 
@@ -147,7 +137,7 @@ class CLIError(Exception):
     def __unicode__(self):
         return self.msg
 
-#cmd模式
+
 def struc_matcher_cmd(argv=None): # IGNORE:C0111
     '''Command line options.'''
 
@@ -235,7 +225,6 @@ USAGE
         ### handle keyboard interrupt ###
         return 0
 
-#函数调用模式
 def struc_matcher(element, infile, batch=False, ltol=0.2, stol=1, atol=5): # IGNORE:C0111
     try:
         if not batch:
