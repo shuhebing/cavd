@@ -2,13 +2,13 @@ import os
 import cavd
 
 #数据挖掘获取的标准值
-std_surf_list = [1.1705]
-std_list = [2.4439]
+minRad = 0.9196
+maxRad = 1.3153
 ions = ["Na"]
 
 for i in range(len(ions)):
     filenames=[]
-    path = "../../Li_Na_Mg_Al_cifs_order_revise/" + ions[i] + "/"
+    path = "./Li_Na_Mg_Al_cifs_order_revise_recover/" + ions[i] + "/"
     if not os.path.exists(path+"results"):
         os.mkdir(path+"results")
         print("create results directory successful!")
@@ -27,7 +27,7 @@ for i in range(len(ions)):
         filename = path+filename
         print(filename)
         try:
-            radii,symm_sybol,symm_number,symprec,voids_num,sym_opt_num,uni_voids_num,minRad,migrant_alpha,nei_dises,migrant_radius,conn_val,connect,dim_network,dims_channel,recover_rate,recover_state,migrate_mindis,coordination_list = cavd.AllCom8(filename,std_surf_list[i],ions[i],True,True,None)
+            radii,symm_sybol,symm_number,symprec,voids_num,sym_opt_num,uni_voids_num,minRad,migrant_alpha,nei_dises,migrant_radius,conn_val,connect,dim_network,dims_channel,recover_rate,recover_state,migrate_mindis,coordination_list = cavd.AllCom10(filename,minRad,maxRad,ions[i],True,True,None)
             results.write(filename)
             results.write('\t')
             results.write(str(radii))
