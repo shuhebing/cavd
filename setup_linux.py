@@ -24,8 +24,7 @@ cycle_srcfiles = ['cavd/cycle.pyx']
 
 setup(
     name = 'cavd',
-    version = '0.1.26',
-    language_level = 3,
+    version = '0.1.27',
     description = "Crystal structure Analysis by Voronoi Decomposition",
     url = "https://www.bmaterials.cn",
     author = "yeanjiang",
@@ -34,6 +33,13 @@ setup(
     package_dir={"cavd": "cavd"},
     license = "",
     cmdclass = {'build_ext':build_ext},
+    setup_requires=['Cython>=0.29', 'setuptools>=18.0'],
+    install_requires=["numpy>=1.14.3", 
+                      "ase>=3.3",
+                      "spglib>=1.9.9.44",
+                      "scipy>=1.0.1",
+                      "pandas",
+                      "monty>=0.9.6"],
     package_data = {"cavd": ["ionic_radii.json", "bvmparam.dat", "bvse.dat", "BVSEParam.dat"]},
     classifiers = [
         "Programming Language :: Cython",

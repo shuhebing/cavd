@@ -842,7 +842,6 @@ def AllCom3(filename, standard, migrant=None, rad_flag=True, effective_rad=True,
             dims.append(i["dim"])
     return migrant_alpha,radii,minRad,nei_dises,dims,voids
 
-#AllCom
 def AllCom2(filename, probe_rad, num_sample, migrant=None, rad_flag=True, effective_rad=True, rad_file=None, rad_store_in_vasp=True, minRad=0.0, maxRad=0.0):
     radii = {}
     if rad_flag and effective_rad:
@@ -876,65 +875,91 @@ def AllCom2(filename, probe_rad, num_sample, migrant=None, rad_flag=True, effect
         dims.append(i["dim"])
     return dims,voids
 
-def All_com(filename, migrant, rad_flag=True, lower=None, upper=10.0, rad_dict=None, symprec=0.01):
+def AllCom(filename, minRad, maxRad, migrant=None, rad_flag=True, effective_rad=True, rad_file=None):
+    radii = {}
     with zopen(filename, "rt") as f:
         input_string = f.read()
     parser = CifParser_new.from_string(input_string)
-    sitesym = parser.get_sym_opt()
     stru = parser.get_structures(primitive=False)[0]
-    
-    species = [str(sp).replace("Specie ","") for sp in stru.species]
-    elements = [re.sub('[^a-zA-Z]','',sp) for sp in species]
-    if migrant not in elements:
-        raise ValueError("The input migrant ion not in the input structure! Please check it.")
-    effec_radii,migrant_radius,migrant_alpha,nei_dises,coordination_list = LocalEnvirCom(stru,migrant)
-    
-    radii = {}
-    if rad_flag:
-        if rad_dict:
-            radii = rad_dict
-        else:
-            radii = effec_radii
-    
-    atmnet = AtomNetwork.read_from_RemoveMigrantCif(filename, migrant, radii, rad_flag)
+
+    # print(stru)
+    #获取空间群号与符号
+    symm_number,symm_sybol = parser.get_symme()
+    #获取icsd cif文件中的对称操作
+    sitesym = parser.get_sym_opt()
+    radii,migrant_radius,migrant_alpha,nei_dises,coordination_list = LocalEnvirCom(stru,migrant)
+    atmnet = AtomNetwork.read_from_RemoveMigrantCif(filename, migrant, radii, True, None)
     
     prefixname = filename.replace(".cif","")
     vornet,edge_centers,fcs,faces = atmnet.perform_voronoi_decomposition(True)
-    sym_vornet,voids =  get_labeled_vornet(vornet, sitesym, symprec)
-    writeVaspFile(prefixname+"_origin.vasp",atmnet,sym_vornet)
-    writeNETFile(prefixname+"_origin.net",atmnet,sym_vornet)
+   
+    symprec = 0.01
+    sym_opt_num = len(sitesym)
+    voids_num = len(vornet.nodes)
+
+    # writeNETFile(prefixname+"_origin_nofcs.net",atmnet,vornet)
+    add_fcs_vornet = vornet.add_facecenters(faces)
+    # writeNETFile(prefixname+"_origin_addfcs.net",atmnet,add_fcs_vornet)
+    # writeVaspFile(prefixname+"_origin_addfcs.vasp",atmnet,add_fcs_vornet)
+
+    # spg_vornet,uq_voids = get_equivalent_vornet(add_fcs_vornet, 0.01)
+
+    sym_vornet,voids =  get_labeled_vornet(add_fcs_vornet, sitesym, symprec)
+    uni_voids_num = len(voids)
 
     voids_abs = []
+    voids_rad = []
     for void in sym_vornet.nodes:
         voids_abs.append(void[2])
+        voids_rad.append(void[3])
+    # print("voids")
+    # print(voids_abs)
 
     bottlenecks = []
+    bottlenecs_rad = []
     for bt in sym_vornet.edges:
-        bottlenecks.append(bt[2])
+        frac_bt = bt[2]
+        # frac_bt = [round(p%1.0, 6) for p in frac_bt]
+        # frac_bt = [p%1.0 for p in frac_bt]
+        # if frac_bt not in bottlenecks:
+        bottlenecks.append(frac_bt)
+        bottlenecs_rad.append(bt[3])
+    # print("bottlenecks")
+    # print(bottlenecks)
     
+    # print("fcs",fcs)
     fcens = []
+    fcens_rad = []
     for fc in fcs:
         fcens.append(fc[0])
+        fcens_rad.append(fc[1])
+    # print("facecenters")
+    # print(facecenters)
 
     vorosites = [voids_abs, bottlenecks, fcens]
-    recover_rate, recover_state, migrate_mindis = rediscovery_kdTree(stru, migrant, vorosites)
-
-    minRad = 0.0
-    if lower:
-        minRad = lower
-    else:
-        standard = LOWER_THRESHOLD[migrant]
-        minRad = standard*migrant_alpha*0.85
-    conn_val = connection_values_list(prefixname+".resex", sym_vornet)
-    dim_network,connect = ConnStatus(conn_val,minRad)
-    writeVaspFile(prefixname+".vasp",atmnet, sym_vornet, minRad, upper)
-    channels = Channel.findChannels(sym_vornet, atmnet, minRad, prefixname+".net")
+    vororad = [voids_rad, bottlenecs_rad, fcens_rad]
+    # recover_rate, recover_state, migrate_mindis = rediscovery_kdTree(migrant,vorosites,stru)
+    recover_rate, recover_state, migrate_mindis = rediscovery_byRad_kdTree(stru, migrant, vorosites, vororad)
     
-    dims = []
-    for i in channels:
-        dims.append(i["dim"])
+    writeNETFile(prefixname+"_origin.net",atmnet,sym_vornet)
+    writeVaspFile(prefixname+"_origin.vasp",atmnet,sym_vornet)
 
-    return radii, minRad, conn_val, connect, dim_network, dims, migrate_mindis
+    conn_val = connection_values_list(prefixname+".resex", sym_vornet)
+    dim_network,connect = ConnStatus(conn_val, minRad, maxRad)
+    
+    channels = Channel.findChannels2(sym_vornet,atmnet,minRad,maxRad,prefixname+"_select.net")
+    dims_channel = []
+    if len(channels)==0:
+        dims_channel.append(0)
+    else:
+        for i in channels:
+            dims_channel.append(i["dim"])
+    
+    
+    writeVaspFile(prefixname+"_select.vasp",atmnet,sym_vornet,minRad,maxRad)
+    # channels = Channel.findChannels(sym_vornet,atmnet,0,prefixname+"_0.net")
+            
+    return radii,symm_sybol,symm_number,symprec,voids_num,sym_opt_num,uni_voids_num,minRad,migrant_alpha,nei_dises,migrant_radius,conn_val,connect,dim_network,dims_channel,recover_rate,recover_state,migrate_mindis,coordination_list
 
 def bmd_com(filename, migrant, rad_flag=True, lower=None, upper=10.0, rad_dict=None, symprec=0.01):
     with zopen(filename, "rt") as f:
