@@ -15,7 +15,8 @@ and bottlenecks of the channels, which are identified and quantified
 from the position and geometry of Voronoi polyhedra vertices, edges, and faces, 
 respectively. The geometric and topological parameters of the network 
 are then translated into ion transport descriptors. These descriptors 
-form the foundation of machine-learning algorithms to predict and optimize materials properties.
+form the foundation of machine-learning algorithms to predict and optimize 
+materials properties.
 
 In addition, some libraries are called in our implementation: the symmetry 
 analysis of interstices performed by Spglib; the periodic radical Voronoi 
@@ -29,7 +30,8 @@ broad research community.
 *** Install from .whl package ***
 =====================================================================
 
-1) Download the corresponding .whl package according to the Python version (e.g. cavd-0.1.26-cp37-cp37m-win_amd64.whl).
+1) Download the corresponding .whl package according to the Python version
+ (e.g. cavd-0.1.26-cp37-cp37m-win_amd64.whl).
 
 2) Install cavd library:
    pip install cavd-0.1.26-cp37-cp37m-win_amd64.whl
@@ -40,7 +42,8 @@ broad research community.
 *** Install from source code in Linux ***
 =====================================================================
 
-1) Download and unpack the provided cavd package (the following commands will create cavd-0.2.0 directory containing the cavd code;
+1) Download and unpack the provided cavd package (the following commands
+ will create cavd-0.2.0 directory containing the cavd code;
 
   gunzip cavd-0.2.0.tar.gz
   tar xvf cavd-0.2.0.tar
