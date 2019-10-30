@@ -1,0 +1,66 @@
+# CAVD: A tool for high-throughput geometric analysis of ionic transport #
+By He Bing, Ye Anjiang, Mi Penghui, Chi Shuting 
+
+
+[https://www.bmaterials.cn](https://www.bmaterials.cn)
+
+[https://gitee.com/shuhebing/cavd](https://gitee.com/shuhebing/cavd)
+
+
+CAVD (Crystal structure Analysis by Voronoi Decomposition) is an 
+high-throughput tool that towards better characterization of void 
+space for ionic transport analysis. 
+
+Using CAVD, the void space inside ionic crystal can be characterized 
+as the 3D network consisting of interstices, channels between interstices, 
+and bottlenecks of the channels, which are identified and quantified 
+from the position and geometry of Voronoi polyhedra vertices, edges, and faces, 
+respectively. The geometric and topological parameters of the network 
+are then translated into ion transport descriptors. These descriptors 
+form the foundation of machine-learning algorithms to predict and optimize 
+materials properties.
+
+In addition, some libraries are called in our implementation: the symmetry 
+analysis of interstices performed by Spglib; the periodic radical Voronoi 
+decomposition provided by Voro++; the calculation algorithms of channel 
+and connected threshold referenced from Zeo++. All calculations discussed 
+are implemented in the python package CAVD, and the code can be accessed 
+on our repository based on the FAIR principles for the benefit of the 
+broad research community.
+
+
+## Install from .whl package ##
+
+
+1. Download the corresponding .whl package according to the Python version (e.g. cavd-0.1.26-cp37-cp37m-win_amd64.whl).
+
+2. Install cavd library:
+   > pip install cavd-0.1.26-cp37-cp37m-win_amd64.whl
+
+3. Test that the installation worked using the "test_bmdcom.py" in examples package. 
+
+
+## Install from source code in Linux ##
+
+1) Download and unpack the provided cavd package (the following commands
+ will create cavd-0.2.0 directory containing the cavd code;
+
+   > gunzip cavd-0.2.0.tar.gz
+   > tar xvf cavd-0.2.0.tar
+
+2) Compile Voro++ library
+  
+   > cd cavd-0.2.0/libs/Voro++/src
+   > make
+  
+3) Compile the modified Zeo++ source code:
+
+   > cd ../../Zeo++
+   > make dylib
+  
+4) Install cavd library:
+
+   > cd ../../
+   > python setup_linux.py develop
+  
+5) Test that the installation worked using the "test_bmdcom.py" in examples package. 
