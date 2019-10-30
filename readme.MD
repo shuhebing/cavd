@@ -1,9 +1,11 @@
 # CAVD: A tool for high-throughput geometric analysis of ionic transport #
 By He Bing, Ye Anjiang, Mi Penghui, Chi Shuting 
 
-https://www.bmaterials.cn
+
+[https://www.bmaterials.cn](https://www.bmaterials.cn)
+
 [https://gitee.com/shuhebing/cavd](https://gitee.com/shuhebing/cavd)
-=====================================================================
+
 
 CAVD (Crystal structure Analysis by Voronoi Decomposition) is an 
 high-throughput tool that towards better characterization of void 
@@ -28,41 +30,37 @@ broad research community.
 
 
 ## Install from .whl package ##
-=====================================================================
 
-1) Download the corresponding .whl package according to the Python version
- (e.g. cavd-0.1.26-cp37-cp37m-win_amd64.whl).
 
-2) Install cavd library:
-   pip install cavd-0.1.26-cp37-cp37m-win_amd64.whl
+1. Download the corresponding .whl package according to the Python version (e.g. cavd-0.1.26-cp37-cp37m-win_amd64.whl).
 
-3) Test that the installation worked using the "test_bmdcom.py" in examples package. 
+2. Install cavd library:
+   > pip install cavd-0.1.26-cp37-cp37m-win_amd64.whl
+
+3. Test that the installation worked using the "test_bmdcom.py" in examples package. 
 
 
 ## Install from source code in Linux ##
-=====================================================================
 
 1) Download and unpack the provided cavd package (the following commands
  will create cavd-0.2.0 directory containing the cavd code;
 
-  gunzip cavd-0.2.0.tar.gz
-  tar xvf cavd-0.2.0.tar
+   > gunzip cavd-0.2.0.tar.gz
+   > tar xvf cavd-0.2.0.tar
 
 2) Compile Voro++ library
   
-  cd cavd-0.2.0/libs/Voro++/src
-  make
+   > cd cavd-0.2.0/libs/Voro++/src
+   > make
   
 3) Compile the modified Zeo++ source code:
 
-  cd ../../Zeo++
-  make dylib
+   > cd ../../Zeo++
+   > make dylib
   
 4) Install cavd library:
 
-  cd ../../
-  python setup_linux.py develop
+   > cd ../../
+   > python setup_linux.py develop
   
 5) Test that the installation worked using the "test_bmdcom.py" in examples package. 
-
-
