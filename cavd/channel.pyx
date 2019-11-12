@@ -171,7 +171,7 @@ cdef class Channel:
         cdef DIJKSTRA_NODE otherNode
         cdef CONN curConn
         for i in range(c_channels.size()):
-            nodes = {}
+            nodes = []
             conns = []
             channel = {}
            
@@ -180,17 +180,141 @@ cdef class Channel:
                 disp = (c_channels[i].unitCells).at(j)
                 for k in range(nodeIDs.size()):
                     curNode = (c_channels[i].nodes).at(nodeIDs.at(k))
-                  
+                    node = {}
+                    node["id"] = curNode.id
+                    node["label"] = curNode.label
+                    node["radius"] = curNode.max_radius
+                    node["frac_coord"] = atmnet.absolute_to_relative(curConn.coords[0], curConn.coords[1], curConn.coords[2])
+                    nodes.append([node])
                     for l in range((curNode.connections).size()):
+                        conn = {}
                         curConn = curNode.connections.at(l)
                         otherNode = (c_channels[i].nodes).at(curConn.ending)
                         frac_coord = atmnet.absolute_to_relative(curConn.btx, curConn.bty, curConn.btz)
-                        conns.append([curNode.id, [0, 0, 0], otherNode.id, [curConn.deltaPos.x, curConn.deltaPos.y, curConn.deltaPos.z], frac_coord , curConn.length, curConn.max_radius])
+                        conn["fromId"] = curNode.id
+                        conn["fromLabel"] = curNode.label
+                        conn["fromId"] = curNode.id
+                        conn["fromDelta"] = [0, 0, 0]
+                        conn["toId"] = otherNode.id
+                        conn["toLabel"] = otherNode.label
+                        conn["toDelta"] = [curConn.deltaPos.x, curConn.deltaPos.y, curConn.deltaPos.z]
+                        conn["length"] = curConn.length
+                        conn["bottleneck"] = frac_coord
+                        conn["bottleneckSize"] = curConn.max_radius
+                        conns.append(conn)
             channel["id"] = i
             channel["dim"] = c_channels[i].dimensionality
+            channel["nodes"] = nodes
             channel["conns"] = conns
             channels.append(channel)
         return channels
+
+    @classmethod
+    def writeToVESTA(cls, channels, atmnet, filename):
+        out = open(filename+".vesta","w")
+        out.write("#VESTA_FORMAT_VERSION 3.3.0\n")
+        out.write("\n")
+        out.write("\n")
+        out.write("CRYSTAL\n")
+        out.write("\n")
+        out.write("TITLE\n")
+        out.write("filename\n")
+        out.write("\n")
+        out.write("GROUP\n")
+        out.write("1 1 P 1\n")
+        out.write("SYMOP\n")
+        out.write(" 0.000000  0.000000  0.000000  1  0  0   0  1  0   0  0  1   1\n")
+        out.write(" -1.0 -1.0 -1.0  0 0 0  0 0 0  0 0 0\n")
+        out.write("TRANM 0\n")
+        out.write(" 0.000000  0.000000  0.000000  1  0  0   0  1  0   0  0  1\n")
+        out.write("LTRANSL\n")
+        out.write(" -1\n")
+        out.write(" 0.000000  0.000000  0.000000  0.000000  0.000000  0.000000\n")
+        out.write("LORIENT\n")
+        out.write(" -1   0   0   0   0\n")
+        out.write(" 1.000000  0.000000  0.000000  1.000000  0.000000  0.000000\n")
+        out.write(" 0.000000  0.000000  1.000000  0.000000  0.000000  1.000000\n")
+        out.write("LMATRIX\n")
+        out.write(" 1.000000  0.000000  0.000000  0.000000\n")
+        out.write(" 0.000000  1.000000  0.000000  0.000000\n")
+        out.write(" 0.000000  0.000000  1.000000  0.000000\n")
+        out.write(" 0.000000  0.000000  0.000000  1.000000\n")
+        out.write(" 0.000000  0.000000  0.000000\n")
+        out.write("CELLP\n")
+
+        # write lattice parameters (a, b, c) and lattice angle (alpha, beta, gama).
+        lattice_para = atmnet.lattice_para
+        lattice_angle = atmnet.lattice_angle
+        out.write(" " + lattice_para[0] + " " + lattice_para[1] + " " + lattice_para[2] + " " + 
+            lattice_angle[0] + " " + lattice_angle[1] + " " + lattice_angle[2] + "\n")
+        out.write(" 0.000000   0.000000   0.000000   0.000000   0.000000   0.000000\n")
+        out.write("STRUC\n")
+
+        # write Interstice parameters (a, b, c) and lattice angle (alpha, beta, gama).
+        idx = 1
+        for channel in channels:
+            for node in channel["nodes"]:
+                out.write(" " + idx + " " + "He " + "He" + node["label"] + " " + 
+                    node["frac_coord"][0] + " " +  node["frac_coord"][1] + " " + node["frac_coord"][2] + 
+                    "1a 1\n")
+                out.write("    0.000000   0.000000   0.000000   0.00\n")
+                idx++
+        bdx = 0
+        for channel in channels:
+            for conn in channel["conns"]:
+                out.write(" " + idx + " " + "Ne " + "Ne" + bdx + " " + 
+                    conn["bottleneck"][0] + " " +  conn["bottleneck"][1] + " " + conn["bottleneck"][2] + 
+                    "1a 1\n")
+                out.write("    0.000000   0.000000   0.000000   0.00\n")
+                bdx++
+                idx++
+        out.write("THERI 0\n")
+
+        count = 1
+        for channel in channels:
+            for node in channel["nodes"]:
+                out.write(" " + idx + " " + "He " + "He" + node["label"] + " 1.000000\n")
+                count++
+        for channel in channels:
+            for conn in channel["conns"]:
+                out.write(" " + idx + " " + "Ne " + "Ne" + bdx + " 1.000000\n")
+                count++
+        out.write("  0 0 0\n")
+
+        out.write("SHAPE\n")
+        out.write("  0       0       0       0   0.000000  0   192   192   192   192\n")
+        out.write("BOUND\n")
+        out.write("       0        1         0        1         0        1\n")
+        out.write("  0   0   0   0  0\n")
+        out.write("SBOND\n")
+        bond_count = 1
+        for channel in channels:
+            for conn in channel["conns"]:
+                out.write(" " + bond_count + " " + conn["fromLabel"] + " " + conn["toLabel"] + " " +
+                    conn["length"] - 0.01 + " " + conn["length"] + 0.01 + " " + 
+                    "1  1  1  0.200  1.000 127 127 127\n")
+                out.write("  0 0 0 0\n")   
+                bond_count++
+        out.write("SITET\n")
+        idx = 1
+        for channel in channels:
+            for node in channel["nodes"]:
+                out.write(" " + idx + " " + "He" + node["label"] + " " + 0.5*node["radius"] + " " + 
+                    "252 232 206 252 232 206 204  0\n")
+                idx++
+        for channel in channels:
+            for conn in channel["conns"]:
+                out.write(" " + idx + " " + "Ne" + bdx + " " + 0.5*conn["bottleneckSize"] + " " +
+                    "254  55 181 254  55 181 204  0\n")
+                idx++
+        out.write("  0 0 0 0 0 0\n")
+        out.write("VECTR\n")
+        out.write(" 0 0 0 0 0\n")
+        out.write("VECTT\n")
+        out.write(" 0 0 0 0 0\n")
+        out.write("SPLAN\n")
+        out.write("  0   0   0   0\n")
+
 
 # #Add at 20180823
 # cdef class Channel_Node:
