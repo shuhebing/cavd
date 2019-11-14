@@ -184,8 +184,8 @@ cdef class Channel:
                     node["id"] = curNode.id
                     node["label"] = curNode.label
                     node["radius"] = curNode.max_radius
-                    node["frac_coord"] = atmnet.absolute_to_relative(curConn.coords[0], curConn.coords[1], curConn.coords[2])
-                    nodes.append([node])
+                    node["frac_coord"] = atmnet.absolute_to_relative(curNode.x, curNode.y, curNode.z)
+                    nodes.append(node)
                     for l in range((curNode.connections).size()):
                         conn = {}
                         curConn = curNode.connections.at(l)
@@ -245,8 +245,8 @@ cdef class Channel:
         # write lattice parameters (a, b, c) and lattice angle (alpha, beta, gama).
         lattice_para = atmnet.lattice_para
         lattice_angle = atmnet.lattice_angle
-        out.write(" " + lattice_para[0] + " " + lattice_para[1] + " " + lattice_para[2] + " " + 
-            lattice_angle[0] + " " + lattice_angle[1] + " " + lattice_angle[2] + "\n")
+        out.write(" " + str(round(lattice_para[0], 6)) + " " + str(round(lattice_para[1], 6)) + " " + str(round(lattice_para[2], 6)) + " " + 
+            str(round(lattice_angle[0], 6)) + " " + str(round(lattice_angle[1], 6)) + " " + str(round(lattice_angle[2], 6)) + "\n")
         out.write(" 0.000000   0.000000   0.000000   0.000000   0.000000   0.000000\n")
         out.write("STRUC\n")
 
@@ -254,31 +254,31 @@ cdef class Channel:
         idx = 1
         for channel in channels:
             for node in channel["nodes"]:
-                out.write(" " + idx + " " + "He " + "He" + node["label"] + " " + 
-                    node["frac_coord"][0] + " " +  node["frac_coord"][1] + " " + node["frac_coord"][2] + 
-                    "1a 1\n")
+                out.write(" " + str(idx) + " " + "He " + "He" + str(node["id"]) + " " + "1.0 " + 
+                    str(round(node["frac_coord"][0], 6)) + " " +  str(round(node["frac_coord"][1], 6)) + " " + str(round(node["frac_coord"][2], 6)) + 
+                    " 1a 1\n")
                 out.write("    0.000000   0.000000   0.000000   0.00\n")
-                idx++
+                idx = idx + 1
         bdx = 0
         for channel in channels:
             for conn in channel["conns"]:
-                out.write(" " + idx + " " + "Ne " + "Ne" + bdx + " " + 
-                    conn["bottleneck"][0] + " " +  conn["bottleneck"][1] + " " + conn["bottleneck"][2] + 
-                    "1a 1\n")
+                out.write(" " + str(idx) + " " + "Ne " + "Ne" + str(bdx) + " " + "1.0 " +
+                   str(round(conn["bottleneck"][0], 6)) + " " + str(round(conn["bottleneck"][1], 6)) + " " + str(round(conn["bottleneck"][2], 6)) + 
+                    " 1a 1\n")
                 out.write("    0.000000   0.000000   0.000000   0.00\n")
-                bdx++
-                idx++
+                bdx = bdx + 1
+                idx = idx + 1
         out.write("THERI 0\n")
 
         count = 1
         for channel in channels:
             for node in channel["nodes"]:
-                out.write(" " + idx + " " + "He " + "He" + node["label"] + " 1.000000\n")
-                count++
+                out.write(" " + str(count) + " " + "He " + "He" + str(node["id"]) + " 1.000000\n")
+                count = count + 1
         for channel in channels:
             for conn in channel["conns"]:
-                out.write(" " + idx + " " + "Ne " + "Ne" + bdx + " 1.000000\n")
-                count++
+                out.write(" " + str(count) + " " + "Ne " + "Ne" + str(bdx) + " 1.000000\n")
+                count = count + 1
         out.write("  0 0 0\n")
 
         out.write("SHAPE\n")
@@ -290,23 +290,25 @@ cdef class Channel:
         bond_count = 1
         for channel in channels:
             for conn in channel["conns"]:
-                out.write(" " + bond_count + " " + conn["fromLabel"] + " " + conn["toLabel"] + " " +
-                    conn["length"] - 0.01 + " " + conn["length"] + 0.01 + " " + 
-                    "1  1  1  0.200  1.000 127 127 127\n")
-                out.write("  0 0 0 0\n")   
-                bond_count++
+                out.write(" " + str(bond_count) + " He" + str(conn["fromId"]) + " He" + str(conn["toId"]) + " " +
+                    str(round(conn["length"] - 0.01, 6)) + " " + str(round(conn["length"] + 0.01, 6)) + 
+                    " 0  0  0  1  1  0.200  1.000 8 0 148\n")
+                bond_count = bond_count + 1
+        out.write("  0 0 0 0\n")   
         out.write("SITET\n")
         idx = 1
         for channel in channels:
             for node in channel["nodes"]:
-                out.write(" " + idx + " " + "He" + node["label"] + " " + 0.5*node["radius"] + " " + 
-                    "252 232 206 252 232 206 204  0\n")
-                idx++
+                out.write(" " + str(idx) + " " + "He" + str(node["id"]) + " " + str(round(node["radius"], 6)) + 
+                    " 252 232 206 252 232 206 204  0\n")
+                idx = idx + 1
+        bdx = 0
         for channel in channels:
             for conn in channel["conns"]:
-                out.write(" " + idx + " " + "Ne" + bdx + " " + 0.5*conn["bottleneckSize"] + " " +
-                    "254  55 181 254  55 181 204  0\n")
-                idx++
+                out.write(" " + str(idx) + " " + "Ne" + str(bdx) + " " + str(round(conn["bottleneckSize"], 6)) +
+                    " 254  55 181 254  55 181 204  0\n")
+                idx = idx + 1
+                bdx = bdx + 1
         out.write("  0 0 0 0 0 0\n")
         out.write("VECTR\n")
         out.write(" 0 0 0 0 0\n")
