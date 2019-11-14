@@ -218,7 +218,7 @@ cdef class Channel:
         out.write("CRYSTAL\n")
         out.write("\n")
         out.write("TITLE\n")
-        out.write("filename\n")
+        out.write(filename + "\n")
         out.write("\n")
         out.write("GROUP\n")
         out.write("1 1 P 1\n")
@@ -257,7 +257,7 @@ cdef class Channel:
                 out.write(" " + str(idx) + " " + "He " + "He" + str(node["id"]) + " " + "1.0 " + 
                     str(round(node["frac_coord"][0], 6)) + " " +  str(round(node["frac_coord"][1], 6)) + " " + str(round(node["frac_coord"][2], 6)) + 
                     " 1a 1\n")
-                out.write("    0.000000   0.000000   0.000000   0.00\n")
+                out.write("                0.000000   0.000000   0.000000   0.00\n")
                 idx = idx + 1
         bdx = 0
         for channel in channels:
@@ -265,9 +265,10 @@ cdef class Channel:
                 out.write(" " + str(idx) + " " + "Ne " + "Ne" + str(bdx) + " " + "1.0 " +
                    str(round(conn["bottleneck"][0], 6)) + " " + str(round(conn["bottleneck"][1], 6)) + " " + str(round(conn["bottleneck"][2], 6)) + 
                     " 1a 1\n")
-                out.write("    0.000000   0.000000   0.000000   0.00\n")
+                out.write("                0.000000   0.000000   0.000000   0.00\n")
                 bdx = bdx + 1
                 idx = idx + 1
+        out.write("  0 0 0 0 0 0 0\n")
         out.write("THERI 0\n")
 
         count = 1
@@ -275,10 +276,12 @@ cdef class Channel:
             for node in channel["nodes"]:
                 out.write(" " + str(count) + " " + "He " + "He" + str(node["id"]) + " 1.000000\n")
                 count = count + 1
+        bdx = 0
         for channel in channels:
             for conn in channel["conns"]:
                 out.write(" " + str(count) + " " + "Ne " + "Ne" + str(bdx) + " 1.000000\n")
                 count = count + 1
+                bdx = bdx + 1
         out.write("  0 0 0\n")
 
         out.write("SHAPE\n")
@@ -316,6 +319,18 @@ cdef class Channel:
         out.write(" 0 0 0 0 0\n")
         out.write("SPLAN\n")
         out.write("  0   0   0   0\n")
+        out.write("LBLAT\n")
+        out.write("-1\n")
+        out.write("LBLSP\n")
+        out.write("-1\n")
+        out.write("DLATM\n")
+        out.write("-1\n")
+        out.write("DLBND\n")
+        out.write("-1\n")
+        out.write("DLPLY\n")
+        out.write("-1\n")
+        out.write("PLN2D\n")
+        out.write("0   0   0   0\n")
 
 
 # #Add at 20180823
