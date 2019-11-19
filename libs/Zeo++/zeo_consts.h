@@ -9,7 +9,7 @@ const double AVOGRADOS_NUMBER = 6.0221415e23;
 const double TOLERANCE=0.0001;
 const double threshold=0.0000001;
 const double thresholdLarge=0.001;  // Large threshold used to detect special positions when deadling with CIF files
-const double VOR_NODE_MERGE_THRESHOLD=0.02; // Threshold used to merge nearby nodes in Voronoi network
+const double VOR_NODE_MERGE_THRESHOLD=0.5; // Threshold used to merge nearby nodes in Voronoi network
                                             // this greatly simplifies the network
 const int maxline = 500; //for char arrays
 

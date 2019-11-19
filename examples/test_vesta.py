@@ -1,8 +1,6 @@
 import cavd
-radii, minRad, conn_val, connect, dim_network, dims_channel, migrate_mindis = cavd.outVesta("icsd_16713.cif", "Li", True, lower=0.3, upper=10.0, rad_dict=None, symprec=0.01)
-
+radii, minRad, conn_val, connect, dim_network, dims_channel, migrate_mindis = cavd.outVesta("icsd_246817.cif", "Li", True, lower=0.5, upper=10.0, rad_dict=None, symprec=0.01)
 print("radii: ",radii)
-print("channel threshold: ", minRad)
 
 print("RT_a: ",conn_val[0])
 print("RT_b: ",conn_val[1])
