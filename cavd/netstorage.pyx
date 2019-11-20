@@ -524,7 +524,7 @@ cdef class AtomNetwork:
         calculateFreeSphereParameters(vornet_ptr, c_fname, True)
         #:q:q(vornet_ptr, c_fname, False)
       
-      #Added at 20180420  
+    #Add by YAJ at 20180420  
     def through_VorNet(self, filename):
         """
         Computes the diameters of the largest included sphere, free sphere 
@@ -547,10 +547,8 @@ cdef class AtomNetwork:
         cdef double* c_Rif_ptr
         cdef double c_Ri,c_Rf,c_Rif
         vornet_ptr = (<VoronoiNetwork?>vornet).thisptr
-        if throughVorNet(vornet_ptr, c_fname, &c_Ri, &c_Rf, &c_Rif):
-            #return True
-            #edited at 20180530
-            return c_Ri,c_Rf,c_Rif
+        throughVorNet(vornet_ptr, c_fname, &c_Ri, &c_Rf, &c_Rif)
+        return c_Ri,c_Rf,c_Rif
     
     def get_ture_facecenter(self, currentId, neighId, fc_coord, face_vertex_coords):
         # print()
@@ -607,7 +605,7 @@ cdef class AtomNetwork:
            
         return true_nei
 
-    def perform_voronoi_decomposition(self, saveVorCells=True):
+    def perform_voronoi_decomposition(self, saveVorCells=True, ntol=0.02):
         """
         Performs weighted voronoi decomposition of atoms in the AtomNetwork 
         to analyze void space and generate voronoi nodes, edges and faces.
@@ -623,8 +621,8 @@ cdef class AtomNetwork:
         cdef vector[VOR_CELL] vcells
         cdef vector[BASIC_VCELL] bvcells
         #print self.rad_flag
-        if not performVoronoiDecomp(self.rad_flag, self.thisptr, 
-                vornet.thisptr, &vcells, saveVorCells, &bvcells):
+        if not performVoronoiDecomp(self.rad_flag, self.thisptr,
+                vornet.thisptr, &vcells, saveVorCells, &bvcells, ntol):
             raise PerformVDError
 
         # Get the edge centers
@@ -1180,7 +1178,6 @@ def connection_values_list(filename, vornet):
     calculateConnParameters(vornet_ptr, c_fname, &values)
     conn_values = []
     for i in range(values.size()):
-        # print(values[i])
         conn_values.append(values[i])
     return conn_values
 

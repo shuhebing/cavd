@@ -418,7 +418,7 @@ def outVesta(filename, migrant, rad_flag=True, lower=None, upper=10.0, rad_dict=
     return radii, minRad, conn_val, connect, dim_network, dims, migrate_mindis
 
 
-def AllCom10(filename, minRad, maxRad, migrant=None, rad_flag=True, effective_rad=True, rad_file=None):
+def AllCom10(filename, minRad, maxRad, ntol=0.02, migrant=None, rad_flag=True, effective_rad=True, rad_file=None):
     radii = {}
     with zopen(filename, "rt") as f:
         input_string = f.read()
@@ -434,7 +434,7 @@ def AllCom10(filename, minRad, maxRad, migrant=None, rad_flag=True, effective_ra
     atmnet = AtomNetwork.read_from_RemoveMigrantCif(filename, migrant, radii, True, None)
     
     prefixname = filename.replace(".cif","")
-    vornet,edge_centers,fcs,faces = atmnet.perform_voronoi_decomposition(True)
+    vornet,edge_centers,fcs,faces = atmnet.perform_voronoi_decomposition(True, ntol)
     # writeVaspFile(prefixname+"_origin_nofcs.vasp",atmnet,vornet)
     # spg_vornet,uq_voids = get_equivalent_vornet(vornet, 0.01)
     print("len fcs: ", len(fcs))
@@ -493,6 +493,9 @@ def AllCom10(filename, minRad, maxRad, migrant=None, rad_flag=True, effective_ra
     dim_network,connect = ConnStatus(conn_val, minRad, maxRad)
     
     channels = Channel.findChannels2(sym_vornet,atmnet,minRad,maxRad,prefixname+"_select.net")
+    
+    Channel.writeToVESTA(channels, atmnet, prefixname)
+
     dims_channel = []
     if len(channels)==0:
         dims_channel.append(0)
