@@ -1,0 +1,28 @@
+{
+    "files.associations": {
+        "vector": "cpp",
+        "iostream": "cpp",
+        "limits": "cpp"
+    },
+    "files.exclude": {
+        "cavd/*.pyd": true,
+        "cavd/*.cpp": true,
+        "cavd/__pycache__": true,
+        "cavd.egg-info": true,
+        "dist": true,
+        "build": true,
+        "docs": true,
+        "libs/Zeo++/Docs": true,
+        "libs/Zeo++/documentation": true,
+        "libs/Zeo++/Eigen": true,
+        "libs/Zeo++/zeovis": true,
+        "libs/Zeo++/*.o": true,
+        "libs/Zeo++/*.obj": true,
+        "libs/Voro++/examples": true,
+        "libs/Voro++/man": true,
+        "libs/Voro++/scripts": true,
+        "libs/Voro++/zeo": true,
+        "libs/Vor++/src/*.o": true,
+        "libs/Vor++/src/*.obj": true,
+    }
+}
