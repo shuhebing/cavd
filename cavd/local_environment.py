@@ -3,7 +3,7 @@ Coordination environment analysis.
 
 Update date：20190123
 Author：YAJ
-School of Computer Engineering and Science ShangHai University 
+School of Computer Engineering and Science, ShangHai University 
 
 [1]	M. O’Keeffe, “A proposed rigorous definition of coordination number,” Acta Crystallogr. Sect. A, vol. 35, no. 5, pp. 772–775, 1979.
 '''
@@ -45,6 +45,7 @@ rad_file = os.path.join(file_dir, 'ionic_radii.json')
 with open(rad_file, 'r') as fp:
     _ion_radii = json.load(fp)
 
+# 
 class CifParser_new(CifParser):
     """
     Parses a cif file
@@ -494,7 +495,6 @@ class Coordination():
         else:
             raise CoordEnviroComError("labels, sites, elements, coord_neighbors, radii must be have same length!")
     
-  
     def get_coordination(coordination_list,label):
         for i in coordination_list:
             if i["label"] == label:
@@ -675,3 +675,41 @@ def get_local_envir(filename):
     symm_number,symm_sybol = parser.get_symme()
     coord_list,radii = get_local_envir_fromstru(stru)
     return symm_number,symm_sybol, coord_list, radii
+
+# Get the Shannon radius of the ions in a given structure.
+def getIonicRadii(filename):
+    with zopen(filename, "rt") as f:
+        input_string = f.read()
+    parser = CifParser_new.from_string(input_string)
+    stru = parser.get_structures(primitive=False)[0]
+    coordination_list, radii = get_local_envir_fromstru(stru)
+    return radii
+
+# Analyze the relationships between mobile ions and their coordination ions.
+def LocalEnvirCom(stru, migrant):
+    coordination_list, radii = get_local_envir_fromstru(stru)
+    coord_tmp = []
+    nei_dis_tmp = []
+    min_nei_dis_tmp = []
+    migrant_paras = []
+    migrant_radii = []
+    for i in coordination_list:
+        if migrant in i["label"]:
+            nearest_atom = i["coord_nei"][0]
+            nei_label = nearest_atom[0]._atom_site_label
+            nei_dis = nearest_atom[1]
+            nei_radius = radii[nei_label]
+            alpha_tmp = (nei_dis - nei_radius)/radii[i["label"]]
+            
+            coord_tmp.append(i["coord_num"])
+            nei_dis_tmp.append(nei_dis)
+            min_nei_dis_tmp.append(nei_dis - nei_radius)
+            migrant_paras.append(alpha_tmp)
+            migrant_radii.append(radii[i["label"]])
+            
+    nei_dises = list(zip(coord_tmp, zip(nei_dis_tmp, min_nei_dis_tmp)))
+    migrant_alpha = float(sum(migrant_paras))/len(migrant_paras)
+    if migrant_alpha > 1.0:
+        migrant_alpha = 1.0
+    migrant_radius = float(sum(migrant_radii))/len(migrant_radii)
+    return radii,migrant_radius,migrant_alpha,nei_dises,coordination_list
