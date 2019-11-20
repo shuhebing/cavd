@@ -21,6 +21,24 @@
 
 /* Classes for topological analysis of pores */
 
+//Some custom exceptions about the PORE class, CHANNEL class and POCKET class.
+// Edited by YAJ at September 17, 2019.
+struct ZeoVectorException : public exception{
+    const char * what () const throw (){
+        return "Exception: Pore basis vector is zero vector.";
+    }
+};
+struct IllogicalResultException : public exception{
+    const char * what () const throw (){
+        return "Exception: Illogical result  when attempting to identify channels/pockets.";
+    }
+};
+struct AccessibilityException : public exception{
+    const char * what () const throw (){
+        return "Exception: Accessibility of node was determined more than once.";
+    }
+};
+
 /* The main class is PORE class, which will be used to create subsequent classes:
    CHANNEL class - inherit PORE plus adds functions to analyze channels
    POCKET class - inherit PORE plus adds functions to analyze inaccessible pockets

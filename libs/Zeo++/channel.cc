@@ -10,23 +10,6 @@
 
 using namespace std;
 
-struct ZeoVectorException : public exception{
-    const char * what () const throw (){
-        return "Exception: Pore basis vector is zero vector.";
-    }
-};
-struct IllogicalResultException : public exception{
-    const char * what () const throw (){
-        return "Exception: Illogical result  when attempting to identify channels/pockets.";
-    }
-};
-struct AccessibilityException : public exception{
-    const char * what () const throw (){
-        return "Exception: Accessibility of node was determined more than once.";
-    }
-};
-
-
 /* Create a PORE that does not contain any nodes or connections
  * and spans 0 unit cells.*/
 PORE::PORE(){

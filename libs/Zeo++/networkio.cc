@@ -2174,7 +2174,7 @@ bool readRemoveMigrantCif(char *filename, ATOM_NETWORK *cell, const char *migran
 }
 
 
-//Add at 20190523
+//Add by YAJ at 20190523
 //This function use to remove the oxide state from ions
 string stripIonName(string ionName){
   string number("0123456789");
@@ -2191,7 +2191,7 @@ string stripIonName(string ionName){
 }
 
 
-//Added at 20190604
+//Add by YAJ at 20190604
 /** 
  * This function used to check whether the given edge with the same
  * start id and end id exists in the vector.
@@ -2207,7 +2207,7 @@ bool is_edge_exist(vector<pair<int,DELTA_POS> > delta_uc, pair<int, DELTA_POS> d
 }
 
 
-//Added at 20180420
+//Add by YAJ at 20180420
 /**
  * write the bottleneck, interstitial and atomnetwork information to .vasp
  * file format to the provided filename. Excludes any nodes or nodes with radii
@@ -2215,7 +2215,6 @@ bool is_edge_exist(vector<pair<int,DELTA_POS> > delta_uc, pair<int, DELTA_POS> d
  * and edges are included.*/
 bool writeToVasp(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, double minRad, double maxRad){
   fstream output;
-  //string compareatom = cell->atoms.at(0).type;
   int atomcount = 0;
   int flag;
   vector<string> atomtype;
@@ -2223,15 +2222,8 @@ bool writeToVasp(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, do
   double a,b,c;
   vector<pair<int,DELTA_POS> > delta_uc;
 
-  // The code below is for C++11.
-  // smatch element_type;
-  // regex element_reg("[A-Z][a-z]*");
-
-  output.open(filename, fstream::out);
   if(!output.is_open()){
     cerr << "Error: Failed to open .vasp output file " << filename << "\n";
-    //cerr << "Exiting ..." << "\n";
-    //exit(1);
     return false;
   }
   else{
@@ -2245,12 +2237,8 @@ bool writeToVasp(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, do
     output << "    " << cell->v_b.x << "    " << cell->v_b.y << "    " << cell->v_b.z << "\n";
     output << "    " << cell->v_c.x << "    " << cell->v_c.y << "    " << cell->v_c.z << "\n";
 
-    //calculate the number of different atoms
-    // regex_search(cell->atoms.at(0).type,element_type,element_reg);
-    // atomtype.push_back(element_type.str());
     atomtype.push_back(stripIonName(cell->allAtoms.at(0).type));
     for(int i = 0; i < cell->numAllAtoms; i++){
-        // regex_search(cell->atoms.at(i).type,element_type,element_reg);
         if(stripIonName(cell->allAtoms.at(i).type).compare(atomtype.at(flag)) == 0){
             atomcount ++;
         }
@@ -2324,7 +2312,6 @@ bool writeToVasp(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, do
     niter = vornet->nodes.begin();
     while(niter != vornet->nodes.end()){
         if((minRad == 0.0 && maxRad == 0.0) || (niter->rad_stat_sphere >= minRad && niter->rad_stat_sphere <= maxRad)){
-            //cell->initMatrices();
             a = niter->frac_a;
             b = niter->frac_b;
             c = niter->frac_c;
@@ -2358,11 +2345,13 @@ bool writeToVasp(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, do
         }
       eiter++;
     }
-  output.close();
-  return true;
+    output.close();
+    return true;
   }
 }
 
+// Add by YAJ at 20190607
+// This function is used to output ATOM_NETWORK to .vasp file. 
 bool writeAtmntToVasp(char *filename, ATOM_NETWORK *cell){
   fstream output;
   int atomcount = 0;
@@ -2374,8 +2363,6 @@ bool writeAtmntToVasp(char *filename, ATOM_NETWORK *cell){
   output.open(filename, fstream::out);
   if(!output.is_open()){
     cerr << "Error: Failed to open .vasp output file " << filename << "\n";
-    //cerr << "Exiting ..." << "\n";
-    //exit(1);
     return false;
   }
   else{
@@ -2416,19 +2403,20 @@ bool writeAtmntToVasp(char *filename, ATOM_NETWORK *cell){
     }
     output << "\n";
 
-      //write the unit cell coordinate information
+    //write the unit cell coordinate information
     output << "Direct" << "\n";
     for(int i = 0; i<cell->numAllAtoms; i++){
         ATOM tmpAtom = cell->allAtoms.at(i);
         output << "    " << tmpAtom.a_coord << "    " << tmpAtom.b_coord << "    " << tmpAtom.c_coord << "    ";
         output << "    " << tmpAtom.radius << "    " << tmpAtom.type << "\n";
     }
-  output.close();
-  return true;
+    output.close();
+    return true;
   }
 }
 
-// Add at 20190518
+// Add by YAJ at 20190518
+// This function is used to output VORONOI_NETWORK to .net file.
 bool writeToNET(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, double minRad, double maxRad){
   fstream output;
   double it_a,it_b,it_c,bn_a,bn_b,bn_c;
@@ -2480,7 +2468,7 @@ bool writeToNET(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, dou
       }
       eiter++;
     }
-  output.close();
-  return true;
+    output.close();
+    return true;
   }
 }

@@ -1,5 +1,5 @@
 /* 
- * Updated by Ye Anjiang April 18, 2018
+ * Updated by Ye Anjiang November 20, 2019
  *
  */
 
@@ -44,8 +44,16 @@
 #include "string_additions.h"
 #include "material.h"
 template<class c_option>
-bool storeVoronoiNetwork(c_option &con, ATOM_NETWORK *atmnet, VORONOI_NETWORK *vornet, double bx, double by, double bz,
-             std::vector<BASIC_VCELL> &basCells, std::vector<int> &atomShifts, bool storeAdvCells, std::vector<VOR_CELL> &advCells);
+bool storeVoronoiNetwork(c_option &con, ATOM_NETWORK *atmnet, VORONOI_NETWORK *vornet, double bx, double by, double bz, std::vector<BASIC_VCELL> &basCells, std::vector<int> &atomShifts, bool storeAdvCells, std::vector<VOR_CELL> &advCells);
+
+/** 
+ * Add by YAJ at 20191120
+ * The bellow function is modified version of the above function. 
+ * In this function, a threshold ntol is used to merge nearby nodes in Voronoi network
+ */
+template<class c_option>
+bool storeVoronoiNetwork(c_option &con, ATOM_NETWORK *atmnet, VORONOI_NETWORK *vornet, double bx, double by, double bz, std::vector<BASIC_VCELL> &basCells, std::vector<int> &atomShifts, bool storeAdvCells, std::vector<VOR_CELL> &advCells, double ntol);
+
 
 // A guess for the memory allocation per region
 const int memory=16;
@@ -77,6 +85,15 @@ void* performVoronoiDecomp(bool radial, ATOM_NETWORK *cell, VORONOI_NETWORK *vor
 bool performVoronoiDecomp(bool radial, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, std::vector<VOR_CELL> *cells, bool saveVorCells,
                std::vector<BASIC_VCELL> *bvcells);
 
+/** 
+ * Add by YAJ at 20191120
+ * The bellow two functions are modified version of the above two functions. 
+ * In this function, a threshold ntol is used to merge nearby nodes in Voronoi network
+ */
+void* performVoronoiDecomp(bool radial, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, std::vector<VOR_CELL> &cells, bool saveVorCells,
+               std::vector<BASIC_VCELL> &bvcells, double ntol);
+bool performVoronoiDecomp(bool radial, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, std::vector<VOR_CELL> *cells, bool saveVorCells,
+               std::vector<BASIC_VCELL> *bvcells, double ntol);
 
 // void createAdvCell(voro::voronoicell &cell, std::vector<double> coords, int *idMap, VOR_CELL &newCell);
 void createAdvCell(voro::voronoicell_neighbor &cell, std::vector<double> coords, int *idMap, VOR_CELL &newCell);
@@ -115,14 +132,9 @@ void getStructureInformation(char *filename, char *filenameExtendedOutput, ATOM_
 /* Print information about presence of open metal sites  */
 void getOMSInformation(char *filename, char *filenameExtendedOutput, ATOM_NETWORK *atmnet, bool extendedOutput);
 
-// Added at 20180418
-// Structure a new function to return whether a specific radius atom can through voronoi network
-// result is a array store integer,result[0],result[1],result[2] represent whether migrantRad larger than largest included sphere, largest free sphere, largest included sphere along free sphere path respectively
-// 1 is can through, 0 is can not through.
-//void throughVorNet(VORONOI_NETWORK *vornet, char *filename, double migrantRad);
-//bool throughVorNet(VORONOI_NETWORK *vornet, char *filename, double migrantRad);
-bool throughVorNet(VORONOI_NETWORK *vornet, char *filename, double *Ri, double *Rf, double *Rif, double migrantRad);
-bool throughVorNet(VORONOI_NETWORK *vornet, char *filename, double *Ri, double *Rf, double *Rif);
+// Add by YAJ at 20180418
+// This function is used to obtain the largest probe that can freely through the Voronoi network.
+void throughVorNet(VORONOI_NETWORK *vornet, char *filename, double *Ri, double *Rf, double *Rif);
 void calculateConnParameters(VORONOI_NETWORK *vornet, char *filename, vector<double> *values);
 void parseNetworkSymmetry(std::vector<int> symmlabels, VORONOI_NETWORK *vornet);
 void addVorNetId(VORONOI_NETWORK *vornet);
@@ -130,7 +142,11 @@ void add_net_to_vornet(vector<int> fc_ids, vector<double> fc_radii, vector<vecto
     vector<vector<double> > fc_fracs, vector<vector<int> > fc_neiatoms, vector<vector<int> > fc_vertices,
     vector< vector< vector<int> > > edge_pdvs, vector< vector< double> > fc_vert_dists, VORONOI_NETWORK* vornet);
 
-/* 自定义异常 */
+/**
+ * Some custom exceptions about the PORE class, CHANNEL class and POCKET class.
+ * 
+ * Edited by YAJ at September 17, 2019.
+ */
 struct InvalidParticlesNumException : public exception{
     const char * what () const throw (){
         return "Exception: Invalid number of particles provided for Voronoi decomposition.";
@@ -138,7 +154,7 @@ struct InvalidParticlesNumException : public exception{
 };
 struct InvalidBoxDimException : public exception{
     const char * what () const throw (){
-        return "Exception: valid box dimensions calculated for Voronoi decomposition.";
+        return "Exception: Valid box dimensions calculated for Voronoi decomposition.";
     }
 };
 struct HugeGridException : public exception{

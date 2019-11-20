@@ -1,5 +1,5 @@
 /* 
- * Updated by Ye Anjiang June 27, 2019
+ * Updated by Ye Anjiang November 20, 2019
  *
  */
 
@@ -229,9 +229,189 @@ bool performVoronoiDecomp(bool radial, ATOM_NETWORK *atmnet, VORONOI_NETWORK *vo
         cout << e6.what() << endl;
         return false;
     }
-    
 }
 
+// Add by YAJ at 20191120
+void* performVoronoiDecomp(bool radial, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, vector<VOR_CELL> &cells, bool saveVorCells,
+               vector<BASIC_VCELL> &bvcells, double ntol){
+  int i,n;
+  double bx,bxy,by,bxz,byz,bz;
+  vector<int> atomShifts;
+  
+  // Set the box dimensions and number of particles
+  bx  = cell->v_a.x;
+  bxy = cell->v_b.x;
+  by  = cell->v_b.y;
+  bxz = cell->v_c.x;
+  byz = cell->v_c.y;
+  bz  = cell->v_c.z;
+  n   = cell->numAtoms;
+  
+  // Print the box dimensions
+  printf("Box dimensions:\n"
+     "  va=(%f 0 0)\n"
+     "  vb=(%f %f 0)\n"
+     "  vc=(%f %f %f)\n\n",bx,bxy,by,bxz,byz,bz);
+  
+  // Check that the input parameters make sense
+  if(n<1) {
+    char* sentence = new char[300];
+    sprintf(sentence, "Error: Invalid number of particles provided for Voronoi decomposition (%d particles were read from file, which is <1)\nExiting ...\n", n);
+    fputs(sentence, stderr);
+    throw InvalidParticlesNumException();
+    //exit(1);
+  }
+  if(bx < tolerance || by < tolerance || bz < tolerance){
+    fputs("Error: Invalid box dimensions calculated for Voronoi decomposition."
+      " Please check unit cell parameters.\nExiting ...\n", stderr);
+    throw InvalidBoxDimException();
+  }
+  
+  // Compute the internal grid size, aiming to make
+  // the grid blocks square with around 6 particles
+  // in each
+  double ls=pow(n/(9*bx*by*bz),1.0/3.0);
+  double nxf=bx*ls+1.1;
+  double nyf=by*ls+1.1;
+  double nzf=bz*ls+1.1;
+  
+  // Check the grid is not too huge, using floating point numbers to avoid
+  // integer wrap-arounds
+  if (nxf*nyf*nzf>max_regions) {
+    fprintf(stderr,"voro++: Number of computational blocks exceeds the maximum allowed of %d\n"
+           "Either increase the particle length scale, or recompile with an increased\nmaximum.",max_regions);
+    throw HugeGridException();
+  }
+  
+  // Now that we are confident that the number of regions is reasonable,
+  // create integer versions of them
+  int nx=int(nxf);
+  int ny=int(nyf);
+  int nz=int(nzf);
+  printf("Total particles = %d\n\nInternal grid size = (%d %d %d)\n\n",n,nx,ny,nz);
+
+  //a temporary fix to the Voronoi volume check issue:
+  //if the user allows, when the volume check fails the structure's atom coordinates can be randomly altered by a very small amount, to try and bypass the error
+  int numAttemptsPermitted = 1;
+  if(cell->allowAdjustCoordsAndCellFlag) numAttemptsPermitted++;
+  for(int attempt=0; attempt<numAttemptsPermitted; attempt++) {
+    
+    if(radial) {
+      puts("Using voro++ with radii for particles.");
+      // Create a container with the geometry given above
+      container_periodic_poly *rad_con;
+      rad_con =  new container_periodic_poly (bx,bxy,by,bxz,byz,bz,nx,ny,nz,memory);
+      
+      // Read in the particles from the provided ATOM_NETWORK
+      vector <ATOM> ::iterator iter = cell->atoms.begin();
+      i = 0;
+      int da, db, dc;
+      while(iter != cell->atoms.end()){
+        rad_con->put(i,iter->x,iter->y,iter->z,iter->radius, da, db, dc);
+        atomShifts.push_back(da); 
+        atomShifts.push_back(db); 
+        atomShifts.push_back(dc);
+
+        iter++;
+        i++;
+      }
+
+      // Store the Voronoi Network for later use
+      bool volume_correct = storeVoronoiNetwork(*rad_con, cell, vornet, bx, by, bz, bvcells, atomShifts, saveVorCells, cells, ntol);
+      if(volume_correct) {
+        vornet->v_a = cell->v_a;
+        vornet->v_b = cell->v_b;
+        vornet->v_c = cell->v_c;
+        return rad_con;
+      } else if(attempt==numAttemptsPermitted-1) {
+        printf("Exiting...\n");
+        throw AttemptException();
+       // exit(1);
+      } else {
+        cell->randomlyAdjustCoordsAndCell();
+      }
+    }
+    else {
+      puts("Using voro++ without radii for particles.");
+      // Create a container with the geometry given above
+      container_periodic *no_rad_con;
+      no_rad_con = new container_periodic(bx,bxy,by,bxz,byz,bz,nx,ny,nz,memory);
+
+      // Read in the particles from the provided ATOM_NETWORK
+      vector <ATOM> ::iterator iter = cell->atoms.begin();
+      i = 0;
+      int da, db, dc;
+      while(iter != cell->atoms.end()){
+        no_rad_con->put(i,iter->x,iter->y,iter->z, da, db, dc);
+        atomShifts.push_back(da); 
+        atomShifts.push_back(db); 
+        atomShifts.push_back(dc);
+        
+        iter++;
+        i++;
+      }
+
+      // Store the Voronoi Network for later use
+      bool volume_correct = storeVoronoiNetwork(*no_rad_con, cell, vornet, bx, by, bz, bvcells, atomShifts, saveVorCells, cells, ntol);
+      if(volume_correct) {
+        vornet->v_a = cell->v_a;
+        vornet->v_b = cell->v_b;
+        vornet->v_c = cell->v_c;
+        return no_rad_con;
+      } else if(attempt==numAttemptsPermitted-1) {
+        printf("Exiting...\n");
+        throw AttemptException();
+      } else {
+        cell->randomlyAdjustCoordsAndCell();
+      }
+    }
+  }
+}
+
+bool performVoronoiDecomp(bool radial, ATOM_NETWORK *atmnet, VORONOI_NETWORK *vornet, vector<VOR_CELL> *cells, bool saveVorCells,
+               vector<BASIC_VCELL> *bvcells, double ntol){
+
+    container_periodic_poly *rad_con = NULL;
+    container_periodic *no_rad_con = NULL;
+    try{
+        if (radial) {
+            rad_con = (container_periodic_poly *)performVoronoiDecomp(radial, atmnet, vornet, *cells, saveVorCells, *bvcells, ntol);
+            addVorNetId(vornet);
+        }
+        else {
+            no_rad_con = (container_periodic *)performVoronoiDecomp(radial, atmnet, vornet, *cells, saveVorCells, *bvcells, ntol);
+            addVorNetId(vornet);
+        }
+        delete rad_con;
+        delete no_rad_con;
+        return true;
+    }
+    catch (InvalidParticlesNumException& e1){
+        cout << e1.what() << endl;
+        return false;
+    }
+    
+    catch (InvalidBoxDimException& e2){
+        cout << e2.what() << endl;
+        return false;
+    }
+    catch (HugeGridException& e3){
+        cout << e3.what() << endl;
+        return false;
+    }
+    catch (AttemptException& e4){
+        cout << e4.what() << endl;
+        return false;
+    }
+    catch (VoronoiDecompException& e5){
+        cout << e5.what() << endl;
+        return false;
+    }
+    catch (CoordNumException& e6){
+        cout << e6.what() << endl;
+        return false;
+    }
+}
 
 // void createAdvCell(voronoicell &cell, vector<double> coords, int *idMap, VOR_CELL &newCell) {
 // void createAdvCell(voronoicell_neighbor &cell, vector<double> coords, int *idMap, VOR_CELL &newCell) {
@@ -240,8 +420,6 @@ void createAdvCell(voronoicell_neighbor &cell, vector<double> coords, int *idMap
   vector<int> faceVertices;
   cell.face_vertices(faceVertices);
   
-  // Add by YAJ 20190609
-  // Test code
   vector<int> neighbours;
   cell.neighbors(neighbours);
       
@@ -250,12 +428,7 @@ void createAdvCell(voronoicell_neighbor &cell, vector<double> coords, int *idMap
     vector<Point> faceCoords;
     vector<int>   faceIDs;
     int faceOrder = faceVertices[index];
-
-    // Add by YAJ 20190609
-    // Test code
     int neighborAtom = neighbours[i];
-    // cout << "neighborAtom: " << neighborAtom << endl;
-    // cout << "face order: " << faceOrder << endl;
 
     index++;
     for(int j = 0; j < faceOrder; j++){
@@ -263,9 +436,6 @@ void createAdvCell(voronoicell_neighbor &cell, vector<double> coords, int *idMap
       faceCoords.push_back(Point(coords[verID*3], coords[verID*3+1], coords[verID*3+2]));
       faceIDs.push_back(idMap[4*verID]);
       index++;
-
-      //test code add by YAJ
-      // cout << "vertice id in face: " << idMap[4*verID] << endl;
     }
     newCell.addFace(VOR_FACE(centerAtom, neighborAtom, faceCoords, faceIDs));
   }
@@ -310,10 +480,6 @@ bool storeVoronoiNetwork(c_option &con, ATOM_NETWORK *atmnet, VORONOI_NETWORK *v
       vector<double> coords;
       c.vertices(atmnet->atoms[id].x, atmnet->atoms[id].y, atmnet->atoms[id].z, coords);
 
-      // Add by YAJ 20190509
-      // Test code
-      // cout<< "current cell id: " << id << endl; 
-
       numNodes.push_back(c.p);
       cellIDs.push_back(id);
       vertices.push_back(coords);
@@ -342,7 +508,6 @@ bool storeVoronoiNetwork(c_option &con, ATOM_NETWORK *atmnet, VORONOI_NETWORK *v
   else {
     fputs("Error: Unable to begin Voronoi decomposition.\nExiting...\n",stderr);
     throw VoronoiDecompException();
-     // exit(1);
   }
 
     // Carry out the volume check
@@ -397,6 +562,120 @@ bool storeVoronoiNetwork(c_option &con, ATOM_NETWORK *atmnet, VORONOI_NETWORK *v
     cout << "Finished rerouting information." << "\n";
     return true;
 }
+
+// Add by YAJ at 20191120
+template<class c_option>
+bool storeVoronoiNetwork(c_option &con, ATOM_NETWORK *atmnet, VORONOI_NETWORK *vornet, double bx, double by, double bz,
+             vector<BASIC_VCELL> &basCells, vector<int> &atomShifts, bool storeAdvCells, vector<VOR_CELL> &advCells, double ntol) {
+  voronoi_network vnet (con, ntol); // data structure defined in voro++ which is not to be confused with VORONOI_NETWORK
+  int id;
+  double vvol=0,x,y,z,r;
+  // voronoicell c(con);
+
+  //Add by YAJ 20190609
+  voronoicell_neighbor c(con);
+
+  puts("Performing Voronoi decomposition.");
+
+  basCells.clear(); advCells.clear();
+  basCells.resize(atmnet->numAtoms, BASIC_VCELL());
+  advCells.resize(atmnet->numAtoms, VOR_CELL());
+  vector<int> numNodes;
+  int cellIndex = 0;
+
+  vector< vector<double> > vertices;
+
+  // Compute Voronoi cells
+  c_loop_all_periodic vl(con);
+  vector<int> cellIDs;
+  int **cellInfo;
+  cellInfo = new int*[atmnet->numAtoms];
+  if(vl.start()) {
+    do { 
+    if(con.compute_cell(c,vl)) {
+      vvol+=c.volume();
+      vl.pos(id,x,y,z,r);
+            
+      int *map;
+      vector<double> coords;
+      c.vertices(atmnet->atoms[id].x, atmnet->atoms[id].y, atmnet->atoms[id].z, coords);
+
+      numNodes.push_back(c.p);
+      cellIDs.push_back(id);
+      vertices.push_back(coords);
+
+      vnet.add_to_network(c,id,x,y,z,r, map);
+
+      cellInfo[cellIndex] = map;
+      
+      if(storeAdvCells){
+        VOR_CELL newCell;
+        createAdvCell(c, coords, map, newCell, id);
+        advCells[id] = newCell;
+      }
+    } 
+    else {
+      numNodes.push_back(0);
+      cellIDs.push_back(-1);
+      vertices.push_back(vector<double>());
+      
+      cellInfo[cellIndex] = NULL;
+    }
+    cellIndex++;
+      } while(vl.inc());
+ }
+  else {
+    fputs("Error: Unable to begin Voronoi decomposition.\nExiting...\n",stderr);
+    throw VoronoiDecompException();
+  }
+
+    // Carry out the volume check
+    printf("Volume check:\n  Total domain volume  = %f\n",bx*by*bz);
+    printf("  Total Voronoi volume = %f\n", vvol);
+
+    double box_vol = bx*by*bz;
+    double error_percent = 100*abs(vvol - box_vol)/box_vol;
+    double error_percent_tolerance = 0.001; // former (before Voro++ fit default = 0.1; 
+    if(error_percent > error_percent_tolerance) {
+      printf("Error: Voronoi volume check failed (%.3f%% error, > %.3f%% tolerance).\nExiting...\n", error_percent, error_percent_tolerance);
+      return false;
+    }
+    
+    cout << "Voronoi decomposition finished. Rerouting Voronoi network information." << "\n";
+    
+    // If this option is enabled, then the code will not
+    // print edges from i to j for j<i.
+    // vnet.store_network(vornet->nodes, vornet->edges, true);
+    // vnet.store_network(vornet->nodes, vornet->edges, false);
+    vnet.store_network(vornet->nodes, vornet->edges, atmnet, false);
+
+    for(int i = 0; i < atmnet->numAtoms; i++){
+      if(numNodes[i] == 0){
+        continue;
+      }
+      
+      vector<int> nodeIDs;
+      vector<Point> nodeLocations; 
+      if((int)vertices[i].size() != 3*numNodes[i]){
+      cerr << "Error: Improper number of node coordinates in Voronoi decomposition" << "\n"
+         << "Found " << vertices[i].size() << " but expected " << 3*numNodes[i] << "\n"
+         << "Exiting..." << "\n";
+         throw CoordNumException();
+      }
+
+      for(int j = 0; j < numNodes[i]; j++){
+        nodeLocations.push_back(Point(vertices[i][3*j], vertices[i][3*j+1], vertices[i][3*j+2])) ;
+        nodeIDs.push_back(cellInfo[i][j*4]);
+      }
+      
+      basCells[cellIDs[i]] = BASIC_VCELL(nodeLocations, nodeIDs);
+      delete [] cellInfo[i];
+    }
+    delete [] cellInfo;
+    cout << "Finished rerouting information." << "\n";
+    return true;
+}
+
 
 /** Extends the provided unit cell in the x, y and z directions using
     the given factors and stores the resulting ATOM_NETWORK using the
@@ -481,20 +760,16 @@ void extendVorNet(VORONOI_NETWORK *vornet, VORONOI_NETWORK *newNet, DELTA_POS di
       newNode.z = oldNode.z + i*direction.x*vornet->v_a.z + i*direction.y*vornet->v_b.z + i*direction.z*vornet->v_c.z; 
       newNode.rad_stat_sphere = oldNode.rad_stat_sphere;
 
-      //Add code used to set id and label for newNode
+      //Set the id and label of the new VOR_NODE.
       //Add by YAJ in 20190513
       newNode.id = oldNode.id + i*numIDs;
       newNode.label = oldNode.label;
-
       newNet->nodes.push_back(newNode);
       if(sourceNodes->find(j) != sourceNodes->end()){
         //sourceNodes->insert(idCount);
         //idAliases->insert(pair<int,int> (idCount,j));
-
-      //Add code used to set id and label for newNode
-      //Add by YAJ in 20190513
-      sourceNodes->insert(newNode.id);
-      idAliases->insert(pair<int,int> (newNode.id,oldNode.id));
+        sourceNodes->insert(newNode.id);
+        idAliases->insert(pair<int,int> (newNode.id,oldNode.id));
       }
       idCount++;
     }
@@ -534,8 +809,7 @@ void extendVorNet(VORONOI_NETWORK *vornet, VORONOI_NETWORK *newNet, DELTA_POS di
       newEdge.delta_uc_z = newDirection.z;
       newEdge.length = oldEdge.length;
 
-      //Add code used to set id and label for newNode
-      //Add by YAJ in 20190513
+      //Set the coordinates of the bottleneck for each new VOR_EDGE.
       newEdge.bottleneck_x = oldEdge.bottleneck_x + i*direction.x*vornet->v_a.x + i*direction.y*vornet->v_b.x + i*direction.z*vornet->v_c.x; 
       newEdge.bottleneck_y = oldEdge.bottleneck_y + i*direction.x*vornet->v_a.y + i*direction.y*vornet->v_b.y + i*direction.z*vornet->v_c.y; 
       newEdge.bottleneck_z = oldEdge.bottleneck_z + i*direction.x*vornet->v_a.z + i*direction.y*vornet->v_b.z + i*direction.z*vornet->v_c.z; 
@@ -1189,16 +1463,11 @@ void getStructureInformation(char *filename, char *filenameExtendedOutput, ATOM_
 */
 }
 
-
-
-
 /**
- * Added at 20180418
+ * Add by YAJ at 20180418
  * Structure a new function to return whether a specific radius atom can through voronoi network
  */
-//int throughVorNet(VORONOI_NETWORK *vornet, char* filename, double migrantRad){
-//bool throughVorNet(VORONOI_NETWORK *vornet, char* filename,  double *Ri, double *Rf, double *Rif, double migrantRad){
-bool throughVorNet(VORONOI_NETWORK *vornet, char* filename,  double *Ri, double *Rf, double *Rif){
+void throughVorNet(VORONOI_NETWORK *vornet, char* filename,  double *Ri, double *Rf, double *Rif){
       vector<double> freeRadResults;
       vector<double> incRadResults;
       vector<bool> NtoN;
@@ -1258,14 +1527,6 @@ bool throughVorNet(VORONOI_NETWORK *vornet, char* filename,  double *Ri, double 
       output.close();
 
       cout << filename << "    " << "Ri = " << Di << " " << "Rf = " << Df << "    " << "Rif = " << Dif << endl;
-      // compare the migrantRad and Df
-      // if(migrantRad > Df){
-          // cout << "migrant = " << migrantRad << "  Df = " << Df << endl;
-          // return false;
-      // }
-      // else
-          // return true;
-      return true;
 }
 
 

@@ -891,14 +891,13 @@ std::string stripAtomName(std::string extAtom) {
 }
 
 //Added at 20180606
-/** Reads the radius table from the provided static std::map <std::string,double>*/
+/** Read the radii table from the provided static std::map <std::string,double>*/
 void readIonRadTable(std::map<std::string,double> radMap){
   ionRadTable.clear();
   ionRadTable = radMap;
 }
 // Added at 20180606
-/** Return the radius for the corresponding atom name. If the -nor
-    option was specified, returns 0. */
+/** Return the radius for the corresponding atom name. */
 double lookupIonRadius(string atomType, bool radial){
 
   if(stripAtomNameInternalFlag == true) atomType = stripAtomName(atomType);
@@ -919,7 +918,7 @@ double lookupIonRadius(string atomType, bool radial){
 
 //Added at 20180627
 /*
- * Fills the ionic radius table with Shanno effictive radius.
+ * Fills the ionic radius table with Shannon effictive radius.
  * Chosen Ruler:
  *  coordination number: 6.
  *  most commom oxidation state.
