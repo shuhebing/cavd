@@ -46,21 +46,25 @@ broad research community.
  will create cavd-0.2.0 directory containing the cavd code;
 
    > gunzip cavd-0.2.0.tar.gz
+   
    > tar xvf cavd-0.2.0.tar
 
 2) Compile Voro++ library
   
    > cd cavd-0.2.0/libs/Voro++/src
+   
    > make
   
 3) Compile the modified Zeo++ source code:
 
    > cd ../../Zeo++
+   
    > make dylib
   
 4) Install cavd library:
 
    > cd ../../
+   
    > python setup_linux.py develop
   
 5) Test that the installation worked using the "test_bmdcom.py" in examples package. 
