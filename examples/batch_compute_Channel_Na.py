@@ -13,7 +13,7 @@ from cavd.cavd_consts import LOWER_THRESHOLD, UPPER_THRESHOLD
 
 migrant = "Na"
 
-path = "../../../YAJ/20191229/Li_Na_Mg_Al_cifs_order_revise_recover/"+migrant+"/"
+path = "./Li_Na_Mg_Al_cifs_order_revise_recover/"+migrant+"/"
 
 if not os.path.exists(path+"results"):
     os.mkdir(path+"results")
