@@ -295,7 +295,7 @@ cdef class Channel:
             for conn in channel["conns"]:
                 out.write(" " + str(bond_count) + " He" + str(conn["fromId"]) + " He" + str(conn["toId"]) + " " +
                     str(round(conn["length"] - 0.01, 6)) + " " + str(round(conn["length"] + 0.01, 6)) + 
-                    " 0  0  0  1  1  0.200  1.000 8 0 148\n")
+                    " 0  0  0  1  1  0.200  1.000 181 255 64\n")
                 bond_count = bond_count + 1
         out.write("  0 0 0 0\n")   
         out.write("SITET\n")
@@ -303,13 +303,13 @@ cdef class Channel:
         for channel in channels:
             for node in channel["nodes"]:
                 out.write(" " + str(idx) + " " + "He" + str(node["id"]) + " " + str(round(node["radius"], 6)) + 
-                    " 252 232 206 252 232 206 204  0\n")
+                    " 51 164 161 51 164 161 204  0\n")
                 idx = idx + 1
         bdx = 0
         for channel in channels:
             for conn in channel["conns"]:
                 out.write(" " + str(idx) + " " + "Ne" + str(bdx) + " " + str(round(conn["bottleneckSize"], 6)) +
-                    " 254  55 181 254  55 181 204  0\n")
+                    " 200 145 255 200 145 255 204  0\n")
                 idx = idx + 1
                 bdx = bdx + 1
         out.write("  0 0 0 0 0 0\n")
