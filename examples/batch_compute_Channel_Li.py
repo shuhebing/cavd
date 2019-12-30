@@ -45,4 +45,4 @@ for filename in filenames:
         print(filename,str(e))
         com_status.write(filename+','+str(e)+'\n')
         continue
-print(ions[i]+" contained file compute completed!")
+print(migrant+"-containing files compute completed!")
