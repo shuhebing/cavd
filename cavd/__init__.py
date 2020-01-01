@@ -11,7 +11,7 @@ from cavd.recovery import rediscovery, rediscovery_kdTree, rediscovery_byRad_kdT
 from cavd.get_Symmetry import get_symnum_sites, get_equivalent_vornet,get_labeled_vornet
 from cavd.local_environment import CifParser_new, LocalEnvirCom, get_local_envir_fromstru
 
-def outVesta(filename, migrant, ntol=0.02, rad_flag=True, lower=None, upper=10.0, rad_dict=None, symprec=0.01):
+def outVesta(filename, migrant, ntol=0.02, rad_flag=True, lower=None, upper=10.0, rad_dict=None):
     with zopen(filename, "rt") as f:
         input_string = f.read()
     parser = CifParser_new.from_string(input_string)
@@ -33,25 +33,11 @@ def outVesta(filename, migrant, ntol=0.02, rad_flag=True, lower=None, upper=10.0
     
     atmnet = AtomNetwork.read_from_RemoveMigrantCif(filename, migrant, radii, rad_flag)
     
-    prefixname = filename.replace(".cif","")
-    #for cst paper
-    # vornet,edge_centers,fcs,faces = atmnet.perform_voronoi_decomposition(True)
-    vornet,edge_centers,fcs,faces = atmnet.perform_voronoi_decomposition(False, ntol)
-    sym_vornet,voids =  get_labeled_vornet(vornet, sitesym, symprec)
-    writeNETFile(prefixname+"_origin.net",atmnet,sym_vornet)
+    vornet,edge_centers,fcs,faces = atmnet.perform_voronoi_decomposition(True, ntol)
+    add_fcs_vornet = vornet.add_facecenters(faces)
     
-    # for cst paper
-    migrate_mindis = None
-
-    minRad = 0.0
-    if lower:
-        minRad = lower
-    else:
-        standard = LOWER_THRESHOLD[migrant]
-        minRad = standard*migrant_alpha*0.85
-    conn_val = connection_values_list(prefixname+".resex", sym_vornet)
-    dim_network,connect = ConnStatus(conn_val,minRad)
-    channels = Channel.findChannels2(sym_vornet, atmnet, lower, upper, prefixname+".net")
+    prefixname = filename.replace(".cif","")
+    channels = Channel.findChannels2(add_fcs_vornet, atmnet, lower, upper, prefixname+".net")
     
     # output vesta file for visiualization
     Channel.writeToVESTA(channels, atmnet, prefixname)
@@ -60,7 +46,7 @@ def outVesta(filename, migrant, ntol=0.02, rad_flag=True, lower=None, upper=10.0
     for i in channels:
         dims.append(i["dim"])
 
-    return radii, minRad, conn_val, connect, dim_network, dims, migrate_mindis
+    return dims
 
 # This function need to be updated.
 def AllCom10(filename, minRad, maxRad, ntol=0.02, migrant=None, rad_flag=True, effective_rad=True, rad_file=None):
