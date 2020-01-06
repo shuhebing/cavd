@@ -1547,7 +1547,7 @@ void addVorNetId(VORONOI_NETWORK *vornet){
 //add the center of Voronoi face into Vronoi network
 void add_net_to_vornet(vector<int> fc_ids, vector<double> fc_radii, vector<vector<double> > fc_coords, vector<vector<double> > fc_fracs,
                         vector<vector<int> > fc_neiatoms, vector<vector<int> > fc_vertices, vector< vector< vector<int> > > edge_pdvs, 
-                        vector< vector< double> > fc_vert_dists, VORONOI_NETWORK* vornet){
+                        vector< vector< double> > fc_vert_dists, VORONOI_NETWORK* vornet, double merge_tol){
   int da, db, dc;
   if(fc_ids.size() == fc_radii.size() && fc_ids.size() == fc_coords.size() 
       && fc_ids.size()== fc_fracs.size() && fc_ids.size() == fc_vertices.size()){
@@ -1564,10 +1564,11 @@ void add_net_to_vornet(vector<int> fc_ids, vector<double> fc_radii, vector<vecto
         db = edge_pdv[1];
         dc = edge_pdv[2];
         // cout<< "d: " << da << " " << db << " " << dc << endl;
-
-        vornet->edges.push_back(VOR_EDGE(fc_ids[j], verts[k], fc_radii[j], fc_coords[j][0], fc_coords[j][1], fc_coords[j][2], fc_fracs[j][0], fc_fracs[j][1], fc_fracs[j][2], da, db, dc, fc_vert_dists[j][k]));
-        vornet->edges.push_back(VOR_EDGE(verts[k], fc_ids[j], fc_radii[j], fc_coords[j][0], fc_coords[j][1], fc_coords[j][2], fc_fracs[j][0], fc_fracs[j][1], fc_fracs[j][2], -da, -db, -dc, fc_vert_dists[j][k]));
-      }
+        if(fc_vert_dists[j][k] > merge_tol){
+          vornet->edges.push_back(VOR_EDGE(fc_ids[j], verts[k], fc_radii[j], fc_coords[j][0], fc_coords[j][1], fc_coords[j][2], fc_fracs[j][0], fc_fracs[j][1], fc_fracs[j][2], da, db, dc, fc_vert_dists[j][k]));
+          vornet->edges.push_back(VOR_EDGE(verts[k], fc_ids[j], fc_radii[j], fc_coords[j][0], fc_coords[j][1], fc_coords[j][2], fc_fracs[j][0], fc_fracs[j][1], fc_fracs[j][2], -da, -db, -dc, fc_vert_dists[j][k]));
+        }
+      } 
     }
   }
   else

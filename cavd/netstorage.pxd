@@ -147,7 +147,7 @@ cdef extern from "../libs/Zeo++/network.h":
 
     cdef void add_net_to_vornet(vector[int], vector[double], vector[vector[double]], \
         vector[vector[double]], vector[vector[int]], vector[vector[int]], vector[vector[vector[int]]], \
-        vector[vector[double]], VORONOI_NETWORK*)
+        vector[vector[double]], VORONOI_NETWORK*, double)
 
 
 cdef extern from "../libs/Zeo++/area_and_volume.h":

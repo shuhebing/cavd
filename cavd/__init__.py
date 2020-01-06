@@ -35,18 +35,21 @@ def outVesta(filename, migrant, ntol=0.02, rad_flag=True, lower=None, upper=10.0
     
     vornet,edge_centers,fcs,faces = atmnet.perform_voronoi_decomposition(True, ntol)
     add_fcs_vornet = vornet.add_facecenters(faces)
+    sym_vornet,voids =  get_labeled_vornet(add_fcs_vornet, sitesym, ntol)
     
     prefixname = filename.replace(".cif","")
-    channels = Channel.findChannels2(add_fcs_vornet, atmnet, lower, upper, prefixname+".net")
-    
-    # output vesta file for visiualization
-    Channel.writeToVESTA(channels, atmnet, prefixname)
+   
+    # calculate the connection values
+    conn_val = connection_values_list(prefixname+".resex", sym_vornet)
 
+    channels = Channel.findChannels2(sym_vornet, atmnet, lower, upper, prefixname+".net")
     dims = []
     for i in channels:
         dims.append(i["dim"])
+    # output vesta file for visiualization
+    Channel.writeToVESTA(channels, atmnet, prefixname)
 
-    return dims
+    return dims, conn_val
 
 # This function need to be updated.
 def AllCom10(filename, minRad, maxRad, ntol=0.02, migrant=None, rad_flag=True, effective_rad=True, rad_file=None):

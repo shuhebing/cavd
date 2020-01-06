@@ -1052,7 +1052,7 @@ cdef class VoronoiNetwork:
         return self
 
     # add at 20190610
-    def add_facecenters(self, fcs):
+    def add_facecenters(self, fcs, merge_tol=0.3):
         # face centers
         cdef vector[int] c_fcs_ids
         cdef vector[double] c_fcs_radii
@@ -1117,7 +1117,7 @@ cdef class VoronoiNetwork:
             c_fcverts_dists.push_back(c_fcvert_dists)
 
         add_net_to_vornet(c_fcs_ids, c_fcs_radii, c_fcs_coords, c_fcs_fracs, \
-                c_fcs_neiatoms, c_fcs_vertids, c_fcs_edgepdvs, c_fcverts_dists, self.thisptr)
+                c_fcs_neiatoms, c_fcs_vertids, c_fcs_edgepdvs, c_fcverts_dists, self.thisptr, merge_tol)
         return self
 
 def substitute_atoms(atmnet, substituteSeed, radialFlag):
