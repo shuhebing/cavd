@@ -1,12 +1,14 @@
 '''
-Unequal path calculation.
+Used to analyze channel.
 
 Created on 2019.5.8
 
 @author: YeAnjiang
 '''
+import os
 import spglib
 import numpy as np
+from pymatgen import Structure
 from cavd.graphstorage import DijkstraNetwork
 
 class Node:
@@ -211,3 +213,49 @@ def get_distinc(filename,preci=4,duplicate=False):
         revoidnet = voids_relabel(voidnet,rad_label)
         dist_revoidnet = get_distict_channels(revoidnet,preci,duplicate)
         return dist_revoidnet
+
+"""
+# The code need to be updated.
+
+#product the neb packages for one path
+#posc1:file of POSCAR1POSCAR1 posc2:file of POSCAR3 posc_path:file of POSCAR_path
+def path_poscar(posc1, posc2, posc_path):
+    struc1 = Structure.from_file(posc1)
+    struc2 = Structure.from_file(posc2)
+    s = Structure.from_file(posc_path)
+    
+    path=[]
+    path.append(struc1.sites[0].frac_coords)
+    for site in s.sites:
+        if site.specie.symbol == 'He':
+            path.append(site.frac_coords)
+    path.append(struc2.sites[0].frac_coords)
+    
+    nimages = len(path)-1
+    images=struc1.interpolate(struc2, nimages, True)
+    dir = os.path.dirname(posc_path)
+
+    i=0
+    for struc in images:
+        struc.translate_sites(0,path[i]-struc.sites[0].frac_coords,frac_coords=True, to_unit_cell=True)
+        num=('%02d' % i)
+        if not os.path.exists(dir+'/'+num):
+            os.mkdir(dir+'/'+num)
+        struc.to(filename=dir+'/'+num+'/POSCAR')
+        i=i+1
+
+def poscars_after_relax(dir):
+    if os.path.isdir(dir):
+        for f in os.listdir(dir):
+            f_dir = os.path.join(dir,f)
+            if os.path.isdir(f_dir) and 'relax_POSCAR1' in os.listdir(f_dir):
+                print(f_dir)
+                posc_path = os.path.join(f_dir, 'POSCAR_path')
+                # pos1 = os.path.join(os.path.join(f_dir, 'relax_POSCAR1'), 'CONTCAR')
+                # pos1 = os.path.join(os.path.join(f_dir, 'relax_POSCAR2'), 'CONTCAR')
+                pos1 = os.path.join(os.path.join(f_dir, 'relax_POSCAR1'), 'POSCAR')
+                pos2 = os.path.join(os.path.join(f_dir, 'relax_POSCAR2'), 'POSCAR')
+                path_poscar(pos1, pos2, posc_path)
+
+
+"""
