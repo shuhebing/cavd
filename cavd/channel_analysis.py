@@ -8,19 +8,10 @@ Created on 2019.5.8
 import os
 import spglib
 import numpy as np
-from pymatgen import Structure
 from cavd.graphstorage import DijkstraNetwork
 from pymatgen.core.sites import PeriodicSite
 import networkx as nx
-
-import re
-from cavd.netio import *
-from monty.io import zopen
-from cavd.channel import Channel
-from cavd.netstorage import AtomNetwork, connection_values_list
-from cavd.local_environment import CifParser_new, LocalEnvirCom
-from scipy.spatial.ckdtree import cKDTree
-from cavd.get_Symmetry import get_symnum_sites, get_equivalent_vornet,get_labeled_vornet
+import copy
 
 class Node:
     label = 0
@@ -52,6 +43,243 @@ class Edge:
             "bt_radius": self.bt_radius
         }
         return d
+
+
+""" 
+The above code is developed for getting the pathways between experimental mobile ion sites.
+
+Author: Anjiang Ye & Penghui Mi
+School of Computer Engineering and Science, Shanghai University
+2020 01 07
+
+"""
+
+class MigrationPaths(object):
+    def __init__(self, struc, mobileIon, channels):
+        self.struc = struc
+        self.mobileIon = mobileIon
+        if channels:
+            self.channels = channels
+        else:
+            raise Exception("There are no channels in this structure!")
+        
+        self.interstices = {}
+        self.channelSegs = []
+        self.network = None
+       
+        self.keyInterstices = []
+        self.allPaths = []
+        
+        self.keyInterMobileDict = {}
+        self.keyInterMobileIdxDict = {}
+        
+    
+    def setInterstices(self):
+        for channel in self.channels:
+            for node in channel["nodes"]:
+                tmpDic = {}
+                tmpDic["label"] = node["label"]
+                tmpDic["radius"] = node["radius"]
+                tmpDic["cart_coord"] = [round(cart,5) for cart in node["cart_coord"]]
+                tmpDic["frac_coord"] = [round(frac,5) for frac in node["frac_coord"]]
+                self.interstices[node["id"]] = tmpDic
+
+    def setChannelSegs(self):
+        for channel in self.channels:
+            self.channelSegs.extend(channel["conns"])
+    
+    def setNetwork(self):
+        graph = nx.Graph()
+        for key,value in self.interstices.items():
+            carts = [round(cart,5) for cart in value["cart_coord"]]
+            fracs = [round(frac,5) for frac in value["frac_coord"]]
+            graph.add_node(key, label=value["label"], cart_coord=carts, frac_coord=fracs)
+
+        for edge in self.channelSegs:
+            if edge["fromId"] < edge["toId"]:
+                asc = edge["toDelta"]
+                des = [-1*i for i in edge["toDelta"]]
+               
+                # edgeStr = str(edge["fromLabel"]) + str(edge["toLabel"]) + str(round(edge["length"],2)) + str(round(edge["bottleneckSize"], 2))
+                # edgeHash = str(hash(edgeStr))
+                # graph.add_edge(edge["fromId"], edge["toId"], label=edgeHash, ascPDV=asc, desPDV=des)
+                
+                graph.add_edge(edge["fromId"], edge["toId"], length = edge["length"], ascPDV=asc, desPDV=des)
+        
+        self.network = graph
+    
+    
+    def comDis(self, p1, p2):
+        temp_site1 = PeriodicSite('Ar', p1, self.struc.lattice)
+        temp_site2 = PeriodicSite('Ar', p2, self.struc.lattice)
+        dis = temp_site1.distance(temp_site2)
+        return dis
+    
+    # The key interstices are the interstices coincides the mobile ions.
+    def setKeyInterstices(self):
+        migrant = self.mobileIon
+        
+        sites = self.struc.sites
+        mobiles = [(idx, sites[idx]) for idx in range(len(sites)) if migrant in sites[idx]._atom_site_label]
+        iterList = list(self.interstices.items())
+        
+        # obtain the concidence interstice and mobile ions site
+        for mobileSite in mobiles:
+            minDis = 1000
+            minId = -1
+            for inter in iterList:
+                iterId = inter[0]
+                iterSite = inter[1]["frac_coord"]
+                dis = self.comDis(mobileSite[1].frac_coords, iterSite)
+                if dis < minDis:
+                    minDis = dis
+                    minId = iterId
+            tmpDict = {}
+            tmpDict["interId"] = minId
+            tmpDict["mobileLabel"] = mobileSite[1]._atom_site_label
+            tmpDict["mobileId"] = mobileSite[0]
+            tmpDict["dis"] = minDis
+            self.keyInterstices.append(tmpDict)
+        
+        self.setKeyInterMobileDict()
+        self.setKeyInterMobileIdxDict()
+        
+    def getKeyInterstices(self):
+        return self.keyInterstices
+    
+    def setKeyInterMobileDict(self):
+        for it in self.keyInterstices:
+            self.keyInterMobileDict[it["interId"]] = it["mobileLabel"]
+    
+    def setKeyInterMobileIdxDict(self):
+        for it in self.keyInterstices:
+            self.keyInterMobileIdxDict[it["interId"]] = it["mobileId"]
+    
+
+    # Obtain the paths between sourceInter and sinkInter.
+    # if n>0 && n< Total(paths)，return first shortest path to n-th shortest path. 
+    # legalPath: midpoint of the path is not included in self.keyInterstices  
+    # 
+    def getPaths(self, suorceInter, sinkInter, n = 2, cutoff = 5.0):
+        pathLenPairs = []
+        paths = list(nx.all_simple_paths(self.network, suorceInter, sinkInter, cutoff))
+        keyInterIds = [it["interId"] for it in self.keyInterstices]
+        
+        for path in paths:
+            length = 0
+            legalTag = True
+            for idx in range(1,len(path)):
+                length += self.network[path[idx-1]][path[idx]]["length"]
+                
+                if idx == len(path) - 1:
+                    continue
+                else:
+                    midInter = self.interstices[path[idx]]
+                    if(path[idx] in keyInterIds):
+                        legalTag = False
+                        break
+
+            if legalTag:
+                pathLenPairs.append((path, length))
+        
+        if pathLenPairs:
+            pathLenPairs = sorted(pathLenPairs, key=lambda x: x[1],reverse=False)
+            if n > 0 and n <= len(pathLenPairs):
+                pathLenPairs = pathLenPairs[0:n]
+            elif n > len(pathLenPairs):
+                raise Exception("Given n is larger than the total number of paths between source and sink!!!")
+            legalPaths = [path[0] for path in pathLenPairs]
+            return legalPaths
+        else:
+            return []
+
+    def setAllPaths(self, n=0):
+        originPaths = []
+        for source in self.keyInterstices:
+            for sink in self.keyInterstices:
+                if(source["interId"] < sink["interId"]):
+                    originPaths.extend(self.getPaths(source["interId"], sink["interId"], n))
+        
+        symUniqPaths = []     
+        for path in originPaths:
+            itLabelsOfPath = []
+            itCartOfPath = []
+            itFracOfPath = []
+            itPDVofPath = []
+            for idx in range(len(path)):
+                interId = path[idx]
+                itLabelsOfPath.append(self.network.node[interId]["label"])
+                itCartOfPath.append(self.network.node[interId]["cart_coord"])
+                itFracOfPath.append(self.network.node[interId]["frac_coord"])
+                if idx == 0:
+                   itPDVofPath.append([0,0,0])
+                else:
+                    if path[idx-1] < path[idx]:
+                        nodePDV = np.array(itPDVofPath[idx-1]) + np.array(self.network[path[idx-1]][path[idx]]["ascPDV"])
+                        itPDVofPath.append(nodePDV.tolist())
+                    else:
+                        nodePDV = np.array(itPDVofPath[idx-1]) + np.array(self.network[path[idx-1]][path[idx]]["desPDV"])
+                        itPDVofPath.append(nodePDV.tolist())
+                        
+            # only consider symmetry distinct channels
+            if itLabelsOfPath in symUniqPaths:
+                continue
+            else:
+                symUniqPaths.append(itLabelsOfPath)
+                
+                tmpDict = {}
+                tmpDict["type"] = (self.keyInterMobileDict[itLabelsOfPath[0]], self.keyInterMobileDict[itLabelsOfPath[-1]])
+                tmpDict["ids"] = path
+                tmpDict["labels"] = itLabelsOfPath
+                tmpDict["cart_coords"] = itCartOfPath
+                tmpDict["frac_coords"] = itFracOfPath
+                tmpDict["pdvs"] = itPDVofPath
+
+                self.allPaths.append(tmpDict)
+        
+    def outPathToPOSCAR(self):
+        if not os.path.exists("paths"):
+            os.mkdir("paths")
+        for i in range(len(self.allPaths)):
+            if not os.path.exists("paths/"+"path_"+str(i)):
+                os.mkdir("paths/"+"path_"+str(i))
+           
+            path = self.allPaths[i]
+            startIdx = self.keyInterMobileIdxDict[path["ids"][0]]
+    
+            imageSpecies = self.struc.sites[startIdx].species
+            imageProps = {"_atom_site_label": self.keyInterMobileDict[path["ids"][0]]}
+            
+            pathCoords = path["frac_coords"]
+            for j in range(1, len(pathCoords)-1):
+                num = ('%03d' %j)
+                dir = "paths/"+"path_"+str(i)+"/"+str(num)
+                if not os.path.exists(dir):
+                    os.mkdir(dir)
+                
+                stru = copy.deepcopy(self.struc)
+                print(stru)
+                imageCoords = pathCoords[j]
+                stru.remove_sites([startIdx])
+                stru.insert(startIdx, imageSpecies, imageCoords, properties = imageProps)
+                print(stru)
+                stru.to(filename=dir+"/POSCAR")
+
+    # extern interface
+    def comAllPaths(self,n=2):
+        self.setInterstices()
+        self.setChannelSegs()
+        self.setKeyInterstices()
+        
+        keyInterstices = self.getKeyInterstices()
+        for it in keyInterstices:
+            print("It",it["interId"],"--",it["mobileLabel"],"dis:",it["dis"])
+            
+        self.setNetwork()
+        self.setAllPaths(n)
+        self.outPathToPOSCAR()
+        return self.allPaths 
+
 
 
 def get_Symmetry_vornet(atmnt, vornet, symprec=0.01, angle_tolerance=5):
@@ -139,6 +367,7 @@ def get_nodes(filename):
                 conns[from_id].append(segment)
     return nodes,conns
 
+
 def get_voidnet(nodes,conns):
     for key,value in nodes.items():
         void = nodes[key]
@@ -223,296 +452,4 @@ def get_distinc(filename,preci=4,duplicate=False):
         revoidnet = voids_relabel(voidnet,rad_label)
         dist_revoidnet = get_distict_channels(revoidnet,preci,duplicate)
         return dist_revoidnet
-
-
-""" 
-The above code is developed for getting the pathways between experimental mobile ion sites.
-
-Author: Anjiang Ye & Penghui Mi
-School of Computer Engineering and Science, Shanghai University
-2020 01 07
-
-"""
-
-
-class MigrationPaths(object):
-    def __init__(self, struc, mobileIon, channels):
-        self.struc = struc
-        self.mobileIon = mobileIon
-        if channels:
-            self.channels = channels
-        else:
-            raise Exception("There are no channels in this structure!")
-        
-        self.interstices = {}
-        self.channelSegs = []
-        self.network = None
-       
-        self.keyInterstices = []
-        self.keyPaths = []
-        self.keyInterMobileDict = {}
-        
-    
-    def setInterstices(self):
-        for channel in self.channels:
-            for node in channel["nodes"]:
-                tmpDic = {}
-                tmpDic["label"] = node["label"]
-                tmpDic["radius"] = node["radius"]
-                tmpDic["cart_coord"] = [round(cart,5) for cart in node["cart_coord"]]
-                tmpDic["frac_coord"] = [round(frac,5) for frac in node["frac_coord"]]
-                self.interstices[node["id"]] = tmpDic
-
-    def setChannelSegs(self):
-        for channel in self.channels:
-            self.channelSegs.extend(channel["conns"])
-    
-    def setNetwork(self):
-        graph = nx.Graph()
-        for key,value in self.interstices.items():
-            carts = [round(cart,5) for cart in value["cart_coord"]]
-            fracs = [round(frac,5) for frac in value["frac_coord"]]
-            graph.add_node(key, label=value["label"], cart_coord=carts, frac_coord=fracs)
-
-        for edge in self.channelSegs:
-            if edge["fromId"] < edge["toId"]:
-                asc = edge["toDelta"]
-                des = [-1*i for i in edge["toDelta"]]
-                # #利用hash值区分edge
-                # edgeStr = str(edge["fromLabel"]) + str(edge["toLabel"]) + str(round(edge["length"],2)) + str(round(edge["bottleneckSize"], 2))
-                # edgeHash = str(hash(edgeStr))
-                # graph.add_edge(edge["fromId"], edge["toId"], label=edgeHash, ascPDV=asc, desPDV=des)
-                
-                graph.add_edge(edge["fromId"], edge["toId"], ascPDV=asc, desPDV=des)
-        
-        self.network = graph
-    
-    
-    def comDis(self, p1, p2):
-        temp_site1 = PeriodicSite('Ar', p1, self.struc.lattice)
-        temp_site2 = PeriodicSite('Ar', p2, self.struc.lattice)
-        dis = temp_site1.distance(temp_site2)
-        return dis
-    
-    # 根据cif中迁移离子label设置关键间隙
-    def setKeyInterstices(self):
-        stru = self.struc
-        migrant = self.mobileIon
-        mobiles = [site for site in stru.sites if migrant in site._atom_site_label]
-        iterList = list(self.interstices.items())
-        
-        # 获取迁移离子最接近的间隙
-        for mobileSite in mobiles:
-            minDis = 1000
-            minId = -1
-            for inter in iterList:
-                iterId = inter[0]
-                iterSite = inter[1]["frac_coord"]
-                dis = self.comDis(mobileSite.frac_coords, iterSite)
-                if dis < minDis:
-                    minDis = dis
-                    minId = iterId
-            tmpDict = {}
-            tmpDict["interId"] = minId
-            tmpDict["targetIon"] = mobileSite._atom_site_label
-            tmpDict["dis"] = minDis
-            self.keyInterstices.append(tmpDict)
-        
-        self.setKeyInterMobileDict()
-        
-    def getKeyInterstices(self):
-        return self.keyInterstices
-    
-    def setKeyInterMobileDict(self):
-        for it in self.keyInterstices:
-            self.keyInterMobileDict[it["interId"]] = it["targetIon"]
-    
-    # 获取sourceInter与sinkInter之间所有路径
-    # legalPath 定义为除起、始点外，其余点均不为keyInterstices的Path
-    def getPaths(self, suorceInter, sinkInter, cutoff = 5.0):
-        legalPaths = []
-        paths = list(nx.all_simple_paths(self.network, suorceInter, sinkInter, cutoff))
-        keyInterIds = [it["interId"] for it in self.keyInterstices]
-        print("length of paths", len(paths))
-        for path in paths:
-            print("path",path)
-            legalTag = True
-            for idx in range(1, len(path)-1):
-                midInter = self.interstices[path[idx]]
-                if(path[idx] in keyInterIds):
-                    print("illegal path:", path)
-                    legalTag = False
-                    break
-            if legalTag:
-                legalPaths.append(path)
-        print("length of legalPaths", len(legalPaths))
-        return legalPaths
-    
-    def setKeyPaths(self):
-        originPaths = []
-        # 获取所有通道
-        for source in self.keyInterstices:
-            for sink in self.keyInterstices:
-                if(source["interId"] < sink["interId"]):
-                    originPaths.extend(self.getPaths(source["interId"], sink["interId"]))
-        
-        print("len(originPaths)",len(originPaths))
-        print("Symmetry Operation Beginning!")
-        pathTags = []     
-        # 去除重复通道   
-        for path in originPaths:
-            itLabelsOfPath = []
-            itCartOfPath = []
-            itFracOfPath = []
-            itPDVofPath = []
-            for idx in range(len(path)):
-                interId = path[idx]
-                itLabelsOfPath.append(self.network.node[interId]["label"])
-                itCartOfPath.append(self.network.node[interId]["cart_coord"])
-                itFracOfPath.append(self.network.node[interId]["frac_coord"])
-                if idx == 0:
-                   itPDVofPath.append([0,0,0])
-                else:
-                    if path[idx-1] < path[idx]:
-                        nodePDV = np.array(itPDVofPath[idx-1]) + np.array(self.network[path[idx-1]][path[idx]]["ascPDV"])
-                        itPDVofPath.append(nodePDV.tolist())
-                    else:
-                        nodePDV = np.array(itPDVofPath[idx-1]) + np.array(self.network[path[idx-1]][path[idx]]["desPDV"])
-                        itPDVofPath.append(nodePDV.tolist())
-            
-            uniqTag = str(itLabelsOfPath)
-            print("uniqTag", uniqTag)
-            if uniqTag in pathTags:
-                continue
-            else:
-                pathTags.append(uniqTag)
-                tmpDict = {}
-                
-                tmpDict["type"] = (itLabelsOfPath[0], itLabelsOfPath[-1])
-                tmpDict["ids"] = path
-                tmpDict["labels"] = itLabelsOfPath
-                tmpDict["cart_coords"] = itCartOfPath
-                tmpDict["frac_coords"] = itFracOfPath
-                tmpDict["pdvs"] = itPDVofPath
-                print("ids   of  path", path)
-                print("Labels of path", itLabelsOfPath)
-                self.keyPaths.append(tmpDict)
-        print("length of Symmetry distinct path", len(self.keyPaths))
-    
-    # 外部接口
-    def getKeyPaths(self):
-        return self.keyPaths
-     
-    def comKeyPaths(self):
-        self.setInterstices()
-        self.setChannelSegs()
-        self.setKeyInterstices()
-        
-        keyInterstices = self.getKeyInterstices()
-        for it in keyInterstices:
-            print("It",it["interId"],"<-->",it["targetIon"],"dis:",it["dis"])
-            
-        self.setNetwork()
-        self.setKeyPaths()
-        return self.getKeyPaths()
-    
-
-def outVesta(filename, migrant, ntol=0.02, rad_flag=True, lower=0.0, upper=10.0, rad_dict=None):
-    with zopen(filename, "rt") as f:
-        input_string = f.read()
-    parser = CifParser_new.from_string(input_string)
-    stru = parser.get_structures(primitive=False)[0]
-    
-    species = [str(sp).replace("Specie ","") for sp in stru.species]
-    elements = [re.sub('[^a-zA-Z]','',sp) for sp in species]
-    sitesym = parser.get_sym_opt()
-    if migrant not in elements:
-        raise ValueError("The input migrant ion not in the input structure! Please check it.")
-    effec_radii,migrant_radius,migrant_alpha,nei_dises,coordination_list = LocalEnvirCom(stru,migrant)
-    
-    radii = {}
-    if rad_flag:
-        if rad_dict:
-            radii = rad_dict
-        else:
-            radii = effec_radii
-    
-    atmnet = AtomNetwork.read_from_RemoveMigrantCif(filename, migrant, radii, rad_flag)
-	
-    vornet,edge_centers,fcs,faces = atmnet.perform_voronoi_decomposition(True, ntol)
-    
-    add_fcs_vornet = vornet.add_facecenters(faces)
-    sym_vornet,voids =  get_labeled_vornet(add_fcs_vornet, sitesym)
-	
-    prefixname = filename.replace(".cif","")
-    # compute the R_T
-    conn_val = connection_values_list(prefixname+".resex", sym_vornet)
-    channels = Channel.findChannels2(sym_vornet, atmnet, lower, upper, prefixname+".net")
-    
-    # output vesta file for visiualization
-    Channel.writeToVESTA(channels, atmnet, prefixname)
-    
-    migratPath = MigrationPaths(stru, migrant, channels)
-    keyPaths = migratPath.comKeyPaths()
-    
-    return conn_val, keyPaths
-
-
-if __name__ == "__main__":
-    conn_val, keyPaths = outVesta("icsd_16713.cif","Li",ntol=0.02, rad_flag=True, lower=0.0, upper=10.0)
-
-
-
-
-
-
-
-
-
-
-
-
-# # The code need to be updated.
-
-# #product the neb packages for one path
-# #posc1:file of POSCAR1POSCAR1 posc2:file of POSCAR3 posc_path:file of POSCAR_path
-# def path_poscar(posc1, posc2, posc_path):
-    # struc1 = Structure.from_file(posc1)
-    # struc2 = Structure.from_file(posc2)
-    # s = Structure.from_file(posc_path)
-    
-    # path=[]
-    # path.append(struc1.sites[0].frac_coords)
-    # for site in s.sites:
-        # if site.specie.symbol == 'He':
-            # path.append(site.frac_coords)
-    # path.append(struc2.sites[0].frac_coords)
-    
-    # nimages = len(path)-1
-    # images=struc1.interpolate(struc2, nimages, True)
-    # dir = os.path.dirname(posc_path)
-
-    # i=0
-    # for struc in images:
-        # struc.translate_sites(0,path[i]-struc.sites[0].frac_coords,frac_coords=True, to_unit_cell=True)
-        # num=('%02d' % i)
-        # if not os.path.exists(dir+'/'+num):
-            # os.mkdir(dir+'/'+num)
-        # struc.to(filename=dir+'/'+num+'/POSCAR')
-        # i=i+1
-
-# def poscars_after_relax(dir):
-    # if os.path.isdir(dir):
-        # for f in os.listdir(dir):
-            # f_dir = os.path.join(dir,f)
-            # if os.path.isdir(f_dir) and 'relax_POSCAR1' in os.listdir(f_dir):
-                # print(f_dir)
-                # posc_path = os.path.join(f_dir, 'POSCAR_path')
-                # # pos1 = os.path.join(os.path.join(f_dir, 'relax_POSCAR1'), 'CONTCAR')
-                # # pos1 = os.path.join(os.path.join(f_dir, 'relax_POSCAR2'), 'CONTCAR')
-                # pos1 = os.path.join(os.path.join(f_dir, 'relax_POSCAR1'), 'POSCAR')
-                # pos2 = os.path.join(os.path.join(f_dir, 'relax_POSCAR2'), 'POSCAR')
-                # path_poscar(pos1, pos2, posc_path)
-
-
 

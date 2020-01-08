@@ -10,7 +10,42 @@ from cavd.netstorage import AtomNetwork, connection_values_list
 from cavd.recovery import rediscovery, rediscovery_kdTree, rediscovery_byRad_kdTree
 from cavd.get_Symmetry import get_symnum_sites, get_equivalent_vornet,get_labeled_vornet
 from cavd.local_environment import CifParser_new, LocalEnvirCom, get_local_envir_fromstru
+from cavd.channel_analysis import MigrationPaths
 
+def outChannelToPOSCAR(filename, migrant, ntol=0.02, rad_flag=True, lower=0.0, upper=10.0, rad_dict=None):
+    with zopen(filename, "rt") as f:
+        input_string = f.read()
+    parser = CifParser_new.from_string(input_string)
+    stru = parser.get_structures(primitive=False)[0]
+    print(stru)
+    species = [str(sp).replace("Specie ","") for sp in stru.species]
+    elements = [re.sub('[^a-zA-Z]','',sp) for sp in species]
+    sitesym = parser.get_sym_opt()
+    if migrant not in elements:
+        raise ValueError("The input migrant ion not in the input structure! Please check it.")
+    effec_radii,migrant_radius,migrant_alpha,nei_dises,coordination_list = LocalEnvirCom(stru,migrant)
+    
+    radii = {}
+    if rad_flag:
+        if rad_dict:
+            radii = rad_dict
+        else:
+            radii = effec_radii
+    
+    atmnet = AtomNetwork.read_from_RemoveMigrantCif(filename, migrant, radii, rad_flag)
+	
+    vornet,edge_centers,fcs,faces = atmnet.perform_voronoi_decomposition(True, ntol)
+    
+    add_fcs_vornet = vornet.add_facecenters(faces)
+    sym_vornet,voids =  get_labeled_vornet(add_fcs_vornet, sitesym)
+    prefixname = filename.replace(".cif","")
+    channels = Channel.findChannels2(sym_vornet, atmnet, lower, upper, prefixname+".net")
+    
+    migratPath = MigrationPaths(stru, migrant, channels)
+    
+    allPaths = migratPath.comAllPaths()
+    return allPaths
+    
 def outVesta(filename, migrant, ntol=0.02, rad_flag=True, lower=None, upper=10.0, rad_dict=None):
     with zopen(filename, "rt") as f:
         input_string = f.read()
