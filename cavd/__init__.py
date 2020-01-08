@@ -35,6 +35,7 @@ def outVesta(filename, migrant, ntol=0.02, rad_flag=True, lower=None, upper=10.0
     
     vornet,edge_centers,fcs,faces = atmnet.perform_voronoi_decomposition(True, ntol)
     add_fcs_vornet = vornet.add_facecenters(faces)
+    
     sym_vornet,voids =  get_labeled_vornet(add_fcs_vornet, sitesym, ntol)
     
     prefixname = filename.replace(".cif","")

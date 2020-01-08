@@ -20,6 +20,7 @@ from cavd.channel import Channel
 from cavd.netstorage import AtomNetwork, connection_values_list
 from cavd.local_environment import CifParser_new, LocalEnvirCom
 from scipy.spatial.ckdtree import cKDTree
+from cavd.get_Symmetry import get_symnum_sites, get_equivalent_vornet,get_labeled_vornet
 
 class Node:
     label = 0
@@ -243,7 +244,7 @@ class MigrationPaths(object):
         else:
             raise Exception("There are no channels in this structure!")
         
-        self.interstices = []
+        self.interstices = {}
         self.channelSegs = []
         self.network = None
        
@@ -254,7 +255,13 @@ class MigrationPaths(object):
     
     def setInterstices(self):
         for channel in self.channels:
-            self.interstices.extend(channel["nodes"])
+            for node in channel["nodes"]:
+                tmpDic = {}
+                tmpDic["label"] = node["label"]
+                tmpDic["radius"] = node["radius"]
+                tmpDic["cart_coord"] = [round(cart,5) for cart in node["cart_coord"]]
+                tmpDic["frac_coord"] = [round(frac,5) for frac in node["frac_coord"]]
+                self.interstices[node["id"]] = tmpDic
 
     def setChannelSegs(self):
         for channel in self.channels:
@@ -262,41 +269,53 @@ class MigrationPaths(object):
     
     def setNetwork(self):
         graph = nx.Graph()
-        for node in self.interstices:
-            carts = [round(cart,5) for cart in node["cart_coord"]]
-            fracs = [round(frac,5) for frac in node["frac_coord"]]
-            graph.add_node(node["id"], id = node["id"], label=node["label"], cart_coord=carts, frac_coord=fracs)
+        for key,value in self.interstices.items():
+            carts = [round(cart,5) for cart in value["cart_coord"]]
+            fracs = [round(frac,5) for frac in value["frac_coord"]]
+            graph.add_node(key, label=value["label"], cart_coord=carts, frac_coord=fracs)
 
         for edge in self.channelSegs:
             if edge["fromId"] < edge["toId"]:
                 asc = edge["toDelta"]
                 des = [-1*i for i in edge["toDelta"]]
-                #利用hash值区分edge
-                edgeStr = str(edge["fromLabel"]) + str(edge["toLabel"]) + str(round(edge["length"],2)) + str(round(edge["bottleneckSize"], 2))
-                edgeHash = str(hash(edgeStr))
+                # #利用hash值区分edge
+                # edgeStr = str(edge["fromLabel"]) + str(edge["toLabel"]) + str(round(edge["length"],2)) + str(round(edge["bottleneckSize"], 2))
+                # edgeHash = str(hash(edgeStr))
+                # graph.add_edge(edge["fromId"], edge["toId"], label=edgeHash, ascPDV=asc, desPDV=des)
                 
-                graph.add_edge(edge["fromId"], edge["toId"], label=edgeHash, ascPDV=asc, desPDV=des)
+                graph.add_edge(edge["fromId"], edge["toId"], ascPDV=asc, desPDV=des)
         
         self.network = graph
+    
+    
+    def comDis(self, p1, p2):
+        temp_site1 = PeriodicSite('Ar', p1, self.struc.lattice)
+        temp_site2 = PeriodicSite('Ar', p2, self.struc.lattice)
+        dis = temp_site1.distance(temp_site2)
+        return dis
     
     # 根据cif中迁移离子label设置关键间隙
     def setKeyInterstices(self):
         stru = self.struc
         migrant = self.mobileIon
-        mobileCarts = np.around(np.array([site.coords for site in stru.sites if migrant in site._atom_site_label], ndmin=2), 5)
-        mobileLabels = [site._atom_site_label for site in stru.sites if migrant in site._atom_site_label]
+        mobiles = [site for site in stru.sites if migrant in site._atom_site_label]
+        iterList = list(self.interstices.items())
         
-        interCarts = np.around(np.array([inter["cart_coord"] for inter in self.interstices], ndmin=2), 5)
-        
-        intersKdTree = cKDTree(interCarts)
-        minDis,minIds = intersKdTree.query(mobileCarts,k=1)
-        
-        for idx in range(len(minIds)):
+        # 获取迁移离子最接近的间隙
+        for mobileSite in mobiles:
+            minDis = 1000
+            minId = -1
+            for inter in iterList:
+                iterId = inter[0]
+                iterSite = inter[1]["frac_coord"]
+                dis = self.comDis(mobileSite.frac_coords, iterSite)
+                if dis < minDis:
+                    minDis = dis
+                    minId = iterId
             tmpDict = {}
-            curInter = self.interstices[minIds[idx]]
-            tmpDict["interId"] = curInter["id"]
-            tmpDict["targetIon"] = mobileLabels[idx]
-            tmpDict["dis"] = minDis[idx]
+            tmpDict["interId"] = minId
+            tmpDict["targetIon"] = mobileSite._atom_site_label
+            tmpDict["dis"] = minDis
             self.keyInterstices.append(tmpDict)
         
         self.setKeyInterMobileDict()
@@ -314,71 +333,71 @@ class MigrationPaths(object):
         legalPaths = []
         paths = list(nx.all_simple_paths(self.network, suorceInter, sinkInter, cutoff))
         keyInterIds = [it["interId"] for it in self.keyInterstices]
+        print("length of paths", len(paths))
         for path in paths:
+            print("path",path)
             legalTag = True
-            for idx in range(1, len(path)-1):    
-                if(self.interstices[path[idx]] in keyInterIds):
+            for idx in range(1, len(path)-1):
+                midInter = self.interstices[path[idx]]
+                if(path[idx] in keyInterIds):
+                    print("illegal path:", path)
                     legalTag = False
                     break
             if legalTag:
                 legalPaths.append(path)
+        print("length of legalPaths", len(legalPaths))
         return legalPaths
     
     def setKeyPaths(self):
         originPaths = []
-        pathTags = []
-        
         # 获取所有通道
         for source in self.keyInterstices:
             for sink in self.keyInterstices:
                 if(source["interId"] < sink["interId"]):
                     originPaths.extend(self.getPaths(source["interId"], sink["interId"]))
-                    
+        
+        print("len(originPaths)",len(originPaths))
+        print("Symmetry Operation Beginning!")
+        pathTags = []     
+        # 去除重复通道   
         for path in originPaths:
-            # 去除重复通道
-            uniqTag = ""
-            for idx in range(len(path)-1):
-                uniqTag += self.network[path[idx]][path[idx+1]]["label"]    
+            itLabelsOfPath = []
+            itCartOfPath = []
+            itFracOfPath = []
+            itPDVofPath = []
+            for idx in range(len(path)):
+                interId = path[idx]
+                itLabelsOfPath.append(self.network.node[interId]["label"])
+                itCartOfPath.append(self.network.node[interId]["cart_coord"])
+                itFracOfPath.append(self.network.node[interId]["frac_coord"])
+                if idx == 0:
+                   itPDVofPath.append([0,0,0])
+                else:
+                    if path[idx-1] < path[idx]:
+                        nodePDV = np.array(itPDVofPath[idx-1]) + np.array(self.network[path[idx-1]][path[idx]]["ascPDV"])
+                        itPDVofPath.append(nodePDV.tolist())
+                    else:
+                        nodePDV = np.array(itPDVofPath[idx-1]) + np.array(self.network[path[idx-1]][path[idx]]["desPDV"])
+                        itPDVofPath.append(nodePDV.tolist())
+            
+            uniqTag = str(itLabelsOfPath)
+            print("uniqTag", uniqTag)
             if uniqTag in pathTags:
                 continue
             else:
                 pathTags.append(uniqTag)
                 tmpDict = {}
-                # 通道起点/终点间隙id
-                pathStart = self.network.node[path[0]]["id"]
-                pathEnd = self.network.node[path[-1]]["id"]
-                # 通道起点/终点对应的迁移离子label
-                pathStartMobile = self.keyInterMobileDict[pathStart]
-                pathEndMobile = self.keyInterMobileDict[pathEnd]
                 
-                itIdsOfPath = []
-                itLabelsOfPath = []
-                itCartOfPath = []
-                itFracOfPath = []
-                itPDVofPath = []
-                for idx in range(len(path)):
-                    itIdsOfPath.append(self.network.node[path[idx]]["id"])
-                    itLabelsOfPath.append(self.network.node[path[idx]]["label"])
-                    itCartOfPath.append(self.network.node[path[idx]]["cart_coord"])
-                    itFracOfPath.append(self.network.node[path[idx]]["frac_coord"])
-                    if idx == 0:
-                       itPDVofPath.append([0,0,0])
-                    else:
-                        if path[idx-1] < path[idx]:
-                            nodePDV = np.array(itPDVofPath[idx-1]) + np.array(self.network[path[idx-1]][path[idx]]["ascPDV"])
-                            itPDVofPath.append(nodePDV.tolist())
-                        else:
-                            nodePDV = np.array(itPDVofPath[idx-1]) + np.array(self.network[path[idx-1]][path[idx]]["desPDV"])
-                            itPDVofPath.append(nodePDV.tolist())
-                            
-                tmpDict["type"] = (pathStartMobile, pathEndMobile)
-                tmpDict["ids"] = itIdsOfPath
+                tmpDict["type"] = (itLabelsOfPath[0], itLabelsOfPath[-1])
+                tmpDict["ids"] = path
                 tmpDict["labels"] = itLabelsOfPath
                 tmpDict["cart_coords"] = itCartOfPath
                 tmpDict["frac_coords"] = itFracOfPath
                 tmpDict["pdvs"] = itPDVofPath
-                
+                print("ids   of  path", path)
+                print("Labels of path", itLabelsOfPath)
                 self.keyPaths.append(tmpDict)
+        print("length of Symmetry distinct path", len(self.keyPaths))
     
     # 外部接口
     def getKeyPaths(self):
@@ -396,7 +415,7 @@ class MigrationPaths(object):
         self.setNetwork()
         self.setKeyPaths()
         return self.getKeyPaths()
-        
+    
 
 def outVesta(filename, migrant, ntol=0.02, rad_flag=True, lower=0.0, upper=10.0, rad_dict=None):
     with zopen(filename, "rt") as f:
@@ -421,11 +440,14 @@ def outVesta(filename, migrant, ntol=0.02, rad_flag=True, lower=0.0, upper=10.0,
     atmnet = AtomNetwork.read_from_RemoveMigrantCif(filename, migrant, radii, rad_flag)
 	
     vornet,edge_centers,fcs,faces = atmnet.perform_voronoi_decomposition(True, ntol)
+    
+    add_fcs_vornet = vornet.add_facecenters(faces)
+    sym_vornet,voids =  get_labeled_vornet(add_fcs_vornet, sitesym)
 	
     prefixname = filename.replace(".cif","")
     # compute the R_T
-    conn_val = connection_values_list(prefixname+".resex", vornet)
-    channels = Channel.findChannels2(vornet, atmnet, lower, upper, prefixname+".net")
+    conn_val = connection_values_list(prefixname+".resex", sym_vornet)
+    channels = Channel.findChannels2(sym_vornet, atmnet, lower, upper, prefixname+".net")
     
     # output vesta file for visiualization
     Channel.writeToVESTA(channels, atmnet, prefixname)
@@ -438,7 +460,6 @@ def outVesta(filename, migrant, ntol=0.02, rad_flag=True, lower=0.0, upper=10.0,
 
 if __name__ == "__main__":
     conn_val, keyPaths = outVesta("icsd_16713.cif","Li",ntol=0.02, rad_flag=True, lower=0.0, upper=10.0)
-    print(keyPaths)
 
 
 
