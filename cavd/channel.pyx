@@ -184,6 +184,7 @@ cdef class Channel:
                     node["id"] = curNode.id
                     node["label"] = curNode.label
                     node["radius"] = curNode.max_radius
+                    node["cart_coord"] = [curNode.x, curNode.y, curNode.z]
                     node["frac_coord"] = atmnet.absolute_to_relative(curNode.x, curNode.y, curNode.z)
                     nodes.append(node)
                     for l in range((curNode.connections).size()):
@@ -199,7 +200,8 @@ cdef class Channel:
                         conn["toLabel"] = otherNode.label
                         conn["toDelta"] = [curConn.deltaPos.x, curConn.deltaPos.y, curConn.deltaPos.z]
                         conn["length"] = curConn.length
-                        conn["bottleneck"] = frac_coord
+                        conn["bt_frac_coord"] = frac_coord
+                        conn["bt_cart_coord"] = [curConn.btx, curConn.bty, curConn.btz]
                         conn["bottleneckSize"] = curConn.max_radius
                         conns.append(conn)
             channel["id"] = i
@@ -263,7 +265,7 @@ cdef class Channel:
         for channel in channels:
             for conn in channel["conns"]:
                 out.write(" " + str(idx) + " " + "Ne " + "Ne" + str(bdx) + " " + "1.0 " +
-                   str(round(conn["bottleneck"][0], 6)) + " " + str(round(conn["bottleneck"][1], 6)) + " " + str(round(conn["bottleneck"][2], 6)) + 
+                   str(round(conn["bt_frac_coord"][0], 6)) + " " + str(round(conn["bt_frac_coord"][1], 6)) + " " + str(round(conn["bt_frac_coord"][2], 6)) + 
                     " 1a 1\n")
                 out.write("                0.000000   0.000000   0.000000   0.00\n")
                 bdx = bdx + 1
@@ -331,7 +333,6 @@ cdef class Channel:
         out.write("-1\n")
         out.write("PLN2D\n")
         out.write("0   0   0   0\n")
-
 
 # #Add at 20180823
 # cdef class Channel_Node:

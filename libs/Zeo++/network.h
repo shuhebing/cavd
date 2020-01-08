@@ -140,7 +140,7 @@ void parseNetworkSymmetry(std::vector<int> symmlabels, VORONOI_NETWORK *vornet);
 void addVorNetId(VORONOI_NETWORK *vornet);
 void add_net_to_vornet(vector<int> fc_ids, vector<double> fc_radii, vector<vector<double> > fc_coords,
     vector<vector<double> > fc_fracs, vector<vector<int> > fc_neiatoms, vector<vector<int> > fc_vertices,
-    vector< vector< vector<int> > > edge_pdvs, vector< vector< double> > fc_vert_dists, VORONOI_NETWORK* vornet);
+    vector< vector< vector<int> > > edge_pdvs, vector< vector< double> > fc_vert_dists, VORONOI_NETWORK* vornet, double merge_tol);
 
 /**
  * Some custom exceptions about the PORE class, CHANNEL class and POCKET class.
