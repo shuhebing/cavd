@@ -237,9 +237,9 @@ class MigrationPaths(object):
 
                 self.allPaths.append(tmpDict)
         
-    def outPathToPOSCAR(self):
-        if not os.path.exists("paths"):
-            os.mkdir("paths")
+    def outPathToPOSCAR(self, fname):
+        if not os.path.exists(fname+"_paths"):
+            os.mkdir(fname+"_paths")
         for i in range(len(self.allPaths)):
             if not os.path.exists("paths/"+"path_"+str(i)):
                 os.mkdir("paths/"+"path_"+str(i))
@@ -266,7 +266,7 @@ class MigrationPaths(object):
                 stru.to(filename=dir+"/POSCAR")
 
     # extern interface
-    def comAllPaths(self,n=2):
+    def comAllPaths(self,n=2, fname):
         self.setInterstices()
         self.setChannelSegs()
         self.setKeyInterstices()
@@ -277,7 +277,7 @@ class MigrationPaths(object):
             
         self.setNetwork()
         self.setAllPaths(n)
-        self.outPathToPOSCAR()
+        self.outPathToPOSCAR(fname)
         return self.allPaths 
 
 

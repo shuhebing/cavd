@@ -43,7 +43,8 @@ def outChannelToPOSCAR(filename, migrant, ntol=0.02, rad_flag=True, lower=0.0, u
     
     migratPath = MigrationPaths(stru, migrant, channels)
     
-    allPaths = migratPath.comAllPaths()
+    allPaths = migratPath.comAllPaths(prefixname)
+    
     return allPaths
     
 def outVesta(filename, migrant, ntol=0.02, rad_flag=True, lower=None, upper=10.0, rad_dict=None):
