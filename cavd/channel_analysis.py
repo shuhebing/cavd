@@ -157,7 +157,7 @@ class MigrationPaths(object):
     
 
     # Obtain the paths between sourceInter and sinkInter.
-    # if n>0 && n< Total(paths)，return first shortest path to n-th shortest path. 
+    # if n>0 && n< Total(paths)ï¼return first shortest path to n-th shortest path. 
     # legalPath: midpoint of the path is not included in self.keyInterstices  
     # 
     def getPaths(self, suorceInter, sinkInter, n = 2, cutoff = 5.0):
@@ -238,35 +238,47 @@ class MigrationPaths(object):
                 self.allPaths.append(tmpDict)
         
     def outPathToPOSCAR(self, fname):
-        if not os.path.exists(fname+"_paths"):
-            os.mkdir(fname+"_paths")
+        fileDir = fname + "_paths"
+        if not os.path.exists(fileDir):
+            os.mkdir(fileDir)
         for i in range(len(self.allPaths)):
-            if not os.path.exists("paths/"+"path_"+str(i)):
-                os.mkdir("paths/"+"path_"+str(i))
+            pathDir = fileDir + "/path_" + str(i)
+            if not os.path.exists(pathDir):
+                os.mkdir(pathDir)
            
             path = self.allPaths[i]
             startIdx = self.keyInterMobileIdxDict[path["ids"][0]]
+            endIdx = self.keyInterMobileIdxDict[path["ids"][-1]]
     
             imageSpecies = self.struc.sites[startIdx].species
-            imageProps = {"_atom_site_label": self.keyInterMobileDict[path["ids"][0]]}
+            # The image is labeled by "X-Y", where X is the label of source mobile ion site, and Y is the label of sink mobile ion site.
+            imageLabel = self.keyInterMobileDict[path["ids"][0]] + "-" + self.keyInterMobileDict[path["ids"][-1]]
+            imageProps = {"_atom_site_label": imageLabel}
             
             pathCoords = path["frac_coords"]
-            for j in range(1, len(pathCoords)-1):
-                num = ('%03d' %j)
-                dir = "paths/"+"path_"+str(i)+"/"+str(num)
-                if not os.path.exists(dir):
-                    os.mkdir(dir)
+            for j in range(len(pathCoords)):
+                num = ('%02d' %j)
+                imageDir = pathDir + "/" +str(num)
+                if not os.path.exists(imageDir):
+                    os.mkdir(imageDir)
                 
                 stru = copy.deepcopy(self.struc)
                 print(stru)
-                imageCoords = pathCoords[j]
+                if j == 0:
+                    imageCoords = stru.sites[startIdx].frac_coords
+                elif j == len(pathCoords) - 1:
+                    imageCoords = stru.sites[endIdx].frac_coords
+                else: 
+                    imageCoords = pathCoords[j]
+                
                 stru.remove_sites([startIdx])
                 stru.insert(startIdx, imageSpecies, imageCoords, properties = imageProps)
+                stru.remove_sites([endIdx])
                 print(stru)
-                stru.to(filename=dir+"/POSCAR")
+                stru.to(filename=imageDir+"/POSCAR")
 
     # extern interface
-    def comAllPaths(self,n=2, fname):
+    def comAllPaths(self, fname, n=2):
         self.setInterstices()
         self.setChannelSegs()
         self.setKeyInterstices()
