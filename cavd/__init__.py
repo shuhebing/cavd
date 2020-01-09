@@ -17,7 +17,6 @@ def outChannelToPOSCAR(filename, migrant, ntol=0.02, rad_flag=True, lower=0.0, u
         input_string = f.read()
     parser = CifParser_new.from_string(input_string)
     stru = parser.get_structures(primitive=False)[0]
-    print(stru)
     species = [str(sp).replace("Specie ","") for sp in stru.species]
     elements = [re.sub('[^a-zA-Z]','',sp) for sp in species]
     sitesym = parser.get_sym_opt()

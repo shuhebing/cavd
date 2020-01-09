@@ -263,7 +263,6 @@ class MigrationPaths(object):
                     os.mkdir(imageDir)
                 
                 stru = copy.deepcopy(self.struc)
-                print(stru)
                 if j == 0:
                     imageCoords = stru.sites[startIdx].frac_coords
                 elif j == len(pathCoords) - 1:
@@ -274,7 +273,6 @@ class MigrationPaths(object):
                 stru.remove_sites([startIdx])
                 stru.insert(startIdx, imageSpecies, imageCoords, properties = imageProps)
                 stru.remove_sites([endIdx])
-                print(stru)
                 stru.to(filename=imageDir+"/POSCAR")
 
     # extern interface
@@ -285,7 +283,7 @@ class MigrationPaths(object):
         
         keyInterstices = self.getKeyInterstices()
         for it in keyInterstices:
-            print("It",it["interId"],"--",it["mobileLabel"],"dis:",it["dis"])
+            print("It"+str(it["interId"])+"-"+it["mobileLabel"],it["dis"])
             
         self.setNetwork()
         self.setAllPaths(n)
