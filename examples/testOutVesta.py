@@ -44,7 +44,9 @@ def outVesta(filename, migrant, ntol=0.02, rad_flag=True, lower=0.0, upper=10.0,
 if __name__ == "__main__":
     # Calculate transport channel using given radii.
     rad_dict = {"Li1": 0.73, "C1": 0.06, "O1": 1.24, "O2": 1.23}
-    conn_val = outVesta("icsd_16713.cif","Li",ntol=0.02, rad_flag=True, lower=0.0, upper=10.0, rad_dict)
-    print(conn_val)
+    conn_val = outVesta("./cifs/Li/icsd_16713.cif","Li",ntol=0.02, rad_flag=True, lower=0.0, upper=10.0, rad_dict= rad_dict)
+    print("conn_val:", conn_val)
+    # Calculate transport channel using auto-calculate radii.
+    outVesta("./cifs/Li/icsd_16713.cif","Li",ntol=0.02, rad_flag=True, lower=0.0, upper=10.0)
 
 
