@@ -320,7 +320,7 @@ def get_labeled_vornet(vornet, sitesym, symprec=1e-3):
 
     vornet_uni_symm = vornet.parse_symmetry(tags)
     sym_independ = np.unique(tags)
-    print("The number of symmetry distinct voids: ",len(sym_independ))
+    # print("The number of symmetry distinct voids: ",len(sym_independ))
     for i in sym_independ:
          voids.append(positions[i])
     return vornet_uni_symm,voids
