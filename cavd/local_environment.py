@@ -713,3 +713,25 @@ def LocalEnvirCom(stru, migrant):
         migrant_alpha = 1.0
     migrant_radius = float(sum(migrant_radii))/len(migrant_radii)
     return radii,migrant_radius,migrant_alpha,nei_dises,coordination_list
+
+# Analyze the relationships between mobile ions and their coordination ions.
+def LocalEnvirCom_new(stru, migrant):
+    coordination_list, radii = get_local_envir_fromstru(stru)
+    coord_tmp = []
+    nei_dis_tmp = []
+    surf_nei_dis_tmp = []
+
+    for i in coordination_list:
+        if migrant in i["label"]:
+            nearest_atom = i["coord_nei"][0]
+            nei_label = nearest_atom[0]._atom_site_label
+            nei_dis = nearest_atom[1]
+            nei_radius = radii[nei_label]
+            
+            coord_tmp.append(i["coord_num"])
+            nei_dis_tmp.append(nei_dis)
+            surf_nei_dis_tmp.append(nei_dis - nei_radius)
+            
+    nei_dises = list(zip(coord_tmp, zip(nei_dis_tmp, surf_nei_dis_tmp)))
+
+    return radii,nei_dises

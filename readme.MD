@@ -37,7 +37,7 @@ broad research community.
 2. Install cavd library:
    > pip install cavd-0.1.26-cp37-cp37m-win_amd64.whl
 
-3. Test that the installation worked using the "test_bmdcom.py" in examples package. 
+3. Test that the installation worked using the "testOutVesta.py" in examples package. 
 
 
 ## Install from source code in Linux ##
@@ -67,4 +67,4 @@ broad research community.
    
    > python setup_linux.py develop
   
-5) Test that the installation worked using the "test_bmdcom.py" in examples package. 
+5) Test that the installation worked using the "testOutVesta.py" in examples package. 
