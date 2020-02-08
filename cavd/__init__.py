@@ -227,7 +227,7 @@ def bmd_com(filename, migrant, rad_flag=True, lower=None, upper=10.0, rad_dict=N
     conn_val = connection_values_list(prefixname+".resex", sym_vornet)
     dim_network,connect = ConnStatus(conn_val,minRad)
     writeVaspFile(prefixname+".vasp",atmnet, sym_vornet, minRad, upper)
-    channels = Channel.findChannels(sym_vornet, atmnet, minRad, prefixname+".net")
+    channels = Channel.findChannels2(sym_vornet, atmnet, minRad, prefixname+".net")
 
     # output vesta file for visiualization
     Channel.writeToVESTA(channels, atmnet, prefixname)
