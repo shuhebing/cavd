@@ -2222,6 +2222,7 @@ bool writeToVasp(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, do
   double a,b,c;
   vector<pair<int,DELTA_POS> > delta_uc;
 
+  output.open(filename, fstream::out);
   if(!output.is_open()){
     cerr << "Error: Failed to open .vasp output file " << filename << "\n";
     return false;
@@ -2447,7 +2448,7 @@ bool writeToNET(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, dou
           it_b = niter->frac_b;
           it_c = niter->frac_c;
           output << it_a << " " << it_b << " " << it_c << "\t";
-			    output << niter->rad_stat_sphere;
+          output << niter->rad_stat_sphere;
           output <<  "\n";
       }
       niter++;
@@ -2459,7 +2460,7 @@ bool writeToNET(char *filename, ATOM_NETWORK *cell, VORONOI_NETWORK *vornet, dou
       if(eiter->rad_moving_sphere > minRad){
           output << eiter->from << "\t" << eiter->to <<"\t";
           output << eiter->delta_uc_x << " " << eiter->delta_uc_y << " " << eiter->delta_uc_z << "\t";
-		      // output << eiter->bottleneck_x << " " << eiter->bottleneck_y << " " << eiter->bottleneck_z << "\t";
+          // output << eiter->bottleneck_x << " " << eiter->bottleneck_y << " " << eiter->bottleneck_z << "\t";
           bn_a = eiter->bottleneck_a;
           bn_b = eiter->bottleneck_b;
           bn_c = eiter->bottleneck_c;
