@@ -32,7 +32,7 @@ broad research community.
 ## Install from .whl package ##
 
 
-1. Download the corresponding .whl package according to the Python version (e.g. cavd-0.1.26-cp37-cp37m-win_amd64.whl).
+1. Download the corresponding .whl package according to the Python version (e.g. cavd-0.2.14-cp37-cp37m-win_amd64.whl).
 
 2. Install cavd library:
    > pip install cavd-0.1.26-cp37-cp37m-win_amd64.whl
